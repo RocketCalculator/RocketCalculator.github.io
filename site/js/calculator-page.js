@@ -146,6 +146,12 @@ export async function mountCalculator(def) {
       if (round) v = Math.round(v / round) * round;
       state.values[id] = v; form.refresh(); recompute();
     },
+    setCell(id, row, col, v, { round } = {}) {
+      if (!Number.isFinite(v)) return;
+      if (round) v = Math.round(v / round) * round;
+      const rows = state.values[id]; if (!rows?.[row]) return;
+      rows[row][col] = v; form.refresh(); recompute();
+    },
     handle(key, x, y, opts) {
       let rec = handles.get(key);
       if (!rec || !rec.el.isConnected) {

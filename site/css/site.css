@@ -430,7 +430,9 @@ hr { border: 0; border-top: 1px solid var(--border); margin: 2rem 0; }
   .calc-inputs { position: static; max-height: none; }
 }
 
-.form-actions { display: flex; flex-wrap: wrap; gap: 6px; }
+.form-actions { display: flex; flex-wrap: wrap; gap: 6px; min-width: 0; }
+.form-actions select { max-width: 190px; text-overflow: ellipsis; }
+.calc-inputs .card-head { flex-wrap: wrap; }
 .fgroup { border: 0; padding: 0; margin: 14px 0 0; min-width: 0; }
 .fgroup legend { width: 100%; display: flex; align-items: center; gap: 8px; padding: 0 0 6px; margin-bottom: 4px; font: 500 0.72rem/1.2 var(--font-mono);
   text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-3); border-bottom: 1px dashed var(--border); }

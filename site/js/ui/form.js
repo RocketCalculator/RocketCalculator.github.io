@@ -48,7 +48,8 @@ export function buildForm(def, state, { onChange, onHighlight, infoFor }) {
     const validate = () => {
       const v = state.values[f.id];
       let msg = '';
-      if (v == null || Number.isNaN(v)) msg = 'Enter a number.';
+      if (f.optional && v == null) msg = '';
+      else if (v == null || Number.isNaN(v)) msg = 'Enter a number.';
       else if (f.min != null && (f.minExclusive ? v <= f.min : v < f.min)) msg = f.minMsg || `Must be ${f.minExclusive ? 'greater than' : 'at least'} ${show(f.min, f, getSystem()) || 0} ${unitLabel(displayUnit(f))}.`.replace(/ \.$/, '.');
       else if (f.max != null && (f.maxExclusive ? v >= f.max : v > f.max)) msg = f.maxMsg || `Must be ${f.maxExclusive ? 'less than' : 'at most'} ${show(f.max, f, getSystem())} ${unitLabel(displayUnit(f))}.`.replace(/ \.$/, '.');
       setErr(f.id, msg, el, err);
@@ -56,11 +57,12 @@ export function buildForm(def, state, { onChange, onHighlight, infoFor }) {
     };
     input.addEventListener('input', () => {
       const raw = parse(input.value);
-      state.values[f.id] = Number.isNaN(raw) ? NaN : fromDisplay(raw, f, getSystem());
+      state.values[f.id] = Number.isNaN(raw) ? (f.optional && input.value.trim() === '' ? null : NaN) : fromDisplay(raw, f, getSystem());
       if (slider && !Number.isNaN(raw)) slider.value = raw;
       validate(); onChange(f.id);
     });
-    input.addEventListener('blur', () => { if (!Number.isNaN(state.values[f.id])) input.value = show(state.values[f.id], f, getSystem()); });
+    input.addEventListener('blur', () => { if (state.values[f.id] != null && !Number.isNaN(state.values[f.id])) input.value = show(state.values[f.id], f, getSystem()); });
+    if (f.optional) input.placeholder = 'optional';
     return { el, sync, validate, focus: () => input.focus() };
   }
 

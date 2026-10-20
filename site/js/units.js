@@ -35,6 +35,8 @@ export const UNITS = {
   kg: { label: 'kg', ...lin(1) }, g: { label: 'g', ...lin(1e-3) }, lbm: { label: 'lb', ...lin(LBM) }, slug: { label: 'slug', ...lin(SLUG) },
   N: { label: 'N', ...lin(1) }, lbf: { label: 'lbf', ...lin(LBF) },
   kgm2: { label: 'kg·m²', ...lin(1) }, slugft2: { label: 'slug·ft²', ...lin(SLUG * FT * FT) }, lbmin2: { label: 'lb·in²', ...lin(LBM * IN * IN) },
+  // mass per unit length
+  gpm: { label: 'g/m', ...lin(1e-3) }, kgpm: { label: 'kg/m', ...lin(1) }, lbpin: { label: 'lb/in', ...lin(LBM / IN) }, lbpft: { label: 'lb/ft', ...lin(LBM / FT) },
   // misc
   s: { label: 's', ...lin(1) }, deg: { label: '°', ...lin(1) }, rad: { label: 'rad', ...lin(180 / Math.PI) },
   perrad: { label: '/rad', ...lin(1) }, perdeg: { label: '/°', ...lin(180 / Math.PI) },
@@ -63,6 +65,7 @@ export const DIMS = {
   moment1: { si: 'cm3', us: 'in3' },     // first moment of area
   force: { si: 'N', us: 'lbf' },
   inertia: { si: 'kgm2', us: 'slugft2' },
+  linearDensity: { si: 'gpm', us: 'lbpin' },
   angle: { si: 'deg', us: 'deg' },
   angleRad: { si: 'rad', us: 'rad' },
   rate: { si: 'rads', us: 'rads' },
@@ -114,6 +117,7 @@ export const UNIT_TEX = {
   K: '\\mathrm{K}', R: '{}^{\\circ}\\mathrm{R}', degC: '{}^{\\circ}\\mathrm{C}', degF: '{}^{\\circ}\\mathrm{F}', Km: '\\mathrm{K\\,m^{-1}}', Rft: '{}^{\\circ}\\mathrm{R\\,ft^{-1}}',
   kg: '\\mathrm{kg}', g: '\\mathrm{g}', lbm: '\\mathrm{lb}', slug: '\\mathrm{slug}', N: '\\mathrm{N}', lbf: '\\mathrm{lbf}',
   kgm2: '\\mathrm{kg\\,m^{2}}', slugft2: '\\mathrm{slug\\,ft^{2}}', lbmin2: '\\mathrm{lb\\,in^{2}}',
+  gpm: '\\mathrm{g\\,m^{-1}}', kgpm: '\\mathrm{kg\\,m^{-1}}', lbpin: '\\mathrm{lb\\,in^{-1}}', lbpft: '\\mathrm{lb\\,ft^{-1}}',
   s: '\\mathrm{s}', deg: '{}^{\\circ}', rad: '\\mathrm{rad}', perrad: '\\mathrm{rad^{-1}}', perdeg: '{}^{\\circ\\,-1}',
   perm: '\\mathrm{m^{-1}}', perft: '\\mathrm{ft^{-1}}', pct: '\\%', none: '',
 };

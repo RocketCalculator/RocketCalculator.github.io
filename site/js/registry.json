@@ -92,6 +92,12 @@
    "description": "Supersonic normal-force multiplier and wave drag of single-wedge fins, with the shock-detachment limit."
   },
   {
+   "slug": "yo-yo-despin",
+   "title": "Yo-Yo Despinner",
+   "topic": "yo-yo-despinner",
+   "description": "Despin weights, wire loads and timing for a two-mass yo-yo with radial release."
+  },
+  {
    "slug": "newtonian-drag",
    "title": "Modified Newtonian Drag",
    "topic": "modified-newtonian-drag",
@@ -971,9 +977,11 @@
    "area": "dyn",
    "summary": "Despin weights for a yo-yo despin mechanism.",
    "abstract": "The yo-yo despinner is a innovative approach to despin a rocket or satellite. Invented at JPL in the early 1960s it has been widely used since.. The reference for this code is \"NASA Technical Note D-708, \"Theory and Design Curves for a Yo-Yo De-Spin Mechanism for Satellites\", by J. V. Fedor, August, 1961. The code is filed as YO-YO DSP.xls . It provides estimates on the despin weights.",
-   "status": "soon",
-   "calculators": [],
-   "wasSoon": false,
+   "status": "available",
+   "calculators": [
+    "yo-yo-despin"
+   ],
+   "wasSoon": true,
    "references": [],
    "sourceFiles": [
     {

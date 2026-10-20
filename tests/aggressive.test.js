@@ -88,6 +88,7 @@ const REPAIR = {
     if (v.bt > 0 && v.b <= v.cR * Math.tan((v.bt * Math.PI) / 180)) v.bt = 0;
   },
   'fin-cant-angle': (v, r) => { if (v.b <= v.R) v.b = v.R * (1.1 + 2 * r()); },
+  'yo-yo-despin': (v, r) => { if (v.ff >= v.f0) v.ff = v.f0 * r(); v.mu = r() < 0.8 ? 0 : Math.min(v.mu, 1e-5 * r()); },
   'newtonian-drag': (v, r) => { if (v.r2 <= v.r1) v.r2 = v.r1 * (1.05 + 3 * r()) + 1e-3; },
 };
 
@@ -100,6 +101,7 @@ const INVARIANTS = {
   geophysics: (v, R) => [R.p > 0, R.rho > 0, R.gh > 0, R.T > 0, R.a > 0],
   'newtonian-drag': (v, R) => [R.CD >= 0, R.CDnose >= 0, R.CDfins >= 0, R.cpt > 0 && R.cpt < 2, !v.cap || (R.capXcp >= 0 && R.capXcp <= v.capR), !v.cone || (R.coneXcp >= 0 && R.coneXcp <= v.coneL)],
   'single-wedge': (v, R, warned) => [R.K >= 1 - 1e-12, R.CDw >= 0, R.CDvehicle >= 0, R.MN > 0, R.thetaMax == null || (R.thetaMax > 0 && R.thetaMax < 46)],
+  'yo-yo-despin': (v, R) => [R.weightEach > 0 || !Number.isFinite(R.weightEach), R.T1 >= 0, R.T2 >= 0, R.tRelease > 0, R.r >= 0 && R.r < 1],
   'ogive-nose': (v, R) => [R.S > 0, R.xbar > 0 && R.xbar < v.L, R.fineness > 0, R.tipHalfAngle > 0 && R.tipHalfAngle <= 90],
   'subsonic-cp': (v, R, warned) => [R.CNa > 0 || warned, R.CNaFins >= 0, Number.isFinite(R.xcp), R.d > 0],
 };

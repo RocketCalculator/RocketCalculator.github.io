@@ -4,6 +4,21 @@ Every commit adds an entry here, newest first. Live site: https://darasamii.gith
 
 ## 2026-10-20 (continued)
 
+### New calculator: Yo-Yo Despinner
+- Added: `calculators/yo-yo-despin.html`, which gives the following for a two-mass yo-yo with radial release:
+  - despin weights;
+  - peak wire tensions in both phases;
+  - release time;
+  - spin and tension histories from integrating the equations of motion;
+  - a design curve and a drawing of the involute and swing-out paths;
+  - a report and a documentation page.
+- The despin mass is the exact root of the momentum and energy balance at release; Fedor's closed form is shown
+  alongside. The release tension comes from the exact release state; the worksheet's phase-2 estimate is about
+  20 % lower.
+- Added: a mass-per-length unit (g/m, lb/in).
+- Tests: `tests/yoyo.test.js` — worksheet example, conservation laws, full two-phase simulation ending at the
+  target spin, and tension continuity. Also added to the aggressive suite.
+
 ### New calculator: Single Wedge Airfoil
 - Added: `calculators/single-wedge.html`, with the following:
   - the supersonic normal-force multiplier of a single-wedge fin section over a flat plate (cubic Busemann

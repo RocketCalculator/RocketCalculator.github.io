@@ -88,6 +88,7 @@ const REPAIR = {
     if (v.bt > 0 && v.b <= v.cR * Math.tan((v.bt * Math.PI) / 180)) v.bt = 0;
   },
   'fin-cant-angle': (v, r) => { if (v.b <= v.R) v.b = v.R * (1.1 + 2 * r()); },
+  'newtonian-drag': (v, r) => { if (v.r2 <= v.r1) v.r2 = v.r1 * (1.05 + 3 * r()) + 1e-3; },
 };
 
 /** Must hold for every accepted input set (warnings may be present). */
@@ -97,6 +98,7 @@ const INVARIANTS = {
   'fin-cant-angle': (v, R, warned) => [Math.abs(R.delta) < Math.PI / 2 || warned, R.CLp < 0, R.Ycp >= v.R - 1e-9 && R.Ycp <= v.b + 1e-9],
   'fin-flutter': (v, R) => [R.Mf > 0, R.pr > 0 && R.pr <= 1, R.tMin > 0, R.AR > 0],
   geophysics: (v, R) => [R.p > 0, R.rho > 0, R.gh > 0, R.T > 0, R.a > 0],
+  'newtonian-drag': (v, R) => [R.CD >= 0, R.CDnose >= 0, R.CDfins >= 0, R.cpt > 0 && R.cpt < 2, !v.cap || (R.capXcp >= 0 && R.capXcp <= v.capR), !v.cone || (R.coneXcp >= 0 && R.coneXcp <= v.coneL)],
   'ogive-nose': (v, R) => [R.S > 0, R.xbar > 0 && R.xbar < v.L, R.fineness > 0, R.tipHalfAngle > 0 && R.tipHalfAngle <= 90],
   'subsonic-cp': (v, R, warned) => [R.CNa > 0 || warned, R.CNaFins >= 0, Number.isFinite(R.xcp), R.d > 0],
 };
@@ -237,6 +239,14 @@ test('Subsonic CP: bigger fins move the CP aft and raise CNα; more fins raise C
   increasing([3, 4, 6, 8].map((N) => run('subsonic-cp', { N }).CNa), 'CNa vs N');
   const nose = run('subsonic-cp', { N: 3, b: 1e-6 });
   assert.ok(Math.abs(nose.CNaBody - 2) < 1e-6, 'slender body CNα = 2');
+});
+
+test('Newtonian drag: wave drag rises past Mach 1, more sweep means less leading-edge drag, a hemisphere tends to C_D ≈ 0.92', () => {
+  increasing([0.7, 0.9, 1.1, 2, 4].map((M) => run('newtonian-drag', { M }).CD), 'CD vs M');
+  const sw = [60, 45, 30, 0].map((sweep) => run('newtonian-drag', { M: 3, sweep }).CDfins);
+  increasing(sw, 'LE drag vs decreasing sweep');
+  const h = run('newtonian-drag', { M: 10, bodyR: 2, cap: true, capR: 2, thetaM: 90, cone: false, flat: false, fins: false });
+  assert.ok(Math.abs(h.CD - 0.92) < 0.01, `hemisphere CD ${h.CD}`);
 });
 
 test('Fin cant: steady cant angle is linear in roll rate and sign-symmetric', () => {

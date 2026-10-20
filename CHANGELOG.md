@@ -4,6 +4,19 @@ Every commit adds an entry here, newest first. Live site: https://darasamii.gith
 
 ## 2026-10-20 (continued)
 
+### New calculator: Modified Newtonian Drag
+- Added: `calculators/newtonian-drag.html`, with the following:
+  - supersonic pressure (wave) drag of a hemispherical nose cap, a conical segment (pointed or frustum), a flat
+    face and rounded fin leading edges, from Lees' modified Newtonian theory;
+  - nose-cap and cone normal-force slopes and centres of pressure;
+  - plots of drag against Mach number and of the stagnation pressure coefficient;
+  - a four-panel drawing, a report, and a documentation page.
+- The nose and fin results feed the drag build-up's wave-drag inputs. Body radius, fin count and fin thickness come
+  from the shared rocket.
+- The old "coming soon" topic URL redirects to the calculator (`generate_pages.mjs` writes these redirects).
+- Tests: `tests/newtonian.test.js` — reference example from Mach 1 to 4, cap closed forms against direct
+  integration, cone/frustum additivity, and continuity at Mach 1. Also added to the aggressive suite.
+
 ### Neutral documentation wording
 - Changed: the documentation pages, home page and units switch no longer talk about workbooks, spreadsheets, cell
   names or a compatibility switch. Cell-name columns are gone, “Known differences” is now “Notes on the method”,

@@ -84,6 +84,12 @@
    "title": "Fin Cant Angle & Roll Rate",
    "topic": "fin-setting",
    "description": "Strip-theory roll derivatives and the cant angle for a target roll rate."
+  },
+  {
+   "slug": "newtonian-drag",
+   "title": "Modified Newtonian Drag",
+   "topic": "modified-newtonian-drag",
+   "description": "Supersonic wave drag of nose caps, cones, flat faces and rounded fin leading edges (Lees)."
   }
  ],
  "topics": [
@@ -98,6 +104,7 @@
    "calculators": [
     "subsonic-cp"
    ],
+   "wasSoon": false,
    "references": [
     "barrowman-equations",
     "barrowmanthesis-orig",
@@ -142,6 +149,7 @@
    "calculators": [
     "bifilar-pendulum"
    ],
+   "wasSoon": false,
    "references": [
     "bifilar-pendulum"
    ],
@@ -156,6 +164,7 @@
    "abstract": "Body Aeroelasticity These files describe the structural responses of a long, supple upper stage during vigorous first stage thrusting. A static aeroelastic instability can occur in which the nose tip is slightly bent. This resulting aerodynamic normal force on the tip causes further bending, etc, until structural failure occurs. Alternatively, the increased nose normal force can move the vehicle center of pressure aft until the entire rocket becomes statically unstable. Upper Stage Bending Influence on Static Stability3.doc provides the analysis background. DIVERGENCE.xls implements the math in a spread sheet.",
    "status": "soon",
    "calculators": [],
+   "wasSoon": false,
    "references": [
     "upper-stage-bending-influence-on-static-stability3"
    ],
@@ -176,6 +185,7 @@
    "abstract": "This supports the estimation of the body bending natural frequencies and the normal mode shapes. The technique used is a numerical; solution to LaGrange's equations with approximation that only the first three modes are carried. The code is filed as FLEXIT.xls , and the corresponding reference report is Longitudinal Body Bending Dynamics.doc . The results are the first three natural frequencies and the first two normal mode shapes. The example displayed is for the Aries sounding rocket, a early 1970s Minuteman I second stage conversion. The reader is cautioned that when the roll rate becomes resonant with the fundamental body bending frequency, a large angle of attack will occur. Structural break-up is a possibility, and roll lock-in can also occur. See \"In-Flight Flexure and Spin Lock-In for Antitank Kinetic Energy Projectiles\", by A. G. Mikhail, JSR, Vol. 33, No.5, pp 657-664 (1996).",
    "status": "soon",
    "calculators": [],
+   "wasSoon": false,
    "references": [
     "longitudinal-body-bending-dynamics"
    ],
@@ -196,6 +206,7 @@
    "abstract": "Dispersion refers to the fact that rocket trajectories are always imperfect. “Dispersion” describes the scattering errors that reflect these imperfections. To estimate this, use Flt Path Angl Dispersions.doc which contains “Flight Path Angle Dispersions (rev.1)”, by C. P. Hoult, RST memo, 2011. This provides a way to estimate the standard deviation in launcher Quadrant Elevation angle for nominally vertical trajectories. A trajectory code can convert this to an impact point error. DISPERSION.xls is the corresponding spread sheet implementation. Much of the other material here documents the ways in which Quadrant Elevation angles other than 90º cause trajectory statistics to change. This QE angle scaling is captured in Theory Behind DISPERSION.doc . This memo also captures the QE scaling on Unit Wind Effects, both In-Range and Cross-Range. Launcher Tipoff Errors.doc describes the right way to design a rail launcher and riding lug system. Finally, estimates on the perturbing effects may be found in Standardized Perturbation Values.pdf .",
    "status": "soon",
    "calculators": [],
+   "wasSoon": false,
    "references": [
     "flt-path-angl-dispersions",
     "theory-behind-dispersion",
@@ -221,6 +232,7 @@
    "calculators": [
     "drag-coefficient"
    ],
+   "wasSoon": false,
    "references": [
     "drag-coefficient3-4",
     "modified-newtonian-aero4"
@@ -249,6 +261,7 @@
    "calculators": [
     "fin-flutter"
    ],
+   "wasSoon": false,
    "references": [
     "fin-aeroelasticity"
    ],
@@ -276,6 +289,7 @@
    "calculators": [
     "fin-cant-angle"
    ],
+   "wasSoon": false,
    "references": [
     "fin-setting-theory-3",
     "spin-wedges"
@@ -309,6 +323,7 @@
    "calculators": [
     "geophysics"
    ],
+   "wasSoon": false,
    "references": [
     "geophysics"
    ],
@@ -329,6 +344,7 @@
    "abstract": "Hang fires are a common problem with small sounding rockets. They can be catastrophic if they involve an upper stage. Even first stage hang fires can engender significant launch delays. The secret sauce is to embed the junction area of an ordinary igniter with a small amount of copper thermite/rubber to produce an enhanced thermal pulse. Enhanced_Igniters.pdf , by two CSULA seniors, Shahan Khalighi and Joseph David Wells, tells the story.",
    "status": "soon",
    "calculators": [],
+   "wasSoon": false,
    "references": [
     "enhanced-igniters-orig"
    ],
@@ -341,8 +357,11 @@
    "area": "aero",
    "summary": "Lees’ modified Newtonian pressures for blunt shapes at supersonic speed.",
    "abstract": "Modified Newtonian Aero 4.docx is a summary recapitulation of Lee’s famous quasi-empirical modification to the hypersonic pressure coefficient. Lee’s idea was to make the stagnation pressure match that which is obtained from flow through a normal shock isentropically compressed to stagnation conditions. Since it applies when the hypersonic similarity parameter K >> 1, it describes blunt bodies, such as a sphere, even at fairly low supersonic Mach numbers. NEWTON.xls is a spreadsheet representation of a supersonic sphere.",
-   "status": "soon",
-   "calculators": [],
+   "status": "available",
+   "calculators": [
+    "newtonian-drag"
+   ],
+   "wasSoon": true,
    "references": [
     "modified-newtonian-aero4"
    ],
@@ -363,6 +382,7 @@
    "abstract": "A new launcher for ESRA sounding rockets was developed during the 2010-2011 academic year. A New Launcher.doc contains the overview description, “ A New Launcher for University Sounding Rockets ”, by Fernando Calderon, Abd Al Chamas, Thomas Wilson, Adam Vore & Berton Vite, AIAA Region VI Student Reseach paper, 2011. The presentation charts used in the conference are in New Launcher.pptx . Briefing title and authors are the same as above. Launcher fixed part.pp t is a conceptual sketch of the fixed base. Launcher Tipoff Deflection.doc estimates static bending deflections of the launcher rail during a launch.",
    "status": "soon",
    "calculators": [],
+   "wasSoon": false,
    "references": [
     "a-new-launcher",
     "launcher-tipoff-deflection"
@@ -389,6 +409,7 @@
    "abstract": "These files support the design of an arbitrary slender “smooth” body of revolution in incompressible flow. “Smooth” means the radial profile has no steps, although the body radial profile may have slope discontinuities. This process can be used to design a nose shape that will inhibit separation of vortices from the forward parts of the body, and thus delay the onset of roll lock-in. Nose Pressure Distro4.doc describes the theory – superposition of sources – used to compute the incompressible surface pressure. MUNKSHIP2.xls implements this theory. Finally, AIAAFelkel3.doc and the corresponding presentation charts filed as AIAAFelkel2.pptx covers much of the same material and provides the background to estimation of the critical Mach number in CRITICAL MACH NUMBER.xls .",
    "status": "soon",
    "calculators": [],
+   "wasSoon": false,
    "references": [
     "nose-pressure-distro4",
     "aiaafelkel3"
@@ -420,6 +441,7 @@
    "abstract": "Rocket motor nozzles use a deLaval converging-diverging configuration to generate thrust. Performance of such nozzles can be estimated using the one dimensional isentropic flow equations found in NACA Report 1135, \"Equations, Tables and Charts for Compressible Flow\". The one dimensional thrust coefficient is modified by the Malina correction for 3D source flow. The result is the thrust/chamber pressure* throat area = Cf, the thrust coefficient. This result is found in ThrustCf.xls",
    "status": "soon",
    "calculators": [],
+   "wasSoon": false,
    "references": [],
    "sourceFiles": [
     {
@@ -440,6 +462,7 @@
    "calculators": [
     "ogive-nose"
    ],
+   "wasSoon": false,
    "references": [
     "ogive-nose"
    ],
@@ -460,6 +483,7 @@
    "abstract": "These files support the design of a “smooth” body of revolution in subsonic flow. “Smooth” means the radial profile has no step changes, although the body radial profile may have slope discontinuities. This process can used to design a nose shape that will inhibit separation of vortices from the forward parts of the body, and thus delay the onset of roll-lockin. This model will generate the subsonic zero angle of attack pressure distribution over any body of revolution lacking significant separated flow regions. The theory used – superposition of sources – used to compute the incompressible surface pressure distribution, and the Karman-Tsien correction for subsonic Mach numbers are described in “ Effect of Different Nose Profiles on Subsonic Pressure Coefficients ” by R. J. Felkel, Region VI AIAA Student Research Conference, San Diego, 2011. This paper may be found in AIAAFelkel3.doc . The associated briefing charts are in AIAAFelkel2.pptx . An EXCEL spreadsheet implementing the incompressible source superposition theory is MUNKSHIP2.xls . Although it was discovered too late for inclusion in the Felkel paper, it turns out that a superellipse with an exponent of 1.6 provides an excellent match to the optimum nose shape. A superellipse is an ordinary ellipse with the exponent 2 replaced with one having a different value. Felkel's work showed that a tangent ogive nose profile performs almost as well as the optimum, and is therefore a good practical shape. Also, Felkel calculated the critical Mach numbers for a variety of nose shapes. See Local Sonic Flow.doc .",
    "status": "soon",
    "calculators": [],
+   "wasSoon": false,
    "references": [
     "aiaafelkel3",
     "local-sonic-flow"
@@ -486,6 +510,7 @@
    "abstract": "One of the common problems encountered in multistage rocket design is the optimum, or best, allocation of weight between stages. There are several definitions of \"best\". For example, one could specify liftoff weight and payload weight and seek that weight allocation that maximized the burnout velocity, one could specify payload weight and burnout velocity and seek that allocation that minimized the liftoff weight. Often, but not always, these calculations are done using Tsiolkovskii's simplified dynamics model. Such a description is \"Optimum Allocation of Weight Between Two Stages\", by C. P. Holt, RST memo, 2013 found as Two StageWeights.doc . This uses the classical Vertregt Lagrangian multiplier technique. It is coded as OPT2STAGE.xls . Another optimization problem is the best thrust profile for a rocket of fixed total propellant weight ascending vertically under the influence of weight, thrust and aerodynamic drag. This calculus of variations problem was solved by George Leitmann, \"Optimum thrust Programing of High-Altitude Rockets\", Aeronautical Engineering Review, June 1957, pp. 63-66. He showed that the optimum thrust profile for a single stage rocket has an initially \"impulsive\" burn followed by an extended low thrust sustainer. This article can be found under Leitmann.doc .",
    "status": "soon",
    "calculators": [],
+   "wasSoon": false,
    "references": [
     "two-stage-weights-rev1",
     "optimum-thrust-programing-for-high-altitude-rockets-orig"
@@ -507,6 +532,7 @@
    "abstract": "Pitch-Yaw Wavenumber3.doc identifies the eponymous parameter as the most important single variable affecting rocket short period dynamics. Its relationship to the pitch-yaw natural frequency, the analogous parameter in stationary dynamics, is documented. A formula for calculating this wave number is included.",
    "status": "soon",
    "calculators": [],
+   "wasSoon": false,
    "references": [
     "the-pitch-yaw-wave-number3"
    ],
@@ -521,6 +547,7 @@
    "abstract": "The major document here is \" An Analysis of the Motion of Liquids in a Partially-Filled Enclosure \", PDF file. It was written using Air Force funds to provide force and moment transfer functions for ballistic missile autopilot analyses including propellant sloshing. It was the first such analysis for circular tanks (previous work had addressed square tanks). This document was rushed into print when the author was rushed into Air Force active duty, and was therefore not as carefully proofread as it might have been. An errata sheet for the report is provided in Sloshing Errata.doc . The natural frequencies of the first three sloshing modes are computed in SLOSHIT.xls .",
    "status": "soon",
    "calculators": [],
+   "wasSoon": false,
    "references": [
     "analysis-of-the-motion-of-liquids-in-a-partially-filled-enclosure-orig",
     "sloshing-errata"
@@ -542,6 +569,7 @@
    "abstract": "These files address the common need to recover flight hardware intact. First, the use of a single parachute to both provide a rapid descent and a soft landing by splitting the recovered body in two is described in \"Dual Purpose Parachute Recovery System, rev.2\" by C. P. Hoult, RST memo, 2013. It is filed as DPParachute2.doc . For this scheme the two parts are connected by a lanyard. The first part to hit must be robust because it will hit hard. After its impact the parachute will slow down so that the second part has a much gentler impact. The file implementing this is ONECHUTE.xls . An example file is 25KDSCNT.xls . This scheme requires a reefed parachute as described in Parachute Reefing.doc by C. P. Hoult, RST memo, 26 July 2013. For rockets with apogees > 25 km, or so, the dynamic pressure naturally occurring during reentry precludes deployment of a drogue parachute. The customary engineering solution is to separate the body from the fins while still above most of the atmosphere, and let reentry drag slow the body to subsonic speed at low altitude. For this to work, the body must be carefully ballasted to place the longitudinal center of pressure where a high angle of attack and high drag coefficient occur. The theory is described in Hi Alfa Body Aerodynamics.doc , by C. P. Hoult, RST memo, 25 July 2013, which is implemented in JORGENSN.xls . JORGENSN.xls generates the trim angle of attack and drag coefficient as a function of flight condition. The trim drag coefficient must then be entered in a trajectory code to describe the reentry dynamics",
    "status": "soon",
    "calculators": [],
+   "wasSoon": false,
    "references": [
     "dpparachuterev2",
     "parachute-reefing",
@@ -574,6 +602,7 @@
    "abstract": "These files address the growth of reliability during the flight testing process. Reliability Growth.doc provides the theoretical background and RELGRWTH.xls the Excel implementation.",
    "status": "soon",
    "calculators": [],
+   "wasSoon": false,
    "references": [
     "reliability-growth"
    ],
@@ -594,6 +623,7 @@
    "abstract": "These files support the design of sounding rocket tail fins to minimize the probability of roll lock-in. Roll lock-in occurs when the pitch natural frequency matches the roll rate in powered flight. Linear theory asserts that the angle of attack (due to thrust misalignment and C.G. offset) will become large at that time. However, vorticity shed by the forebody at high angle of attack induces a nonlinear roll torque that causes the roll rate to depart from its expected linear increase with velocity and \"lock-in\" to the pitch natural frequency. This leads to prolonged high angle of attack, excessive drag, and sometimes mission failure. There are two aerodynamic nonlinearities important to roll lock-in. Besides the vortex-induced roll moment a second important aerodynamic nonlinearity is the Magnus torque from the fins. Magnus torques from the forebody tend to be very small. The analytical description of this process can be found in \"Sounding Rocket Fin Design to Mitigate Roll Lock-In\" by C. P. Hoult and Hien Tran, proceedings of the 2015 IEEE Aerospace Conference, Big Sky, MT, March 07-14, 2015. This is filed as Sounding Rocket Fin Design to Mitigate Roll Lock-In.pdf , and the associated presentation charts, with voice annotation, are filed as Sounding Rocket Design to Mitigate Roll Lock-In.ppt . The math is implemented in Sounding Rocket Design to Mitigate Roll Lock-In.xls .",
    "status": "soon",
    "calculators": [],
+   "wasSoon": false,
    "references": [
     "sounding-rocket-fin-design-to-mitigate-roll-lock-in-orig"
    ],
@@ -619,6 +649,7 @@
    "abstract": "Approximate analyses of small sounding rockets is conveniently done in two parts, boost and post boost. In both cases the approximations presented here are based on a linear (low angle of attack) dynamics model. Boost phase roll behaviors are described in \"Small Sounding Rocket Boost Phase Roll Rate\", by C. P. Hoult, RST memo dated 24 September 2013. It is filed as Boost Phase Roll Rate2.doc . For a small sounding rocket whose apogee lies in the troposphere, its roll rate at apogee can be estimated from the graph in \"Small Sounding Rocket Apogee Roll Rate\" by C. P. Hoult, 29 March 2013. It has been filed as Apogee Roll Rate.doc . The roll damping stability derivative needed can be estimated using CANT ANGLE3.xls .",
    "status": "soon",
    "calculators": [],
+   "wasSoon": false,
    "references": [
     "boost-phase-roll-rate2",
     "apogee-roll-rate"
@@ -640,6 +671,7 @@
    "abstract": "The most current perspective on safety is the Final 2013 RocketSafetyReport.doc written for the 8th IREC in Jun 2013.",
    "status": "soon",
    "calculators": [],
+   "wasSoon": false,
    "references": [
     "final-2013-rocketsafetyreport"
    ],
@@ -654,6 +686,7 @@
    "abstract": "The use of a single wedge airfoil for high supersonic fins has been known for decades. Such fins, with their flat surfaces, are easy to build, and provide good torsional stiffness. Their normal is developed as a multiplier to be applied to the flat plate result. See Single Wedge Airfoil.doc for a description of the theory. A spreadsheet evaluation of this model is filed as Normal Force Multiplier.xls . Finally, any airfoil wave drag is reported in SUPERSONIC BARROWMAN EQUATIONS3.5.xls while the base drag on a single wedge airfoil is reported in DRAG COEFFICIENT3.4.xls .",
    "status": "soon",
    "calculators": [],
+   "wasSoon": false,
    "references": [
     "single-wedge-airfoil"
    ],
@@ -684,6 +717,7 @@
    "abstract": "Structural Loads are the key to rocket structural design. They arise from four distinct sources: • Ground handling loads occurring during preparation for launch. • Pressurization loads due to the difference between the external static pressure and the internal cavity pressure of a rocket. • Loads arising from the effects of environmental perturbations, mainly wind gusts and thrust misalignment. Since these are often the most severe when pressurization loads are greatest, a nominal axial load is estimated as part of this package. • Transient axial loads associated with an elastic wave moving up the rocket from the thrust chamber. 1. Ground handling loads reported here include only those that have been historically observed to cause failures during prelaunch ground processing. Since there are many ways to accomplish preflight processing, these files are likely to be incomplete. The theory is described in Ground Handling Loads.doc , and the lug failure analysis is implemented in UNBUTTON.xls . 2. Pressurization loads arise from the fact that the pressure inside a rocket in flight is, in general, different from that on the outside of the rocket. While this pressure difference can be mitigated with good venting hole design, it can never be completely eliminated. The theory for calculating the internal cavity pressure from the isentropic expansion of trapped air is found in Payload Venting2.doc , and implemented in BLOWDOWN2.xls . The external incompressible pressure coefficient along the body surface is theoretically described in Nose Pressure Distro4.doc , and implemented in MUNKSHIP2.xls Note that MUNKSHIP2.xls has an option to automatically generate an ogive nose profile. If an ogive is not desired, just input the body radius vs. body station table directly. Adjustment for subsonic compressibility using the Karman-Tsien process for subcritical Mach numbers is done automatically in BLOWDOWN2.xls . Estimation of the critical Mach number using a bisection algorithm is done in CRITICAL MACH NUMBER.xls . For flight Mach numbers greater than critical another approach must be used. When there is well developed, attached bow shock supersonic flow, the second order shock expansion model implemented in SUPERSONIC BARROWMAN EQUATIONS3.5.xls can be used. For transonic Mach numbers, the pressure coefficients must be done with CFD or by using your favorite french curve. 3. Sounding Rocket Structural Loads.ppt provides an introductory overview to this topic. The theory for structural loads arising from external effects is captured in “Sounding Rocket Structural Design Loads (rev.9)”, by C. P. Hoult, RST memo, 2013 to be found in the file Sounding Rocket Structural Design Loads10.doc . It documents the theory for body bending moment, shear force, steady state axial force, fin bending moment and parachute deployment axial force. Assuming gaussian statistics, it develops loads for an input value of the probability of exceedance. These loads algorithms are implemented in BENDIT7.xls . The loads estimated in BENDIT7.xls depend on the angle of attack statistics. The models presented here presume a constant axial acceleration leading to dynamical differential equations with constant coefficients in the altitude domain. For thrust misalignment, the reference is “Thrust Misalignment Response”, By C. P. Hoult, RST memo, 2010. This reference also estimates the dispersive flight path angle change due to thrust misalignment. See Thrust Misalignment.doc . The gust response is presented in “ Sounding Rocket Boost Phase Gust Angle of Attack ”, by C. P. Hoult, JSR, Vol 49, no.3, pp507-511. It is based on a simple Dryden gust autocorrelation model. This is filed as Sounding Rocket Gust Angle of Attack.doc. Both models presume zero short period damping. Inclusion of damping would reduce the estimated angles of attack. Quantitative perturbing effect values can be estimated from “Standardized Perturbation Values for Several Sounding Rockets to be Used in the Calculation of Dispersion and Structural Loads”, by R. L. Ammons and C. P. Hoult, Space General memo 8110:M0658:ak, 1970, filed as Standardized Perturbation Values.pdf . Additional thrust misalignment and C.G. offset data can be found in “ Thrust Misalignments of Fixed-Nozzle Solid Rocket Motor ” by R. N. Knauber, JSR Vol. 33, No. 6, pp 794-799. The reader is cautioned that the perturbation data reported in the above references was all obtained from rockets manufactured in an industrial environment with hard tooling under rigorous quality assurance. Rockets built under less stringent conditions can be expected to have larger misalignments. The effects of a flexible nose or upper stage structure are described in Upper Stage Bending Influence on Static Stability3.doc . This model has been incorporated into BENDIT7.xls . It includes both the increase in nose normal force and the inertial reactions to nose deflections. Next, many rocket structures carry their bending loads with multiple longerons stabilized by bulkheads. The allocation of bending loads among the longerons is described in Longeron Bending.doc . The fourth topic is the effect on axial loads during transient events such as rocket motor ignition and parachute deployment. No detailed analysis of these processes is presented here. However, a rough approximation can be found in Rocket Engine Ignition Structural Shock.doc . This model links three masses together by springs driven from below by an impulsive increase in thrust. An amplification factor of 3 over steady state axial load is found. Finally, there is an intimate connection between BENDIT7 and the Barrowman Equations used to estimate aerodynamic forces. BENDIT7 has an intrinsic crib sheet telling where the BENDIT7 inputs can be found in the Barrowman codes.",
    "status": "soon",
    "calculators": [],
+   "wasSoon": false,
    "references": [
     "ground-handling-loads",
     "payload-venting2",
@@ -749,6 +783,7 @@
    "abstract": "A good trajectory simulation code is of the first importance to most rocket engineering processes. SKYAERO 7.6.2.xls is two degree of freedom (2DOF) point mass precision trajectory simulation using fourth order Runge Kutta numerical integration. The state vector includes two positions, vertical and horizontal, two velocity components and the rocket mass. It is capable of simulating up to three powered stages with user-defined coast phases. It can simulate launches from an aircraft, a balloon and a launcher on the ground. See Events_and_Phases(rev3).doc for a description of what is meant by an event or a phase. All phase change events except leaving the launcher and transitioning to free flight are based on input values for the boundary event time after liftoff (TALO). The initial conditions for a first stage powered phase coming immediately after a parachute stabilized phase are filed as Air Launched Rocket.doc , with a numerical simulation of the initial constrained powered flight phase filed as Descending Rocket on Rail.xls . Note that when a Powered Flight Phase follows a Parachute Stabilized Phase a Rail-Constrained Powered Flight Phase must come before any Free Flight Powered Flight Phase. Use the simulation launcher length model in SKYAERO . Phase changes are assumed to always occur at the end of an integration step. In general, an integration step size of 0.01 second seems to work well. The major exceptions are the parachute deployment events in which parachutes are assumed to be instantly deployed in their steady state configurations. The very high initial accelerations after parachute deployment require a shorter step size, typically 0.001 second. This shorter step is continued in groups of ten steps to ensure the basic “heartbeat” of a trajectory run is maintained. The atmosphere, geodesy and gravity models used are described in Geophysics.doc . The SKYAERO code has been developed by three CSULB graduate students, Armando Fuentes, Hien Tran and Michael Tong under the direction of C. P. Hoult. Fuentes, Tran & Tong also wrote the “SKYAERO v7.6.1 User’s Manual” found in SKYAEROmanual_ver3.pdf . Finally, a good top level description of SKYAERO can be found in Revised SKYAERO Notes.ppt Wind Compensation for Small Sounding Rockets.ppt -->. All point mass codes estimate the rotational degrees of freedom using a priori assumptions. For fin-stabilized rockets the key assumption is that the rocket always heads instantly into the relative wind. The relative wind (purely horizontal) has two parts, the first due to rocket motion and the second due to motion of the earth’s atmosphere (winds). See “The Effect of Wind and Rotation of the Earth on Unguided Rockets” by J.V. Lewis, Ballistic Research Laboratories Report 685, 1948. A copy of this Report is posted as The Effect of Wind and Rotation of the Earth on Unguided Rockets.pdf . These notes also provide an outline of the launcher adjustment process to correct for winds. There are two issues with this approach. First, it is not possible for a rocket to head instantly into the relative wind at low altitudes just above the launcher. The aerodynamic torque available for such rotations is proportional to dynamic pressure which starts from zero at ignition. The resolution is to use two singular perturbation corrections, one to reduce the low altitude wind profile, and other to extend the launcher length simulated. The references are (1) “Finite Inertia Corrections to the Lewis Method Wind Response”, by C.P. Hoult, Aerospace Corp. I.O.C. A79-5435-44, 1979, posted as Finite Inertia Corrections.pdf , and (2) “Launcher Length for Sounding-Rocket Point-Mass Trajectory Simulations”, by C.P. Hoult, Journal of Spacecraft and Rockets, Vol. 13, No. 12, Dec 1976, pp760-761, posted as Launcher Length for Sounding-Rocket Point-Mass Traj. Sim.pdf . Both corrections require an estimate on the pitch-yaw wavelength, or alternatively, the pitch wave number near the launcher. See The Pitch-Yaw Wave Number3.doc . The second issue arises from the fact that real world winds cause nearly all sounding rocket trajectories to be non-planar. However, the major application of trajectory analysis to the wind response problem is per J.V. Lewis to estimate the Wind Weighting Factor and the In Range and Cross Range Unit Wind Effects. Non-Vertical Launch Effects.doc provides a technique to estimate both Unit Wind Effects given the Unit Wind Effect for a vertical (QE = 90º) launch. Finally, thrust data for common commercial rocket motors can be found in ThrustCurve.org. Drag curves can be estimated from DRAG_COEFFICIENT3.4.xls that implements data from Hoerner, “Aerodynamic Drag”. A related topic is trajectory design to satisfy both apogee altitude and a landing range constraints. The relevant algorithms, some iterative, for this process are found in Trajectory Constraints.doc . An implementation framework is TRAJCON.xls .",
    "status": "soon",
    "calculators": [],
+   "wasSoon": false,
    "references": [
     "events-and-phases-rev3",
     "air-launched-rocketrev1",
@@ -803,6 +838,7 @@
    "abstract": "The tools here can be used to estimate the internal pressure in a compartment, say the payload bay, of an ascending rocket. The theory is captured in Payload Venting2.doc The full orifice equations for both subsonic and sonic throats are discussed, including a Mach number-dependent external pressure. A fourth order Runge Kutta integration algorithm is used in BLOWDOWN2.xls to develop numerical results. Start with subsonic aerodynamics just like a rocket does. Find the radius vs. body station, and input this in the appropriate sky blue cells in MUNKSHIP2.xls . The other sky blue input cells are already filled in. MUNKSHIP2.xls finds the local surface pressure coefficient CP by putting a distribution of incompressible sources along the rocket centerline, and finding the source strength distribution by satisfying the flow tangency condition on the surface. The result is the pressure coefficient CP along the body. For supersonic Mach numbers, we use SUPERSONIC BARROWMAN EQUATIONS3.5.xls to generate CP along the body. SUPERSONIC BARROWMAN EQUATIONS3.5.xls uses second order shock expansion theory to estimate the CP distribution. The rub comes for transonic Mach numbers. There is no easy-to-use algorithm for such cases. What most engineers do is to haul out their favorite french curve and sketch in something that looks right. Of course, CFD can be used to do CP for any Mach number, but it’s never too quick and easy to apply. The next step is to find the critical Mach number for this problem. When the free stream Mach number reaches the critical Mach number the local flow becomes sonic (M L = 1). At a slightly higher free stream Mach number the local Mach number becomes supersonic, and then somewhere downstream M L returns to subsonic via shock wave(s). We know approximately where (body station) our vent holes will be drilled. Now find that body station forward of the vent hole station where the pressure coefficient is smallest. Note this minimum CP. The whole idea about finding the critical Mach number is that compressible subsonic flow is that is can be obtained by a transformation from incompressible flow. However, this is no longer possible when shock waves are present. Thus the critical Mach number is an upper bound on analytic modeling of CP. Now, execute CRITICAL MACH NUMBER.xls , and note the result. Of course, we need to know the trajectory to estimate cavity pressures. Our trajectory code is SKYAERO7.6.2.xls . Although I’m going to send you a copy, and it’s OK if you want to run it yourself, we use trajectory results for so many things that it’s a good idea to have a reference run that that all can use to ensure consistency. Finally, le piece de resistance: First, find the incompressible CP for the vent hole body station, and input it and the critical Mach number into BLOWDOWN2.xls . Then, paste the trajectory data from SKYAERO7.6.2.xls into BLOWDOWN2.xls , and run it to find the maximum pressure difference between the cavity and the local external pressure, P C - P X . Note that the input hole throat area A T is the sum of all holes venting the cavity in question. The real issue is how much pressure difference the cavity door can withstand, and the hole throat area needed to stay below it. This can be found from the Espinoza, Ruiz and Vite AIAA paper \"Sounding Rocket Allowable Differential Pressure\" presented in Seattle in 2012, and filed as 2012 AIAA Conference.ppt . The same material in textual form called \"Sounding Rocket Allowable Differential Pressure\" is filed as AllowableDiffPressure.doc . The theoretical basis for this is found in Door Failure.doc . All that remains is to iterate until the correct hole size is found. As a cautionary note, BLOWDOWN2.xls allows external air to flow into the cavity as well as trapped air to flow out. If the internal pressure is too small collapse of the cavity walls, or inward failure of the cavity door is possible.",
    "status": "soon",
    "calculators": [],
+   "wasSoon": false,
    "references": [
     "payload-venting2",
     "allowablediffpressure",
@@ -850,6 +886,7 @@
    "abstract": "Wind compensation is the process used to adjust the launcher azimuth and quadrant elevation angle to place the predicted impact point at some desired location. It requires that the vector wind field at the time of launch be estimated and access to a precision trajectory simulation be available. A full technical description of this is found in Wind Compensation for Small Sounding Rockets.ppt . The software tool to be used in the field to estimate the launcher azimuth and quadrant elevation angles is filed as LAUNCHER ANGLES.xls . The interface to SKYAERO7.6.2.xls is via north-south and east-west components of measured winds generated by the Government and WIND CALCULATOR.xlsx being entered into SKYAERO7.6.2.xls by hand. Finally, the classsical paper on wind phenomenology by Isaac Van der Hoven is found as Van der Hoven.pdf . It shows that there will not be enough time to compensate for turbulence.",
    "status": "soon",
    "calculators": [],
+   "wasSoon": false,
    "references": [
     "van-der-hoven-orig"
    ],
@@ -885,6 +922,7 @@
    "abstract": "For any rocket larger than the small hobby rockets sold by Estes, wind measurement and trajectory wind compensation by adjusting the launcher azimuth and elevation angles is essential to trouble free recovery operations. This is because uncompensated winds can move the impact point prodigious distances, often of the same order as apogee altitude. Without wind compensation, that implies a lot of cross country running over hot desert sands. The first step in wind compensation is measurement of the wind field that a rocket will fly through. We propose a simple wind measurement scheme. Use aviation weather for winds at higher altitudes, and a simple tethered pilot balloon (pibal) sensor to measure low altitude in situ winds near the launch site. Aviation winds aloft can be found by a telephone call to the FAA. Airport_Communications_Lucerne_Valley.doc is a data base developed by Faisal Buharie, a CSULB student and a private pilot, which provides voice links to the FAA for launches from the Lucerne Valley ROC launch site. Similar data bases can be developed for other launch sites. The tethered pibal wind sensor is described in CSULBWindSensor.doc and a slightly later version of the same paper, A New Wind Sensor for Rockets.pdf . These documents, and all the fabrication and testing described were done by four CSULB undergraduate students, Faisal Buharie, Samir Mohammed, Oscar Mejia and Anusha Prabhakar. There are several key tricks needed to implement what would otherwise be a simple scheme: 1. Be sure to include the effects of Reynolds number on balloon drag as it influences boundary layer transition. 2. The assumption of a straight line tether is valid to first order. However, bias errors due to gravity and aerodynamic drag acting on the tether should be reflected in the data processing. See TPB Bias Errors.doc for a description of these effects. 3. Nonlinearities in the winch tether deployed vs. winch revolutions should be modeled. 4. The importance of using a SkyScout™ to measure azimuth and elevation angle of the line of sight to the pibal cannot be overestimated Some of these details are described in Tether Catenary.doc , Winch Equations.doc , Winch Concept.ppt and Balloon_Inflating_Deployment_and Disassembly.doc by Faisal Buharie. Some wind data, obtained while a cold front was moving through the test area, can be found in Mojave Winds.doc .",
    "status": "soon",
    "calculators": [],
+   "wasSoon": false,
    "references": [
     "airport-communications-lucerne-valley",
     "csulbwindsensor",
@@ -912,6 +950,7 @@
    "abstract": "The proliferation of ESRA-class sounding rocket failures in recent years has been followed by failure studies. One of the more common failure root causes is improper wiring design, assembly and testing. The remedy is to do it right. Mr. Douglas Sinclair, President of Sinclair Interplanetary, a Toronto-based manufacturer of spacecraft components, has written a how-to report, Wiring Rules.pdf . All are urged to read and apply this report to their rocket projects.",
    "status": "soon",
    "calculators": [],
+   "wasSoon": false,
    "references": [
     "wiringrules-orig"
    ],
@@ -926,6 +965,7 @@
    "abstract": "The yo-yo despinner is a innovative approach to despin a rocket or satellite. Invented at JPL in the early 1960s it has been widely used since.. The reference for this code is \"NASA Technical Note D-708, \"Theory and Design Curves for a Yo-Yo De-Spin Mechanism for Satellites\", by J. V. Fedor, August, 1961. The code is filed as YO-YO DSP.xls . It provides estimates on the despin weights.",
    "status": "soon",
    "calculators": [],
+   "wasSoon": false,
    "references": [],
    "sourceFiles": [
     {

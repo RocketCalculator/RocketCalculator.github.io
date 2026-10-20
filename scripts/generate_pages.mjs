@@ -54,6 +54,21 @@ mountTopic('${t.slug}');
 `;
   writeFileSync(new URL(`calculators/${t.slug}.html`, SITE), html); n++;
 }
+// a topic that was "coming soon" and now has one calculator under another name keeps its old URL as a redirect
+for (const t of reg.topics.filter((x) => x.status === 'available' && x.calculators.length === 1 && x.calculators[0] !== x.slug && x.wasSoon)) {
+  const to = `${t.calculators[0]}.html`;
+  writeFileSync(new URL(`calculators/${t.slug}.html`, SITE), `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>${esc(t.title)} — Rocket Calculator</title>
+<meta http-equiv="refresh" content="0; url=${to}">
+<link rel="canonical" href="${to}">
+</head>
+<body><p>This topic is now a calculator: <a href="${to}">${esc(t.title)}</a>.</p></body>
+</html>
+`); n++;
+}
 writeFileSync(new URL('index.html', SITE), `${head({ title: 'Rocket Calculator — sounding-rocket engineering calculators', description: 'Interactive rocket-engineering calculators with schematics, plots and theory: centre of pressure, drag, atmosphere, fin flutter, cant angle, ogive noses and more.', depth: 0 })}
 <body>
 <main id="main"><noscript><div class="wrap" style="padding:40px 0"><h1>Rocket Calculator</h1><p>This site needs JavaScript enabled.</p></div></noscript></main>

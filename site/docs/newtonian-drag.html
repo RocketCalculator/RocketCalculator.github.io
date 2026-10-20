@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Modified Newtonian Drag — Theory & documentation — Rocket Calculator</title>
+<meta name="description" content="Lees' modified Newtonian theory for the supersonic pressure drag of blunt rocket elements: stagnation pressure coefficient, hemispherical nose cap, conical segment, flat face and hemicylindrical fin leading edges.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../css/site.css">
+<script>try{var t=JSON.parse(localStorage.getItem('rc-theme'));if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<main id="main">
+<div class="wrap">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Home</a><span class="sep">/</span><a href="../index.html#area-aero">Aerodynamics</a><span class="sep">/</span><a href="../calculators/newtonian-drag.html">Modified Newtonian Drag</a><span class="sep">/</span><span>Documentation</span></nav>
+  <div class="calc-title"><h1>Modified Newtonian Drag — theory</h1></div>
+  <p class="calc-sub">Supersonic pressure drag of blunt elements. Based on C. P. Hoult, <em>Modified Newtonian Aerodynamics (rev. 4)</em>, RS&amp;T memo, 06 April 2016.</p>
+  <div class="calc-badges"><a class="btn small primary" href="../calculators/newtonian-drag.html">Open the calculator</a><a class="btn small" href="../references/index.html#modified-newtonian-aero4">Original memo (PDF)</a></div>
+  <div class="doc-layout">
+    <nav class="doc-toc" aria-label="Contents"></nav>
+    <article class="doc">
+
+      <section id="overview">
+        <h2>Overview</h2>
+        <p>At supersonic speed the blunt parts of a rocket — a rounded nose tip, a flat face, the rounded leading edges of the fins — are locally hypersonic. The usual test is the hypersonic similarity parameter <span class="tex">H=\sqrt{M_\infty^2-1}\,/(L/D)\ge 1</span>, which a blunt element with small fineness <span class="tex">L/D</span> passes at modest Mach numbers. The drag of such elements is estimated with Newtonian impact theory, using the stagnation pressure coefficient proposed by Lees.</p>
+        <p>The calculator evaluates four elements and adds their drag areas:</p>
+        <ul>
+          <li>a hemispherical nose cap (all or part of a hemisphere);</li>
+          <li>a conical segment (a pointed cone or a frustum, e.g. behind the cap of a sphere-cone nose);</li>
+          <li>a flat face;</li>
+          <li>hemicylindrical (rounded) fin leading edges.</li>
+        </ul>
+        <p>Every coefficient is referred to the body cross-section <span class="tex">S_{ref}=\pi R_{ref}^2</span>, so the nose and fin results can be entered directly as the wave-drag inputs of the <a href="../calculators/drag-coefficient.html">drag build-up</a>.</p>
+      </section>
+
+      <section id="stagnation">
+        <h2>Stagnation pressure coefficient</h2>
+        <p>The streamline that reaches the stagnation point crosses a normal shock and is then compressed isentropically to rest. The Rayleigh pitot formula (NACA Report 1135, eq. 100) gives the stagnation pressure:</p>
+        <div class="eq"><div class="tex-display">\frac{p_T}{p_\infty}=\left[\tfrac12(\gamma+1)M_\infty^2\right]^{\frac{\gamma}{\gamma-1}}\left[\frac{\gamma+1}{2\gamma M_\infty^2-(\gamma-1)}\right]^{\frac{1}{\gamma-1}}\qquad(M_\infty>1)</div></div>
+        <p>and, by definition of the pressure coefficient,</p>
+        <div class="eq"><div class="tex-display">C_{PT}=\frac{p_T-p_\infty}{\tfrac12\gamma p_\infty M_\infty^2}=\frac{2}{\gamma M_\infty^2}\left(\frac{p_T}{p_\infty}-1\right)</div></div>
+        <p>With <span class="tex">\gamma=1.4</span>, <span class="tex">C_{PT}</span> rises from 1.276 at Mach 1 towards 1.839 at very high Mach number. Below Mach 1 there is no shock, and the calculator shows the isentropic value <span class="tex">p_T/p_\infty=(1+\tfrac{\gamma-1}{2}M_\infty^2)^{\gamma/(\gamma-1)}</span>, which joins the pitot value at Mach 1.</p>
+        <p>For a swept leading edge only the Mach number normal to the edge, <span class="tex">M_N=M_\infty\cos\Lambda</span>, matters. The cross-flow <span class="tex">C_{PT}</span> uses the same formula with <span class="tex">M_N</span> in place of <span class="tex">M_\infty</span>.</p>
+        <p><strong>Modified Newtonian theory.</strong> Impact theory assumes that air striking the surface loses its normal momentum, which gives <span class="tex">C_P=2\cos^2\theta</span>, where <span class="tex">\theta</span> is the angle between the surface normal and the free stream. Lees’ modification replaces the 2 by <span class="tex">C_{PT}</span>: <span class="tex">C_P=C_{PT}\cos^2\theta</span>.</p>
+      </section>
+
+      <section id="cap">
+        <h2>Hemispherical nose cap</h2>
+        <p>Take a cap of radius <span class="tex">R</span> that covers the sphere from the stagnation point to the angle <span class="tex">\theta_M</span> (90° for a full hemisphere). Integrating the axial component of the pressure over the cap gives the drag area:</p>
+        <div class="eq"><div class="tex-display">(C_DS)_{cap}=\pi R^2\,\frac{C_{PT}}{2}\,\left(1-\cos^4\theta_M\right)</div></div>
+        <p>For a full hemisphere this is <span class="tex">C_D=C_{PT}/2</span> on the cap’s frontal area, about 0.92 at high Mach number, in line with measured sphere drag.</p>
+        <p>At a small angle of attack <span class="tex">\alpha</span> the local angle becomes <span class="tex">\theta-\alpha\cos\varphi</span>. Integrating round the circumference and then over <span class="tex">\theta</span> gives the normal-force slope:</p>
+        <div class="eq"><div class="tex-display">C_{N\alpha}S_{ref}=\pi R^2\,\frac{C_{PT}}{2}\,\sin^4\theta_M</div></div>
+        <p>The pitching moment about the tip, divided by the normal force, gives the centre of pressure behind the tip. The memo’s eq. (17) subtracts terms that nearly cancel for a small cap. Writing it in <span class="tex">u=1-\cos\theta_M</span> turns the bracket into <span class="tex">\tfrac23u^3-\tfrac34u^4+\tfrac15u^5</span>, and</p>
+        <div class="eq"><div class="tex-display">\frac{X_{CP,cap}}{R}=\frac{4u\left(\frac23-\frac34u+\frac15u^2\right)}{(2-u)^2}</div></div>
+        <p>This gives <span class="tex">7R/15</span> for a full hemisphere and tends to <span class="tex">R\theta_M^2/3</span> for a shallow cap.</p>
+        <p>A cap tangent to a cone of half-angle <span class="tex">\delta</span> has <span class="tex">\theta_M=90^\circ-\delta</span> and base radius <span class="tex">R\sin\theta_M</span>.</p>
+      </section>
+
+      <section id="cone">
+        <h2>Conical segment</h2>
+        <p>On a cone of half-angle <span class="tex">\delta</span> the surface normal makes the angle <span class="tex">\theta=90^\circ-\delta</span> with the flow, so</p>
+        <div class="eq"><div class="tex-display">C_{PC}=C_{PT}\sin^2\delta,\qquad (C_DS)_{cone}=C_{PC}\,\pi\left(r_2^2-r_1^2\right)</div></div>
+        <p>where <span class="tex">r_1</span> and <span class="tex">r_2</span> are the forward and aft radii of the segment and <span class="tex">\tan\delta=(r_2-r_1)/L_C</span>. At a small angle of attack the pressure is <span class="tex">C_{PT}(\sin^2\delta+2\alpha\cos\delta\sin\delta\cos\varphi)</span>. Integrating its normal component gives <span class="tex">dN=2\pi q r\alpha C_{PT}\cos\delta\sin\delta\,dx</span>. Over the segment this becomes:</p>
+        <div class="eq"><div class="tex-display">C_{N\alpha}S_{ref}=\pi C_{PT}\sin\delta\cos\delta\,L_C\,(r_1+r_2),\qquad X_{CP,cone}=\frac{L_C(r_1+2r_2)}{3(r_1+r_2)}</div></div>
+        <p>For a pointed cone (<span class="tex">r_1=0</span>) these reduce to the memo’s <span class="tex">C_{N\alpha}S_{ref}=\pi L_C^2C_{PT}\sin^2\delta</span> and <span class="tex">X_{CP}=2L_C/3</span>. Results for a frustum add up exactly with those for the cone tip it replaces.</p>
+      </section>
+
+      <section id="flat">
+        <h2>Flat face</h2>
+        <p>Supersonic wind-tunnel data for flat faces fall within 4 % of the stagnation pressure coefficient, <span class="tex">C_{D,F}=C_{PT}</span>, on the face area. Below Mach 1 the subsonic model from Hoerner, ch. 15, is used:</p>
+        <div class="eq"><div class="tex-display">C_{D,F}=0.85\left[1+\tfrac14\left(M_\infty^2+M_\infty^4\right)\right]\qquad(M_\infty<1)</div></div>
+        <p>The two meet at Mach 1 to within 0.05 %. A flat face has no normal-force slope.</p>
+      </section>
+
+      <section id="leading-edge">
+        <h2>Hemicylindrical fin leading edge</h2>
+        <p>Take a rounded leading edge of radius <span class="tex">R_{LE}</span> and length <span class="tex">l</span> on a flat-plate fin. With Newtonian pressure and the cross-flow dynamic pressure, its drag area normal to the edge is <span class="tex">\tfrac83R_{LE}l</span>. Referring it to the free stream adds a factor <span class="tex">\cos^2\Lambda</span>. Taking the stream-wise component adds another <span class="tex">\cos\Lambda</span>. Replacing the Newtonian 2 by the cross-flow <span class="tex">C_{PT}(M_N)</span> then gives</p>
+        <div class="eq"><div class="tex-display">(C_DS)_{LE}=\tfrac43\,R_{LE}\,l\,C_{PT}(M_N)\cos^3\Lambda\qquad\text{per fin}</div></div>
+        <p>The memo’s eq. (22) carries an extra factor <span class="tex">\pi</span>. The derivation in its eqs. (18)–(21) does not produce one, and the memo’s own example plot agrees with the form above.</p>
+      </section>
+
+      <section id="subsonic">
+        <h2>Below Mach 1</h2>
+        <p>Newtonian theory does not apply to subsonic flow. The memo suggests fairing the curves to zero at the critical Mach number: about 0.6 for a sphere and 0.47 for a circular cylinder in cross flow. The calculator fairs the cap and cone values linearly from zero at <span class="tex">M_\infty=0.6</span> to their Mach 1 values. It fairs the leading-edge value from zero at <span class="tex">M_N=0.47</span> to its value at <span class="tex">M_N=1</span>. The faired range is an engineering estimate and is flagged on the page.</p>
+      </section>
+
+      <section id="totals">
+        <h2>Totals</h2>
+        <div class="eq"><div class="tex-display">C_{D,nose}=\frac{(C_DS)_{cap}+(C_DS)_{cone}+(C_DS)_F}{S_{ref}},\qquad C_{D,LE}=\frac{N\,(C_DS)_{LE}}{S_{ref}},\qquad C_D=C_{D,nose}+C_{D,LE}</div></div>
+        <p>Enter <span class="tex">C_{D,nose}</span> and <span class="tex">C_{D,LE}</span> as the nose and fin wave-drag inputs of the drag build-up. Its own leading-edge term covers the blunt-edge case in a simpler form, so use one or the other, not both.</p>
+      </section>
+
+      <section id="verification">
+        <h2>Verification</h2>
+        <p><code>tests/newtonian.test.js</code> checks the following:</p>
+        <ul>
+          <li>the stagnation pressure coefficient and the leading-edge drag area against the memo’s tabulated example, from Mach 1 to 4;</li>
+          <li>the cap drag area, normal-force slope and centre of pressure against direct numerical integration of the Newtonian pressure, for cap angles from 1° to 90°;</li>
+          <li>the pointed-cone forms, and that frustum results add up to the whole cone;</li>
+          <li>continuity at Mach 1.</li>
+        </ul>
+      </section>
+
+      <section id="known-differences">
+        <h2>Notes on the method</h2>
+        <ul class="diff-list">
+          <li><strong>Cap centre of pressure.</strong> Evaluated in the cancellation-free form above, which is algebraically identical to the memo’s eq. (17).</li>
+          <li><strong>Leading-edge drag.</strong> Uses <span class="tex">\tfrac43R_{LE}lC_{PT}\cos^3\Lambda</span>, without the stray <span class="tex">\pi</span> of eq. (22).</li>
+          <li><strong>Conical frustum.</strong> The memo’s pointed-cone normal-force result is extended to a frustum by integrating the same <span class="tex">dN</span> from <span class="tex">r_1</span> to <span class="tex">r_2</span>.</li>
+          <li><strong>Subsonic fairing.</strong> The linear fairing to the critical Mach number follows the memo’s suggestion to “fair by eye”.</li>
+        </ul>
+      </section>
+
+      <section id="references">
+        <h2>References</h2>
+        <ol class="refs">
+          <li>C. P. Hoult, “Modified Newtonian Aerodynamics (rev. 4),” RS&amp;T memo, 06 April 2016. <a href="../references/index.html#modified-newtonian-aero4">View in library</a></li>
+          <li>Ames Research Staff, “Equations, Tables and Charts for Compressible Flow,” NACA Report 1135, 1953.</li>
+          <li>S. F. Hoerner, <em>Fluid-Dynamic Drag</em>, self-published, 1965.</li>
+          <li>J. F. Campbell and D. T. Howell, “Supersonic Aerodynamics of Large-Angle Cones,” NASA TN D-4719, 1968.</li>
+        </ol>
+      </section>
+    </article>
+  </div>
+</div>
+</main>
+<script type="module">
+import { mountDocs } from '../js/docs.js';
+mountDocs();
+</script>
+</body>
+</html>

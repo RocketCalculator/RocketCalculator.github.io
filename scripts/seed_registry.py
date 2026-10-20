@@ -134,7 +134,9 @@ TOPICS = {
     'YoYoDes': ('yo-yo-despinner', 'dyn', 'Despin weights for a yo-yo despin mechanism.'),
 }
 
-# Pilot calculators: slug -> (title, topic id, one-line description)
+RELEASE1_TOPICS = {'BarrEqua', 'DragCoef', 'Geop', 'OgivNose', 'FinAero', 'BifiPend', 'FinSett'}
+
+# Calculators: slug -> (title, topic id, one-line description)
 CALCULATORS = [
     ('subsonic-cp', 'Subsonic Centre of Pressure', 'BarrEqua', 'Barrowman/NACA 1307 normal-force slope and centre of pressure below the critical Mach number.'),
     ('drag-coefficient', 'Zero-Lift Drag Coefficient', 'DragCoef', 'Skin friction, base, nose and lug drag for a single-stage rocket.'),
@@ -143,6 +145,7 @@ CALCULATORS = [
     ('fin-flutter', 'Fin Flutter Margin', 'FinAero', 'NACA TN-4197 bending-torsion flutter Mach number and margin of safety.'),
     ('bifilar-pendulum', 'Bifilar Pendulum Inertia', 'BifiPend', 'Pitch/yaw moment of inertia from measured pendulum periods.'),
     ('fin-cant-angle', 'Fin Cant Angle & Roll Rate', 'FinSett', 'Strip-theory roll derivatives and the cant angle for a target roll rate.'),
+    ('newtonian-drag', 'Modified Newtonian Drag', 'ModiNewtDrag', 'Supersonic wave drag of nose caps, cones, flat faces and rounded fin leading edges (Lees).'),
 ]
 
 
@@ -201,6 +204,8 @@ def main():
             'abstract': clean_abstract(t['abstract'], t['title']),
             'status': 'available' if t['id'] in calc_by_topic else 'soon',
             'calculators': calc_by_topic.get(t['id'], []),
+            # published as "coming soon" before its calculator existed: the old topic URL becomes a redirect
+            'wasSoon': t['id'] in calc_by_topic and t['id'] not in RELEASE1_TOPICS,
             'references': ref_ids, 'sourceFiles': other,
         })
     calcs = [{'slug': s, 'title': ti, 'topic': TOPICS[tid][0], 'description': d} for s, ti, tid, d in CALCULATORS]

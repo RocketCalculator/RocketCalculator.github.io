@@ -1,7 +1,7 @@
 // Zero-Lift Drag Coefficient — UI definition.
 import { drag } from '../calc/drag.js';
 import { s, fmt } from '../util.js';
-import { dim, path, text } from '../ui/svg.js';
+import { dim, path, text, finEndView } from '../ui/svg.js';
 
 const LEN = { dim: 'length', internal: 'in' };
 
@@ -172,7 +172,7 @@ export default {
     const g = fr.layer('main'); g.replaceChildren();
     const u = ctx.U(LEN), L = (x) => `${fmt(u.v(x), { digits: 3 })} ${u.label}`;
     const Lb = v.bodyLength, R = v.bodyRadius, Ln = v.noseLength;
-    const k = Math.min((W - 80) / (Lb + 1e-9), 120 / (R + v.b)), x0 = 40, cy = 110;
+    const k = Math.min((W - 220) / (Lb + 1e-9), 120 / (R + v.b)), x0 = 40, cy = 110;
     const X = (x) => x0 + x * k, Y = (y) => cy - y * k;
     // nose profile
     const a = (Ln * Ln + R * R) / (2 * R);
@@ -210,6 +210,7 @@ export default {
     g.append(s('line', { x1: X(-2), x2: X(Lb) + 22, y1: cy, y2: cy, class: 'sc-axis' }));
     g.append(dim(fr, X(0), Y(-R - v.b), X(Lb), Y(-R - v.b), `L = ${L(Lb)}`, { off: 16, textOff: 14, field: 'bodyLength' }));
     g.append(dim(fr, X(0), Y(R), X(Ln), Y(R), `L_n = ${L(Ln)}`, { off: -30, field: 'noseLength' }));
+    g.append(finEndView(W - 80, 96, 54, { N: v.N, r: R, s: R + v.b, field: 'N b' }));
     // ---- breakdown bar
     const parts = PARTS.map(([key, label, color]) => ({ key, label, color, v: key === 'wave' ? v.noseWave + v.finWave : key === 'CDlugs' ? r.CDlugs : r[key] }))
       .filter((p) => p.v > 1e-9);

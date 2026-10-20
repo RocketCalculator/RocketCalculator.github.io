@@ -129,3 +129,20 @@ export function handle(fr, x, y, { field, onDrag, onKey, title } = {}) {
 
 /** Format a value with its unit for schematic labels. */
 export const lbl = (v, unit, digits = 4) => `${fmt(v, { digits })}${unit ? '\\,' + unit : ''}`;
+
+/**
+ * Rear (end) view of the body with N fins, so the fin count is visible.
+ * r = body radius, s = fin tip radius (same units); size = outer radius in px.
+ */
+export function finEndView(cx, cy, size, { N, r, s: sTip, field, label = true }) {
+  const g = s('g', { 'data-field': field || 'N' });
+  const k = size / Math.max(sTip, r * 1.05), rb = r * k, rt = sTip * k, w = Math.max(2, size * 0.035);
+  g.append(s('circle', { cx, cy, r: size + 8, fill: 'var(--surface-2)', stroke: 'var(--border)' }));
+  for (let i = 0; i < N; i++) {
+    const th = (2 * Math.PI * i) / N - Math.PI / 2, ux = Math.cos(th), uy = Math.sin(th), nx = -uy * w, ny = ux * w;
+    g.append(s('path', { class: 'sc-body-2', d: path([[cx + ux * rb + nx, cy + uy * rb + ny], [cx + ux * rt + nx, cy + uy * rt + ny], [cx + ux * rt - nx, cy + uy * rt - ny], [cx + ux * rb - nx, cy + uy * rb - ny]], true) }));
+  }
+  g.append(s('circle', { cx, cy, r: rb, class: 'sc-body' }));
+  if (label) g.append(text(cx, cy + size + 24, `${N} fin${N === 1 ? '' : 's'} · rear view`, { anchor: 'middle', cls: 'sc-dim-text', size: 11 }));
+  return g;
+}

@@ -44,6 +44,23 @@
         <p>For a pointed nose this sums to the classic slender-body result <span class="tex">C_{N\alpha}=2A_{base}/S_{ref}=2</span>.</p>
       </section>
 
+      <section id="nose-shapes">
+        <h2>Nose shapes</h2>
+        <p>Instead of typing profile points, choose a nose shape. Its radius <span class="tex">r(x)</span> at distance <span class="tex">x</span> aft of the tip is generated from the nose length <span class="tex">L_n</span> and the body radius <span class="tex">R</span> (40 points, closer together near the tip), followed by the cylinder and an optional conical boat-tail. With <span class="tex">t=x/L_n</span>:</p>
+        <table class="sym-table">
+          <thead><tr><th>Shape</th><th>Radius</th></tr></thead>
+          <tbody>
+            <tr><td>Conical</td><td><span class="tex">r=R\,t</span></td></tr>
+            <tr><td>Tangent ogive</td><td><span class="tex">r=\sqrt{\rho^2-(L_n-x)^2}+R-\rho,\quad \rho=\frac{R^2+L_n^2}{2R}</span></td></tr>
+            <tr><td>Elliptical</td><td><span class="tex">r=R\sqrt{1-(1-t)^2}</span></td></tr>
+            <tr><td>Parabolic series</td><td><span class="tex">r=R\,\frac{2t-K'\,t^2}{2-K'},\quad 0\le K'\le1</span></td></tr>
+            <tr><td>Power series</td><td><span class="tex">r=R\,t^{\,n},\quad 0&lt;n\le1</span></td></tr>
+            <tr><td>Haack series</td><td><span class="tex">r=\frac{R}{\sqrt\pi}\sqrt{\theta-\tfrac12\sin2\theta+C\sin^3\theta},\quad \theta=\cos^{-1}(1-2t)</span>; Von Kármán <span class="tex">C=0</span>, LV-Haack <span class="tex">C=1/3</span></td></tr>
+          </tbody>
+        </table>
+        <p>In slender-body theory every pointed nose has <span class="tex">C_{N\alpha}=2</span> (on the base area); the shape only moves where that force acts — a cone at <span class="tex">2L_n/3</span> from the tip, a tangent ogive at about <span class="tex">0.466\,L_n</span>. Shape definitions follow G. A. Crowell, <em>The Descriptive Geometry of Nose Cones</em> (1996).</p>
+      </section>
+
       <section id="hemisphere">
         <h2>Hemispherical nose cap</h2>
         <p>If the first profile radius <span class="tex">r_0</span> is not zero, a hemisphere is fitted tangent to the first segment. Its tangency angle and radius are</p>

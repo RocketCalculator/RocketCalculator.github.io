@@ -205,7 +205,7 @@ export async function mountCalculator(def) {
       el.setAttribute('viewBox', `${bx} ${by} ${Math.min(w, vb.width)} ${Math.min(hgt, vb.height)}`);
     }
     const sym = f?.sym ? ` $${f.sym}$` : '';
-    return { el, caption: `<b>${rich(f?.label || '')}</b>${rich(sym)} — shown in red on your current design; the rest of the drawing is faded.` };
+    return { el, caption: `<b>${rich(f?.label || '')}</b>${rich(sym)} — on your current design; the rest of the drawing is faded.` };
   }
 
   function highlight(id, extra) {

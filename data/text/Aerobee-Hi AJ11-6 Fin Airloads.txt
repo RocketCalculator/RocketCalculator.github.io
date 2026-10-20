@@ -1,0 +1,346 @@
+                  •" 'f. 35. Swansea                                                       . Jt^Sf
+
+                    Ko C     iJouso
+
+                    .aerobee-Hl (AJ11«6) P F i n Airloads
+
+                    Ryd.'Toung9 C. C. Roso 9 T» B. Walker, I . G. la®; W. G. Houss, R. » . Waldo,
+                    OS J . Deatuthf, ZOO FIX©
+
+ •--•Xomii'o.is     (1) Figure 1 - Sketch showing contours of constant "pressura difference
+                                   between tho up cor and lower 2surface of a* modified. Aerobe©
+                                   F i n s M n 2„0 ? * q « 1600 Ib/rt ,-=< a 4 ° .
+
+                    U)     Fi^ura 2 * Same as F i j urc I except ft = 6..0, q as 334 l h / f t ^ .
+
+
+
+
+        1,         Sh-a purpose of t h i sras»ora»ctoa.i s "to prenont the method and E c e u l t s of
+         •U:co.*oti3ai e s c a l a t i o n s of a i r l o a d d i s t i n c t i o n s over the plml&vm of. a
+        jvenifica Aerotee f i n , She caXeulationsp which wers uiiderfeilush to supply i a - .
+        £c motion necescary for structural a n a l y s i s of' the modifiedfin,..wore 'Bade.
+        aBr.aratas; c^aditicsajs ©oxroeponfiing to flight-i-teca'Kiisabora of 2 mxX 6 and as*
+        t.-rlo of attack of 4 ° . I t was believed that the'condition' a t H = 2 woinH
+         sfcro the f i n load d i s t s l b u t l c a nearraaximufii;£in loading, .-ad \hat the. .candid-
+        •f-ics «.t W a'6 might be c r i t i c a l because of the high f i a t®(5?03?at«re^ at.tliftt.
+        vi;?.a xnx&effo She r e s u l t s of the c a l c u l a t i o n s are iih&ifil i s £if tprae 1 e^A
+        «OKtoi?ra of- constant pressure difference between corresponding' points cit tSfc?
+        v- ••j:v:i* and lower surface of the f i n .
+
+       2*         Srhioo an oaact solution for the problem of determining-.fin a i r lcr.$.
+       •Jiotjdbutions i n tho pressnoe of the body i s ' p r o h i b i t i v e l y ccw.pl€SK, i f
+       I ^ ^ s s i s l e , using known aethoc's, i t was. necessary 'to make c e r t a i n sir-pXi^yix-g
+      ' a-ppro^i'vaatioas. I t i s believed, however, that the c a l c u l a t i o n s dec©vibe4 io
+       •&3.e ncavorandum- resulted i n load distributions, whose accuracy i s consietrjat
+       tfith tho accuracy required ,by the s t r u c t u r a l a n a l y s i s f o r which tho load?* fears
+    . • &rt«Qaqd« She genexal method of solution waft to osparate the complete problca
+       i-'Po the 'following sub^problcms,
+
+               a«   Selection of a fin-body £©o&etry which would adequately represent
+        -ho"aotuaL Acrobee- f i n , and a t the same time permit a moderately siinple
+        solnt&c-a of the pi-oblem,
+
+                   bo       .-Peterminaiioa of a i r loading on a f l a t p l a t e having tho'plsafoxa
+        esiooted fee? a . This loading included f i n root e f f e c t s , f i n t i p e f f e c t s , arid
+        l a a d i s ^ o d g e sweep e f f e c t s ,
+
+                    Go     Determination of of foots of body upuaah on the f i n load d i s t r i b u t i o n ,
+
+                    do     -Determination of e f f e c t s of f i n thie&nosa*
+
+(,,..          o<, Co'jnbinaiion of eab-problcas b, c , ssad d to obtain the f i n a l a i r
+        loacte ehewa i n Xlgufrqo 1 aed 2,
+T, 130 Swanoon                                                                                  "•2—
+
+
+
+
+She solutions of the sub=problems are described i n the sections following,
+
+3o    The following sketch shows the geometry selected as adequately repre-
+senting the modified Aerobes f i n .
+
+
+
+
+She l o s s of l i f t near the f i n root due to the presence of the body was approxi-
+mated by treating the body as a r e f l e c t i o n plano«. (She e f f e c t of body upwash
+was treated separately as described i n Section 5 ) , She dashed l i n e neax* the
+intersection of the f i n t r a i l i n g edge and body represents a cutout a t the
+t r a i l i n g edge of the a c t u a l f i n . On the a c t u a l f i n , the edge of the cutout,
+i s supersonic a t M = 1,4, so that there was no e f f e c t of misrepresenting the
+planfora on the loading of the remainder of the f i n a t the Mach numbers s e l e c t e d .
+She e f f e c t of misrepresenting the p r o f i l e i n t h i s region to obtain the simplified
+geometry was small and was i n a direction such that the calculations made ueiisg
+the simplified f eometry were conservative i n the, region which was a f f e c t e d .
+She e f f e c t of misrepresenting the p r o f i l e i n the region ahead of the cutout,
+and effoots of '.-he body b o a t t a l i , which w i l l be present on some of the actual
+v e h i c l e s using the modified f i n , were neglected,
+
+4,,     She problem of the l i f t d i s t r i b u t i o n oa a f i n . of sero thickness, which
+consisted of deteiiaining tho e f f e c t of sweep, t i p e f f e c t s , and variationo i n
+loading near the f i n r o o t , was solved by finding the load d i s t r i b u t i o n on a f l a t
+f i n of sero thickness having the planform that was selected i n Section 3, She
+f i n was con&idex-ed to. be i n a uniform airstream at a small angle of a t t a c k .
+She f i r pit stop i n the solution of t h i s sub-problem was to divide the planform
+into four separate regions, the f i n surface pressures i n each region being
+governed by different equations,.
+The l i n e s separating the regions are Mnch l i n o s through the f i n leading edge
+a t the root and t i p e I t should be noted 'that Region IV diminishes i n sia© as
+the Kaeh .number increases . At M =s 2 a l l four regions e x i s t , whereas a t M « 6.0
+only rogiono        I I , and I I I e x i s t . The equations which were used f o r finding
+f i n pressures i n each of the four regions are presented i n the following para*
+graphs.
+
+          Ao       gin, Lqadlnp I n Region 1
+
+             For. a f l a t f i n of soro thlcknesD a t a small angle of attack i n a
+uniform a i r stream, uniform loading e x i s t s i n Region I . Using ewcepback theory,
+the difference i n pressure c o e f f i c i e n t between corresponding points on the
+upper and lower surface of the f i n i s given bys (See F e r r i , p. 361).
+
+
+
+                        . p
+                                 >|M «1
+                                       2
+                                               (i~^ET                         2
+                                                                            \ M - 1 - tan 0
+                                                                                                       2
+
+
+
+
+vhero
+
+
+                                                                                  2
+                   q          a %JT&       (dynamic pressure l a l b / f t }
+                                                                                                       2
+                   ^          = Static- proosurs on f i n lower surface ( l b / f t )
+                                                                                                       2
+                   Pu         'st S t a t i c pressure on fin upper surface ( l b / f t )
+
+                   /*         = Free stream mass density (slugs/ft*^)
+                                                              :
+                   V          » Free stream v e l o c i t y ( f t / s e c )
+
+               M              «? Free stream Mach number
+
+                              as F i n angle of attack (radians)                              \_
+                                                                                               :
+               0              s Sweepback angle of f i n leading edge
+
+
+          B«       F i n koadinft I n Kepion ^                      '                                  "           -
+
+                 I n Region I I ( s t i l l considering the f l a t f i n i n a uniform s t r e s s )
+the flew i s conical* The surface pressure i s constant along each r a d i a l l i n e
+passing through the fin=»root leading edge. The difference i n pressure coef-
+f i c i e n t tetwoen the upper and lower surface i s given bys              (See F e r r i p. 362)
+                                                                                          2                    2
+                                                                                      i            &   t a n 2 gf
+                                                                        1                              tan*
+    J&Q        ~              ^-^L. CT„ /1                3- a i t T
+                                     2  1
+           P
+                        JM2-1 - tan 0                                                                      4
+                                                                                                       tan * S
+where AQ p , <»< , M, 0 , are defined i n Section 4, A and S i s the sweep of the l i n e
+i n Region I I passing through the f i n - r o o t leading edge, along which ^ C p I s to
+be calculated„ See the sketch below.
+
+
+
+
+       C<>   P i n Loading i n Replon II^C
+
+                I n Region I I I , the flow i s nl3o c o n i c a l , the pressures being constant
+along r a d i a l l i n e a passing through the f i n - t i p leading edge* The pressure d i s t r i -
+bution i n t h i s region d i f f e r s from that of Region I I i n that a t the f i n tip the
+loading drops to aero* I n Region I I I the difference i n pressure c o e f f i c i e n t
+between the upper and lower surface i s : (See Douglas Rep. SM 11901 p 0 3 ) *
+
+
+                          4<A
+                    2             2
+                 .JM - l - t a n 0*                        tan S + tan
+
+where £»Cp,        M, 0a are defined i n Section 4 , A and S i s the sweep of a l i n o
+i n Region I I I which passes through the f i n - t i p leading edge, and along which
+    Cp i s to be calculated* See sketch below*                   . . :•
+
+
+
+
+                                      •1.
+
+
+
+
+       D.    F i n Loading i n Rsklon IV
+
+           The r e l a t i o n gove-rnlng the loading i n Region IV can be e a s i l y
+developed using the expressions presented i n Sections U A, B, and C, by the
+following considerations*
+The pressure d i s t r i b u t i o n over one surface of f i n ABCD can bo considered' as
+r e s u l t i n g from'a \raiform source d i s t r i b u t i o n over the e n t i r e area KECS com-
+bined with a »on»unifora negative source d i s t r i b u t i o n over each of the areas
+M J and 3EC C The two non-uniform negative sowroo d i s t r i b u t i o n s are independent
+of each other and r e s u l t i n the deficlences i n l i f t from that of ABF (Region I )
+which are experienced by the root and t i p regions (AUG and BDI!)0 Since FGH
+(Region IV) i s affected by both of theso negative source d i s t r i b u t i o n s , the
+deficiency i n l i f t i n Region IV a t any point can be ezpseted to equal the corn**
+binsd deficiencies a t that point which are associated with regions AUG and BCH.
+
+       Following t h i s reasoning, and adding subscripts to the quantities ^ C p
+and S , defined e a r l i e r , i n order to denote the region f o r which a p a r t i c u l a r
+ «^Cp or S p e r t a i n s , the following r e l a t i o n s can be written*
+
+
+
+
+The point for which                  pertains* l i e s a t the i n t e r s e c t i o n of the two
+T. B« Svanson                                                                                        —6»
+
+
+
+lines along which ~ £ L S S L and -^-2E2£L                         are           calculated.
+                                                     Pi
+
+                 AC,
+— «»——yj-—— and —- - „P l I I - can be e a s i l y determined using equations given i n
+  J2± Up ^       Zik Cp^,
+
+
+Section 4 , A, B» and C.       They a r e .
+                                               2                    2
+                                         tan              _ .tan             0
+                                 1        M2 , I               tan2 SJI
+                 1    -a- ein*
+  AC                  •7T
+       PI
+                                                               tan? S j j
+
+and
+                                                                         2
+                                     J   tan S' IJ II IT « 2 4 M                 • 1 + tan 0
+                              C03~
+                                                   tan SI I I + tan
+
+5c       Rather than being subjected to a uniform alrstream the f i n s a r e , i n
+a c t u a l i t y , subjected to a stream of whose angle o f attack v a r i e s i n a span»
+wise direction because of the upwash due to the presence of the body. Bookia
+has pointed out that the upflow angle due to a c y l i n: d r i c a l body v a r i e s span-
+wise on the horizontal plane of symmetry as
+
+                                                               2
+
+                                             -1       +    a2
+                                                           HUM
+
+
+
+                                                           r
+where.                          i s the l o c a l angle of attack a t a distance r from
+                                the. body centerlin©
+                         a      i s the body radius
+                                i s the body angle of attack
+
+To obtain the complete solution of a f i n subjected to a stream having t h i s
+v a r i a t i o n of l o c a l angle of attack would be very tedious even using l i n e a r i s e d
+oqijatione,, The mothod used f o r the calculations described i n t h i s Memorandum
+consisted Keroly of using ths approximation that, tho l o c a l values of Z\Cp on
+tho f i n are d i r e c t l y proportional to the l o c a l angles of attack as calculated
+with the Beskin r e l a t i o n * The body upx^aeh e f f e c t s then tak© the form of correc-
+t i o n s to the solution of the f l a t plate a i r f o i l i n a uniform stream, the magni-
+tude of the corrections being a function only of the spanwlso location* The
+r e l a t i o n which was need f o r the'present calculations let
+
+                               A Cp corroctod for upwash                                   _   t>2
+                               A Cp without upwash correction                                  r
+I , B. Syancoa                                                                                      -7
+
+
+
+
+  6. Tho l i n e a r i z e d theory gives the r e s u l t s that the difference i n pressure
+  between tho upper and lower f i n surfaces i s independent of f i n t h i c k n e s s .
+  However, more nearly exact calculations and experimental measurements indicate .
+  that there i s a dependence of f i n l i f t d i s t r i b u t i o n on p r o f i l e shape, the
+  v a r i a t i o n s of chordwise l i f t d i s t r i b u t i o n with p r o f i l e shape increasing a s
+  the liach number becomes l a r g e r . I t was decided that neglecting the e f f e c t
+  of thickness i n calculations made f o r M = 2.0 was consistent with the accuracy
+  required b\ the s t r u c t u r a l a n a l y s i s f o r which the f i n loads were to be used.
+  However, a t M « 6.0 the e f f e c t of thickness becomes f a i r l y l a r g e , so f o r com-
+  pleteness, i t was considered.
+
+            The f i r s t step i n obtaining the correction f o r ^ C p t o account f o r f i n
+  thickness a t M = 6.0 was to determine the chordwise load d i s t r i b u t i o n on a
+  two-dimensional unswept a i r f o i l a t an angle o f attack of IP having the p r o f i l e
+  of the f i n root selected i n Section 3 using the "shock-expansion" method,
+/"(See F e r r i , p . 125} . The "shock-expansion" method consists of determining the
+  flow conditions a t the a i r f o i l leading edge downstream of the leading edge
+  shock wave tislng two-dimensional, oblique shock t: eory, and then using the
+  r e l a t i o n s for a simple-wave expansion (the flow deflection angle plus the
+  PraiiduL-Meyer. angle equals a constant) to c a l c u l a t e the.flow over the a i r f o i l
+  surfaces between the leading and t r a i l i n g edges.
+
+        From the r e s u l t s of the "shock-expansion" c a l c u l a t i o n s , the r a t i o of A C p
+ '•for the fin~root p r o f i l e to A Cp for a f l a t plate a t the same conditions was
+  determined a s a function of the percent chord. This r a t i o was ti^en assumed t o
+  vary l i n e a r l y , a t a given percent chord, i n a spanwls.e direction fx'om the value
+ 'calculated-at the root t o unity a t the t i p .       The f i n a l form of the correction
+  was a p l o t of the r a t i o of the l o c a l ACp to ACp for a f l a t p l a t e a s a function
+  of percent chord with spanwise station as a parameter.
+
+  7.   The f i n a l r e s u l t s of the calc-olatlons described by t h i s Memorandum are
+  shown by contours of constant pressure difference between corresponding points
+  on the upper and lower surfaces of the modified Aerobes f i n ; the calculations
+  wore performed f o r the following two sets o f conditions*
+
+                                                                   2
+                          1.     M e 2.0, q s l & x r i b / f t , ~< ~ 4°
+                                                               2
+                          2.     M =. 6.0, q = 384 l b / f t , < e U°
+
+
+            The values of q (dynamic pressure) were selected corresponding to the above
+  values of Much number from suitable t r a j e c t o r y c a l c u l a t i o n s . The f i n a l contour
+  plots were obtained d i r e c t l y from preliminary plots which showed the spanwise
+  v a r i a t i o n of f i n loading a t several chordwise s t a t i o n s . At any point on the f i n
+  the f i n a l value of Pj? - P u i n l b / f t was, i n p r i n c i p l e , obtained using the
+  following procedure*
+
+       a. The "region" of the f i n which included the point was determined and
+  a value of A C p f o r a f l a t f i n of zero thickness was computed usiag the appropriate
+ T. Bo Swansea                                      . •                               «-&.
+
+
+
+
+equatloa or equations o f Section 4»
+
+     b.   Knowing the spanwise l o c a t i o n of the point, the A C p of a , was
+corrected f o r body upwash using the equation presented i n Section 5.
+
+     c«>  From the tpanwise location :ind tuo percent chord o f the point, the
+thielmess correction was obtained from the p l o t described a t the end of Section
+6* The -thickness correction multiplied by the /\ Cp of b, resulted i n the f i n a l
+value of Cp f o r the selected point. The correction f o r f i n thickness was
+applied only to the calculations made f o r M = 6.0.
+                                                      2
+     d. The f i n a l pressure difference i n l b / f t a t the selected point 2was
+obtained by nrultiplying the A C p o f 0, by the dynamic pressure I n l b / f t .
+
+
+
+
+                                                W. C. House
+                                              - P r i n c i p a l Engineer
+                                                Study Department
+                                                Liquid Engine D i v i s i o n
+Figure 1
+Figure 2
+

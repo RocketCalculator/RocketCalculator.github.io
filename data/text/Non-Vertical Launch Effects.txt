@@ -1,0 +1,304 @@
+Rocket Science and Technology                   4363 Motor Ave., Culver City, CA 90232
+                                              Phone: (310) 839-8956 Fax: (310) 839-8855
+
+
+                          Non-Vertical Launch Effects(rev.1)                    15 May 2012
+
+                                        by C.P.Hoult
+Introduction
+         Much of the analysis done in support of a typical sounding rocket flight is for a
+perfectly vertical launch. In general this is often a good approximation. But, of course,
+real flights are never exactly vertical, and, so a means for adjusting vertical flight analysis
+results to the nearly vertical flight of reality is needed. There are two main problems for
+which these corrections are needed, dispersions and wind response.
+
+Dispersion
+        These notes document the derivation of the cell formulas used in Dispersion, an
+approximate EXCEL based model of sounding rocket trajectory errors. Only the errors in
+the most important events, apogee altitude and impact point location, are described. A
+modified version of the classical Impulsive Burn Kepler Jump (IBKJ) model is used with
+either a Galilean parabola or numerical derivatives, from, say, QROCKET, to map from
+burnout to subsequent events. “Impulsive burn’ is shorthand for the assumption that the
+powered flight trajectory arc is negligibly small compared to the coasting flight arc. This
+is sometimes called the “gun shot” approximation.
+
+        The event error statistics are assumed to be unbiased. This implies that the
+predictive models have been suitably validated. Error sensitivities are assumed to be
+based on linearized (small) perturbations in burnout velocity magnitude (energy errors)
+and two components of rotation of the burnout velocity vector. Since energy and rotation
+errors arise from different perturbing effects, they are assumed independent.
+Furthermore, it can be shown (ref. (2)) that the two rotation errors are also independent.
+Next, central limit theorem considerations ensure that the event errors have Gaussian
+distributions. Finally, impact Circular Error Probable (CEP) values at specified capture
+probabilities are estimated by an approximation due to Reid (ref. (3)).
+
+       Finally, this is an extension & correction to the earlier report documented as ref.
+(1).
+
+Impulsive Burn Kepler Jump Model
+       The vacuum trajectory parabola results relate burnout velocity V and flight path
+angle  (measured from the horizontal plane up to the velocity vector) to apogee altitude
+h* and impact range r**:
+
+                                  h* = V2 sin2/ 2g, and
+
+                                 r** = 2 V2 cos sin / g,
+
+
+
+                                                                                             1
+where g is the acceleration due to gravity.
+
+In Plane Trajectory Errors
+        Now, consider trajectory errors confined to the plane of the nominal trajectory. If
+these errors are small compared to their corresponding nominal values, a Taylor series
+expansion gives a linearized result. For example, the error in impact range is
+
+                       r** = (∂ r** / ∂ V) V + (∂ r** / ∂ ) 
+
+Squaring this and averaging over a large ensemble results in
+
+                 var(r**) = (∂ r** / ∂ V)2 var(V) + (∂ r** / ∂ )2 var(
+
+since V and  are independent. Exactly the same kind of math can be applied to the
+apogee altitude:
+
+                  var(h*) = (∂ h* / ∂ V)2 var(V) + (∂ h* / ∂ )2 var(
+
+Note that V and are the burnout velocity and flight path angle, assumed to occur very
+near to launch.
+
+        Although it is not developed further here, the principal sources of burnout
+velocity errors are weight errors, specific impulse errors and drag coefficient errors. The
+principal sources of flight path angle errors are errors in measuring and forecasting the
+turbulent wind field the rocket flies through, maladjustment of the launcher rail and the
+misalignment of the thrust vector with respect to the rocket CG. These sources of error
+are all mutually independent. Thus, the composite errors are just their RSS combination.
+
+Cross Plane Trajectory Errors
+         Trajectory errors in a direction normal to the plane of the nominal trajectory are a
+bit trickier. First, the root errors are the same are for the flight path angle errors above,
+only these errors are orthogonal to, and independent of, the flight path angle errors. Now,
+note the trigonometric relation sketched below:
+                                                    r**
+                                                   Az
+                                                                        c**
+
+
+Here, c** is the cross plane displacement error of the impact point, nominally at r**, due
+to an azimuthal error Az. Thus,
+
+                                    c** = r** tanAz.
+
+
+
+                                                                                           2
+Next, consider the spherical triangle sketched below in which V is the nominal burnout
+velocity and V’ is the perturbed velocity:
+
+                                         V’
+
+                    Az                       V
+                                   
+                                       θ
+                                                      γ
+
+
+
+                                                                 r
+                c
+
+Now, from spherical trigonometry, we find that
+
+                       tanAz = tanθsinθsin
+
+Thus,
+                                c** = r** θsin, or
+
+                           var (c**) = (r**/ sinvar(θ)
+
+Next, observe that θ has no influence on apogee altitude errors because ∂ h* / ∂ θ
+vanishes as θ → 0. Lastly, var(θ) is numerically equal to var( because both are
+identically driven by unmodeled winds, launcher rail maladjustment and thrust
+misalignment, thus
+                            var (c**) = (r**/ sinvar().
+
+Dispersions for a Parabolic Trajectory
+       To put this in perspective, evaluate the sensitivities from the IBKJ model
+assuming very high boost acceleration (the gun shot approximation):
+
+                            ∂ r** / ∂ V ≈ 4 V cos sin / g,
+
+                             ∂ r** / ∂ ≈V2 cos2 / g,
+
+                              r**/ sin≈2 V2 cos/ g,
+
+                              ∂ h* / ∂ V ≈ V sin2/ g, and
+                            ∂ h* / ∂ ≈V2 cossin/ g.
+
+
+                                                                                         3
+There is evidence that velocity errors increase as the nominal velocity increases…see ref.
+(2). If the energy errors were redefined in terms of relative velocity error instead of
+absolute (derivatives taken with respect to V/ V), and V2 was replaced by
+
+                                   V2 = 2 g h* / sin2,
+
+then
+
+                                V ∂ r** / ∂ V ≈ 8 h*cot,
+
+                            ∂ r** / ∂ ≈h*cos2 / sin2,
+
+                            r**/ sin≈4 h* cossin2,
+
+                                V ∂ h* / ∂ V ≈ 2 h*, and
+
+                                 ∂ h* / ∂ ≈h* cot.
+
+This shows clearly that all the above derivatives, and therefore the event dispersions, are
+proportional to the nominal apogee altitude. Historically, a review of many dispersion
+analyses lead empirically to this same observation, and that, in turn, lead to the
+development of ref. (1).
+
+       Finally, note that because γ +  = π / 2, it follows that d/d = – d/dγ. The
+above results, if desired, could be modified to reflect this.
+
+Event Statistics
+        First, consider the distribution of impact points on the earth’s surface. Circular
+Error Probable is defined as a circle within which a specified fraction of events occur. At
+one point, the default fraction was implicitly taken to be 50%, but today it’s common to
+say “95% CEP” meaning the circle containing 95% of the events. The CEP concept is
+directly relevant as a description of impact point errors.
+The probability obtained from a surface integral of a bivariate normal distribution over a
+circular region of radius R mathematically defines the CEP. If the in-plane and cross-
+plane standard deviations were the same, this would be a straightforward application of
+the circular normal, or Rayleigh, probability distribution. The cumulative Rayleigh
+distribution also applies to elliptical contours of constant probability density. If the two
+standard deviations are equal, the Rayleigh result is
+                          Pr(r ≤ R) = 1 – exp( – R2 / 2σ2), where
+
+                         Pr = Probability the event is captured by the circle,
+                         R = CEP at probability Pr, and
+                         σ = Standard deviation of one component.
+This relation can be solved for R to give
+
+
+
+                                                                                              4
+                                R = σ √ – 2 log(1 – Pr).
+
+But, in general, the two component sigmas are not equal. However, an approximation
+(ref. (3)) due to R.W.Reid of The Aerospace Corp. provides reasonable answer when the
+two component standard deviations are roughly the same. Here’s the way Reid’s “equal
+area” approximation works:
+
+
+
+
+In the sketch above the ellipse is the true isoprobability density contour, but the circle
+having the same area will have about the same probability (given by the Rayleigh
+cumulative distribution). What’s happening is that the probability density in the regions
+above and below the ellipse is less than that on the isoprobability density contour while
+probability density inside the circle beneath the elliptical “ears” is higher that on the
+isoprobability density contour. When the ellipse is nearly circular, it can be shown via a
+Taylor series expansion that the two probability integrals are approximately equal is the
+circle and ellipse have the same areas. The resulting “one sigma” circle radius σ if
+
+                                   σ2 = σC σR, where
+
+                                   σR = In-plane standard deviation, and
+                                   σC = Cross-plane standard deviation.
+
+       Putting all the pieces together, the desired CEP formula is
+
+                             R = √ – 2 log(1 – Pr) * σC σR.
+
+As already mentioned,
+
+
+               σR = √ (V ∂ r** / ∂ V)2var(V/ V) + (∂ r** / ∂ 2var(, and
+
+                               σC = r**√var() / sin.
+
+Finally, the apogee dispersions follow the classical Gaussian distribution with standard
+deviation σh*:
+               σh* = √ (V ∂ h* / ∂ V)2var(V/ V) + (∂ h* / ∂ 2var(
+
+
+
+                                                                                             5
+Unit Wind Effect
+        The most important source of velocity vector rotation error arises from our
+inability to measure turbulent gusts, and make the corresponding correction to the
+launcher angles in a very brief time. For such errors,
+
+           (∂ r** / ∂ 2var( = In Range UWE2(  ) * var (BW), in range, and
+
+ r**2 *var() / sin2Cross Range UWE2(  * var (BW), cross range, where
+
+BW = Ballistic Wind, and
+UWE = Unit Wind Effect.
+
+The wind response varies with QE, , analogously with the rotational dispersion errors.
+First, the derivative of impact range with respect to flight path angle is
+
+                                ∂ r** / ∂  = 2 V2 cos2 / g
+
+Then,
+
+        In Range UWE (  ) = UWE ( 90o ) * ∂ r** / ∂  (  ) / ∂ r** / ∂  ( 90o ), or
+
+                     In Range UWE (  ) = UWE ( 90o ) * cos2, and,
+
+in the same way,     r** / sin = 2 V2 cos / g.
+
+Then,
+                      Cross Range UWE (  ) = UWE ( 90o ) * cos.
+
+The nominal apogee altitude & impact range can be used to find an “effective”  to be
+used in the formulae for Unit Wind Effects:
+
+                                     = tan-1( r**/ h*).
+
+The data in ref.(4) substantiate this model.
+
+Wind Impact Displacement Algorithm
+         These results can be used to design a sounding rocket trajectory to have the
+desired impact location when flown through a known vector wind field. First,
+decompose the vector winds into components lying in the desired trajectory plane and in
+a plane normal to the trajectory plane. Next, consider the cross plane wind response.
+Simulate the rocket response to cross plane winds starting from QE = 90o. Adjust the
+initial QE until there is no cross rang impact point displacement. Do the same for the in
+plane winds, and adjust its Q until the desired impact range is achieved. Combine the
+QE adjustments in a vector sense to obtain the launcher QE and Azimuth required for a
+successful launch.
+
+
+                                                                                            6
+        The proof is straightforward. As shown above, the cross plane impact
+displacement is that for a vertical launch times cos() = sin(QE). This would be exact if
+the trajectory were parabolic. Otherwise the cos(QE) factor would be something else.
+But since we are driving this displacement to zero, the multiplicative factor doesn’t
+matter.
+
+
+
+References
+       1. Hoult, C.P., “Sounding Rocket Dispersion Scaling Laws and Their
+           Application to the Determination of the Launch Window for Javelin
+           Operations at Fort Churchill”, Geophysics Research Directorate, AFCRL
+           Tech Data 63-3, 18 March 1963.
+       2. Hoult, C.P., “Estimation of Sounding Rocket Dispersions from Experimental
+           Evidence”, Annual General Meeting of the C.A.S.I. Sounding Rocket
+           Ballistics Discussion Group, 20 May 1970.
+       3. Reid, R.W., private communication.
+       4. Schaechter, W., “Sounding Rocket Performance Requirements”, Proceedings
+           of the Unguided Rocket Ballistics Conference, ECOM, United States Army
+           Electronics Command, 1967
+
+
+
+
+                                                                                            7
+

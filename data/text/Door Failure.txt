@@ -1,0 +1,84 @@
+Rocket Science and Technology                4363 Motor Ave., Culver City, CA 90232
+                                           Phone: (310) 839-8956 Fax: (310) 839-8855
+
+                   Pressure Strength of Taped-On Doors                01 December 2011
+
+                                  by C. P. Hoult
+
+
+Introduction
+
+For three years running, the CSULB entry in the 10,000 ft ESRA competition, Gold
+Rush, flew to apogees far below predicted. Why? We weighed the rocket before flight,
+and used experimental thrust data for the motors. It had to be the drag. But, we used
+standard analysis techniques to estimate the drag. What could be happening?
+
+Then, last year while awaiting the ESRA awards ceremony, Some folks from another
+university walked in with a piece of curved plexiglas. “Did anyone recognize this?” they
+asked. Yes, I did. It was the viewing window for our camera payload. “Where was it
+found?” “About 500 ft from our pad.” Since the rocket was recovered about 1.5 miles
+down range from our pad, it was clear that the window had separated very early in flight,
+probably near burnout. So the scales fell from our eyes. The extra drag came from the
+very dirty compartments exposed when their doors blew off.
+
+It had been our practice to attach doors (and windows) with duct tape, or something
+similar, around their edges. At the same time we’d been very casual about venting the
+underlying compartments during ascent, even though we had a perfectly good venting
+code on hand.
+
+Analysis
+
+Here, a simple model for door and window attachment failure will be developed. Under
+internal pressure a door will attempt to peel off the tape around its edges.
+
+           Peeling Failure               Duct Tape
+
+
+
+                                         Door
+   Rocket Skin
+
+
+
+
+                                 Excessive Internal Pressure
+
+
+
+
+                                                                                        1
+The sketch above illustrates the failure mechanism.
+
+Now, note that the total expulsive force acting on a door =         , where
+      The pressure difference, psi, between the internal compartment and the outside
+environment, and
+       The door area, in2.
+The maximum restraining force acting on the door            , where
+       The maximum peel strength provided by the duct tape-surface combination, lb/in,
+and     The peripheral distance around the door, in
+
+Thus failure (door expulsion) will occur when
+
+                                                      ., or
+
+
+                                                      .
+
+
+Conclusions
+
+Several observations are relevant. First, door size matters. Smaller doors are easier to
+retain than larger ones. Door shape also matters. A circular door maximizes            ,
+and is therefore the worst choice. High aspect ratio rectangular doors are better than
+those of lower aspect ratio. A neat dodge is to crenellate or serrate the door edges. This
+will increase the door periphery without changing its area.
+
+Finally,      must be found experimentally. It will depend on the kind of tape used and
+the surface preparation to which the tape adheres. A good experiment will also explore
+the geometric considerations described above.
+
+
+
+
+                                                                                             2
+

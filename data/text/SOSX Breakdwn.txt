@@ -1,0 +1,126 @@
+Rocket Science and Technology                   4363 Motor Ave., Culver City, CA 90232
+                                              Phone: (310) 839-8956 Fax: (310) 839-8855
+
+When Second Order Shock Expansion Theory Breaks Down 04 June 2013
+
+                                        by C. P. Hoult
+
+Introduction
+       Experience with running the RS&T second order shock expansion theory code,
+SUPERSONIC BARROWMAN EQUATIONS.xls./xls reveal that occasionally it
+crashes, usually at a compression corner. The compression corner failures are due to a
+detached 2D shock at the corner. What's to be done? Under these circumstances, the
+user will accept an answer of lower quality rather than no answer at all. So we will revert
+to simpler theories, slender body or Newtonian to develop answers when the gold
+standard fails.
+
+
+Analysis
+         The maximum stream deflection angle          for locally sonic flow that an
+attached 2D shock can support for an upstream Mach number     is given by eq. (169) of
+ref. (1):
+
+                                                                                   (169)
+
+
+where      the ratio of specific heats for air = 1.4
+
+Local supersonic flow is a necessary condition for the second order shock work
+expansion theory to work. Equation (169) was derived for Mach numbers not much
+greater than unity.
+
+        It is possible for the requirement for downstream supersonic flow to not be
+satisfied for larger Mach numbers and blunter shapes. When this happens the choice will
+be to either use slender body theory or Newtonian theory. The choice depends on the
+hypersonic similarity parameter. There are several alternative formulations of this, but
+the numerical results of ref. (2) show that best results can be obtained by using
+
+                                                         ,                            (1)
+
+where      the hypersonic similarity parameter
+
+Then, in the event that the flow downstream of a compression corner is not supersonic,
+one evaluates and follows the rule below:
+
+
+If      then use slender body theory
+
+
+                                                                                            1
+If      then use Newtonian theory
+
+Once one of these assignments has been made for a compression corner the entire body
+downstream of the corner is analyzed by the same approximation. Both theories are local
+in nature; the air loads on an element depend on only the local element geometry (and
+Mach number).
+
+Slender Body Theory
+       Slender body theory as invented by Munk was documented in ref. (3). Suppose
+the body is slender of arbitrary slender longitudinal profile and circular cross section.
+Break the body into a sequence of conical frustums, and consider one such conical
+element.
+
+        Then the normal force coefficient slope for this element is
+
+
+                                                          ,                           (2)
+
+
+where       Normal force coefficient,
+            Angle of attack, rad.,
+            Body cross section area at the forward frustum face, ft2,
+           Body cross section area at the aft frustum face, ft2, and
+            Aerodynamic reference area, ft2
+Since body is assumed to have a circular cross section, the cross section areas both take
+the form,
+
+        The element center of pressure is given by
+
+
+(3a)
+
+                             if       and
+
+                                                                                   (3b)
+
+                            if
+
+Here,        Element center of pressure aft of the body datum location,
+             Frustum front face distance aft of the body datum,
+             Frustum aft face distance aft of the body datum, and
+             Frustum volume.
+
+       Note that slender body predicts zero wave drag on an element.
+Modified Newtonian Theory
+
+
+                                                                                       2
+        The standard Newtonian results for element normal force coefficient slope and
+center of pressure can be found in ref. (4). The correction for stagnation pressure can be
+found in ref. (5). Now, consider a conical frustum. Reference (5) gives the normal force
+coefficient slope as
+
+
+                                                             .                         (4)
+
+
+The frustum center of pressure is given by eq's. (3) as before.
+
+
+References
+1. "Equations, Tables, and Charts for Compressible Flow", Ames Research Staff, NACA
+Report 1135, 1953
+2. "On the Inviscid Tail Efficiencies of Slender Configurations at Hypersonic Speeds", C.
+P. Hoult, Journal of The Aeronautical Sciences, Vol. 29, No. 6, p. 748
+3. "The Aerodynamic Forces on Airship Hulls", M. M. Munk, N.A.C.A. Report 184,
+1924
+4. "Equations and Charts for Determining the Hypersonic Stability Derivatives of
+Combinations of Cone Frustrums (sic) Computed by Newtonian Impact Theory", L. R.
+Fisher, N.A.S.A. TN D-149, 1959
+5. "Modified Newtonian Aerodynamics (rev.3)", C. P. Hoult, RST memo, 2013
+
+
+
+
+                                                                                         3
+

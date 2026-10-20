@@ -1,0 +1,211 @@
+Rocket Science and Technology                   4363 Motor Ave., Culver City, CA 90232
+                                              Phone: (310) 839-8956 Fax: (310) 839-8855
+
+
+                      Supersonic Single Wedge Airfoil                          20 March 2013
+
+                                       by C.P.Hoult
+Introduction
+        Consider a high performance sounding rocket. No, not what’s called “High
+Performance” by the amateur rocket community, but, what’s called high performance by
+the professional rocket community. In the latter case, well developed supersonic flow is
+the norm, especially around burnout. Such rockets commonly present a stability
+challenge to their designers: During burning the Center of Gravity moves forward as
+propellant is consumed. But, the Center of Pressure moves even further forward because
+the forebody normal force increases with increasing supersonic Mach number while that
+on the fins decreases with increasing Mach number1.
+
+        `This note describes one of the design tricks of the aerodynamicist’s trade often
+used to mitigate this stability problem. It is simple: replace the ordinary flat plate airfoil
+with a single wedge airfoil (pointy edge forward). There is some limited data, see ref’s
+(2) and (3), showing no significant loss of subsonic lift because the Kutta condition still
+keeps the circulation up. There will be some base drag at all Mach numbers and an
+increase in supersonic wave drag that will make this airfoil unsuitable for aircraft
+applications. However this is only a minor consideration for rockets. Finally, it also
+provides the designer with interior room for structure, often a major plus. And, a flat fin
+surface facilitates cant angle adjustments.
+
+
+
+
+1
+  To a lesser degree the same thing happens to vehicles stabilized with a flare in lieu of
+fins
+
+
+                                                                                                 1
+Nomenclature
+
+______Symbol_____________________Definition______________________________
+                     Free stream Mach number
+                      Deflection angle, rad
+                      Ratio of specific heats for air =1.4
+                      Leading edge sweep back angle, rad
+                      Mach number normal to the leading edge
+                       Wedge half angle in a plane normal to the leading edge, rad
+                      Free stream static pressure, lb/ft2
+                      Static pressure on the wedge surface, lb/ft2
+                      Free stream dynamic pressure, lb/ft2
+                      Angle of attack, rad
+                             Pressure coefficient on the wedge surface =
+
+
+
+Analysis
+       The usual point of departure is the equations for an oblique shock wave. See eq.
+(152) of ref. (1). This relates the free stream Mach number          to the pressure coefficient
+   on a wedge of angle . Here, if the leading edge is swept, is defined in a plane
+normal to the leading edge. Similarly, the Mach number            here is taken normal to the
+leading edge. The leading term in this        expansion is just that derived by Ackeret.
+Busemann suggested that the series be truncated after the third term.
+
+
+
+
+(1)
+
+where               .
+        The rest is easy. Suppose were increased by a small angle of attack on the
+compression (lower) side of a single wedge airfoil, and decreased by the same small
+angle of attack on the expansion (upper ) side. The difference in    between the two
+sides is the airfoils normal force coefficient slope   :
+
+
+
+
+(2)
+
+
+
+
+                                                                                               2
+In practice the ratio of the Busemann (cubic) result to the linear Ackeret provides a
+multiplier that can be applied to any single wedge fin with a supersonic leading edge.
+
+
+
+
+(3)
+
+      Before using these results too quickly, recall that for any given free stream Mach
+number, there is a maximum wedge angle supporting an attached shock. This is given by
+
+                                                                                         (4)
+
+This is shown in Fig. 1 below where the limit is data taken from ref. (1):
+
+
+                                          Mach Number Range of Validity
+
+                          0.2
+                         0.18
+                         0.16
+  Wedge Angle, radians
+
+
+
+
+                         0.14
+                         0.12
+                                                                                Limit δ
+                          0.1
+                                                                                Actual δ
+                         0.08
+                         0.06
+                         0.04
+                         0.02
+                           0
+                                1   1.1        1.2       1.3      1.4     1.5
+                                               Mach number
+
+                                                     Figure 1
+
+
+Figure 1 shows an Actual wedge half angle of 5o (horizontal line). The other curve rising
+to the right is the maximum (Limit) wedge angle that supports an attached shock. As can
+be seen, in this example, the attached shock model given by the Busemann cubic is only
+valid for Mach numbers above about 1.32 for a 5o wedge.
+
+
+                                                                                           3
+      Let's see what happens to our 5o wedge in terms of the normal force ratio and the
+wave drag coefficient. This is shown in Fig. 2 below
+
+
+                               Normal Force Ratio And Wave Drag for a 5 Degree
+                                                Wedge Airfoil
+
+                                2
+   Wave Drag & Normal Force
+
+
+
+
+                              1.8
+                              1.6
+                              1.4
+                              1.2
+                                                                                    CNa ratio
+             ratio
+
+
+
+
+                                1
+                                                                                    CDW
+                              0.8
+                              0.6
+                              0.4
+                              0.2
+                                0
+                                    1   2       3         4    5           6
+                                               Mach number
+
+                                                    Figure 2
+
+The sharp upturn at Mach numbers less than about 1.5 is an artifact of the analysis. It is
+well known that both linear and higher order theories have singularities at            . To
+address this, use eq's. (3) and (4) only for    s greater than 1.7. When                  , if it
+pleases you, fit your favorite curve in this Mach number regime. Last, note that the
+benefit of a single wedge airfoil tends to be greatest at higher Mach numbers.
+        The additional wave drag         of a wedge airfoil relative to a flat plate can be
+found from eq. (1):
+
+
+
+
+(4)
+
+Both the normal force and the wave drag are twice the wedge values because there are
+two sides to a wedge.
+
+       Note that this result does not include the base drag increment. The general
+implication is that there is a design trade to be made. A larger will improve the tail
+normal force and stability, but at the cost of increased drag.
+
+
+
+                                                                                                4
+        Finally, consider what happens to a single wedge airfoil at subsonic speeds. It is
+natural to fear what might happen when a clearly defined Kutta condition at the trailing
+edge is lost. Surprisingly, the Kutta condition is very robust. References (2) and (3)
+show that there is no significant loss in normal force when the trailing edge is terminated
+bluntly. There will be, of course, a base drag increment.
+
+
+References
+   1. Ames Research Staff, “Equations, Tables, and Charts for Compressible Flow”,
+       NACA Report 1135, 1953
+   2. Smith, H. A. and Schaefer, R. F., “Aerodynamic Characteristics at Reynolds
+       Numbers of 3.0x106 and 6.0x106 of Three Airfoil Sections Formed by Cutting Off
+       Various Amounts from the Rear Portion of the NACA 0012 Airfoil Section”,
+       NACA TN 2074, April 1950
+   3. Summers, J. L. and Page, W. A., “Lift and Moment Characteristics at Subsonic
+       Mach Numbers of Four 10-Percent Thick Airfoil Sections of Varying Trailing-
+       Edge Thickness”, NACA RM A50J09, 20 December 1950
+
+
+
+
+                                                                                          5
+

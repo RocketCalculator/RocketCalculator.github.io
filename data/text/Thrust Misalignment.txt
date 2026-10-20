@@ -1,0 +1,372 @@
+Rocket Science and Technology                 4363 Motor Ave., Culver City, CA 90232
+                                            Phone: (310) 839-8956 Fax: (310) 839-8855
+
+
+                          Thrust Misalignment Response                  30 December 2010
+
+                                      by C.P. Hoult
+
+Introduction
+        There are many possible internal misalignments of rocket structure arising from
+errors in fabrication and assembly. Most of these cause aerodynamically mediated
+pitch/yaw torques, and hence have modest impact at low speeds. However, those
+structural imperfections causing the thrust vector to not pass through the center of mass
+will cause significant torques even at low speeds. Large low speed torques cause large
+angular rotations of both body axes and velocity vector, and hence large structural
+loading and trajectory dispersions.
+
+         In general, the response to a structural misalignment can be viewed from two
+perspectives, global and local. Global response affects the entire airframe. For example,
+the angle of attack resulting from a thrust misalignment leads to aerodynamic loading on
+all airframe elements capable of carrying lift.
+
+        There are two main applications for the misalignment responses, trajectory
+dispersions and global structural loading. For both applications, thrust misalignment is,
+based on experience, the dominant body-fixed structural error. Global structural loading
+is primarily dependent on angle of attack while trajectory dispersions depend on inertial
+flight path rotations. One of the main objectives of this analysis is supporting the
+establishment of good values for the roll rate.
+
+        Broadly speaking, this is a problem requiring simultaneous integration of the
+equations of motion describing all 6 rigid body degrees of freedom. Since Newton’s laws
+are of order two, this composite set of equations is of order 12. Computer programs that
+numerically integrate this set are customarily called 6 DOF (degrees of freedom). Here,
+we seek approximate analytical solutions in closed form. This provides not only insight
+into the effects of the important system variables, it also is far less expensive to code,
+debug and generate input data. Generally, this memo follows and extends the
+thrust misalignment approach described in Ref. 1.
+
+
+
+
+                                                                                            1
+                                                         y
+    x
+
+
+
+
+                                    z
+
+                                        Figure 1 Axes
+
+Nomenclature
+
+                  Mnemonic                                   Definition                   .
+                    i                      √-1
+                    x, y, z                Body fixed axes, x (roll) along the axis of
+                                           symmetry, y and z (pitch & yaw) forming
+                                           an orthogonal triad
+                     t                     Time, sec
+                     h                     Altitude, ft
+                     a                     Axial acceleration, feet/sec2
+                     U                     Axial (x axis) velocity, ft/sec
+                     vy, vz                Velocity in the y and z directions, ft/sec
+                     Atmospheric mass
+density, sl/ft3
+                     q                         Dynamic pressure, lb/ft2 = ½ U2
+                     S                        Aerodynamic reference area, ft2 =  d2 /4
+                     d                        Aerodynamic reference length = body
+                                              diameter, ft
+                     CM                      Pitch moment coefficient derivative with
+                                               respect to angle of attack, rad-1
+                     CLp                      Roll moment coefficient derivative with
+                                               respect to ωx d / 2U, rad-1
+                     CLF                     Roll moment coefficient derivative with
+                                              respect to the cant angle of a single fin
+                                              panel, rad-1
+                     N                        Number of fin panels
+                     λP                       Pitch/yaw wave number, rad/ft
+
+
+                                                                                          2
+                λR                  Roll angle wave number, rad/ft
+                 IR                 Moment of inertia about the x, or roll, axis,
+                                     sl-ft2
+                 IP                 Moment of inertia about the pitch or yaw
+                                     axis, sl-ft2
+                 Mj                 Moment about the jth axis, j = x, y, z
+                 ωx, ωy, ωz         Angular rates about the roll, pitch and yaw
+                                    axes, rad/sec
+                 φ                  Roll angle, rad
+                 W                  Complex angular rate = ωy + i ωz
+                                 Angles of attack and sideslip, rad = vy/ U, vz/U
+                 A                  Complex angle of attack = + i 
+VC
+omplex lateral velocity = vy + ivz
+                 γ                  Flight path angle between the local vertical
+                                     and the velocity vector, rad
+                 γD                 Dispersive flight path angle, rad
+                 T                   Thrust, lb
+                 ℓ                  Distance from nozzle throat to rocket
+                                    center of mass, ft
+                                 Thrust vector misalignment angle, rad
+                  F               Mean cant angle of a single fin panel, rad
+                 Ω                  Lateral c.g. offset from the vehicle center
+                                    line, ft
+                  LA               Aerodynamic lift force, lb
+                  CL              Aerodynamic lift coefficient derivative with
+                                    respect to angle of attack, rad-1
+                  L                Launcher length, ft
+                  E, N               Easterly and northerly components of flight
+                                    path angle, rad
+                 ( )o               Value of ( ) at the time of separation from
+                                    the launcher
+                 ( )BO             Value of ( ) at burnout
+
+Note that the right hand rule is the sign convention used for moments and angular rates.
+
+Assumptions
+This is a highly simplified analysis. The key assumptions are:
+   1. The rocket is a rigid body.
+   2. Furthermore, changes in rocket mass, air density, center of gravity shifts, and
+        Mach No. driven variations in stability derivatives can be neglected.
+   3. The rocket has pitch-yaw symmetry. That is, all inertial and aerodynamic
+        characteristics are the same about both axes.
+
+
+
+                                                                                           3
+   4. The rocket’s short period damping, while positive, almost vanishes. That is,
+       terms in CMq, CZ , CNr ,CY and jet damping may be neglected.
+   5. The only aerodynamic pitch/yaw moment is that due to static stability (CM
+       &C).
+   6. The axial (x axis) translational motion may be approximated by constant
+       acceleration.
+   7. The rocket’s roll moment of inertia is negligibly small compared to the pitch/yaw
+       moment of inertia, and to the aerodynamic roll driving and damping moments.
+   8. The nominal trajectory is vertical.
+   9. The thrust misalignment applies a torque about the pitch axis, but because of
+       assumption 2., this has arbitrary phasing.
+   10. ωy, ωz, , andΩ are all small compared to unity. This is a linearized
+       analysis.
+   11. The component of gravity along the y and z axes may be neglected when
+       estimating the angle of attack because this is a short period analysis.
+   12. The lateral force component of the misaligned thrust is neglected because the
+       thrust misalignment torque is much more important.
+
+The ultimate rationale for adopting such a severely simplified dynamics model is that the
+thrust misalignment response is proportional to the andΩ perturbation errors, and
+these are known but poorly. Reference 4 provides data for these parameters, but it is
+“best practice” data valid in an industrial factory environment where rockets were built
+with hard tooling and a formal Quality Assurance program in place. There’s no great
+value in using a highly accurate dynamics model if the result is necessarily corrupted by
+inaccurate perturbations.
+
+Analysis
+        First, this is a linear analysis…sounding rockets are very dynamically linear with
+a few stark, shocking exceptions such as roll lock in. Second, the linear differential
+equations we must integrate have complex coefficients as a consequence of the pitch-yaw
+symmetry possessed by such machines. Third, the coefficients are profoundly time-
+varying. Fortunately, these apparently scary aspects can be successfully addressed. The
+key trick is to change the independent variable from time to distance along the flight path,
+which if vertical flight is assumed, amounts to altitude.
+
+       Let’s begin with the assumed solution per Assumption 6. Then,
+
+                                     U = a t = √ 2 a h.                                  (1)
+
+Since we are going to change independent variables, this is a good place to note that the
+chain rule gives (vertical flight per Assumption 8.)
+
+                            d /dt = d /dh dh/dt = U d /dh.                              (2)
+
+
+
+
+                                                                                            4
+Also, the roll rate is (per Assumption 7.) proportional to axial velocity1:
+
+                                          ωx = λR U,                                      (3)
+
+where λR is a constant of proportionality dependent on the fin cant angles. Integrating
+once more to find the roll angle is easy:
+
+                            dφ/dt = ωx = λR U = U dφ/dh, or
+
+                                           φ = λR (h.– L)                                 (4)
+
+From this it can be seen that λR has the characteristics of a wave number.
+
+       Newton’s Second law written for axes fixed to a rigid body can be found in any
+good dynamics text such as Ref. (2). They are
+
+
+                            My = IP dωydt – (IP – IR) ωx ωz,
+                            Mz = IP dωzdt + (IP – IR) ωx ωy,                             (5)
+                            Fy/m = dvydt – ωx vz + U ωz = 0, and
+                            Fz/m = dvzdt + ωx vy – U ωy = 0.
+
+Next, the external moments are given by
+
+                            My = q S d CMℓ Ω ) + q S d CMF F,
+and
+                                                                                          (6)
+                            Mz = – q S d CM
+
+because the sign conventions used and Assumption 3 imply that CMC. The
+perturbing torques, ℓ Ω ), are usually random errors. Experimental data for
+these can be found in Ref. 3.
+
+          Use the customary definition of the angles of attack and sideslip:
+
+                            vz  U , and vy  U,
+
+and the definition of dynamic pressure, q = ½ U2 , to find that
+     My = ½ S d CMvz Uℓ Ω ) + ½ S d CMF F U2, and
+                                                                                          (7)
+
+1
+    Since the roll moment of inertia is negligibly small, the roll moment equation becomes
+CLp (ωx d/2 U) + CLF Σ F = 0.      Therefore, λR = – 2 N CLF Σ F / CLp d.
+
+
+                                                                                             5
+                             Mz = – ½ S d CMvy U.
+
+Before substituting eq’s. (7) back into eq’s. (5) note that there are two terms in the thrust
+“misalignment” torque. The real misalignment torque comes from failure to align the
+thrust chamber/nozzle parallel to the rocket’s symmetry axis. The c.g. offset term comes
+from a failure to mass balance the rocket. These two terms are statistically independent,
+and eventually must be treated as such.
+
+Then, invoking Assumption 7,
+
+          IP dωydt – IP λR U ωz = ½ S d CMvz Uℓ Ω ).
+                         IP dωzdt + IP λR U ωy = – ½ S d CMvy U ,
+                                                                                          (8)
+                            dvydt – λR U vz + U ωz = 0, and
+
+                            dvzdt + λR U vy – U ωy = 0.
+
+        Now, the math becomes interesting. First, change the independent variable from
+time to altitude:
+        ½ S d CMvz ℓ Ω )U = IP d ωydh – IP λR ωz,
+                  – ½ S d CMvy = IP d ωzdh + IP λR ωy,
+                                                                                     (9)
+                          dvydh – λR vz + ωz = 0, and
+
+                            dvzdh + λR vy – ωy = 0.
+Now, define
+                       λP2 = ½ ρ S d CM
+IP
+
+Here λP is the pitch / yaw wave number in radians per foot.
+With this, we have
+
+                    λP2vz ℓ Ω )IPU = d ωydh – λR ωz,
+
+                                λP2vy = d ωzdh + λR ωy,
+                                                                                         (11)
+                                 dvydh – λR vz + ωz = 0, and
+
+                                 dvzdh + λR vy – ωy = 0.
+
+The next trick is to exploit rotational symmetry. Define two new complex variables:
+
+                                     V = vyivz and
+
+
+
+                                                                                            6
+                                                                                         (12)
+                                     W = ωy + iωz.
+
+Multiply the second and fourth eq’s. (8) by √-1 = i, and add to the first and third eq’s. (8)
+respectively. The result is
+
+             d Wdh + i λR W – i λP2V = ℓ Ω )IPU , and
+                                                                                         (13)
+                                d Vdh + i λR V – i W = 0.
+
+Eliminating W from these gives
+
+
+         d2 Vdh2 + 2 i λR d Vdh + ( λP2  λR2 ) V = i Tℓ Ω )IP U
+(14)
+
+                                                         .
+
+Steady State Angle of Attack
+        Before pursuing a dynamical solution, suppose that after the passage of a long
+time the small damping terms neglected in the derivation so far have caused the transient
+motion to completely die down. The description below is the extension of Ref.(3) to the
+case of a symmetrical vehicle accelerating through the atmosphere.
+
+Then, recalling that
+
+                                           A = V/U,                                      (15)
+
+                        ( λP2  λR2 ) A = i Tℓ Ω )IP U2.
+
+Noting that the forcing function is entirely imaginary, we can replace A with  to give
+the steady state angle of attack,
+
+ss = Tℓ Ω ) IP U2 (λP2 
+λR2 )              (16)
+
+In Fig. 2 below the steady state thrust misalignment response, ss,normalized to its
+non-rolling value, is plotted against λR/λP.
+
+
+
+
+                                                                                            7
+                                              Steady State Angle of Attack due to T hrust M isalignment
+
+                                         5
+  Alfa (rolling) / Alfa (non-rolling)
+
+
+                                        4.5
+                                         4
+                                        3.5
+                                         3
+                                        2.5
+                                         2
+                                        1.5
+                                         1
+                                        0.5
+                                         0
+                                              0     0.2   0.4   0.6   0.8      1      1.2   1.4   1.6   1.8   2
+                                                                            lR / lP
+
+Figure 2 Influence of roll rate on steady state angle of attack due to thrust misalignment
+
+        Several ideas should be taken from this graph. First, while the angle of attack
+appears to become infinite at λR/λP = 1, in reality the damping terms neglected in the
+derivation will cap the plot at a finite, but high value. Second, from time to time it occurs
+to observant people that a roll rate significantly larger than the pitch/yaw natural
+frequency will reduce both structural loading and trajectory dispersions. Follow this path
+with care, because if the roll rate matches any of the body bending natural frequencies, an
+explosive structural failure will occur. Finally, it can easily be shown that all body-fixed
+misalignment torques, e.g., fin misalignment torques, produce a similar steady state
+response curve.
+
+        The above is a static trim analysis, frequently used in the estimation of structural
+loading because it’s so simple. It is also possible to develop a dynamic analysis from eq.
+(14). The result is described in terms of Fresnel integrals. While there are formulas for
+these suitable for coding into software, the extra effort compared to the improvement in
+accuracy is doubtful.
+
+
+References
+   1. Hoult, C. P., “A Simplified Ballistics Model for Sounding Rockets”, Proceedings
+       of the Unguided Rocket Ballistics Conference, University of Texas at El Paso –
+       Texas Western College, El Paso, 30 August – 15 September 1966
+   2. Rauscher, M., “Introduction to Aeronautical Dynamics”, John Wiley & Sons,
+       New York, 1953
+
+
+                                                                                                                  8
+3. Phillips, W.H., “Effect of Steady Rolling on Longitudinal and Directional
+   Stability”, N.A.C.A. TN 1627, 1948.
+4. Ammons, R.L. and Hoult, C.P., “Standardized Perturbation Values for Several
+   Sounding Rockets to be Used in the Calculation of Dispersion and Structural
+   Loads”, Aerojet-General Corporation memo 8110:M0658:ak, 16 September 1970.
+
+
+
+
+                                                                             9
+

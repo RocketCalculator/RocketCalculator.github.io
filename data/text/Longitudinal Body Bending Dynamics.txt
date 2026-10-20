@@ -1,0 +1,345 @@
+        Rocket Science and Technology                4363 Motor Ave., Culver City, CA
+90232
+                                          Phone: (310) 839-8956 Fax: (310) 839-8855
+
+                 Longitudinal Body Bending Dynamics                     05 August 2013
+
+                                  By C. P. Hoult
+Introduction
+        Whenever nonrigid (flexible) body effects are considered such as propellant
+sloshing, axial vibrations or body bending Lagrange's equations come into play. In this
+memo, the free-free behavior of a uniform non-rolling beam is first estimated. The
+resulting mode shapes are then used in a Rayleigh-Ritz approximation to find the natural
+frequencies and mode shapes of a non-uniform beam. The results are implemented in an
+Excel™ code named FLEXIT.xls.
+
+Nomenclature
+
+_______Mnemonic_____________________Definition___________________________
+                          Bending stiffness, lb-in2
+                          Average bending stiffness, lb-in2
+        L                 Beam length, in
+                          Mass per unit length, sl/in
+                          Average mass per unit length, sl/in
+                          Number of normal modes used to approximate the beam
+                           displacement,
+                           Amplitude of the ith normal mode, ft
+                          Natural frequency of the nth mode, red/sec
+                           Normalized shape of the nth mode
+                          Kinetic energy
+                          Potential energy
+                          Time, sec
+                          Distance aft of the nose tip, in
+                          Beam lateral displacement, in
+                          Normal mode shape
+
+Uniform Beam
+       The solution for the bending vibrations of a uniform, non-spinning beam are
+based on the material in ref. (2), pp.67-80:
+                                                                                    (1)
+
+where the beam-average properties are denoted by an over bar:
+
+
+
+
+                                                                                      1
+(2a)
+and
+
+
+
+
+(2b)
+
+The characteristic equation is
+
+
+
+
+(3)
+
+This has roots
+
+
+
+
+(4a)
+
+
+More exactly,
+(4b)
+
+The mode shapes are
+
+
+
+
+(5)
+
+
+
+
+                                 2
+                           First Three Bending Mode Shapes
+
+                2
+              1.5
+                1
+  Amplitude
+
+
+
+
+              0.5                                                  Fundamental
+                0                                                  First Harmonic
+              -0.5 0     0.2    0.4     0.6       0.8        1     Second Harmonic
+               -1
+              -1.5
+               -2
+                       Distance from Nose Tip / Body
+                                   Length
+
+
+These are the first three mode shapes for a uniform, free-free, non-rolling beam as
+developed from eq's. (4b) and (5). The source is FLEXIT.xls which was also used to find
+the natural frequencies:
+
+
+
+                                              Natural Frequency,
+                               Mode
+                                                   rad/sec
+                            Fundamental            277.452
+                           First Harmonic          764.806
+                          Second Harmonic         1499.317
+
+
+Lagrange's Equations
+        To estimate the frequencies and mode shapes of a non-uniform beam requires the
+solution of Lagrange's equations using the Rayleigh-Ritz method. Start by assuming the
+beam displacement is approximated by
+
+
+                                                         .
+
+(6)
+
+Then, Lagrange's equations are
+
+
+                                                                                    (7)
+
+
+
+                                                                                      3
+The system kinetic energy is
+
+
+
+
+(8)
+
+where the beam displacement is assumed to be represented by a sum of        mode shapes
+satisfying the boundary conditions...the Rayleigh-Ritz technique:
+
+
+
+
+(9)
+
+Next, assume simple harmonic motion so that
+
+                                                                                  (10)
+and
+
+                                                     , and
+
+(11a)
+
+                                                       .
+
+(11b)
+
+With this, the kinetic energy becomes
+
+
+                                                             ,
+
+(12)
+
+
+                                                                 , or
+
+(13)
+
+
+                                                                        .
+
+(14)
+
+Substituting from eq.(11b) into eq. (14) gives
+
+
+
+
+                                                                                     4
+                                                                        .
+
+(15)
+
+Similarly, the potential strain energy is found from
+
+
+
+
+(16)
+
+Therefore,
+
+                                                       , or
+
+
+
+                                                                     (17)
+
+
+Substituting eq's. (15) and (17) into eq. (7) results in
+
+
+                                                                            (18)
+
+
+Then, there will be    equations of the form
+
+
+
+
+(19)
+
+Equations (19) can be easily recast in matrix form. Let the integrals be called     . Then,
+
+                                                               ,                       (20a)
+where
+
+
+                                           and
+
+                                                           .       (20b)
+
+
+It can be shown(1) that the only nontrival solution to eq. (20a) occurs when       takes on a
+value     which causes
+
+
+                                                                                              5
+(21)
+
+Otherwise, the        . Then,
+
+
+
+(22)
+
+
+       Expanding eq.(22) leads to the characteristic equation for this problem. If three
+assumed modes are used, it is a cubic polynomial in . Instead, FLEXIT plots eq.(21) as
+a function of . The observed approximate zero crossings are then iteratively refined.
+
+Normal Mode Shapes
+       The normal mode shapes are derived from eq's. (6) and (19). Suppose that took
+on one of its solution values, say the kth natural frequency. Then, for three assumed
+modes, a normal mode looks like
+
+
+                                                                   .
+(23)
+
+since all that can be determined from unforced oscillations are the relative amplitudes of
+the contributions from the various assumed mode shapes. Equation (19) can be expanded
+to give
+
+
+                                                                              ,
+
+                                                                                  , and
+(24)
+                                                                                  .
+
+
+By implication,    must take on one of the values    for there to be a solution at all.
+
+Then, any two, say the first two, of the three equations above can be solved for          and
+
+   :
+
+
+
+
+                                                                                                6
+                            and                         where                     .
+(25)
+
+The mode shape is governed by the choice of      .
+      .
+
+FLEXIT Implementation
+       Nonuniform beam properties are assumed to vary linearly with x across a
+segment. In general such a beam is composed of segments in which           and          are
+defined at the segment end points, and, neither        nor         are continuous across
+segment boundaries. Trapezoidal integration is used to evaluate the integrals in eq. (20b).
+The desired granularity (number of integration steps       along the body) is input. The
+number of steps used for an individual segment is based on
+INT[            ]+1. This ensures that at least the desired number of steps are used.
+       The normal modes, eq.(5) and their second derivatives, are generated by external
+functions:
+
+
+
+
+(26)
+
+Note that        appearing in eq's. (5) and (26) above are the natural frequencies for a
+uniform beam as given by eq. (4b).
+        It is customary to normalize the natural mode shapes. There are many ways to do
+this. In FLEXIT they are normalized to have the same nose tip value (2) as the uniform
+beam modes.
+        FLEXIT uses a simple bisection algorithm to find the roots of the characteristic
+equation. This requires the user to make a rough guess on these roots, and then set upper
+and lower bounds for the bisection iteration. There are two ways to do this. First, use the
+roots for an roughly equivalent uniform beam as a guide. The second is to plot the
+determinant, eq. (21), vs. the square of the frequency. The zero crossings of this plot are
+the roots being sought. The following table compares the uniform beam results for the
+corresponding nonuniform case. The rocket analyzed is the Space Vector Aries,
+Minuteman II second stage converted into a sounding rocket. As can be seen, the
+uniform beam results can be useful to guide the search for roots to the characteristic
+equation.
+
+       Mode          Fundamental          First Harmonic    Second Harmonic
+                   natural frequency,    natural frequency, natural frequency,
+                        rad/sec               rad/sec            rad/sec
+   Nonuniform           257.632               585.471           1523.704
+
+
+
+                                                                                         7
+      Beam
+     Uniform            277.452               764.806             1499.317
+      Beam
+
+
+        Since our major practical interest is in the fundamental mode, only the first three
+uniform beam modes are carried in the calculation, and only the first two mode shapes
+are estimated and plotted.
+
+References
+1. F. B. Hildebrand, "Methods of Applied Mathematics", Prentice-Hall, Inc.,Englewood
+Cliffs, N. J., 1956.
+2. R.L. Bisplinghoff, H. Ashley, and R. L. Halfman, "Aeroelasticity", Addison-Wesley
+Publishing Company, Cambridge, 1955
+
+
+
+
+                                                                                         8
+

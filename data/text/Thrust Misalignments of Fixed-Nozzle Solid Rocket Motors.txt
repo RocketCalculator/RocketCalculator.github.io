@@ -1,0 +1,515 @@
+JOURNAL OF SPACECRAFT AND ROCKETS
+Vol. 33, No. 6, November-December 1996
+
+
+
+
+        Thrust Misalignments of Fixed-Nozzle Solid Rocket Motors
+                                                                            R. N . Knauber*
+                                             Lockheed Martin Vought Systems, Dallas, Texas 75265-0003
+
+
+                       Major sources of thrust misalignments are described, and both ground test andflightdata for several different
+                    upper stage solid rocket motors are presented. Special test data and flight data statistics are presented to show
+                    the known sources, such as 1) manufacturing mechanical tolerances, 2) motor case distortions and nozzle cant
+                    angles as a result of pressurization, 3) nonsymmetrical nozzle erosion, 4) transient gas flow phenomenon from
+                    internal ballistics, 5) center of mass radial offset as a result of static unbalance, and 6) static unbalance produced
+                    by propellant bore concentricity errors. Nozzle canting as a result of pressurization has been measured during
+                    hydrotest, and static firing was found to be the largest source of thrust misalignment in several composite case
+                    motors. Transient moments or side forces have been observed early in the burn period and during rapid thrust
+                    tailoff. A brief set of guidelines is presented for developing and testing new solid rocket designs to estimate the
+                    disturbing torque.
+
+
+
+                               Nomenclature                                                 the NASA solid controlled orbital and utility test vehicle (SCOUT)
+/        = impulse, N-s                                                                     launch vehicle and the U.S. Air Force air-launched antisatellite ve-
+Pc       = chamber pressure, bar                                                            hicle (AL-ASAT) upper stage. The SCOUT is a four-stage solid pro-
+T        = thrust, N                                                                        pellant small satellite launch vehicle (Fig. 2). From 1960 to 1994 this
+X        = body station, m                                                                  vehicle used at least two or three motor designs for each of the four
+Z        = distance from centerline in pitch plane, m                                       stages. Disturbing torques were extracted from flight data for most
+£        = thrust misalignment angle, deg                                                   of the 118 flights. Since the upper three stages are exoatmospheric,
+H        = mean value                                                                       there are no aerodynamic moments to obscure the disturbing forces
+a        = standard deviation                                                               or moments contributed by the solid rocket motor. A summary of
+T        = nondimensional lateral impulse                                                   the motor characteristics is presented in Table 1.
+                                                                                               Special hydrotests and development and qualification static fir-
+                                                                                            ings were conducted for both the SCOUT and AL-ASAT from which
+Subscripts
+                                                                                            several distinct sources of the side forces and thrust misalignments
+cm.      = vehicle center of mass                                                           were extracted.
+P        = pitch plane
+T        = thrust, or thrust application point (nozzle throat location)                                            Causes of Thrust Misalignment
+Y        = yaw plane                                                                           Most upper stage solid rocket motors are designed to have less
+s        - thrust misalignment                                                              than a 0.25-deg thrust misalignment. Some motors have been devel-
+                                                                                            oped to keep the three sigma thrust misalignment below 0.15 deg by
+                                Introduction                                                maintaining very tight tolerances on concentricity and parallelism of
+                                                                                            nozzle and interstage mounting flanges, designing motor cases to rel-
+T     HE design of aerospace vehicles that use solid rocket mo-
+      tor propulsion requires accurate knowledge of the disturbing
+torque. These are used to define dynamic forcing functions and error
+                                                                                            atively low values of strain, and designing nozzles for uniform low-
+                                                                                            erosion characteristics. Thrust misalignments can include pseudo-
+sources for unguided missiles and control requirements for guided                           steady-state, slowly varying, and highly transient phenomena.
+vehicles. The side forces and pitching and yawing moments pro-
+duced by the solid rocket motor are generally described as thrust                           Pseudo-Steady-State Thrust Misalignments: Type A
+misalignments. There are few data and design information avail-                                Steady-state thrust misalignments are mostly a result of tolerances
+able in the open literature on this subject. The intent of this paper is                    on manufacturing and assembly of the rocket motor and nozzle. The
+to help fill the void.
+   Strictly speaking, thrust misalignment, or malalignment, is the
+thrust vector offset from the centerline both translational (lack of                                                 1
+concentricity) and angular (lack of parallelism) (Fig. 1). The trans-                                                                                                               8       T
+
+                                                                                               (                     AZ...
+
+                                                                                               \
+lational as well as the angular terms result in pitch and yaw torque
+about the vehicle center of mass. For purposes of this paper, thrust                                                                            ){
+misalignment will be defined as the equivalent angular misalign-                                    1
+ment of the thrust vector acting at the location of the nozzle throat,                             x,„                                              Xi
+which accounts for all of the pitching and yawing torque about a                                                         Actual disturbing moment
+vehicle center of mass. Most transverse moments produced by solid                                   M. .c m        = T(X - X . .)(e' /S7.3) + T(AZ .
+                                                                                                                          T   c m   T                          cm           -Z )
+                                                                                                                                                                              T
+
+rocket motors result from side forces generated in the nozzle.
+   The presented data are from accumulation of design, test, and
+flight data for many of the fixed-nozzle solid rocket motors used on
+                                                                                                                                                    y- ^
+                                                                                                                                                      0
+                                                                                                                                                                    "" \      1
+                                                                                                                                                                                   .E
+                                                                                                                     I
+                                                                                                                                                                                        T
+
+
+
+
+   Presented as Paper 95-2874 at the A I A A / A S M E / S A E / A S E E 31st Joint
+
+                                                                                                                                                     1
+Propulsion Conference, San Diego, CA, July 10-12, 1995; received Aug.                                1
+23, 1995; revisionreceivedJune 21,1996; accepted for publication July 9,
+1996. Copyright © 1997 by R. N. Knauber. Published by the American                                                   Effective thrust misalignment
+Institute of Aeronautics and Astronautics, Inc., with permission.                                             e = e' + [57.3(AZ . . - ZXx)/{X
+                                                                                                               T      T                 c   m    -   T     T         X . )]
+                                                                                                                                                                      c m
+
+   "Consulting Engineer, Flight Dynamics and Aerodynamics, Mail Stop
+EM-55. Senior Member AIAA.                                                                               Fig. 1 Effective thrust misalignment definition.
+                                                                                      794
+                                                                      KNAUBER                                                                      795
+
+                                                       Table 1 SCOUT solid rocket motor data
+                                            Diam.,     Length,   Prop.,    Burn,     Web,            Pc,      Case      Sample
+                            Motor            mm         mm        kg        s         s        kN    bar     material    size
+                            Algol I I I      1143       9093     12,716     85        58       756   55       Steel         38
+                            Castor I          787       6198      3,379     40        27       267   38       Steel         39
+                            Castor I I        787       6248      3,751     41        38       311   41       Steel         78
+                            X-254             762       2718      1,021     41        39        62   28       Glass          8
+                            ABL X-259         762       2718      1,134     32        29       107   24      S glass        24
+                            Bacch. X-259      762       2718      1,134     32        29       107   24      E glass        32
+                            HP-X-259          762       2718      1,134     27        24       147   41      E glass         3
+                            Star 31           762       2718      1,286     48        45        93   62      Kevlar         12
+                            FW-4S             559       1549        272     34        29        29   54       Glass         12
+                            Star 20A          500       1486        272     32        28        31   57       Glass         12
+                            Star 20B          503       1486        272     34        31        29   54       Glass          3 .
+
+
+
+
+                                4th stage            3rd stage                     2nd stage                    1st stage
+                                X-248                X-254                         Castor I                     Algol I
+                                X-258                X-259                         Castor II                    Algol II
+                                FW-4S                HP-X-259                                                   Algol m
+                                Star20A              Star 31
+                                                         Fig. 2 SCOUT solid rocket motors.
+
+
+
+most sensitive component is the nozzle angular alignment. Noz-                   tolerances and mass dissymmetry. With care this can become an
+zles can be manufactured and installed with tolerances of less than              insignificant contributor to the disturbing moments acting on a ve-
+0.05-deg three sigma. The nozzle angle tolerance buildup includes                hicle. The alignment between the rocket and an upper stage or pay-
+1) motor case aft nozzle flange parallelism and concentricity as ma-             load behaves like a vehicle inert weight static unbalance. As the
+chined, 2) nozzle and attachment flange parallelism and concentric-              rocket burns off propellant, the vehicle center of mass travels fur-
+ity as machined, 3) changes in case shape as a result of casting, and            ther from the centerline to effectively increase the apparent thrust
+4) changes in case and nozzle angle as a result of creep in storage.             misalignment.
+
+Slowly Varying Thrust Misalignments: Type B
+   Thrust misalignments that change relatively slowly with time are
+                                                                                           Data Obtained from Flight and Special Test
+categorized as type B. Sources include 1) changes in motor case and                 There is not much widely disseminated data that provide actual
+nozzle angle as a result of distortions under slowly changing cham-              measurements of all of the preceding terms. Overall thrust mis-
+ber pressure and 2) gas flow misalignment as a result of unsymmetric             alignment data are obtained from flight data and some special test-
+burning and nozzle erosion.                                                      ing. Most of the sources presented in this paper are from.detailed
+                                                                                 thrust misalignment data extracted from SCOUT flight data and in-
+                                                                                                                                        1
+Rapid Transient Thrust Misalignments: Type C                                     clude time histories of the pitch and yaw components. (Many other
+   These are relatively shortly lived transients or abrupt changes in            SCOUT documents that are not widely disseminated were used in
+thrust misalignment in a very short period of time. Sources include              this paper.) Special ground testing measurements were also made
+                                                                                                     2
+1) unsymmetric strain changes in aft dome during rapid pressuriza-               for the AL-ASAT. Other flight data have also appeared in the open
+                                                                                                                        3                   4         5
+tion and decay, 2) erratic changes as a result of low-level acoustic             literature for the Burner I I vehicle and Strypi I X vehicles. Flandro
+instabilities, and 3) nozzle throat chipping as a result of ejection of          published one of the early works on disturbing force data relative to
+igniter.                                                                         internal acoustic phenomena.
+                                                                                    The SCOUT X-259, Star 31, and AL-ASAT Star 20B motors were
+Ignition Transients: Type D                                                      developed with systematic measurement and testing to isolate the
+   Ignition transient side forces as a result of the unsymmetric startup         sources of thrust misalignment and side forces. After manufacturing
+of gas flow and nozzle flow can produce very large thrust misalign-              and assembly, the static alignment of the motor case and nozzle
+ment angles before the motor achieves full operating pressure. Being             was measured. Changes in motor case and nozzle deflections, as a
+short in duration (15-30 ras) these excite vehicle structural modes              result of pressurization, were measured both in hydrotest and static
+and cause "tipoff' angular rates. These are important in uncontrolled            firing using deflectometers and strain gauges. Dynamic changes in
+spin stabilized missile applications. Data have been accumulated                 thrust misalignment as a result of internal ballistic phenomena and
+from SCOUT fourth-stage ignition analyses.                                       unsymmetric nozzle erosion were deduced from the measured side
+                                                                                 forces and moments during static firing.
+Static Unbalance as a Result of Bore Concentricity: Type E
+   I f a motor is cast with the bore offset from its centerline, static
+unbalance increases with burning time. The rocket center of mass                                           Flight Data Examples
+radial offset increases by an order of magnitude between ignition                   The first three stages of the NASA SCOUT launch vehicle were
+and web time. The thrust vector couples with the center of mass                  three-axis stabilized. The fourth stage was spin stabilized at 2.5-3
+offset to produce a disturbing torque.                                           rps (revolutions per second). The upper three stages were exoatmo-
+                                                                                 spheric. Postflight analyses for each flight included extraction of
+Static Unbalance and Rocket Motor to Vehicle Alignment: Type F                   pitch, yaw, and roll disturbing torque and effective thrust misalign-
+   Vehicle static unbalance is not truly a thrust misalignment at-               ment. Analyses of telemetry data allowed calculation of effective
+tributable to the rocket motor but is a result of vehicle alignment              thrust misalignments to within 0.005-deg accuracy.
+796                                                                                       KNAUBER
+
+
+Castor I                                                                                                   Table 2 Static nozzle misalignment statistics
+   The Thiokol Castor I motor thrust time history and effective pitch                                                   for X-259 motors
+and yaw components of thrust misalignment indicate a bias in the
+                                                                                                                                       Standard
+pitch-up direction (Fig. 3). Some possibilities include effects of hor-
+                                                                                                                               Mean    deviation Tolerance
+izontal assembly and slump of motor grain as a result of horizontal
+storage (stored with pitch plane vertical).                                                              Angle
+   A transient type C disturbance has occurred on 3 of the 39                                              Pitch, deg      0.00376     0.00965       0.057
+flights. Thrust misalignment rose significantly 3-4 s before web                                           Yaw, deg        0.00270     0.00829       0.057
+                                                                                                         Radial offset, mm 0.203       0.107         0.38
+time (Fig. 4). No other anomaly was detected in motor performance
+on these flights. The cause of the observed change is not totally
+understood. It may be related to the internal gas flow. This motor
+has a five point star grain, which results in five longitudinal slivers
+of burning propellant during the long tailoff period.
+
+
+Castor II
+   The Thiokol Castor I I motor has the same external envelope as
+the Castor I . It packs more propellant by using a smaller cylindrical
+smooth bore with two end radial slots (Fig. 5). This motor was
+flown on 79 SCOUT flights. The statistical distribution of thrust
+misalignment indicates 0.1-deg pitch-up bias.
+   The Castor I I also produced a type C pitch-up transient at igni-
+tion. One second after ignition the three sigma peak value is almost
+0.5 deg. The cause is not known. Like other SCOUT motors the
+Castor I I was always stored horizontally with the pitch plane verti-
+cal.
+
+
+                  Up
+                                          Pitch Component
+
+                  0.2
+      E   P                                                              + 3 Sigma
+      deg
+                                                      Mean
+                   0.1
+                          'V.S-125
+
+                                                                                                         -0.2
+                                                                                                        Left o        1 0        go      30          40
+                                                                                                                            Time - Seconds
+                                                                                                                 Fig. 5 Castor IIflightstatistics.
+                  02
+      Right                                Yaw Componen t                                      X-259
+                                                                                                  The Hercules X-259 was the SCOUT third-stage motor on more
+                   0.1                                                                         than 90 flights from 1961 through 1983. Although nozzle alignments
+                                                                           3 Sigma
+                                                                                               were not measured on all SCOUT motors, X-259 manufacturing
+      deg
+                           r   S-125                 Mean                                      tolerance measurements were available from another program. Af-
+                                                                                               ter casting and nozzle installation, motors were mapped for nozzle
+                                               ^•S-123                                         alignment. Static nozzle misalignment statistics from 57 X-259 mo-
+                                                                                               tors are given in Table 2.
+                  -0.1
+                         ^/^3Sigm 1                                                               Several modifications to the X-259 motor were flown on SCOUT.
+                                                                                               Most configurations burned with low chamber pressure (24 bar,
+                  -02                                                                          350 psi). The filament wound motor cases were changed in 1966
+          Left 0                          10                       20                30        from an E glass to S-901 glass material. The modulus of the latter
+                                               Time - Seconds                                  material increased the case burst strength from 46 to 76 bar. There
+                               Fig. 3 Castor Iflightstatistics.                                was no change in nozzle, propellant grain, or other characteristics.
+                                                                                               Thus, the thrust time history was unchanged. The extracted thrust
+                                                                                               misalignment showed a statistically significant reduction in the stan-
+                                                                                               dard deviation after the case was strengthened (Fig. 6). The reduc-
+                  0.3                                    eb Time                               tion in the standard deviation of thrust misalignment is inversely
+                                                                                               proportional to the burst strength of the case. Subsequent special
+                                                         S-13I                                 hydrotesting indicated that the nozzle and skirt movements under
+              0.2 ^Thrust                                                            T         pressure were the most significant source of thrust misalignment for
+                                                                               -
+      E       P                                 ft                                   kN        the X-259 (Fig. 7).
+      deg                        ^S-136        /:        *h                                       A later modification of this motor, HP-X-259, almost doubled the
+                                                              IT
+                                                                               - 200
+              0.1                              'J *                                            chamber pressure to 42 bar by introducing a nozzle with a smaller
+                                                         \                                     throat diameter. The motor case and propellant were unchanged. The
+                                       S-137             V         \ i
+                                                                                               thrust misalignment increased proportionately. Special hydrotesting
+                                                                                               of the motor case included mapping the motor case with a closed
+                                10         20          30           40                         tube nozzle simulator. Distortions of the motor case and nozzle cant
+                                        Time - Seconds
+                                                                                               were determined as a function of pressure for three motor cases.
+                          Fig. 4       Castor I web time transient.                            One case showed the most significant nozzle deflection during the
+                                                                     KNAUBER                                                                                           797
+
+                                Strong Case (71 bar burst) *                             0.04
+                                                                                                      Pitch Plane                                   HP-X-259
+                                Weak Case (45 bar burst),',
+               0.04                    Pitch—       '
+                                                        * .*
+                                                                                         0.02 -
+                                                                                                                     r J3rd
+                                                                                                                         l u vcycle
+                                                                                                                               j i "
+                                                                                                                                                    S/N215
+                                                                                                     l ''
+                                                                                                      t                   2nd cycle
+                                                                                E    P
+
+
+                                                                                deg
+                                                                                   0.00
+
+
+                                                                                         -.02
+
+
+                                                                                         -.04
+                                                                                         0.02
+                                                                                                    Yaw Plane          Bursty                   ^
+
+                                                                                deg
+                                                                                         0.00
+
+
+
+
+                                             Yaw-left
+                                                                                                            1    I        I       I         I       I    I
+
+                                                                                                0         10    20       30     40          SO      60   70       80
+                      0         25      50     75   100
+                                                                                                                       Pressure - Bars
+                              % Propellant Consumed
+                                                                                                Fig. 8 HP-X-259 motor case hydrotest data.
+                      Fig. 6 X-259flightstatistics.
+
+                                                                                     0.1
+              0.04                        Root-S urn-Squared                                SCOUT S-124                                 Yaw-ri;               /
+
+
+                                                                               6                                     Igniter Expel led
+                                                                                T
+
+
+
+              0.03                                                             deg                                                                  ^ P i tch-up
+        a                  Nozzle
+        deg
+              0.02
+                               * Bore Concentricity-^ •                                                    f
+                                                                                                                                            y
+                          " /-Nozzle Static  ^                                              /            V
+              0.01                                                                              Pitch-down ^" Yaw-left
+                                      j- Interstage Alignment                       -0.1
+                                                                                                                10                     20                30
+                                i         i        i
+                               25        50       75           100                                                   Time - Seconds
+                                % Propellant Consumed                                             Fig. 9 X-259flightS-124 nozzle chipping.
+Fig. 7 X-259 thrust misalignment sources: thrust misalignment stan-
+dard deviation.
+                                                                           tolerance on this parameter was 1.27 mm (0.05 in.) maximum. Fully
+                                                                           loaded, this tolerance causes less than 0.12 kg-m (10 in.-lbm) static
+depressurization phase (Fig. 8). This case repeated this behavior for      unbalance (Fig. 11). As the propellant burns around the offset bore,
+three cycles.                                                              the static unbalance increases by an order of magnitude. The center
+   The X-259 used a head end igniter, which was insulated only             of mass offset increases by an even greater factor since the vehicle
+on later flights. On all earlier flights the igniter would burn off and    weight is being reduced as propellant burns. I f not properly con-
+eject through the nozzle about 70% into the burn. On one occasion,         trolled, this can cause significant type E disturbances.
+flight S-124, simultaneous with the igniter ejection (observed by a           Highly transient type C disturbances have occurred during tailoff
+chamber pressure high-frequency pulse and vehicle vibration) the           of composite case motors. The Star 31 has an abrupt tailoff. On
+thrust misalignment instantaneously changed quadrants by about             the first flight, S-203, a transient disturbance during tailoff created
+180 deg (Fig. 9). On later flights a special insulating boot was used      590 N-m (435 ft-lbf) of vehicle pitch-up moment (Fig. 10). The
+on the igniter to keep it from burning off and being ejected.              equivalent thrust misalignment was 0.28 deg. This is usually not of
+                                                                           concern on a controlled vehicle because of the very short transient
+Star 31 (Antares IIIA)                                                     time. However, such disturbances can be critical in spin stabilized
+   This Thiokol motor was developed as a higher-performance, high-         applications.
+reliability motor for the SCOUT third-stage application. A detailed           Flight data statistics indicate a pitch plane bias and a larger stan-
+development and test program included special hydrotesting, devel-         dard deviation in the pitch plane than in the yaw plane (Fig. 10).
+opment and altitude qualification static firings. This Kevlar® case        Pitch plane biased thrust misalignment may be related to motor long-
+motor was designed to a side force specification to allow use of the       term horizontal storage and the horizontal assembly of the vehicle.
+existing SCOUT reaction control system. Statistical data predictions       Recertification of several motors that were iri storage for 10 years
+based on development and qualification test data were well within          indicated no significant degradation or slump of the case or the bore.
+the specifications. Flight data statistics from the 13 flights showed      There was less than 0.02 deg of nozzle cant change after 10 years
+a three sigma value less than 0.15 deg (Fig. 10).                          storage time and no measurable bore concentricity shift. When these
+   Static unbalance as a result of bore concentricity tolerances can       motors flew, there was not a strong correlation of preflight measured
+become significant as a motor burns. The Star 31 specification             nozzle cant and the observed in-flight disturbance.
+798                                                                                  KNAUBER
+
+
+
+
+      Right
+         0.1
+                  + 3 Sigma              >—,.                                                  0.25                                                          40
+
+
+                           Z
+                                                                                                                Star 20A 2.5 rps Spin        (Weak Case)
+   deg                            Mean                                                                        • Star 20B 0 rps               (Strong Case)
+          0.0                   .... , A -
+
+                                     • S-203             Yaw
+
+     -0.1        -3 Sigma J     "X
+   Left
+      0.3                                                                   100
+   Up                                   Pitch Peak 590 N-m
+                 Thrust
+                                                  0.28°
+          0.2                                                           - 80
+
+                              + 3 Sigma ^                      r
+       0.1                                                                  60
+   8  P                                                                       T                                                20
+   deg                                                             /
+                                                                              kN                                        Time - Seconds
+                          —"                            " ——_
+      0.0                                                                   40
+                                                                                                                Fig. 12 Star 20 statistics.
+
+                                          Mean                                             A mean plus three sigma value for this factor based on the Star 20A
+          .0.1                                                              20
+                                                                                           motor is
+                  - 3 Sigma s                                                                                              7
+                                                                                                                    26.06A - s
+       -0.2           1          1               1        1                                                  r, =                    = 0.00146 s              (2)
+      Down           10         20        30            40                                                           17, 8 0 0 ^
+                                                                       50
+                                Time - Seconds                                             An order of magnitude estimate of lateral impulse for an untested
+                  Fig. 10 Star 31flightdata statistics.                                    motor design could be given by
+
+                                                                                                                      Aide =       t/T   m                    (3)
+
+                                                                                           This impulse would be spread over a 22-ms duration half-sine pulse
+                                                                                           to generate a lateral forcing function for ignition loads analyses.
+
+                                                                                           Star 20B
+                                                                                              The successful A i r Force AL-ASAT used the Thiokol Star 20B
+                                                                                           for the second-stage rocket motor. This motor was a modification
+                                                     Fig. 11 Star 31 static                of the Star 20A. Load environments for this application required
+                                                     unbalance: bore concen-               a considerably stronger motor case than the Star 20A. Hydrotest-
+                                                     tricity.
+                                                                                           ing and subsequent qualification testing at the Arnold Engineering
+                                                                                           Development Center showed a decrease in the standard deviation
+                                                                                           of thrust misalignment of nearly 50% from the Star 20A as a re-
+                                                                                           sult of the stronger and lower strain motor case design; see Fig. 12.
+                                                                                           The standard deviation of thrust misalignment is approximately in-
+                                                                                           versely proportional to the case strength. This result is very similar
+                  10        20            30
+                                                                                           to the experience with the X-259 motor.
+                  Time - Seconds
+                                                                                                              Transients During Tailoff
+Star 20A (Altair IHA)                                                                         During thrust decay of a solid rocket motor there are several fac-
+   This Thiokol motor has been flown as a spin stabilized orbital                          tors that can induce transient moments and thrust misalignments
+injection motor on 34 SCOUT flights. Right data statistics of the                          including 1) pressure vessel relaxation dissymmetries and 2) large
+thrust misalignment are presented in Fig. 12. This orbital injection                       gas flow misalignment as a result of nonsymmetric propellant sliver
+motor spins at 2.5 rps and is ignited after a separation distance of                       burnout. In many cases, the thrust misalignment angle is consider-
+at least three body diameters. A type C ignition transient nozzle                          ably larger during this transient than during the steady-state burn
+side force, not shown in Fig. 12, causes a tipoff rate change to                           phase of a rocket motor as shown for the Castor I and Star 31; see
+the vehicle. This is separate from the tipoff rates that occur 4 s                         Figs. 4 and 10.
+                                          6
+earlier at separation. Bowyer et al. associate the transient with an                          On many of the SCOUT flights, a transient in the effective thrust
+oblique starting shock traveling down the nozzle length at ignition.                       misalignment angle is observed during tailoff. These transients are
+The lateral impulse acting on the nozzle exit cone has been taken                          short lived and do not impose stringent problems for a robust reac-
+from instrumented flights. The mean value is 11.4 N-s (2.56 lbf-s)                         tion control system. They are of concern for spin stabilized systems.
+with a standard deviation of 4.9 N-s (1.1 lbf-s). Based on observed                        The more severe cases can produce up to 0.5 deg of thrust misalign-
+structural and rigid body motions, the lateral forcing function can                        ment peak during this transient and reverse direction during the short
+be approximated as a half-sine pulse having a duration of about                            tailoff time. Transients observed in hydrotests (Fig. 8) show that at
+22 ms before the motor achieves full operating chamber pressure.                           least part of this phenomenon can be a result of erratic nozzle cant
+This type C transient could be normalized by the peak thrust after                         during rapid aft dome strain relaxation.
+ignition to provide a time constant factor for general application to                         Tailoff transients have also been observed on larger motors with
+other altitude firings of motors for which there is no database, i.e.,                     longer tailoff times. The United Technologies Corporation Algol
+                                                                                           IIIA SCOUT first-stage motor is a steel case design having a fixed
+                                         ^side                                             nozzle. On 25% of the flights a pitch-up thrust misalignment tran-
+                                                                                   (i)
+                                                                                           sient has been observed starting with web time and lasting up to 12 s
+                                                                                         KNAUBER                                                                     799
+
+                                                                                               static firing tests and include these data in the mapping for static
+                                                                                               firing stand alignments and calibrations. 10) Measure changes in
+                                                                                               motor case and nozzle cant angles during development and qualifi-
+                                                                                               cation static firings. Also measure side forces and moments during
+   Up                                                                                          these tests. 11) Carefully reduce test data accounting for measured
+     0.6                                                                     600               and expected sources of side forces and moments. The residuals can
+                Web Times                                                                      be attributed to gas flow asymmetries and other immeasurable phe-
+                            .        / - Thrust                                                nomena. 12) Extract disturbances from early flights or flight tests
+                                                                             500
+     0.4                         X             y S-202                                         for correlation with development cycle statistics.
+                 S-200 ^                       /v       r s   207                                  I f all sources of thrust misalignment are appropriately accounted
+                           to\vA.^ -'v "                                     400
+                                                                                    T          for in the ground measurements, then predicted statistics for distur-
+     0.2                                                                            1          bances should yield a conservative estimate when compared with
+                                                                                    kN
+                                                                                    1          flight test data. The conservatism results from measurement errors
+  deg
+                                       f   \        \ &                 ^                      associated with the multiplicity of ground measurement and test
+     0.0
+                                                                             300               data sources needed to predict total disturbance levels. Some or all
+                                                                                               of the tolerance measurements performed during development and
+                Us'                                                                            qualification may be continued during the production phase i f they
+    -0.2 -            —                                                       200
+                                                                            - 100              are critical to the vehicle flight success.
+
+   -0.4                          1                  1               !
+                                                                                                                            Conclusions
+  Down
+           50                   60              70                      80                        There are many sources of disturbing forces and moments pro-
+                                  Time - Seconds
+                                                                                               duced by solid rocket motors. Many of these can be significantly
+                  Fig. 13 Algol III web time transient                                         larger than the engineering drawing tolerance stackup of mechani-
+                                                                                               cal alignments. The more significant sources are nozzle movement
+of the 25-s tailoff period. The thrust misalignment change, as high                            and motor case distortions as a result of pressurization, unsymmet-
+as 0.35 deg, has been observed (Fig. 13). The transient on this motor                          ric internal and nozzle gas flow, and, in some cases, poor control of
+is a sudden shift in and out with varying duration, a square wave                              manufacturing tolerances. Flight data and special ground test data
+pattern.                                                                                       presented herein can be used for first-order approximation of dis-
+                                                                                               turbances for flight dynamics and control estimates for new vehicle
+           Guidelines for New Vehicle Development                                              designs. The methods of testing to mitigate risk in new designs
+   A few guidelines are recommended for flight dynamics, control                               should include a well-defined plan and execution of 1) analyses, 2)
+system, and propulsion engineers on new vehicle designs. These                                 ground test measurements, and 3) flight data correlation.
+include the following: 1) Review the types of phenomena that have
+occurred in the past relative to solid rocket motor induced side forces                                                     References
+and torque. This paper should provide a starting place. 2) Evaluate                               'Black, C. E., Barraza, A., Kreiter, G. W., and SCOUT Engineering,
+the significance of the disturbances to the vehicle control design                             "SCOUT Flight Data Historical Summary," Lockheed Martin Vought Sys-
+and dynamics. I f the effects are significant, perform the remain-                             tems, Rept. 3-34100/9R-12, Dallas, TX, Vol. 1, July 1973; Vol. 2, Sec. 4.0,
+ing steps. 3) Estimate the statistical magnitude of each source of                             Rev. A, Feb. 1990.
+                                                                                                   2
+disturbance and determine an error budget for specifications im-                                   Knauber, R. N., "ASAT Upper Stage Motor AEDC Side Force and Roll
+posed on the rocket motor, vehicle manufacturing, and assembly                                 Torque Test Data," Lockheed Martin Vought Systems, Rept. 211-07-AG-
+tolerances. 4) Prepare a test plan that defines sufficient detail to                           30202, Dallas, TX, June 1983.
+                                                                                                   3
+                                                                                                   Dionne, E. R., and Kosmann, W. J., "Characterization of the Non-Axial
+measure and to verify the more significant sources of side forces
+                                                                                               Thrust Generated By Large Solid Propellant Rocket Motors in Three Axis
+and moments during the development and qualification phases of                                 Stabilized Ascent," AIAA Paper 78-1076, July 1978.
+the solid rocket motor. 5) Measure manufactured hardware toler-                                    4
+                                                                                                   Edmunds, R. S., "In-Flight Motor Torque Estimates for the Second-Stage
+ances for the development and qualification hardware. 6) Measure                               Stiypi IX Launch Vehicle," AIAA Paper 88-3347, July 1988. „
+motor case distortions and simulated nozzle movement under pres-                                  'Flandro, G. A., "Roll Torque and Normal Force Generation in~ Acous-
+sure during hydrotesting. These should include those cases destined                            tically Unstable Rocket Motors," AIAA Journal, Vol. 2, No. 7, 1964, pp.
+for development and qualification ground firing. 7) Measure mating                             1303-1306.
+                                                                                                   6
+surfaces and nozzle concentricity and parallelism of all develop-                                  Bowyer, J. M., Kreiter, G. W., and Petersen, R. E., "An Investigation
+ment and qualification rounds before and after propellant loading.                             of the Side Force That is Sometimes Observed in Rocket Motor Start-Up,"
+8) Measure the static unbalance and bore concentricity of the devel-                           AIAA Paper 78-1045, July 1978.
+opment and qualification rounds. 9) Trace "as manufactured" motor                                                                                         J. C. Adams
+alignments of development and qualification rounds to be used for                                                                                     Associate Editor
+

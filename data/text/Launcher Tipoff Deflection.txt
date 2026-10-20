@@ -1,0 +1,156 @@
+Rocket Science and Technology                  4363 Motor Ave., Culver City, CA 90232
+                                             Phone: (310) 839-8956 Fax: (310) 839-8855
+
+
+                            Launcher Tipoff Deflection                      28 August 2010
+
+                                       by C. P. Hoult
+
+Introduction
+         The design of a rocket launcher rail is constrained by several considerations.
+First, the rail must be restrained to preclude any rigid body rotations when the rocket
+launches. Second, while the rail will deflect during launch, such deflections shall be
+required to not exceed a specified value. The allowable upper bound for rail tip
+deflection during launch has been chosen to be 0.1o. This memo addresses the second
+point.
+         To keep the analysis brief, we assume the beam deflects statically even though the
+time scale for the rocket to accelerate to the end of the rail is of the same order as the
+rail’s fundamental bending period. The maximum bending deflection will occur just
+before the rocket leaves the rail. This corresponds to the maximum bending moment
+applied to the greatest length of beam. The desired result is the slope at the free end of
+the rail at the instant when the rocket separates. This angle is, in effect, a change in
+Quadrant Elevation angle, and, if excessive, could significantly influence the trajectory.
+
+Analysis
+        Assuming the rail is cantilevered from its base, the static deflections are given by
+the solution to
+
+                                EI d2y / dx2 = F ( L – x),
+
+where E = Young’s modulus for the rail material,
+      I = Rail area moment of inertia,
+      y = Rail deflection,
+      x = Distance along the rail from its fixed end,
+      F = Force applied normal to the rail axis, and
+      L = Rail length.
+
+Assuming the rocket starts from its base end, this can be readily integrated to give the
+slope at the free end (x = L):
+
+                                 dy / dx (L) = FL2 / 2 EI.
+
+This result will be multiplied by a factor of 2 to reflect dynamic overshoot.
+
+
+
+
+                                                                                               1
+The transverse force F has two components, that in pitch and that in yaw. The pitch
+component is
+
+                                F = T y + mg cos(QE),
+
+where T = Thrust,
+     y = Thrust misalignment pitch angle,
+      m = Rocket mass,
+      g = Acceleration due to gravity, and
+     QE = Quadrant Elevation angle.
+
+The yaw component of the transverse force is just
+
+                                        F = T z
+
+        A few comments about statistics are now in order. The gravity term in the pitch
+force is invariant. That is, it will always have the same value. But the two thrust
+misalignment forces are stochastic variables whose values will be different for every
+instantiation. Values for  can be found from Ammons & Hoult1. When the two effects
+are compared for Gold Rush II, the lateral weight component = 55lb * cos(80o) = 9.55
+lb, and the worst case ( 3 ) thrust misalignment component = 400lb * 0.1o * 3 * π / 180
+= 2.09 lb. Thus, the weight is by far the largest lateral force.
+
+                                           d
+
+
+                                                                        Neutral Axis
+
+
+                                                     D
+
+Moment of Inertia
+       Now suppose we use a ham radio tower for the rail structure as sketched above.
+These consist of three steel tubes tied together with a Z-shaped steel rods welded to the
+tubes. Typical dimensions are;
+
+d = Face width = 12.5”
+D = Tubing OD = 1.25” , and
+ t = Tubing wall thickness = 0.065”
+
+
+1
+ R. L. Ammons and C. P. Hoult, “Standardized Perturbation Values for Several
+Sounding Rockets to be Used in the Calculation of Dispersion and Structural Loads”,
+Aerojet-General Corporation Memo 8110:M0658:ak, 16 September 1970
+
+
+                                                                                            2
+The rod contributions to bending stiffness can be neglected. Now the neutral axis
+sketched above must be twice as far from the bottom tube as from the top two if it passes
+through the section area centroid. The area moment of inertia is
+
+                                               I = A d2 / 2,
+
+where A = cross section area of a tube.
+
+A quick calculation shows that the yaw moment of inertia about a vertical neutral axis is
+the same. Since the cross section area of a tube is just
+
+                                       A = π D t.
+The bending stiffness of the radio tower is finally
+
+                                           I = π D t d2 / 2,
+
+and the slope at the free end is
+
+                                    dy / dx (L) = FL2 / π E D t d2.
+
+Numerical Results
+        Some quick results are that the lateral weight component has an effect an order of
+magnitude larger than that from thrust misalignments as shown above. The plot below,
+for the Gold Rush II rocket, shows the pitch plane tipoff angle for two QE values:
+
+
+                                    Launcher T ipoff Angle
+
+                   0.25
+
+                    0.2
+  Tip Angle, deg
+
+
+
+
+                   0.15
+                                                                                 80 deg
+                                                                                 85 deg
+                    0.1
+
+                   0.05
+
+                     0
+                          0   100        200          300       400   500
+                                         Rail Length, in
+
+
+
+
+                                                                                            3
+Recommendations
+       Since ham radio towers come in 10 foot lengths, holding the rail length to 20’ =
+240” will ensure that the tipoff error will be less than about 0.1 deg., a good rule of thumb
+upper bound.
+
+
+
+
+                                                                                           4
+

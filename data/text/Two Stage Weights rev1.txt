@@ -1,0 +1,307 @@
+Rocket Science and Technology                  4363 Motor Ave., Culver City, CA 90232
+                                             Phone: (310) 839-8956 Fax: (310) 839-8855
+
+         Optimum Allocation of Weight Between Two Stages (rev. 1)
+                                                         20 March 2015
+                              by C. P. Hoult
+
+Introduction
+         A frequently asked question is, What's the optimum allocation weight between
+two stages? The answer can be easily found once we decide the optimum criterion is
+minimum cost, or by a common assumption, minimum total weight. (Yes, it's still true,
+we buy 'em by the pound, sailboats, cars, rockets, etc.)
+         In a general sense there are many techniques to solve this problem. One can
+always directly evaluate the objective function (ideal velocity gained) for various
+combined weights. This provides insight into the nature of the optimum, but no
+guaranteed values for the stationary points. Classical calculus techniques (differentiate
+the objective function with respect to stage weights, and set the derivatives to zero) will
+work, but leads to very messy algebra, especially for more than two stages. But, the best
+is the lagrangian multiplier approach of refs. (1) and (2). This has been recounted
+subsequently, e. g., ref's. (3) and (4), but because these old documents are difficult to
+find, it is recapitulated here. The great beauty of this approach is that it is very easy to
+use, even with many stages.
+
+Nomenclature
+______Mnemonic__________________Definition_______________________________
+                  Stage index. Stage 1 is at the bottom of the stack.
+                  Exhaust velocity of burnt propellant relative to the ith stage
+                   =        ,
+                   Payload mass,
+                   Throw weight of the ith stage.               , and
+
+                         Useful (not including trapped ullage) propellant mass of the ith
+                         stage,
+                         Structural mass of the ith stage = Inert mass of the ith stage,
+
+                        Loaded mass of the ith stage + loaded masses of all higher stages
+                        + payload mass,
+                        Specific impulse of the ith stage,
+                        Reference acceleration of gravity,
+                        Number of stages in a rocket assembly,
+                         Ideal velocity increase during burning of the ith stage,
+                          Ideal burnout velocity of the ith stage
+                          Ideal velocity increase due to operation of all stages,
+                        Lagrangian multiplier,
+
+
+                                                                                            1
+______Mnemonic__________________Definition_______________________________
+                         Propellant ratio =          ,
+
+                         Payload ratio =         ,
+
+                         Mass ratio = initial mass / burnout mass of the ith stage,
+
+                                        ,
+
+                         Structural efficiency of the ith stage =       /
+
+Glossary
+    See Fig. 1 for a notional description of a three stage rocket.
+    Ideal velocity is the velocity increase that would have been obtained if there were
+       no drag or gravity losses,
+    Initial mass of the ith stage is the mass, with propellant, of the ith stage + the total
+       mass of all stages above the ith stage, with propellant, + payload mass,
+    Burnout mass of the ith stage is the structural mass of the ith stage + the total
+       mass of all stages above the ith stage, with propellant, + payload mass
+    Reference acceleration of gravity is that official value of used to convert
+       measured weights to masses,
+    Structural mass of a stage is all non-consumable mass = inert mass of the stage,
+    Useful propellant mass of a stage is all the mass consumed and expelled from the
+       stage
+
+Tsiolkovskii's Law
+        The first modern model for the ideal velocity was due to K. E. Tsiolkovskii, a
+high school physics teacher living in a remote farming district in Czarist Russia. His
+result for a single stage rocket was
+
+
+                                                                    .
+(1)
+
+Tsiolkovskii also showed that for a multistage rocket the total ideal velocity is just the
+sum of the individual stage ideal velocities:
+
+
+                                                                    .
+
+(2)
+
+Finally, if all stages have the same mass ratio and specific impulse,
+
+
+
+
+                                                                                             2
+By using multiple stages very high total velocities can be attained.
+
+Optimum Stage Masses
+        There are two ways to specify this problem:
+     First, for a fixed total mass, number of stages and payload mass find that stage
+        mass allocation that maximizes the ideal velocity increase.
+     Second, for a fixed ideal velocity increase, number of stages and payload mass
+        find that stage mass allocation that minimizes the total mass at liftoff.
+Since these two formulations are essentially the same, we choose arbitrarily to maximize
+the total ideal velocity
+
+        Next, it is easy to show that
+
+                                                          , and
+(3)
+
+
+                                                              ,
+(4)
+
+The total payload ratio is
+
+
+                                                                       , or
+
+
+                                                  ,
+(5)
+
+and it's easy to show that
+
+
+                                                      .
+(6)
+
+Next, the total propellant ratio is:
+
+
+                                                      , and
+
+
+
+
+                                                                                           3
+Then,                                                                   .
+(7)
+
+In the same way, the total structural efficiency is
+
+
+                                                                            .
+
+
+
+       But,                                                and
+
+
+                                                                 .
+(8)
+Finally,
+
+
+                                                                                               .
+(9)
+
+Our optimization problem can be formulated in three equivalent ways: (a) Maximize the
+payload mass for given          and total liftoff mass, or (b) Minimize the liftoff mass for
+given          and payload mass, or (c) Maximize            for a given payload ratio. So,
+this implies that we need to determine the payload ratios such that
+
+
+
+
+(10)
+
+subject to                                            .
+(11)
+
+It will prove convenient to rewrite the side condition, eq. (11), as
+
+
+
+
+(12)
+
+Next, define an augmented function       as
+
+
+
+
+                                                                                           4
+(13)
+
+where (ref. (5)) is a lagrangian multiplier. The necessary condition for             to be
+maximized while satisfying eq. (12) is
+
+
+                                                            .
+(14)
+
+Substituting eq's. (10) and (13) into eq. (14) gives
+
+
+                                                                    .
+(15)
+
+
+
+Solving for the   leads to
+
+
+                                                                .
+(16)
+
+The lagrangian multiplier can be found by substituting eq. (16) into eq. (12):
+
+
+                                                                        .
+
+(17)
+
+        Now, the important fact is that eq.(17) has only one unknown, . The optimal
+payload ratio, and the maximum              are found by solving eq. (17) for , and
+substituting the result into eq's. (16) to find the payload ratios. Finally, the ideal velocity
+can be found from eq.(10).
+
+Note that eq.(17) has, in general, multiple solutions. It is necessary to find all the
+solutions and determine the one with the greatest           by substitution.
+
+
+Common Specific Impulse
+
+
+
+
+                                                                                              5
+        In general, eq. (17) is an algebraic equation of order that cannot be solved
+analytically. Its solution is straightforward if all stages share a common specific impulse.
+Then,
+
+
+                                                                          .
+
+
+Next, substitute this into eq. (16) to give
+
+
+                                                                              .
+
+(18)
+
+Substitution of these results back into eq. (10) yields the maximum ideal velocity:
+
+
+
+                                                                                        .
+
+(19)
+
+On the other hand, if        is specified
+
+
+
+
+where
+(20)
+For a two stage rocket, these simplify even more to
+
+                                                                                  and
+(21)
+
+
+                                                                      .
+
+(22)
+
+The individual stage payload ratios are found from eq. (18):
+
+
+                                                                  .
+
+(21)
+
+
+                                                                                            6
+Assuming                     , Eq. (22) has been coded as OPT2STGE.xls)
+
+              First Stage
+                                                                 Third Stage
+
+
+
+
+                                                                               Payload
+                                             Second Stage
+References
+1. Vertregt, M., "Calculation of Step-Rockets", J. Brit. Interplanetary Soc., Vol 14
+(1955), pp 20-25.
+2. Vertregt, M, " A Method for Calculating the Mass Ratios of Step-Rockets", J. Brit.
+Interplanetary Soc., Vol 15 (1956), pp 95-97.
+3. Coleman, J. J., "Optimum Stage-Weight Distribution of Multistage Rockets", Space
+Technology Laboratories, Inc., Report STL/TN-60-0000-9036, 1960.
+4. Barrere, M., Jaumotte, A., de Veubeke, B., and Vandenkerchkove, "Rocket Propulsion,
+pp. 731-746, Elsevier Publishing Company, Princeton, 1960
+5. Hildebrand, F. B., "Methods of Applied Mathematics", Prentiss-Hall, Inc., Englewood
+Cliffs, N.J., 1956.
+
+
+
+
+                                                                                         7
+

@@ -1,0 +1,48 @@
+Anusha, several remarks:
+   1. When I used the real winch calibration, the deployed tether lengths were
+      significantly less than we thought out in the Mojave.
+   2. The boundary layer data we got is, as you already know, noisy. Given the
+      passage of a front at the time we measured, this is not surprising. I don’t believe
+      the noisiness is due to the sensor, but in fact reflects measurement data weather.
+   3. Our measured data are roughly consistent with a boundary layer thickness of
+      ~1200 ft, a velocity at the outer edge of the boundary layer of ~ 20 ft/sec, and a
+      power law profile of ` 1/6. I don’t think it’s worthwhile to try to get a least
+      squares fit….the data is noisy.
+   4. The curve below shows how it plots. The gaps are an artifact of Excel’s plotting
+      function. I suggest you hand fill them in with some straight lines.
+   5. All this shows we’re on the right track. I’m encouraged
+   6. Please send me your draft manuscript.
+
+
+
+                                Planetary Boundary Layer Profile
+
+                 1600
+
+                 1400
+
+                 1200
+
+                 1000
+  Altitude, ft
+
+
+
+
+                                                                              Measured
+                  800
+                                                                              Power Law
+                  600
+
+                  400
+
+                  200
+
+                    0
+                        0   5          10         15      20        25
+                                     W indspeed, ft/sec
+
+
+
+                  Charley
+

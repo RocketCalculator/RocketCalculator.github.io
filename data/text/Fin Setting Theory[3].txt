@@ -1,0 +1,275 @@
+Rocket Science and Technology                 4363 Motor Ave., Culver City, CA 90232
+                                            Phone: (310) 839-8956 Fax: (310) 839-8855
+
+
+                 Strip Theory for Setting Fin Angles (rev. 3)                22 May 2014
+
+                                      by C.P. Hoult
+Introduction
+
+        This problem began with the earliest fin stabilized sounding rockets. Fin warpage
+causes such rockets to respond, in general, by randomly rolling subject to random
+pitch/yaw moments. This note documents a process to bring the roll rate and the
+pitch/yaw fin misalignment moments under control. The motivation for this is twofold:
+     To minimize trajectory dispersions (departures from nominal) caused by fin
+        misalignments. Even more importantly, a well-chosen roll rate profile will tend to
+        “average out” the impact point errors arising from all kinds of body-fixed
+        misalignments, especially thrust misalignment.
+     To minimize airframe structural loading, especially on the fins themselves. But,
+        fin misalignments contribute to the angle of attack, and hence, to loading to all
+        airframe components.
+
+The fin setting process attempts to adjust fin cant angles to achieve the desired roll rate
+while minimizing the perturbing pitch/yaw moments. The first step in setting is to
+measure the pre-existing fin cant angles. Then, using the results of this note, modify the
+cant angles to meet the stated objectives. When setting the fin cant angles, it will be
+shown that all fin panels should have the same angle, and that common angle should
+cause the planned roll rate to occur.
+
+Rolling Moment
+
+        First, consider strip theory: Each fin panel is decomposed into a set of streamwise
+strips, each of which has the same normal force coefficient slope. No fin-body
+interference is modeled. No variation in local normal force coefficient slope due to tip
+losses is modeled. This is the simplest possible aerodynamics model accounting only for
+fin planform geometry.
+
+Consider the fin planform as sketched in Figure 1: Then , define the notation to be used:
+
+______Mnemonic_______________Definition_________________________________
+                     Fin panel normal force, lb,
+                    Number of fin panels,
+                     Dynamic pressure, lb/ft2,
+                     Free Stream velocity, ft/sec.
+                     Altitude, ft AGL,
+                     Launcher length, ft,
+______Mnemonic_______________Definition_________________________________
+
+
+                                                                                            1
+                    Roll moment of inertia, sl-ft2,
+                    Atmospheric mass density, sl/ft3,
+                    Free stream Mach number,
+                    Local (strip) angle of attack, rad,
+                    Roll rate, rad/sec,
+ Body radius, ft,
+                     Fin semispan, ft,
+                     Local fin chord, ft,
+                     Root chord, ft,
+                     Tip chord, ft
+                    Aerodynamic reference area, ft2         ,
+                    Aerodynamic reference length, ft,         ,
+                    Fin airfoil normal force coefficient slope, per rad,
+                    Fin cant angle, rad,
+                    Rolling moment, ft-lb, and
+                    Spanwise coordinate, ft.
+
+                                                               cT
+
+                                                                                 y
+
+                                                                            b
+                                                        c
+
+
+
+                                                  cR                    R
+
+
+
+                                  Figure 1
+
+        Now, consider a chordwise strip of span    . The normal force       acting on the
+strip (positive as sketched in Fig. 2) is
+
+
+                         , and
+
+
+
+
+Note here that according to the thin airfoil theories,     depends only on the Mach
+number: But, a better way to view this is to take an average over the entire panel, thus
+capturing the effects of root and tip losses.
+
+
+
+                                                                                       2
+                                                  NT
+
+
+                  U
+                      py
+
+                  
+ p
+
+Figure 2
+
+Next, assume the spanwise variation of the chord is linear:
+
+                                                   , where
+
+
+                                                       , and
+
+
+
+
+        With this result, the expression for the normal force and rolling moment on a
+single fin panel can be found from integration to be
+
+
+,
+and the rolling moment is
+
+
+
+                                                                       .
+
+The spanwise location of the center of pressure        due to   can easily be found to be
+
+
+                                    .
+
+
+The classical rolling stability derivatives can be based on body cross section area and
+diameter;
+
+
+
+                                                                                            3
+                   . Then,
+
+
+                                                          .
+
+
+The roll damping derivative includes the torques from all N fin panels:
+
+
+                               , or
+
+
+
+
+Fin Adjustment
+
+        The objective driving the fin adjustment process is to modify the pre-existing fin
+cant angles to reduce their combined pitch and yaw moments to zero and to achieve the
+desired roll rate. The pitch and yaw moments from fin cant errors contribute to both
+trajectory dispersion (departure from the planned trajectory) and structural loading. No
+good ever comes from them. Obtaining the desired roll rate profile is essential to
+minimizing trajectory dispersions, a very good thing indeed.
+
+         While there are many possible fin adjustment solutions, adjusting the cant angles
+of all fin panels to a common value after nulling the panel normal force is the preferred
+approach. This can be easily shown for three, or more, panels to reduce the combined
+pitch & yaw moments to zero, and it will result in all panels having the same cant angle-
+induced aerodynamic loads.
+
+        Now, suppose we level the rocket and measure the “as built” cant angle on a fin.
+See Fig. 3 below for a sketch of this process. Start by placing the rocket in its cradle and
+leveling its body with a carpenter's laser level. Roll the body until the first fin panel is
+level as found when the laser level is oriented in the spanwise direction. Next rotate the
+laser level until it points along the body axis. Since the fin will have some initial cant
+angle we expect the laser spot observed on a screen at the body nose to be higher or lower
+than the nose tip. Adjust the fin cant angle until the laser spot shows the desired height
+relative to the nose tip. Repeat for all the other fin panels. These results are captured in
+CANT ANGLE2.xls.
+
+        A typical example is described by calculating the fin cant angle from strip theory
+so that the burnout roll rate = 0.3 * the burnout pitch natural frequency. This gives about
+5 roll cycles from liftoff to burnout. The nominal cant angle           meets the ~0.9 hertz
+condition.
+
+
+
+
+                                                                                          4
+                          0.2°                 Laser
+                                               Beam
+         0.25”
+
+Screen
+                                                                                     0.2°
+
+     Figure 3
+
+
+                 The fin cant angle1 needed to produce a roll rate is
+
+
+
+
+     where                                                          .
+
+
+     For small rockets up to about, say 8” diameter, this is as about as good as it’s going to be.
+
+            For larger rockets, curve fitting the cant angle data might be a better way to go.
+     The simplest curve to fit to two measurements at two different spanwise stations is a
+     simple helix:
+
+
+                                                                        .
+
+
+     The normal force and rolling moment in the first term is just that found with           replaced
+     with                    . Similarly, if       is replaced by           , the result is the normal
+     force and rolling moment due to the second term. As before, we adjust by nulling out
+     each panel’s normal force, and then add in needed to achieve the desired roll rate.
+
+
+     Roll Rate Selection
+             For multistage rockets, first establish the last stage fin cant angle, then the
+     penultimate stage fin cant angle, and so on. There are three possible choices for selecting
+     the booster roll rate and fin cant angle. Only two of these apply to upper stage(s). For a
+     single stage rocket the mean fin cant angle    for a given    is:
+
+
+
+
+     1
+      Hoult, C. P., "Small sounding Rocket Boost Phase Roll Rate" RS&T memo, 28
+     September 2013
+
+
+                                                                                                    5
+                                                                        .
+
+
+This equation also applies to a two stage configuration if
+
+              and                      where the summations extend over all stages.
+
+        The first choice for the booster    is to set the total number of roll revolutions to
+an integer value to minimize trajectory dispersions arising from body-fixed perturbations.
+Trajectory dispersion considerations are relatively far less important for the upper stages,
+and, so this does not greatly apply to them. Then, the ideal the boost phase roll angle at
+booster burnout would be an integer number of roll cycles. That is,
+
+
+                                                                         ,
+
+where                                                   .
+
+
+Again, this result also applies to a two stage rocket if the codicils developed for the above
+equations above apply. M should be at least 2 or 3. More is better. Once M has been
+selected, the above results can be used to establish the mean fin cant angle .
+
+         The second possible choice, applicable to any stage, is to select           to be an
+inputted fraction of the pitch wavenumber, . There are two conflicting considerations.
+First, the body-fixed perturbations elicit an angle of attack (and structural loads) response
+
+proportional to          . Thus, roll rate tends to “destroy” the pitch static stability.
+
+However, as long as      is less than 30-40% of    the damage is not too great. Second,
+as noted above, a higher roll wavenumber will reduce trajectory dispersions.
+
+
+
+
+                                                                                           6
+

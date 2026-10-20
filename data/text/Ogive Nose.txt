@@ -1,0 +1,119 @@
+Rocket Science and Technology                 4363 Motor Ave., Culver City, CA 90232
+                                            Phone: (310) 839-8956 Fax: (310) 839-8855
+
+
+                                       Ogive Nose                       06 May 2011
+
+                                     by C. P. Hoult
+Nose Profile
+      The ogive nose form is commonly used in sounding rocket applications. It is
+formed by a circular arc as sketched below:
+
+                                                           y
+
+
+                                            R
+                                       r
+
+                                        L
+
+
+
+
+                                        a
+
+
+
+
+                                        x
+
+The equation for the circular arc is
+
+
+
+The relevant condition is
+
+                                            when       .
+
+Solving for   gives
+
+
+                                                   .
+
+
+
+                                                                                    1
+With this, the body radius at           is given by
+
+
+
+This equation has been coded into the spread sheet Ogive Profile.xls. A sample sketch
+for      inches and        inches is shown below.
+
+
+                                        Ogive Nose Profile
+
+                      3
+                     2.5
+   Body Radius, in
+
+
+
+
+                      2
+                     1.5
+                      1
+                     0.5
+                      0
+                           0   5            10          15          20          25   30
+                                        Body Station, in from Nose Tip
+
+
+Surface Area
+       The ogive surface area is important for two reasons. First, it is the wetted area
+which drives skin friction drag. Second, when multiplied by wall thickness and material
+density, it gives the ogive weight. Now, consider a strip of ogive surface of width . Its
+surface area is
+
+
+                                                             , or
+
+
+                                                                         , or
+
+
+
+
+After integrating from             to        we find that
+
+
+
+
+                                                                                          2
+This result has also been coded into Ogive Profile.xls. For the example sketched above,
+the surface area is 379.2477 square inches.
+
+Area Centroid
+       This matters when evaluating the center of mass for an ogive. The moment about
+the base for an elemental strip is
+
+
+
+
+After integrating over the ogive length,
+
+
+
+
+The body station location of the area centroid is
+
+
+
+This, too, has been coded into the Ogive Profile.xls spread sheet, and, for our example
+nose,                inches aft of the nose tip.
+
+
+
+
+                                                                                          3
+

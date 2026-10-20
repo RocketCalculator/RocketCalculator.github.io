@@ -1,0 +1,245 @@
+Rocket Science and Technology                4363 Motor Ave., Culver City, CA 90232
+                                           Phone: (310) 839-8956 Fax: (310) 839-8855
+
+          Small Sounding Rocket Boost Phase Roll Rate 28 September 2013
+
+                                     by C. P. Hoult
+
+Introduction
+        Roll rate is an important parameter for both sounding rocket dynamics and, in
+some cases, payload operations. And, it often appears easy to analyze because, as long as
+the angle of attack is small, the governing equation is both linear and decoupled from
+other rocket dynamics. Thus, given a solution for the trajectory, a simple numerical
+integration will provide the roll history. However, here we eek even simpler descriptions
+of the roll behavior.
+        Much of this already exists. Reference 2 tells most of what one would like to
+know about the roll rate after burnout. As an incidental analysis, ref. (1) provides a
+partial description of boost phase roll motion. This memo documents the derivation of
+the boost phase roll motion used in ref. (1).
+
+Mnemonics
+_____Mnemonic_____________Defintion_____________________________________
+                   Acceleration along the flight path, ft/sec2
+                   Roll moment coefficient = Roll moment /
+                             for a single fin panel
+
+                                    for the entire rocket
+                       Aerodynamic reference length, ft
+                       Altitude, ft
+                        Roll moment of inertia, sl-ft2
+                       Launcher length, ft
+                       Number of fin panels
+                       Roll rate, rad/sec
+                       Dynamic pressure, lb/ft2
+                       Body radius, ft
+                       Aerodynamic reference area, ft2
+                       Flight speed, ft/sec
+                       Cant angle of the ith fin panel, rad
+                       Roll wave number, rad/ft
+                       Roll angle change after separation from the launcher, rad
+                       Atmospheric mass density, sl/ft3
+                       Value of at ignition of an upper stage
+
+Elementary Analysis
+
+
+                                                                                       1
+        Begin by writing the roll dynamical equation of motion, assuming a purely
+vertical flight:
+
+
+                                                                                         (1)
+
+
+During most of the boost phase a "steady state" solution can be easily found by
+neglecting the roll moment of inertia term:
+
+
+                                                                                        (2a)
+
+
+This can be rewritten in terms of the roll wave number:
+
+
+                                                                 .                      (2b)
+
+
+Equation (2b) is a very important result. Apart from minor variations due to Mach
+number and aeroelasticity, it shows that will remain constant during boost. Therefore,
+during boost,
+
+                                                                                        (2c)
+
+It follows that roll rate is proportional to flight speed.
+        The roll angle estimation follows similar lines.
+
+                                                                                       (3a)
+
+Substituting from eq. (2c) into eq. (3a) results in
+
+                                                      , or                              (3b)
+
+
+                                                             .                          (3c)
+
+Compare eq's. (2c) and (3c). The similarity is striking.
+
+Corrections to the Elementary Theory
+       The roll moment of inertia term should not be always and entirely neglected. For
+example, during "steady state" boost the driving torques from fin cant must not only
+overcome the damping torque but also add to the roll angular momentum. Most
+importantly, there will be a significant transient after ignition when the roll inertia
+dominates the initial response. Keep in mind that the roll rate is zero until the launcher is
+cleared.
+
+
+                                                                                              2
+        It's convenient to change notation at this point. Let be the first approximation
+as given by eq. (2b). This is the asymptotic result for large dynamic pressure. Now
+return to eq. (1), and rewrite it as
+
+
+                                                                    .                (4a)
+
+
+Now, if eq. (2c) is used, we find that
+
+
+                                                                ,                   (4b)
+
+
+where      is an improved approximation. The dimensionless parameter,
+
+
+                                                    ,                               (4c)
+
+
+governs how much the roll rate lags its elementary value as given by eq. (2c). Using the
+constant acceleration approximation,
+
+                                                ,                                    (4d)
+
+
+  can be written as                                     .                            (4e)
+
+
+That is,
+                                                            .
+(4f)
+
+is an improved estimate on the "steady state" roll rate. Note that          will always be
+negative because        is negative. Thus, the improved roll rate first approximation will
+always be smaller than its asymptotic value, especially at lower altitudes.
+       The same adjustment can be made to the roll angle change. Substitute eq's. (4c)
+and (4f) into eq. (3b):
+
+
+                                                                        .            (4g)
+
+
+
+
+Once Again, with Passion
+
+
+
+                                                                                           3
+        While it's apparent that eq. (4f) gives an improved approximation, it is only the
+leading term in an asymptotic expansion for the roll rate. If the process leading to eq.
+(4b) is used repetitively, the full asymptotic expansion is found to be
+
+
+                                                            .                        (5a)
+
+
+This series can be summed to give
+
+
+                                                    .                                   (5b)
+
+
+Equation (5b) matches the zero roll rate initial condition only when the launcher length
+is zero. An empirical adjustment that causes the initial condition to be satisfied for any
+launcher length is
+
+                                                                .                       (5c)
+
+
+Equation (5b) using eq. (5c) is plotted below together with eq. (2b) and the flight test data
+for Prospector -18D. This rocket does not leave its launcher until TALO ≈ 1 sec. Up to
+about TALO = 6 sec, it can be seen that the agreement is satisfactory. The "hockey stick"
+upturn after 6 sec is thought to be caused by fin static aeroelastic effects.
+       The integral for the roll angle change is straightforward:
+
+
+                                                                            ,         (5d)
+
+
+where                                                   .                               (5e)
+
+
+        More generally, consider the conditions at the ignition of an upper stage. We
+need to match a given initial roll wave number at a specified altitude. Assuming the
+upper stage were separated long before its ignition it remains to select an artificial
+altitude that will cause the roll rate to match its initial value:
+
+
+                                                                        .
+
+(5f)
+At ignition,
+
+                                                                    .                   (5g)
+
+
+
+
+                                                                                             4
+Now, if the upper stage were separated well before its ignition,
+
+                                                        ,
+
+and hence                                           .
+
+
+Thus,                                                           ,
+
+(5h)
+
+
+and                                                                 .              (5i)
+
+
+References
+   1. "Small Sounding Rocket Apogee Roll Rate", by C. P. Hoult, RST memo, 15
+       January 2013
+   2. "Sounding Rocket Structural Design Loads (rev.7)", by C. P. Hoult, RST memo,
+       24 March 2013
+
+
+                                    P-18D Roll Wavenumber
+  Wavenumber, rad/sec
+
+
+
+
+                        0.014
+                        0.012
+                         0.01
+                                                                             lR xprmnt
+                        0.008
+                                                                             lR0
+                        0.006
+                                                                             lR
+                        0.004
+                        0.002
+                           0
+                                0   2    4     6            8           10
+
+                                        TALO, sec
+
+
+
+
+                                                                                          5
+

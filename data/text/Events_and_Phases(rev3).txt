@@ -1,0 +1,261 @@
+Rocket Science and Technology                 4363 Motor Ave., Culver City, CA 90232
+                                            Phone: (310) 839-8956 Fax: (310) 839-8855
+
+                               Events and Phases(rev.3)                      26 May 2013
+
+                                      by C. P. Hoult
+
+Introduction
+        A trajectory simulation is a prime example of a “time-event” simulation. The key
+concepts needed to build a successful time-event simulation are those of events and
+phases, and their application in the simulation world. This memo focuses on rocket
+trajectory simulations, but these concepts have a much broader region of applicability.
+
+
+Events
+         Events are important milestones in a trajectory. There are two kinds of events,
+organic and adaptive. Organic events are characteristic of the rocket itself and how it is
+operated. They are often known a priori as functions of time after liftoff (TALO). A pair
+of organic events defines the boundaries of most trajectory phases. Organic event
+examples are solid propellant rocket burnout (in the absence of closed-loop thrust
+termination) and parachute deployment. On the other hand, adaptive events arise from
+interactions among the rocket, its environment and its trajectory. For these, the event
+times are not known a priori. Good examples are apogee and impact. While adaptive
+events are often not phase boundaries, transition from constrained motion on a launcher
+rail to free flight is an adaptive event dependent on distance traveled.
+
+
+Event Monitoring
+         All the events encountered in a rocket trajectory simulation depend on a single
+variable. For example, apogee depends on the vertical component of velocity and second
+stage ignition depends on TALO. A standard technique for detecting these is the “sign
+test” applied to the product of the key variable in two adjacent time steps. To detect
+apogee one checks the value of the product of vertical velocity in two adjacent time steps.
+In all cases but one this product will be positive. When the product is negative, we know
+that the apogee event lies somewhere inside the relevant time step. Sometimes a bias
+value must be used in the product variables. For example to detect impact at some
+altitude     one forms the product of            from two adjacent time steps and seek that
+pair giving a negative product.
+
+       Given that we know the times bounding an event, it’s usually possible to construct
+a simple linear interpolator to refine the estimate of the interesting variable. Consider
+apogee as an example. During the brief integration time step, it’s a good approximation
+to consider the vertical acceleration to be constant. Then, the vertical velocity  within
+the key time step is
+
+
+
+
+                                                                                         1
+                                                             .
+
+Here the subscript     denotes the value of at the start of the key time step. From this,
+the time of apogee             can be estimated as
+
+                                                     .
+
+Apogee altitude      can then be estimated from
+
+
+                                                                         .
+
+
+       Similar results can be readily found for other events. One trick will be needed
+when one interpolates to find the value of at an adaptive event. There will be no
+estimate of        developed in the code because should not be a state vector element.
+Estimate it from the intrinsic coordinate result,
+
+                                                                 .
+
+Here
+  = Flight path angle, positive when the velocity vector points above the horizon,
+  = Acceleration due to gravity, and
+     = Total (vector magnitude) velocity.
+
+        Another kind of adaptive event are maxima and minima for variables not elements
+of the state vector. For such variables their derivatives are not readily available. Good
+examples are maximum dynamic pressure and maximum Mach number. For these events
+the variable      is monitored and when             the maximum has been approximately
+found. A first estimate on the maximum is, of course, .
+        If a refined estimate is needed, fit a parabola to    ,    &      . The dependent
+variables are separated by the time step, . Taking the time to be zero at       ,
+
+                                                         ,
+
+
+where                           , and                                .
+
+
+Differentiate and set the result equal to zero to the find the time T of the optimum:
+
+
+
+Given the optimum time, it is plugged into the parabolic formula to obtain the desired
+stationary value of the dependent variable.
+
+
+                                                                                            2
+Phases
+       Phases are what happens between phase boundary events. Simulation phases are
+described as logical variables. A simulation run requires that each phase in the Table 1.
+menu must be input as either TRUE or FALSE by the user. Once a set of phases has
+been selected TRUE, the simulation can execute the TRUE phases in the order in which
+they appear in the menu.
+
+         Most importantly it should be possible to mix and match phases from this list to
+accomplish one’s simulation objectives. That is, any given simulation run need not use
+all these phases. If the rocket does not have a parachute recovery system, for example,
+then the last two phases will not be needed (they should be selected FALSE). Second,
+this list should be considered incomplete. It does not, for example, include free flight,
+both powered and coasting, with a spin-stabilized stage because this technique has never
+been used in a small sounding rocket1.
+
+       Since all phases except first stage powered gravity turn are initiated on TALO, a
+simple approach is to include in the input table the Sequence of Events with initial TALO
+for each phase, and, if different from the end state of the previous phase, the initial
+conditions on mass, altitude, velocity and flight path angle/quadrant elevation angle (QE).
+
+Every phase is unique, characterized by
+    Its initial criterion. This is usually TALO or some such. Note that some initial
+       times are user specified as delay times from the end of a prior event. Also, the
+       transition from constrained motion on a launcher rail to unconstrained free flight
+       motion is based on distance travelled.
+    Initial weight (mass). Although mass is often included as an element in the state
+       vector (a good idea), its initial value at the start of a new phase will depend on the
+       mass dropped before starting the new phase.
+    Dynamic model. There are three of these: Constrained motion on the launcher
+       rail, Free flight, and Free flight with a temporary decrease in integration time
+       needed for initial parachute deployment and inflation.
+    Thrust and drag models. Every powered flight phase is associated with a thrust-
+       time table. See Thrust Curve.org. All coasting flight phases are associated with a
+       power-off drag curve and all powered flight phases are associated to a power-on
+       drag curve. Aerodynamic reference areas are included as part of this description.
+       Often, parachute phases use the uninflated parachute area as the reference area
+       because that's the way the parachute literature is usually written.
+
+
+
+
+1
+  Ordinary spin stabilized ordnance, e.g., a rifle bullet, can be adequately modeled with
+the first stage coasting gravity turn after burnout phase. However, for sounding rocket
+flight at altitudes too high for practical aerodynamic stabilization spin stabilization is
+usually required. The dynamic model for this includes some tricky precession effects.
+
+
+                                                                                           3
+It is important to note that if an event does not change any of the above characterizations,
+it is not a phase boundary event. Apogee and maximum dynamic pressure, both
+important events, are not phase boundary events. On the other hand, burnout is usually a
+phase boundary event because it is often associated with staging.
+
+       For a simulation capable of addressing a three stage rocket the phases to be
+included are shown in Table 1 below:
+
+               Description                                I II III IV V
+               First Stage on Coasting Flight            T   T   F    F   F
+               First Stage Coasting on Parachute         T   F   F    F   F
+               First Stage Powered Flight on Launcher    F   F   T    T   T
+               First Stage Powered Free Flight           T   F   T    T   T
+               First Stage Coasting Flight               F   F   T    F   F
+               Second Stage Coasting Flight              F   F   F    T   T
+               Second Stage Powered Free Flight          F   F   F    T   T
+               Second Stage Coasting Flight              F   F   F    T   F
+               Third Stage Coasting Flight               F   F   F    F   T
+               Third Stage Powered Free Flight           F   F   F    F   T
+               Third Stage Coasting Flight               F   F   F    F   T
+               Coasting on Drogue Parachute              T   F   T    T   F
+               Coasting on Main Parachute                T   F   T    T   F
+                             Table 1 Simulation Phase Menu
+
+        Several comments on this menu are in order. The Description row refers to a set
+of 5 examples:
+
+Example I describes the sequence of events for a single stage rocket that has been
+dropped from an aircraft, parachute-stabilized before ignition, and then recovered with
+two parachutes. After ignition the rocket flies up through the parachute, shredding it in
+the process.
+
+Example 2. is the sequence for a bomb dropped from an aircraft.
+
+The third Example is for another single stage rocket launched from a rail on the ground
+and then recovered with a two stage parachute system. Note that a single stage parachute
+recovery system initially deployed in a reefed condition, and then disreefed at a later time
+can be simulated with the same two phases with disreefing occurring when the "Main
+Parachute Deployment" event happens.
+
+
+
+
+                                                                                          4
+Example 4 is a rail-launched two stage rocket in which the simulation follows the second
+stage, not the expended first stage, after coasting. If we wished to follow the expended
+first stage, we'd use Example 3. It has a recovery system.
+
+The fifth Example is a rail-launched three stage rocket following the third stage which
+has no recovery system.
+
+        The most straightforward way to implement all this in SKYAERO, written in
+EXCEL, is to put TALO in the first column. The next thirteen columns are for the
+thirteen phases listed above. The logical contents of each cell are set to “TRUE” if the
+simulation is in that phase at the indicated TALO. Otherwise, the default value remains
+“FALSE”. A simple logical test on the times in the Sequence of Events will establish the
+correct logical value for each of the 13 cells at every TALO. Note that it’s a good idea to
+start and end all phases concurrently with the beginning/end of an integration time step.
+Keep it simple. These logical variables can also be used to establish phase initial
+conditions if they are not the same as the ending conditions from the previous phase.
+Finally, given that the phase logical variable for every TALO at the start of an integration
+step is known, other logical variables can be used to ensure the appropriate drag curve,
+aerodynamic reference area, etc. are used.
+
+
+Ending Events
+        Events ending a phase also come in two kinds, natural and timed. Examples of
+natural ending events are burnout (thrust = 0) and impact (altitude = ). The relevant
+phase can not continue for natural reasons. Timed events, on the other hand, end when
+the simulation user wants them to end. In every case, except the very first event, a new
+phase starts at the same time as its predecessor ends.
+
+         Thrusting events always end when vacuum thrust decays to zero. The user can
+easily determine the duration of a thrusting phase by inspection of its thrust-time table.
+The only exception is thrusting while on a launcher rail. Coasting and parachute events
+are all defined by user-specified durations, except for the final event ending with ground
+impact. For example, second stage ignition ends a second stage coasting flight phase, but
+only when the user wants it to happen. Thus, the user inputs the duration of all active
+phases except for the two ending with natural events, thrusting on the launcher rail and
+the final phase ending with ground impact.
+
+        When executing a trajectory code such as SKYAERO, timed phase boundaries are
+input from Table 2 below:
+
+           Phase Description Duration, Start TALO, End TALO, Logic Error?
+                               sec          sec        sec
+
+
+                              Table 2 Duration Input Table
+
+
+
+                                                                                           5
+The first column is the Phase Description as provided in the Table Menu. . The second
+is the input Phase Duration. The third & fourth columns are derived by addition from
+column 2. The last column is a an error message. For example, if a negative duration is
+inadvertently input. Table 1 contains a row for each phase selected TRUE in Table 2.
+For the two events ending in a natural event, the duration cell is left blank.
+         Note that the final phase, which will be terminated by impact with the ground,
+should be given an input duration of 9999.0 seconds. The actual impact will occur much
+earlier, but this ensures that the simulation run does not stop itself prior to impact.
+
+
+        IMPORTANT! It’s sometimes possible to input the same quantity twice. Unless
+care is taken, it’s only a matter of time until the two numbers don’t match. For example,
+the time of first stage burnout / start of the first stage coasting flight appears in the
+Sequence of Events table used, and sets the phase logical variables. It is also the last
+entry in the first stage table of thrust vs. time. The best approach is to fill in the Sequence
+of Events table using the thrust vs. time data.
+
+
+
+
+                                                                                             6
+

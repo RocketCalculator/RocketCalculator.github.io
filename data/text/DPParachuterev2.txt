@@ -1,0 +1,264 @@
+Rocket Science and Technology                  4363 Motor Ave., Culver City, CA 90232
+                                             Phone: (310) 839-8956 Fax: (310) 839-8855
+
+            Dual Purpose Parachute Recovery System, rev2                      02 May 2013
+
+                                      By C. P. Hoult
+Introduction
+        One of the more challenging ESRA requirements is to recover intact all flight
+hardware. We do not want to litter BLM land with rocket junk. Based on considerable
+flight operations experience, this is nowhere as easy as it sounds. Most ESRA parachute
+recovery systems first deploy a drogue parachute to reduce the dynamic pressure to a
+level which is safe for main chute deployment. Unfortunately, this is not always a
+practical approach. This memo addresses a new recovery scheme suggested by Adam
+Vore, our parachute expert.
+        The Vore scheme separates the rocket body into two parts just below the desired
+apogee. The two body parts are a heavy solid nose section and a lighter aft body
+containing all the electronics. At separation the parachute, attached to the light aft body,
+is deployed for apogee control. The two body halves are attached via a lanyard,
+including a length of bungee cord. The impact shock to the aft body is mitigated because
+the aft body will slow down significantly after the heavy nose has impacted.
+        This memo documents the analysis for the descent time, aft body impact velocity
+and lanyard length. A parachute reefing option is described.
+
+Nomenclature
+
+_______Symbol____________________Definition______________________________
+                     Descent velocity, ft/s
+                     Altitude AGL, of the aft piece, ft
+                    Time from parachute deployment, s
+                     Mass of the solid nose, sl
+                    Mass of the aft body, including the parachute, sl
+                     Drag coefficient of the disreefed parachute,
+                          Drag coefficient of the reefed parachute,
+                         Parachute projected area, ft2,
+           g              Acceleration cue to gravity, ft/s2,
+                         Mass density of the atmosphere, sl/ft3,
+                         Atmospheric temperature lapse rate = – 0.003566 oR/ft,
+                          Gas constant for air = 1716 ft2 / s2 oR
+                         Atmospheric temperature, oR
+                         Tether length, ft
+                         Reefing ratio = Diameter of reefing line circle
+                                           Nominal parachute diameter
+          ( )o            Conditions at sea level
+          ( )D            Conditions at parachute deployment
+          (.)DR          Conditions at parachute disreefing
+
+
+                                                                                           1
+          ( )I                Conditions at impact of the nose piece
+                                                                 Payload / Ballast
+
+
+
+
+                                                                                     Tether Spool
+                                                                                     Arbor
+
+
+
+                 Bulkheads             Parachute & Tether Bay
+                                  Black Powder
+
+
+
+                                                                        Tether
+                                            U Bolt
+
+                                             Shock Cord
+ Socket     Motor Bay        Avionics Bay
+                                                     Swivel
+
+
+                                                                                     Not To Scale
+
+
+
+                                                     Parachute
+                      Figure 1 Second Stage with Deployed Parachute
+
+
+Operations Description
+        Let's start with a description of the second stage, and how it works. A graphical
+depiction of Stage 2 at parachute deployment is shown in Fig. 1. At its extreme aft end is
+the socket bay that receives the interstage spigot, part of the first stage. Just forward of
+this space is the bay housing the second stage H motor along with its ignition wiring and
+guide tube. The avionics bay is forward of the motor bay, and contains the Arduino flight
+computer, the GPS radio homing beacon and sensors. These bays are bounded by birch
+plywood bulkheads, the aftermost having a circular cutout for the rocket motor.
+        The forward part of the second stage is devoted to recovery. A single parachute is
+used, initially deployed in a reefed condition. The parachute is held in place by the
+payload / ballast element which is attached to the second stage hull by nylon shear
+screws. Upon computer command, a small powder charge behind the parachute is
+ignited. The gases push the parachute bag which, in turn, pushes the payload / ballast
+shearing the nylon retention screws. As the payload / ballast moves forward, a tether
+coiled around its arbor deploys. The other end of the tether is attached to the parachute
+swivel. When the tether is fully deployed, it extracts the parachute. Finally, the
+parachute swivel is connected to the second stage hull via a shock cord. Note the care
+must be taken to preclude abrasion damage to the shock cord where it rubs against the
+open mouth of the second stage. The parachute is disreefed at a modest altitude above
+
+
+                                                                                                    2
+the ground and the assembly slows to a new equilibrium descent speed. Finally, during
+landing the payload / ballast first contacts the ground causing the tension in the tether to
+vanish. When this happens the second stage hull is slowed to its final impact speed.
+
+
+Tether Spool
+       The tether material is assumed to be 1/8" nylon parachute cord wrapped in layers
+around a central arbor. Consider a 1/8" length of spool in which the tether is wrapped
+around an arbor of 1/4" diameter. The following table summarizes the tether storage:
+
+                    Tether    Mean layer radius, in      Layer length, in
+                    layer
+                    1         0.1875                    1.178
+                    2         0.3125                    1.963
+                    3         0.4375                    2.749
+                    4         0.5625                    3.534
+                    5         0.6875                    4.320
+                    6         0.8125                    5.105
+                    7         0.9375                    5.890
+                    Total                               27.740
+                                   Table 1 Tether Storage
+
+Thus, a spool 1/8" long can store about 2 ' of tether. A 2" long spool carries 33 ft of
+tether.
+
+
+Shock Cord
+         Attach the second stage hull U bolt to the parachute swivel with a length of shock
+cord to mitigate opening shock loads. Some thoughts on how this works are in order:
+First there are two possible scenarios for parachute deployment.
+         In the first, the black powder applies a pressure force to the aft end of the
+parachute, and it in turn shears the nylon screws so that the payload / ballast comes out
+first followed by the folded parachute. If the payload / ballast separates at modest
+velocity, say, up to 10 ft/sec, then the parachute will be fully inflated before the 33 ft
+tether is fully deployed.. Assuming deployment on the ascending leg, the parachute will
+first strongly pull the rocket body downward, and then, after the tether is deployed the
+rocket body & payload / ballast will be strongly pulled upward. The magnitude of the
+first downward pull can be estimated using OSCALC. The magnitude of the second,
+upward pull could be estimated given the payload / ballast separation velocity (currently
+unknown).
+         In the second scenario, the payload / ballast is separated as in the first scenario,
+but the parachute hangs up inside the rocket body. When the tether is fully extended (33
+ft) the payload / ballast will jerk the parachute the rest of the way out. This is essentially
+a backup deployment scenario. In this case, the opening shock given by OSCALC will
+be divided between pulling the rocket body and the payload / ballast down. It might be a
+more severe load on the tether.
+
+
+                                                                                               3
+Analysis of Descent
+       During steady state descent Newton’s third Law is
+
+                                                               , or
+
+
+                                                           .                               (1)
+
+
+Given density as a function of altitude, this can be integrated to find the descent time
+
+
+                                                          in the troposphere.
+
+(2)
+
+
+Then,                                                            , and
+
+
+
+                                                                                  .
+
+(3)
+
+The descent time, ,is important because the larger this becomes the greater the wind
+drift during descent. If the parachute is not reefed,
+
+      Total time from deployment to disreefing
+
+Otherwise, the total time from deployment to impact is the time from deployment to
+disreef plus the time from disreef to impact. Note that the parachute drag area will
+change as a result of disreefing. We use eq. (3) to find these two separate times.
+
+Total time
+(4)
+
+Analysis of Impact
+       As soon as the heavy solid nose has stopped, the aft piece and parachute slow
+down. Newton’s Second Law for this situation is:
+
+
+
+(5)
+
+Change the independent variable from time to altitude:
+
+
+                                                                                             4
+(6)
+
+The relevant initial condition is
+
+                                            at
+
+This can be easily integrated to give
+
+
+
+
+When the aft piece strikes the ground, its velocity will be
+
+
+                                                                                       (7)
+
+
+This model has been incorporated into ONECHUTE3.xls.
+
+
+Parachute
+       Now suppose the following values apply:
+
+                Payload / ballast weight
+                                       10 lbs
+                Aft body weight        8.5 lbs
+                Tether length          33 ft
+                Deployment altitude    25,000 ft AGL
+                Disreef altitude       1,000 ft AGL
+                Impact altitude        4300 ft MSL
+                Parachute description  LOC Precision Classic II size
+                                       44 (5.18 ft dia)
+                Reefing ratio          0.25
+                         Table 2 Second Stage Recovery data
+
+The selection of reefing ratio merits some discussion. Larger reefing ratios imply smaller
+drag and faster descent times (good to minimize wind drift) However, they also imply
+higher speeds at disreef (Greater risk to the parachute). The values selected above result
+in:
+
+                  Sea level descent speed (reefed) 61.25 ft/sec
+                  Total descent time                27.1 minutes
+                  Aft body impact speed             20.86 ft/sec
+                       Table 3 Second stage recovery performance
+
+
+                                                                                         5
+Summary
+      This study describes a second stage recovery concept and identifies typical
+parameters. The major outstanding risk is parachute deployment.
+
+
+References
+1."Reefing of Parachutes", by T.W. Knacke, Aeronautical Systems Division report AD-
+A036 497, 1976
+2. "Rocket Recovery Redefined", anon, LOC Precision data sheets, 2013
+3. “OSCALC – Opening Shock Calculator, Version 1.01, User’s Manual”, G. Peek and J.
+Potvin, Parks College Parachute Research Group, Saint Louis University, St. Louis, MO
+
+
+
+
+                                                                                    6
+

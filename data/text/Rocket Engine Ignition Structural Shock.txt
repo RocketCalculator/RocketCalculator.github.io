@@ -1,0 +1,344 @@
+Rocket Science and Technology                 4363 Motor Ave., Culver City, CA 90232
+                                            Phone: (310) 839-8956 Fax: (310) 839-8855
+
+                  Rocket Engine Ignition Structural Shock                 21 January 2014
+
+                                      by C. P. Hoult
+
+Introduction
+         An elementary calculation provides the steady state axial load along the rocket
+body during flight. But, transient loading at ignition is often much larger. Following the
+sudden increase in thrust at ignition, an elastic compression wave is sent up the structural
+“stack”. This wave produces significant shock loading, especially on fragile payload
+elements. General experience with large rockets (satellite launch vehicles) shows that
+this is the primary source of payload (satellite) structural loading.
+
+       Also, if the thrust vector is misaligned with the forebody center of mass, large
+bending torques are introduced. Even with small sounding rockets (e.g., NIRO) it is a
+major loading consideration. More complex models with variable properties along the
+rocket body, or with solid propellant motors can be readily modeled using finite element
+techniques.
+
+
+Nomenclature
+_____Mnemonic_____________Definition_____________________________________
+            ......................Cross section area of the load-bearing part of the column
+               ...................Steady state axial acceleration
+                     ...............Axial acceleration of a column element
+            ......................Young’s modulus of the load bearing material
+                     ..............Axial stress, positive in compression
+                    ...............Axial strain, positive in tension
+           ......................Column length (or length of a column element)
+           ......................Column mass per unit length
+           .. ....................Wave speed of axial elastic displacements
+           ... ...................Nominal distance forward of the aft end of the rocket
+                     ...............Elastic displacement, positive in the + direction
+                   ................Steady State elastic displacement
+                       .............Transient vibrational elastic displacement
+            ..................... Axial force, positive in tension
+         s.......................Laplace transform variable
+            ......................Thrust force
+          .......................Time after rocket ignition
+           ......................Laplace transform of b(t)
+Two Mass Model of Ignition Shock
+
+
+                                                                                          1
+        This memo documents a highly simplified analysis of a rocket structure with a
+thrust chamber at the extreme aft end. We start by considering a model having two
+discrete masses connected by a spring:
+                                        x1
+                             m1
+
+                                   k
+
+
+                             m2         x2
+
+
+                              T
+The two coupled equations of motion are
+
+
+
+
+Here g = acceleration due to gravity.
+
+The initial conditions are
+
+
+
+Next, take the Laplace transform (s = the transform variable)
+
+
+
+                                                                  , or
+
+
+
+
+Then,
+
+                                                          , and
+
+
+
+
+                                                                                   2
+                                                                       , or
+
+
+                                                                              , or
+
+
+
+
+Define the natural frequency of this system to be
+
+
+
+
+Then,
+
+
+                                                                   .
+
+
+Now, suppose next that the thrust acceleration is very large compared to g. Then,
+
+
+                                                          .
+Given this,
+
+
+                                                          .
+
+
+Now, what we really care about is the acceleration, A1. Then,
+
+
+                                                          .
+
+
+Next, rewrite this in terms of a partial fraction expansion:
+
+
+
+
+The inverse Laplace transform can be found adding the contributions from both terms:
+
+
+                                                               .
+
+
+
+
+                                                                                       3
+Finally, the maximum value for    is
+
+
+
+
+Thus, the effect of a finite stiffness is to increase the steady axial load on by a factor
+of 2. Note that this result does not depend on the spring stiffness or the relative
+magnitude of the two masses.
+
+
+Three Mass Model of Ignition Shock
+       To understand this problem at its most fundamental level, consider a bare-bones
+model having only three massive elements,            and     , each pair connected by a
+spring whose stiffness is . At t = 0 the rocket is ignited and thrust , acting as a step
+function is applied to   . The mass displacements are measured from the launch pad
+upward. Gravity is neglected since it is usually much smaller than thrust.
+
+
+                                             m1
+                                                  k
+                                             m2
+                                                             x
+                                                  k
+                                             m3
+
+                                                  T
+The three coupled equations of motion are:
+
+
+
+
+Next, take the Laplace transform, assuming the stack starts from rest with no initial
+displacements.
+
+
+
+
+                                                                                        4
+Eliminate    :
+
+                                                    , and
+
+
+
+
+Then, eliminate    :
+
+
+                                                     , and
+
+
+
+
+At this point it becomes expedient to aggregate the stack in a way makes all three masses
+the same. Then,
+
+
+
+
+However, what we really want is the acceleration of the topmost (first) mass,   :
+
+
+
+
+Before inversion, rewrite this as
+
+
+                                                             , where
+
+
+                                                .
+
+Expand this into partial fractions:
+
+
+
+
+                                                                                       5
+                                                                              .
+
+
+Next, invert the Laplace transform term by term:
+
+
+                                                                                  .
+
+
+The steady state acceleration is
+
+
+
+
+Then,
+
+
+
+
+This is plotted below as the Amplification Factor. It shows a maximum value of about
+2.4142.
+
+
+                                              Top Mass Amplification Factor
+
+
+                           3
+                         2.5
+                           2
+  Amplification Factor
+
+
+
+
+                         1.5
+                           1
+                         0.5
+                           0
+                         -0.5 0   1   2   3       4      5       6        7   8       9       10   11   12
+                          -1
+                                                             Omegan * t
+
+Next, find the acceleration of the second mass:
+
+
+                                                                                          .
+
+
+
+
+                                                                                                             6
+The partial fraction expansion is
+
+
+
+
+This can be inverted to give
+
+
+
+
+Normalizing by the steady state acceleration,
+
+
+
+
+We see, by inspection, that the maximum value of this ratio is
+
+
+                                                .
+
+
+Finally, seek the maximum acceleration of the base element,      :
+                                                        , or
+
+
+
+
+Then, since
+                                                    ,
+
+
+
+
+The inversion is easy:
+
+
+
+
+As shown in the plot below, the maximum Amplification Factor is 3.
+
+
+
+
+                                                                     7
+                                             Bottom Mass Amplification Factor
+
+
+                           3
+                         2.5
+                           2
+  Amplification Factor
+
+
+
+
+                         1.5
+                           1
+                         0.5
+                           0
+                         -0.5 0   1   2     3     4      5       6        7     8   9   10   11   12
+                          -1
+                                                             Omegan * t
+
+
+
+Then, the amplification factors do not depend on element or total mass, nor do they
+depend on the stiffnesses between elements. In summary
+
+
+                                           Element      Amplification Factor
+                                            1 (top)           2.4142
+                                          2 (middle)             2
+                                          3 (bottom)             3
+
+
+
+
+                                                                                                       8
+

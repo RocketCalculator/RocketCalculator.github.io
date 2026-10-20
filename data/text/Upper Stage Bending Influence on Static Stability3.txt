@@ -1,0 +1,257 @@
+Rocket Science and Technology                  4363 Motor Ave., Culver City, CA 90232
+                                             Phone: (310) 839-8956 Fax: (310) 839-8855
+
+    Upper Stage Bending Influence on Static Stability(rev.3)                   18 April 2012
+
+                                        by C.P.Hoult
+         The Nike-Cajun Problem
+
+Introduction
+This problem began in 1956. At that time, the Nike-boosted Cajun, or Nike Cajun, was
+just entering Air Force service as a small, inexpensive sounding rocket. The Nike Cajun
+concept originated with the Univ. of Michigan (U. of M.) which, in those days, was far
+from a systems house as we would understand the term today. They approached rocketry
+from an empirical perspective: let’s launch one and see what happens. They did not
+bother to do trajectory analysis, or heating and stress calculations.
+
+The first results were spectacularly pleasant: The Nike Cajun was inexpensive, and it
+often seemed to work. Only later did its warts become apparent. For example, in the
+beginning, there was no easy way to adjust the second stage fins to obtain a desired roll
+rate. To overcome this deficiency, roll wedges were attached to the fin trailing edges.
+But the wedges caused so much fin twisting moment that roll rate prediction was often
+accompanied by prayer. We later discovered that the baseline U. of M. fin design, when
+wedged and flown with a very light payload (high burnout Mach No. and dynamic
+pressure), came perilously close to aileron reversal.
+
+All these little problems, however, paled beside the real excitement. When launched with
+a long, heavy payload, the rocket would often abruptly fail structurally1 immediately prior
+to first stage burnout. Camera data showed the entire second stage progressively bending
+with the payload eventually snapping off. The immediate, ad hoc, solution was to beef
+up the payload-to-second stage joint. This helped a little, but failed to solve the problem.
+Eventually, calculations (I recall Bob Swanson (Aerojet) as the first to propose an
+aeroelastic explanation) similar to those replicated here established static aeroelasticity as
+the causative mechanism.
+
+Analysis
+Consider a non-rolling two stage rocket as sketched in Figure 1. Suppose that there is a
+thrust misalignment that produces a quasi steady state angle of attack.
+
+Define the notation:
+
+NT1 = First stage tail normal force,
+NT2 = Second stage tail + interstage normal force,
+NN = Nose normal force,
+U = Free stream velocity,
+
+1
+    Sometimes called a RUD, or Rapid Unscheduled Disassembly, event
+
+
+                                                                                            1
+ = Angle of attack,
+T = Booster thrust,
+ = Thrust misalignment angle, and
+x’s as sketched in Fig. 1.
+
+
+       NT1
+                 x1                       NT2
+                                 x2                                   NN
+                                                                              U
+                                                                                              
+
+T
+
+                x4                               x3
+
+
+
+                      +M
+
+
+                                      Figure 1
+
+In the steady state, the net moment must vanish. Using the moment sign convention
+sketched in Fig. 1,
+
+                           NT1 x1 – NT2 x2 – NN x3 – T x4 = 0.
+
+It is straightforward to relate the aerodynamic normal force components to the angle of
+attack. For a rigid airframe,
+
+                                      NT1 = q S CN1
+
+                                 NT2 = q S CN2, and
+
+                               NN = q S CNNwhere
+
+       q = Dynamic pressure,
+       S = Aerodynamic reference area, and
+       CN = Normal force coefficient slope
+
+Now, suppose the first stage booster is so stiff that its deformations under load are
+negligible. Under this assumption, we can model the flexible second as though it were
+cantilevered from the booster. The third of the aerodynamic load equations above must
+be modified to reflect its bending deflection, y. See Figure 2 below:
+
+                            NN = q S CNNdy / dx).
+
+
+
+                                                                                          2
+                                              l
+    0
+                                                               NN                 x
+
+           y
+                                          Figure 2
+
+
+Next, the slender beam equation is, neglecting lateral and axial acceleration loads,
+
+                          M = NN ( l – x ) = EI2 d2y / dx2, where
+
+        M = Bending moment,
+        l = Distance from nose tip center of pressure to the base of the upper stage/dart,
+      EI2 = Second stage bending stiffness ≈ E R3 t,
+where R = Radius of a thin-walled tube, and
+      t = Thickness of a thin walled-tube.
+
+After integrating once,
+
+                             EI2 dy / dx = NN ( l x – ½ x2 ), or
+
+
+
+                                                                /
+                 dy / dx (l) = q S CNNdy / dx (l)) l2 2 EI2, or
+
+
+
+                  dy / dx (l) = q S CNNl2    / ( 2 EI – q S C l ).
+                                                         2          NN
+                                                                          2
+
+
+
+
+When the denominator above vanishes, it leads to an infinite system response called
+divergence. It is rightly feared because it defines an important system limitation.
+
+Now, return to the condition of system moment balance. With aeroelastic effects
+included, we have that
+
+
+   q S  { x1 CN1 – x2 CN2 – x3 CNN [ 2 EI2 (2 EI2 – q S CNN l2 ) ] } – x4 T = 0.
+                                                  /
+The angle of attack is immediately found to be
+
+
+
+                                                                                             3
+  =x4 T q S { x1 CN1 – x2 CN2 – x3 CNN [ 2 EI2 (2 EI2 – q S CNN l2 ) ] }.
+                   /                                               /
+Next, define the divergence dynamic pressure, qD, to be
+
+
+                                                    /
+                                     qD = 2 EI2 S CNN l2.
+
+Then, using this result, the angle of attack becomes
+
+
+            =x4 T q S { x1 CN1 – x2 CN2 – x3 CNN qD (qD – q ) }.
+                            /                                           /
+The first effect of static aeroelasticity is that the angle of attack on all elements of the
+body is increased:
+
+
+=Rigid{x1 CN1 – x2 CN2 – x3 CNN }/ {x1 CN1 – x2 CN2 – x3 CNN qD (qD – q )}(1)
+                                                                                  /
+The nose tip slope is
+
+
+                                                        /
+                                  dy / dx (l) = q  (qD – q ).
+
+The total nose aerodynamic force is
+
+
+                                                                  /
+NN = q S CNNdy / dx) = q S CNNq (qD – q ) ], or
+
+
+                              NN = q S CNNqD (qD – q ). /
+Thus the nose tip has a second aeroelastic increment in angle of attack. The final nose
+angle of attack becomes
+
+                            RigidqD{x1 CN1 – x2 CN2 – x3 CNN }
+                                                                                               (2)2
+                           {x C
+                              1    N1   – x2 CN2 }(qD – q ) – x3 CNN qD
+
+
+               /
+The factor, qD (qD – q ), is the second factor by which rigid body nose loads are
+increased due to static aeroelastic effects. To implement these in, say BENDIT, increase
+the angle of attack for all elements except the nose using eq. (1), and increase the nose
+angle of attack using eq. (2)
+
+
+
+                                                                                               4
+      The Flexible Joint Problem
+
+Introduction
+A variation on the flexible upper stage and payload problem described above is an
+essentially rigid vehicle except for a single flexible joint. For purposes of discussion, the
+joint is assumed to attach payload and rocket body.
+
+Analysis
+The analysis proceeds as before, except the payload normal force is now
+
+                                NN = q S CNN),
+
+where the joint rotation angle
+
+The joint rotation angle, in turn, will depend linearly on the bending moment acting on
+the joint:
+
+                                        C M,
+
+where C = joint compliance, and
+      M = bending moment acting on the joint.
+
+The appendix provides a discussion of the factors affecting joint compliance.
+Then, if the joint is a distance xj behind the nose center of pressure
+
+                           NN = q S CNNCNN xj), or
+
+
+                        NN = q S CNN    / ( 1 – q S C C x ).
+                                                           NN     j
+
+
+
+
+The divergence dynamic pressure qD is
+
+                                   qD = 1 / S CNNC xj.
+
+With this the nose normal force becomes
+
+
+                                                    /
+                              NN = S CNNqD (qD – q ).
+
+The factor to be applied to rigid body loads to obtain loads with a flexible joint is just
+
+
+   /
+qD (qD – q ), the same as for the flexible body bending case.
+
+
+
+
+                                                                                             5
+

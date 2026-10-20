@@ -1,0 +1,361 @@
+                  A New Wind Sensor for Rocket Launches
+
+                                  Mohideen Faisal Buharie1 and Samir Mohamed2
+                      California State University Long Beach, Long Beach, California, 90840
+
+
+            The purpose of this research was to design and develop a low cost wind measurement
+         device using a tethered pilot balloon, tracked with an observing telescope. A telescope-
+         mounted Celeston SkyScout® sensor provides line of sight elevation and azimuth angles
+         using a GPS receiver, and triaxial accelerometers and magnetometers. Balloon altitude was
+         controlled by measuring deployed tether length and elevation angle. This equipment proved
+         to be inexpensive, practical and suitable for wind compensation of academic sounding
+         rockets.
+
+
+                                                  Nomenclature
+B         =   Buoyancy Force = ρ Vol g (N)
+Cd        =   Drag Coefficients.
+D         =   Drag Force (N)
+d         =   Deployed tether length (m)
+g         =   Acceleration due to gravity (m/s2)
+h         =   Balloon altitude (m)
+Re        =   Reynolds Number
+S         =   Reference area = Balloon cross section area (m2)
+T         =   Tensile Force (N)
+V         =   Wind speed (m/s)
+Vol       =   Volume of balloon (m3)
+W         =   Weight of balloon and He gas and tether (kg)
+ρ         =   Density (kg/m3)
+θ         =   Elevation Angle (Deg)
+
+                                                I. Introduction
+
+U     nmodeled errors in the wind profile traversed by a fin-stabilized sounding rocket are by far the largest single
+      cause of trajectory prediction error. Safe operations imply control of rocket impact points by measurement of
+the winds and compensation via changes in launch rail azimuth and quadrant elevation angles. The objective of this
+project was to develop a functional wind measurement system (hardware & software) suitable for wind
+compensation of California State University Long Beach (CSULB) Prospector sounding rockets.
+    This research explores a new wind measurement concept. Many techniques for wind measurement exist. The
+classical Robinson cup anemometer with azimuth vane is a good approach at the lower altitudes attainable with a
+tower or mast. For higher altitudes, Doppler lasers and a network of whistles and audio microphones have both been
+satisfactorily developed. Finally, most sounding rocket wind measurements have used a sequence of free flying
+weather balloons observed with stereo theodolites. All these existing techniques are either too expensive (by a factor
+of ~10) or generate data at altitudes too low to be useful. However University launch vehicle programs need an
+inexpensive technique to measure winds at or below about 2 km altitude. Above 2 km, aviation weather data
+obtained from the Federal Aviation Authority (FAA) is normally used.
+    To solve this problem we chose to measure the deflection of a Tethered Pilot Balloon (TPB). Only one balloon is
+used per launch and a single telescope with an attached Celeston SkyScout® sensor that measures the pilot balloon’s
+(pibal) azimuth and elevation angles. The balloon altitude is controlled by measurements on tether length.
+
+1
+  Undergraduate, Mechanical and Aerospace Engineering, 1250 Bellflower Blvd, Long Beach CA 90840, AIAA
+Student Member.
+2
+  Undergraduate, Mechanical and Aerospace Engineering, 1250 Bellflower Blvd, Long Beach CA 90840, AIAA
+Student Member.
+
+
+                                                        1
+                                American Institute of Aeronautics and Astronautics
+     Figure 1 is a conceptual sketch of our sensor. A SkyScout® sensor attached to the telescope barrel measures the
+pilot balloon’s (pibal) azimuth and elevation angles. The balloon’s altitude is controlled by measurements on tether
+length. In service, the telescope is pointed at the pibal while the tether length is adjusted to place it at the desired
+altitude. Only then are the final elevation and azimuth
+angles read from the SkyScout®.
+                                                                     Wind                                 Drag
+        II. Development Philosophy:
+  Because this technique has not previously been                                                 Pibal
+used, we adopted a two-phase approach to reduce
+development risks and increase student confidence.
+                                                                LOS
+First, we built a very crude, inexpensive prototype to                                       Catenary
+learn as much as possible. Then, after assimilating the                                      Tether
+lessons learned in testing, an operational sensor was
+designed and built from commercial off the shelf
+components. Also, we compared various ways to
+implement each sensor function; for example, we                                                Elevation
+selected a magnetic compass to measure the balloon                                             Angle
+azimuth after comparing it with using a landscape
+feature as a fiducial reference and measuring from that
+with a protractor.                                                   Sensor Optics
+              III. Sensor Design                                           Figure 1. Sensor Concept
+
+A. Sensor Design - Balloon Sizing:
+    The Tethered Pilot Balloon (TPB)
+concept will work as long as the balloon drag
+increases monotonically with wind speed.                                   Sphere Drag Coefficient
+However, the existing sphere drag data in Ref
+1 (See Fig 2) can be used to prepare Fig 3.                  0.6
+The boundary layer on the sphere near its
+                                                             0.5
+equator transitions from laminar (smooth,
+orderly) flow to turbulent (chaotic,                         0.4
+                                                       Cd
+
+
+
+
+disorderly) flow near where the low speed                    0.3
+drag is greatest, causing a pronounced                       0.2
+nonlinearity.                                                0.1
+    Turbulence causes the outer, inviscid
+flow to remain attached to the sphere for a                    0
+greater extent which increases back-side                     1.00E+04        1.00E+05        1.00E+06        1.00E+07
+pressure recovery and reduces drag. The                                               log Re
+laminar/turbulent transition depends on the
+Reynolds Number (wind speed * balloon
+diameter / kinematic viscosity). Since                     Figure 2. Incompressible Sphere Drag Coefficients.
+kinematic viscosity, a fluid property, does not
+change for our design problem, the balloon diameter must be selected to provide a wind speed range appropriate for
+our application. Knowing that rockets would not normally be launched into wind speeds greater than 20-25 fps, Fig
+3 shows that a balloon radius of about 1.5 feet is a good choice. In service, balloon size is controlled by inflating the
+balloon until it just fits inside a cardboard template with a 36” hole. Further trade studies led us to the select a
+natural color latex balloon for greater visibility against a variety of backgrounds.
+
+
+
+
+                                                         2
+                                 American Institute of Aeronautics and Astronautics
+B. Sensor Design - Spectra 2000:
+    Spectra 2000™ is the trade name of a
+special polyethylene fiber recently
+brought to market by Honeywell, and is
+one of the world's strongest and lightest
+fibers. It is truly remarkable material,
+abrasion resistant, much stronger than
+steel yet light enough to float on water.
+For our tether, we used commercial
+Spectra 2000™ fishing line 0.011”
+diameter with an advertised ultimate
+strength of 30 lb. We know of only one
+problem; our test data showed that it is
+so smooth that most knots are no more
+than ⅔ as strong as the parent material.
+                                                                        Figure 3. Drag Curve
+C. Sensor Design -Telescope and
+Azimuth/Elevation Measurements:
+    Our inexpensive (<$100) prototype
+telescope used a bubble level and
+protractor to measure elevation angle and a
+pocket compass to measure azimuth.
+Prototype      testing     revealed    many
+operational     deficiencies.    Since    the
+prototype had no spotting scope, the pibal
+was difficult to track. The telescope
+mounting had a dead zone near zenith, and
+needed a right angle eyepiece. In addition,
+the magnetic compass was subjected to
+interference, especially from the threaded
+steel rod used to adjust the elevation
+protractor. Finally, the elevation angle
+protractor itself was difficult to mount and
+read.
+    The operational sensor uses a Celeston
+SkyScout® mounted on a 90 mm
+                                                                            Photo 1. Telescope
+Celeston® telescope sold together for                         Prototype (right) and Operational (left) Equipment
+about $700. This combination is described
+in more detail in Ref. 5. SkyScout® is, in effect, a high-tech “hand-held planetarium” first sold in 2006. SkyScout®
+uses an internal Global Positioning System (GPS) receiver for geolocation. Once the location has been determined,
+triaxial magnetometers are used to measure the telescope barrel azimuth angle. Elevation angle is found from triaxial
+accelerometers in the SkyScout®. Both prototype and operational sensors are shown in Photo 1.
+
+D. Sensor Design - Winch and Tether Length Measurement:
+    The prototype winch was made from a strong plastic milk crate with a hand cranked axle made from scrap
+aluminum pipe. To estimate the tether length deployed, a stock clerk’s tally counter was rigged to measure drum
+revolutions.
+    The requirements for the operational sensor reflect experience with the prototype. The awkward hand crank was
+replaced with a cordless electric drill. A more robust means of measuring deployed tether length is provided by a
+commercial bicycle odometer described in Ref. 6 and calibrated with a traffic wheel odometer. Both winches are
+shown in Photo 2.
+
+
+
+
+                                                        3
+                                American Institute of Aeronautics and Astronautics
+E. Sensor Design – Software:
+    There are four forces acting on the
+pibal, tether tension, balloon weight,
+buoyancy and drag. Since the balloon is
+in static equilibrium, Newton’s Third
+Law can be solved for the drag as a
+function of the elevation angle. Because
+drag varies as wind speed squared, a
+measurement on the elevation angle
+leads to a wind speed estimate as shown
+in Fig. 4.
+    A simplified straight line tether
+model of the sensor helps illustrate how
+the sensor software works. First, note
+that the actual software includes
+refinements not in the simplified model.
+A centenary tether, variation of density
+with altitude, and variation of Cd with
+Reynolds Number are considered in our
+software.                                                                                     Photo 2. Winch
+    The static equilibrium equations                                         Prototype (top) and Operational (bottom) Equipment
+based on Newton’s Third Law are:
+
+                                      ∑ Y ↑ : B = W + T cos θ                                                    (1)
+                                                                             2
+                                      ∑ X →: D = ½ ρ v2 S Cd = T sin θ                                           (2)
+
+    Since all parameters except
+elevation angle θ are known, the
+equilibrium equations can be solved                                                     Wind Speed vs. Elevation Angle
+for wind speed as a function of the                            60
+elevation angle:
+           2(B − W ) tan θ                                     50
+   V=                           (3)
+               ρSCd                                            40
+                                             Wind Speed, fps
+
+
+
+
+    As described elsewhere (Ref. 7),                           30
+knowledge of the balloon altitude is
+critical to the principal sensor                               20
+application which is predicting rocket
+trajectories in the presence of a wind                         10
+field. Given both the elevation angle
+and      deployed      tether    length                        0
+measurements, the balloon altitude can                              0   10       20      30       40        50         60   70    80   90
+
+be estimated from                                                                              Elevation Angle, deg
+
+
+                                                                                      Figure 4. Calibration Curve
+         h = d sin θ      (4)
+
+    For low balloon altitudes and low wind speeds, these approximations provide surprisingly accurate results.
+While these approximations are not implemented in our software, they provide useful insights. Measurement of θ is
+sufficient for estimating wind speed since all other parameters can be assessed a priori with good accuracy, and the
+addition of measured tether length is adequate to estimate balloon altitude.
+    Measured azimuth angles correspond directly to the wind direction. The TPB software ingests telescope
+elevation and azimuth angles from the SkyScout®. Software output the estimated wind speed and direction at
+
+
+
+
+                                                        4
+                                American Institute of Aeronautics and Astronautics
+altitude. The software also generates the required tether length for the pibal altitude required by pre-launch
+planning. This is used to adjust the deployed tether length prior to taking the final azimuth and elevation readings.
+     The calibration curve in the software is shown in Fig. 4. As the elevation angle decreases, the wind velocity
+increases up to approximately 30 fps where the elevation angle is ~10°. The elevation angle minimum (~10°)
+corresponds to boundary layer transition from laminar to turbulent near the balloon equator. Since the curve
+becomes double-valued when the elevation angle is less than ~15°, the sensor cannot be used when the wind speed
+exceeds ~25 ft/sec. However, as noted above, rockets would usually not be launched if winds exceeded 20-25 fps.
+     The TPB software was developed on Microsoft Excel®, an excellent choice, because engineers have easy access
+to it. Its interface is use friendly, and multiple graphs can easily be generated for analysis of atmospheric wind
+conditions.
+
+F. Sensor Design – Testing:
+The sensor and its subsystems have been extensively tested as summarized in Table 1.
+
+               Table 1. Summary of Testing Conducted on Both Prototype and Operational Sensors
+                                                  Testing Summary
+ Type of Test           Test Objective                                         Results
+                  Determine the maximum
+Tether line       tensile load of tether line The Spectra 2000 tether line breaks at a lower than manufacturer
+test - using      rated for 30 lbs.           quoted maximum value. The tether broke at 20 lbs. Fisherman’s knot
+weights           Determine best type of      worked well.
+                  knot
+Tether line       Determine maximum
+test - using      tensile load of tether line The Spectra 2000 tether line breaks at a lower than manufacturer-
+Electronic        rated for 30 lbs. Best      quoted maximum value. The Tether gave way at 19 lbs. The line
+Tensile           kind of knot and its        always broke on the body itself and did not come off the knot.
+machine           breaking value
+                  The balloon was inflated
+                  with helium to ensure it    The manufacture-recommended diameter was 29 inches, but we found
+Balloon
+                  could safely be inflated    the balloon could be inflated to 36 inches without causing any
+inflation test
+                  to the desired 36”          problems.
+                  diameter.
+System
+Functional        Validate functional
+                                              Due to wake turbulence from campus buildings we were unable to
+Test with         capability of the
+                                              observe the balloon with 100’ of tether. This was overcome by
+Prototype         complete sensor.
+                                              increasing the balloon altitude from 100 to 200 ft. We also found we
+Sensor in the     Discover any issues
+                                              needed to have a right angle eye piece and table for operational ease.
+campus            needing later correction
+parking lot
+System
+                                              First balloon deployment failed when tether failed in high winds.
+functional test Validate functionality
+                                              Second deployment successful in low winds. Winch hand cranking
+with              capability of the
+                                              unsatisfactory when balloon deployed to altitudes of > 300’. Better
+Prototype         complete sensor in the
+                                              seat needed for telescope operator. Collection of Aviation WX from
+Sensor in the     field. Measure wind
+                                              FAA was successful. Winds at 500’ & 1000’ successfully measured
+Mojave FAR        profile for P- 8 launch
+                                              for P-8 launch.
+Site
+                  Calibrate the tether        Tether was deployed indoors, and its length, as measured with a
+Tether length
+                  length measurement for      bicycle odometer on the winch, was compared with measured length
+calibration
+                  the operational winch       from a traffic wheel sensor.
+
+Operational       Functional test of          Useful wind data acquired. Winch and software modifications needed
+System            operational sensor in the   in the future. Procedures need to be more explicit and better
+functional test   Mojave Desert               documented.
+
+
+
+
+                                                         5
+                                 American Institute of Aeronautics and Astronautics
+                                                 IV. Conclusion
+ Our wind sensor development project has been successful. To ensure safe flight operations, continuous
+improvements will be needed for future CSULB launches as they continue to evolve, ultimately paving the way to
+the research needed for reusable space vehicles.
+
+                                                 Acknowledgements
+    Anusha Prabhakar and Oscar Mejia, both undergraduates at CSULB, provided substantial support to this project.
+Without their help, it would not have been successfully completed. Special thanks to Dr. Eric Besnard, Dr. Janet
+Hoult, and to our mentor, Dr. Charles Hoult. Thanks also to John Garvey and to the CALVEIN team at CSULB for
+technical support.
+
+
+                                                      References
+
+Books
+    1.
+            Hoerner, S.F. “Fluid Dynamic Drag, Hoerner Fluid Dynamics”, Bricktown, N.J. 1965. sections 3-4,
+    2.
+            Hale, Francis. “Introduction to Aircraft Performance, Selection and Design”, New York: Wiley 1984.
+Web Sites
+    3.
+            “Weather Stations and Weather Instruments, Pilot balloons”, Scientific Sales. Inc, March 2007.
+            http://www.scientificsales.com
+    4.
+            “The ultimate high-strength, light-weight performer: SPECTRA® 2000”, Honeywell Company, January
+            2008. http://www.honeywell.com/spectra.
+    5.
+            “MySkyScout.com: A Match Made for the Heavens”, Celestron® Company, January 2008
+            http://www.celestron.com/skyscout/
+    6.
+            “Sigma Sport® Online, Bike Computer Heart Rate Monitor… (Bicycle odometer)”, Sigma® Germany,
+            January 2008. http://www.sigmasport.com/us/startseite/
+Proceedings
+    7.
+            Mejia, Oscar. “Trajectory Simulation for the P-8A Launch Vehicle”, AIAA Region 6 Student Conference
+            Proceedings, Phoenix AZ, 18-19 April 2008.
+
+
+
+
+                                                           6
+                                   American Institute of Aeronautics and Astronautics
+

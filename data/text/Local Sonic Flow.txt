@@ -1,0 +1,158 @@
+Rocket Science and Technology                               4363 Motor Ave., Culver City, CA 90232
+                                                          Phone: (310) 839-8956 Fax: (310) 839-8855
+
+  Compressibility Effects on a Minimum Pressure Gradient Nose
+
+                                                  by C.P. Hoult                       20 October 2010
+
+Introduction
+        In ref. (1) a technique to develop nose profiles with minimal pressure gradients in
+incompressible flow was described. The motivation for developing such shapes was the
+hope that the forebody boundary layer separation at angle of attack into a free vortex pair
+could be delayed or avoided entirely. Such vortex pairs are known to have severe
+adverse interaction with a vehicle’s tail fins.
+        One application of these forebody profiles is to university sounding rockets.
+Many of these have burnout Mach numbers in the high subsonic regime. This raises the
+possibility that local supersonic flow over the nose near the minimum pressure region
+will occur, followed by abrupt downstream deceleration in a normal shock. This, of
+course, would tend to enhance boundary layer separation, even though minimizing the
+surface pressure would postpone shock-induced separation to a higher Mach number than
+would otherwise be the case.
+
+Karman-Tsien Compressibility Correction
+        Reference (1) showed that it was possible to find a nose profile whose minimum
+incompressible pressure coefficient Cp was about half of that for a cone-cylinder of the
+same fineness ratio. Figure 1 below shows a computed incompressible pressure
+coefficient distribution for an L/D = 6, 36” long, nose profile with the least possible
+pressure coefficient (~ – 0.027).
+
+                                          Body Pressure Distribution
+                                            Incompressible Flow
+                            0
+                                 0   10    20      30    40       50   60     70     80       90   100
+                        -0.005
+  Prsuure Coefficient
+
+
+
+
+                         -0.01
+
+                        -0.015
+
+                         -0.02
+
+                        -0.025
+
+                         -0.03
+                                                Body Station, inches from Nose Tip
+
+                             Fig. 1 Optimum Incompressible Pressure Coefficient for L/D = 6
+
+
+                                                                                                     1
+Now, consider the same profile in compressible, subcritical flow. Subcritical means the
+free stream Mach number is sufficiently small no local regions of supersonic flow can
+occur. While there several ways of obtaining compressible flows from incompressible
+results, the technique used here is that due to von Karman and Tsien, ref. (2). The
+Karman-Tsien formula is
+
+                                          Cp(M∞) = Cp(0) /{β + ½ Cp(0) [ 1 – β ]}, where              (1)
+
+                                                  β = √ 1 – M∞2
+
+This can be used to estimate the pressure coefficient at M∞ = 0.7 as shown below in Fig.
+2:
+
+                                                    Body Pressure Distribution
+
+                              0
+                                   0     10      20     30    40     50     60       70   80    90   100
+                          -0.005
+   Pressure Coefficient
+
+
+
+
+                           -0.01
+
+                          -0.015                                                      M = 0
+                           -0.02                                                      M = 0.7
+
+                          -0.025
+
+                           -0.03
+
+                          -0.035
+
+                           -0.04
+                                                Body Station, Inches from Nose Tip
+
+                                       Fig. 2 Optimum Pressure Coefficients for L/D = 6
+
+We see that the effect of compressibility is to reduce the minimum pressure coefficient.
+
+Critical Mach Number
+        The crucial question is whether the Cp plotted in fig. 2 corresponds to supersonic
+flow or not. This is equivalent to asking what the critical Mach number for this L/D = 6
+shape is; the critical Mach number is that lowest free stream Mach number for which the
+local surface Mach number is somewhere unity.
+        To find the critical Mach number, first, recall that the pressure coefficient is
+
+                                              Cp = (p – p∞ ) / (½ γ p∞ M∞2), where
+
+
+
+
+                                                                                                        2
+p = ambient pressure,
+γ = specific heat ratio = 1.4 for dry air,
+M = Mach number,
+and the subscript ∞ refers to free stream conditions.
+Thus,
+
+                            Cp = (2 / (γ M∞2))* ( p / p∞ – 1).                            (2)
+
+How do we find p / p∞ ? Recall that for one dimensional isentropic flow
+
+                         p = pT [1 + ½ (γ –1) M∞2 ] ^ – γ / (γ –1), where                 (3)
+
+pT = the total, or stagnation, pressure, a constant along any stream tube absent shocks
+
+Then, to find the pressure ratio needed in eq.(2) we can form the ratio of the surface
+pressure to the free stream pressure. If we further assume the local surface Mach number
+is unity, we find that
+
+                  p / p∞ = [½ (γ +1) / [1 + ½ (γ –1) M∞2 ]] ^ – γ / (γ –1).               (4)
+
+Then, plug eq. (4) into eq. (2) and we can estimate the pressure coefficient leading to
+surface sonic flow. Note that this result will depend on free stream Mach number.
+
+
+
+As you will see, the tool we have is basically Munk theory for incompressible flow over a
+body of revolution...Munk originally developed these ideas in the early 1920s to analyze
+the flow around airships, a big (no pun) deal in those days. There are two attachments,
+one of which is an Excel file in which the numbers are crunched, and the other a
+description of what’s going on. The minimum pressure gradient forebody shape in
+the .doc was developed by cut and try methods. It had an L/D = 6 simply because that’s
+what we flew on Gold Rush I and II. For our paper, we’ll need other forebodies with
+other L/D values.
+
+The question naturally arises regarding the pressure distributions for higher subsonic
+Mach numbers. As I told you, this is done using the Karman-Tsien correction. I googled
+Karman-Tsien compressibility correction, and found what we need in the second entry
+called Linear Compressibility. This will let us make a plot of Cp vs. body station for any
+subsonic free stream Mach number so long as there are no shocks. Note that the starting
+point for this is an incompressible Cp = -0.27, and the knowledge that the maximum
+Mach number expected in flight is ~ 0.83.
+
+References
+   1. Hoult, C.P., “Nose Pressure Distribution”, RST memo, 06 July 2010
+   2. Anon., “Desktop Aeronautics” web site, Linear Compressibility
+
+
+
+
+                                                                                            3
+

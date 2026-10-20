@@ -1,0 +1,488 @@
+Rocket Science and Technology                  4363 Motor Ave., Culver City, CA 90232
+                                             Phone: (310) 839-8956 Fax: (310) 839-8855
+
+
+                   Modified Newtonian Aerodynamics (rev.4)                    06 April 2016
+
+                                       by C. P. Hoult
+
+Introduction
+        For vehicles travelling at supersonic speeds, the blunter parts of the vehicle can be
+locally hypersonic. The usual criterion for hypersonic flow, the local hypersonic similarity
+                √ 2
+parameter, H = M ∞ −1/( L/ D )≥1 , is used. Drag on such body elements is usually
+estimated using Newtonian theory with the stagnation pressure coefficient proposed by
+Lees. Three body elements, a hemicylindrical fin leading edge, a hemispherical nose cap,
+and a cone are analyzed.
+
+
+Notation
+      Mnemonic                       Definition                     m
+         γ Ratio of specific heats for air =
+1.4,
+         M∞                         Free stream Mach number,
+         MN                         Free stream Mach number normal to a fin leading
+                                    edge,
+         q                          Dynamic pressure, lb/ft2
+        L/ D                        Fineness ratio,
+         p∞                         Free stream ambient pressure, lb/ft2
+         pT                         Stagnation pressure downstream of the normal shock,
+         CP                         Pressure coefficient,
+         C PC                       Pressure coefficient on a conical body segment
+         SC                         Cone base area ‒ forward face area, ft2
+          Λ                         Leading edge sweep back angle, rad
+         θ                          Angle between the normal to the local surface and the
+                                    remote velocity vector, rad
+         θM                 Maximum value of θ at the base of the nose cap, rad
+α Angle of attack, rad,
+        δ                   Cone half angle, rad,
+
+
+
+
+                                                                                           1
+                ϕ Circumferential coordinate,
+rad
+           S REE                            Aerodynamic reference area, ft2
+           d                                Aerodynamic reference length, ft,
+           D                                Drag force, lb,
+        N                                   Normal Force, lb
+____ Mnemonic                                       Definition_______________________
+           CD                               Drag coefficient,
+               C Nα Normal force coefficient slope,
+per rad,
+           X CP                             Nose center of pressure, distance behind the nose tip,
+                                            ft,
+           R                                Radius of the nose cap or leading edge, ft, and
+           l                                Length of the fin leading edge, ft
+           LC                               Length of a cone, ft.
+
+
+Stagnation Pressure Coefficient
+        First, consider the hemispherical nose cap. The streamline impacting the nose
+stagnation point passes through a normal shock before being isentropically compressed to
+zero speed. Equation (100) of ref. (1) is the Rayleigh pitot formula. It states that
+
+
+
+                                                            [                       ]
+                         pT                                              1/( γ−1)
+                                             2 γ /( γ−1)       γ +1
+                            = [ 1/2( γ +1) M ∞ ]
+                         p∞                              2 γM 2∞ −( γ−1)                      (100)
+
+The stagnation pressure coefficient is, by definition,
+
+                     C PT ≡( pT − p∞ )/(1/2 γp∞ M 2∞ )=2 ( pT / p∞ −1 ) /( γM 2 )
+                                                                                        (1)
+
+This equation is plotted below:
+
+
+
+
+                                                                                                     2
+                                            Stagnation Pressure Coefficient
+
+                          2
+                         1.8
+  Pressure Coefficient
+
+
+                         1.6
+                         1.4
+                         1.2
+                          1
+                         0.8
+                         0.6
+                         0.4
+                         0.2
+                          0
+                               0   0.5         1         1.5          2        2.5          3    3.5   4
+
+                                                    Free Stream Mach number
+
+
+
+So long as M ∞ >1 , the stagnation pressure coefficient for a hemispherical cap merely
+requires that we substitute the Rayleigh pitot equation into the pressure coefficient
+definition.
+
+         For a hemicylindrical leading edge, things are only a little more complicated.
+First, the Mach number normal to a sweep leading edge is
+
+                                                      M N =M ∞ cos Λ.                                      (2)
+
+
+Again, as long as M N >1 , the cross flow stagnation pressure coefficient may be found
+from
+
+
+
+                                                                  [                   ]
+                                    pT                                                1/( γ−1)
+                                                            γ /( γ−1)       γ +1
+                                       =[ 1/2( γ +1) M 2N ]
+                                    p∞                                2 γM 2N −( γ−1)
+                                                                                                           (3)
+
+
+Classical Newtonian Pressure Coefficient
+        Classical Newtonian theory is sometimes called impact theory because it is
+derived by assuming a column of air moving normal to the surface is brought to a complete
+stop relative to the surface. Impulse-momentum considerations then readily lead to
+
+                                                        C P =2 cos2 θ                                      (4)
+
+
+
+
+                                                                                                            3
+The modified theory consists of replacing the constant 2 appearing above with the
+stagnation pressure coefficient C PT .
+
+
+
+
+ R
+                         θM
+             θ
+
+
+
+
+Figure 1 Hemispherical Nose Cap
+
+
+Hemispherical Nose Cap
+      `Begin by defining the nose cap drag coefficient as
+
+                                         D=C D qπR 2 .                                (5)
+
+An alternative definition of the drag force is the surface integral of the axial flow
+component of ( p− p ∞ ) Note that the surface integral of p ∞ vanishes by Archimedes’ law.
+For the nose cap,
+
+                               θM
+
+                        C D S=∫ 2 cos2 θ∗2 πR sin θ∗Rd θ *cos θ ,
+                                0                                   or                (6)
+
+When multiplied by one half the stagnation pressure coefficient, we have the modified
+result we seek for the drag area of a hemispherical nose cap.
+
+                              C D S=πR 2 (C PT /2)(1−cos 4 θ M )                       (7)
+
+       To find the hemispherical nose cap normal force slope, first consider a ring of arc
+length Rd θ and circumferential extent Rd ϕ The Newtonian pressure coefficient acting
+on the area element at modest angle of attack is
+
+                                    C P =2 cos2 ( θ−α cos ϕ )                          (8)
+
+
+                                                                                        4
+or, when α is infinitesimally small,
+
+                             C P =2( cos2 θ+2 α sin θ cos θ cos ϕ )                              (9)
+
+Next, the normal force acting on the ring of length Rd θ is
+
+                    2π
+            dN =q ∫ Rd θ∗R sin θdϕ∗2( cos2 θ+2 α sin θ cos θ cos ϕ )*sin θ cos ϕ
+                    0                                                                    .      (10)
+
+Carrying out the circumferential ( ϕ ) integration results in
+
+                                dN =4 qR 2 dθ∗πα sin 3 θ cos θ .                                (11)
+
+A second θ integration from 0 to θ M results in
+
+                                      N =αqπR 2 sin 4 θ M                                       (12)
+
+Expressed as a normal force coefficient corrected for the correct stagnation pressure, this
+becomes
+
+                                 C Nα S=πR 2 (C PT /2)sin 4 θ M .                               (13)
+
+The corresponding pitching moment about the forward tip point of the hemisphere is
+
+
+                                            θM
+
+                           M =4 πα qR ∫ sin 3 θ cos θ∗(1−cos θ )dθ
+                                        3
+
+                                            0                            , or                   (14)
+
+  M =4 πα qR 3 [ sin 4 θ M / 4−sin 4 θ M cos θ M /5+sin 2 θ M cos θ M /15−2( 1−cos θ M )/15 ]
+                                                                                                (15)
+
+The moment coefficient slope is
+
+        C Mα Sd=4 πR 3 [ sin 4 θ M / 4−sin 4 θ M cos θ M /5+cos θ M ( sin 2 θ M +2)/15−2/15 ]
+                                                                                                (16)
+
+and the center of pressure, measured from the forward tip point, is
+
+          X CP / R=1−4 cos θ M /5+4 cos θ M ( sin 2 θ M +2)/15 sin 4 θ M −8/15 sin 4 θ M .      (17)
+
+
+                                                                                                   5
+Hemiscylindrical Leading Edge
+       The hemicylindrical leading edge C D estimate follows similar lines. Consider a
+piece of leading edge one unit in length. Then, assuming a flat plate airfoil,
+
+                                    π /2
+                              C D = ∫ 2 cos2 θ∗Rd θ *cos θ
+                                    π /2                       ,or                    (18)
+
+                                           C D =8 Rl /3 .                             (19)
+
+This is the drag area normal to the leading edge, referenced to the cross flow dynamic
+pressure. Referenced to free stream, it is
+
+                                    C D =8 Rl cos2 Λ /3 .                             (20)
+
+This is the force normal to the leading edge. The component in the free stream direction is
+just
+
+                                    C D =8 Rl cos3 Λ /3 .                             (21)
+
+Thus, the leading edge drag area referenced to 2 Rl , is just one half the cross flow
+stagnation pressure coefficient times the above result.
+
+                                C D S=4 π RlC PT cos3 Λ /3 ,                          (22)
+
+where C PT is based on the cross flow Mach number M N .
+
+These results have been implemented in an EXCEL spread sheet called NEWTON.xls. A
+sample nose cap drag area plot for a nose cap radius of 0.1ft and maximum slope of 80 deg
+is shown below:
+
+
+
+
+                                                                                         6
+                                                  Hemispherical Nose Cap Drag Area
+
+                        0.06
+
+                        0.05
+  Drag Area, sq. ft.
+
+
+
+
+                        0.04
+
+                        0.03
+
+                        0.02
+
+                        0.01
+
+                          0
+                                   0       0.5        1       1.5     2     2.5      3   3.5   4
+                                                           Free Stream Mach Number
+
+
+        Note that the Newtonian model is not valid for subsonic Mach numbers. But,
+according to ref. (2), page 15-6, the critical free stream Mach number for a sphere is about
+0.6. This suggests that a practical engineer would fair the low speed end of this curve back
+to zero at a Mach number of 0.6.
+
+
+                                                     Fin Leading Edge Drag Area
+
+                        0.012
+
+                         0.01
+  Drag Area, sq. feet
+
+
+
+
+                        0.008
+
+                        0.006
+
+                        0.004
+
+                        0.002
+
+                               0
+                                       0    0.5        1      1.5     2     2.5      3   3.5   4
+                                                           Free Stream Mach Number
+
+The last graph is an example of the leading edge wave drag acting on a single flat plate fin
+panel 1/8” thick, 15” long, and swept at 30o. No data is reported for free stream Mach
+numbers less than 1.155 because the Newtonian theory does not apply to subsonic leading
+
+
+
+                                                                                                   7
+edges. As for the spherical nose cap, the critical cross flow Mach number for a circular
+cylinder is about 0.47. The subsonic leading edge drag can be faired in by eye.
+
+
+Cone
+       It's easy to show that the zero α cone pressure coefficient is
+
+                                      C PC =C PT sin 2 δ .                              (23)
+
+The cone drag is then
+
+                                                     SC
+                                       C D =C PC
+                                                    S REF .                             (24)
+
+If the cone has a small angle of attack, its local pressure coefficient can be found from eq.
+(9) while noting that θ=π /2−δ :
+
+                           C P =C PT ( sin 2 δ +2 α cos δ sin δ cos ϕ ) , or            (25)
+
+focusing on the normal force,
+
+                          dN =qC P cos δ *cos ϕ∗Rd ϕ∗dx /cos δ .                        (26)
+
+Substituting from eq.(25) into eq.(26) and integrating over ϕ gives
+
+                                dN =2 π qR αC PT cos δ sin δ dx .                       (27)
+
+If we have a cone of length LC the normal force coefficient slope is
+                                          LC2
+                                 C Nα =π       C PT sin 2 δ
+                                         S REF              .                           (28)
+
+The cone center of pressure is found a distance2 LC /3 aft of the nose tip.
+
+
+Flat Face Aerodynamics
+       Flat faced shapes are very commonly encountered, especially in conjunction with
+large angles of attack. First, Ref. 5 provides a comparison with experiment over a wide
+range of supersonic Mach numbers. The wind tunnel data therein all lie within 4% of
+Equation (1). The methods of Ref. (6), Chapter 15, suggest a subsonic model of the form
+
+
+
+
+                                                                                           8
+                                                                     C D = 0.85(1 + ¼ ( M 2 + M 4 ) )
+(29)
+
+The result of Eq’s. (1) and (29) plotted together are shown below:
+
+
+                                       Flat Face Drag Coefficient
+                        2
+                      1.8
+                      1.6
+   Drag Coefficient
+
+
+
+
+                      1.4
+                      1.2
+                        1
+                      0.8
+                      0.6
+                      0.4
+                      0.2
+                        0
+                            0      1        2            3   4              5          6              7
+                                                   Mach Number
+
+
+                      Next, The data clearly show that
+
+                                                                                           C Nα = 0
+(30)
+
+Even so, there an initial static pitching moment due to axial force when the stagnation point
+shifts with angle of attack. It turns out that the data are only good enough to enable
+derivation of an average stagnation point offset. It is
+
+                                                                      Offset
+                                                                 ð
+                                                                     BAse Dia
+                                                                              = - 0.0 0 54 per radian
+                                                                       ðα
+(31)
+
+The negative sign indicates that a simple broadside disk is statically stable.
+
+Interface to Second Order Shock Expansion Theory
+         Reference 3. develops a marching procedure by which the surface pressure and
+lift distributions along a pointed body of revolution can be estimated.. However, this
+procedure requires the first body element to be a pointed cone with an attached shock, a
+condition not always satisfied in practice. The solution suggested here is to use the
+modified Newtonian described above to provide the nose tip drag, normal force and center
+of pressure. Assuming the hemisphere is tangent to the first conical element, its second
+
+
+
+                                                                                                          9
+order shock expansion solution can be estimated using the results of ref. (3) and the
+Newtonian results at the base of the nose tip:
+
+θM = , 
+
+p1 = p∞ + (½ p∞M∞2) CpT cos2θM,
+
+(∂p/∂s)1 = – 2 (½ p∞M∞2) CpT sinθM cosθM / R.
+
+The local Mach number can be estimated from the local pressure since the near-surface
+flow will expand isentropically from the stagnation point:
+
+p1 / pT = [ 1 + ((γ – 1) / 2) M12]–γ/(γ – 1)
+
+A brief inspection shows that this model clearly cannot tell the whole story. The 1/R term
+in the equation for (∂p/∂s)1 becomes very large for a tiny nose cap. Reference 4 provides
+the resolution First, define a dimensionless parameter P:
+
+P ≡ 2R/d
+
+The model just derived should apply when P→1, that is, when the hemispherical cap
+diameter approaches the body reference length (diameter). But when P→0, or when the
+cap radius is very small, the appropriate limiting conditions are:
+
+p1 = p∞ + (½ p∞M∞2)CPC
+
+(∂p/∂s)1 = 0, and
+
+M1 = M∞
+
+This model is equivalent to calculation the second order shock expansion flow neglecting
+the hemispherical except as an ex post-calculation for the wave drag and normal force that
+are added in with all the other body element contributions. Using the second Cierva
+interpolator in ref. (4) results in
+
+       Finally, note that the limit of the surface pressure gradient estimated from
+Newtonian theory above will have an infinitely high value as the nose cap becomes very
+small. But, actually, as the hemisphere radius becomes very small, the surface pressure
+gradient must vanish as is appropriate for any pointed nose tip. Since most hemispherical
+nose caps are small, take (∂p/∂s)1 = 0. In the same vein, the M1 value estimated above
+should not be used for small hemispherical caps. Instead, just use the free stream Mach
+number M∞ for the initial condition on the foremost conical segment.
+
+
+
+                                                                                       10
+References
+   1. Ames Research Staff, “Equations, Tables and Charts for Compressible Flow”,
+       N.A.C.A. Report 1135, 1953
+   2. S. F .Hoerner, “Fluid-Dynamic Drag”, self published, 1965.
+   3. C. A. Syvertson and D. H. Dennis, “A second Order Shock-Expansion Method
+       Applicable to Bodies of Revolution Near Zero Lift”, N.A.C.A. Report 1328,
+       1955.
+   4. C. P. Hoult, “Cierva Interpolation (rev.1)”, RST memo, 10 January 2005
+   5. J. F. Campbell and D. T. Howell, “Supersonic Aerodynamics of Large-Angle
+       Cones”, NASA TN D-4719, Langley, VA, August 1968
+   6. S. F. Hoerner, “Fluid-Dynamic Drag”, self published, 1965
+
+
+
+
+                                                                             11
+

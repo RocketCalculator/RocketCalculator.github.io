@@ -1,0 +1,80 @@
+                                        Enhanced Igniters
+
+Purpose:
+
+In modern amateur rocketry, the occurrence of failed ignition is termed a hang fire. This is
+typically caused by discontinuity or insufficient heat output from provided igniters.
+Implementing Enhanced Igniters will significantly reduce risk of a hang fire at launch site.
+
+Theory:
+
+Within a closed circuit, a small voltage input is applied, which allows current to pass through the
+provided igniter wires. At the junction point of the two wires, resistance causes the junction to
+heat up, which ignites a compound covering the junction. The heat generated is assumed to be
+high enough to ignite the rocket motor.
+
+To increase the heat output, the igniters will be enhanced by coating the junction with a mixture
+of Copper oxide and Aluminum powders (Thermite). The Thermite compound burns at a much
+higher temperature than the original igniters. We are also able to control the mass of this
+Thermite mixture that is implemented. The following chemical reaction occurs during the
+Thermite combustion:
+
+                                3 + 2 →   + 3
+                                                                                    
+Where:              = 63.5                  = 27                   =   16 
+
+                                                      4.4 
+                                          ! ∶
+                                                        1 
+Materials Used:
+
+Safety Gloves                      Masks                               Aluminum Powder
+
+Scale                              Safety Glasses                      Rubber Cement
+
+Hobby knife                        Copper-Oxide Powder                 Sealable Bag
+
+Procedure:
+
+1) Prepare all listed materials and have them ready to use
+2) Measure mass of CuO and Al powders according to the ratio provided above
+3) Place both powders into a resealable plastic bag and ensure that they are thoroughly mixed
+4) On a clean surface apply a bead of rubber cement, and then mix a desired quantity of the
+   thermite mix, thoroughly mix until a malleable ball of thermite is formed (use hobby knife)
+5) Measure mass of igniter
+6) Place thermite ball on the junction point of igniter, measure mass again.
+7) For best results, use approximately 0.2 grams of thermite/rubber mixture
+Testing:
+
+   Three Estes igniters were tested; One igniter was not altered, one had 0.1 grams of rubber
+   thermite, and the other had 0.2 grams of rubber thermite. The non-altered igniter produced a
+   puff of smoke, the 0.1 gram rubber/thermite produced bright visible flash, and the 0.2 gram
+   rubber thermite showed a significant output of heat.
+
+
+Conclusion:
+
+   Our studies conclude that using an addition of approximately 0.2 grams of rubber thermite
+   will be sufficient in successful igniting a rocket motor.
+
+
+
+
+                                          Figure 1: Scale
+
+
+
+
+                         Figure 2: Copper Oxide and Aluminum Powder
+Figure 3: Copper Oxide /Aluminum Powder mixture (Thermite)
+
+
+
+
+                 Figure 4: Rubber Cement
+
+
+
+
+                    Figure 3: Igniters
+

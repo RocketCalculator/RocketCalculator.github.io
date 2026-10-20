@@ -1,0 +1,234 @@
+                           8th Intercollegiate Rocket Engineering Competition
+                                        Safety-critical Wiring Rules
+                                          Rev 1.0, October 7 2012
+
+Introduction
+
+Experience with ESRA competitions in previous years has shown that parachute deployment failures
+are a common problem. This is a serious safety concern as it can result in rockets striking the ground at
+high speed. Post-crash analysis is difficult, but in a number of cases it has been shown that the drogue
+deployment circuits were damaged by launch acceleration. The main parachute deployment circuits
+may also be damaged by the drogue deployment shock. In the 2012 competition not one single rocket
+successfully deployed both drogue and main parachutes correctly!
+
+With the aim of improving recovery and safety for the 2013 competition, this document sets out
+specific rules for all safety critical wiring. This is defined as wiring associated with drogue (or other
+drag device) deployment, main parachute deployment, and any air-start rocket motors. It is understood
+that there are many perfectly reliable wiring techniques that are not permitted by these rules.
+
+The safety critical wiring in all rockets will be inspected by the judges before launch, and all serious
+non-conformances must be fixed before permission to launch will be given. The wiring techniques
+mandated here are optimized for inspectability and ease of field repair.
+
+This document places no restrictions on non-critical wiring. Wiring associated with the payload
+system, and with the engines of complex rockets, may be built however you wish. The only
+requirement is that the critical wire harness be routed separately from other harnesses.
+
+Wiring Rules
+
+    1. All wire shall be stranded, insulated, 22 AWG. Strands shall be copper, plated with either silver
+       or tin.
+        1.1.         When an off-the-shelf component includes flying leads, those leads may be used
+            unmodified. For example, an E-match may contain solid wire. A battery connector may
+            integrate 26 AWG wire. Etc.
+        1.2.         Stranded wire of sizes other than 22 AWG may be used only when required by an
+            off-the-shelf component. For example, if the terminal block on an altimeter is sized to
+            accept 24 AWG wires then that is the size of wire that should be used for that portion of the
+            circuit.
+        1.3.         Wire strands shall never be removed in order to allow a wire to fit into a smaller hole
+            or terminal. Use smaller wire for this purpose.
+
+    2. Wire shall be stripped only with a wire stripping tool of the correct gauge. Any severed strands
+       shall be cause for rejection.
+        2.1.        The best wire stripping is achieved with thermal strippers and Teflon/Tefzel wire.
+        2.2.        When testing a new wire stripper, strip a short length and then strip more insulation
+           from the same wire. If you can now see scratches or nicks in the wire strands from the first
+           strip, something is wrong with either tool or technique.
+        2.3.        Pocket knives and teeth are right out!
+
+    3. Each end of a wire shall be terminated in one of the following approved methods:
+      3.1.    Crimped into a crimp terminal (preferred)
+      3.2.    Screwed into a binding screw terminal (acceptable)
+
+4. Wires shall be terminated into a terminal block, only if a piece of off-the-shelf equipment (i.e.
+   an altimeter) has built-in terminal blocks and so there is no other choice. Two-piece terminal
+   blocks must be positively secured together – friction fit is insufficient.
+
+5. Wires shall be terminated by soldering, only if a piece of off-the-shelf equipment (i.e. an arming
+   key switch) has built-in solder terminals and so there is no other choice.
+    5.1.       There's nothing wrong with solder, of course. The issue is that the reliability of a
+       solder joint cannot be established by the judges by visual inspection alone. There are a
+       number of process parameters (temperature profile, solder alloy, flux, gold removal, etc.)
+       that must be well controlled to give reliable results and these cannot be inspected post-fact.
+
+6. All crimp operations shall be performed with the correct tooling, using crimp terminals sized
+   for the appropriate wire gauge. Where multiple wires are crimped into a single terminal,
+   calculate the effective gauge (for example, two 22 AWG are effectively 19 AWG).
+    6.1.       Crimp tooling shall not be improvised from pliers, vices, or other incorrect tools.
+       Crimp features of multitools (Leatherman, Gerber, etc) shall not be used.
+    6.2.       Crimp tooling can be expensive. You may want to borrow it from a sponsor.
+
+7. Terminals with insulated plastic sleeves (usually colour-coded to indicate barrel size) shall not
+   be crimped.
+    7.1.       If a terminal is supplied with an insulated plastic sleeve, it shall be removed prior to
+       use. It may be necessary to adjust the crimp tooling to get a tighter squeeze.
+    7.2.       The crimp quality of insulated terminals is difficult to inspect. There is normally no
+       need for insulation when terminals are mounted properly in barrier blocks. If insulation is
+       required, add clear heat-shrink tubing.
+
+8. When a bare wire is held down by a binding screw terminal the wire shall make a 180 degree
+   hook, and strands must be visible exiting the screw head. Only one wire shall be permitted per
+   screw. The wire bend shall be clockwise, so that it will tighten as the screw is torqued.
+
+9. When ring or spade terminals are held down by binding screw terminals, a maximum of two
+   terminals are allowed per screw.
+
+10.       A maximum of three wires shall be crimped into a single terminal barrel. Butt-splice
+   terminals are considered to have separate barrels in each end.
+
+11.If two or more wires must be joined, one of the following approved methods shall be used:
+    11.1.      Crimp a ring terminal onto each wire, and then screw them into a barrier block. Add
+       approved barrier block jumper pieces if many wires must be joined.
+    11.2.      Screw bare wires under binding head screws in a barrier block. Add approved
+       barrier block jumper pieces if many wires must be joined.
+    11.3.      Crimp the wires into an un-insulated butt-splice terminal, and then insulate with
+       clear heat-shrink tubing.
+    11.4.      Any wire-twisting splice method is explicitly forbidden. Forget everything you
+       know about household wiring. Houses don't see launch vibration!
+    12.         All insulating tubing (usually heat-shrink) shall be transparent.
+          12.1.     This allows inspection of the underlying hardware. It's a good habit to get into.
+
+    13.       No tape, glue or RTV shall be used to insulate or bundle any element of the wire
+       harness.
+        13.1.     If you have followed these guidelines properly there should be no exposed metal in
+           need of insulation.
+        13.2.     Tape (especially PVC electrical tape) is messy and uninspectable.
+
+    14.          The following rules apply to connectors:
+          14.1.      They shall use crimp contacts, as soldering has been forbidden.
+          14.2.      They shall use a positive locking mechanism to keep the two halves mated under
+             vibration and tension. Friction fit alone is not acceptable.
+          14.3.      Plastic connector latches shall not be used, but circular connectors with plastic
+             coupling nuts are acceptable.
+
+    15.        Individual wires shall be bundled together to make a harness. The safety critical harness
+       shall be kept separate from the payload harness (if any). Bundling shall be accomplished by:
+        15.1.      A light twist (for mechanical reasons only, no EMC mitigation is intended)
+        15.2.      Clear heat-shrink tubing, or zip-ties every 5 cm.
+
+    16.       The harness shall be supported by plastic P-clamps. It shall not be permitted to touch
+       any sharp edge or screw thread.
+
+    17.        All items that are connected by the harness (barrier blocks, sensors, batteries, actuators,
+       switches, etc) shall be rigidly fixed to the rocket structure so that they cannot move. Rigid
+       fixing implies attachment with threaded fasteners or a solid glue bond. Cable ties and/or tape
+       are not acceptable examples of rigid fixing.
+
+    18.       No wire shall be tight. All wire must have some slack, demonstrated by a curve at its
+       termination.
+
+    19.          Batteries shall be connected appropriately:
+          19.1.     9V transistor batteries shall be secured in clips, and connected using proper snap
+             terminals
+          19.2.     Gel-cell batteries shall be secured with clamps, and connected using “faston” crimp
+             terminals
+          19.3.     Cylindrical batteries (AAA, AA, C, D, etc) shall be mounted into commercial
+             holders. The holders shall be rigidly secured to the structure, and the batteries shall then be
+             strapped into the holders.
+
+Circuit Board Rules
+
+It is expected that most rockets will use only commercial rocketry circuit boards (altimeters, attitude
+sensors, etc) in their safety critical circuits. Any commercial board for the rocket market shall be
+considered to meet the quality requirements, provided it is in an undamaged factory state. The wiring
+to and from the circuit board is subject to the wiring requirements of this document.
+
+The judges will pay careful attention to those teams that choose to build their own safety critical circuit
+boards, or repurpose commercial circuit boards that were not intended for rocket applications (i.e.
+smartphones). Boards will be inspected the prior to launch to the IPC-A-610E class 3 requirements.
+All heavy components shall be staked. All IC sockets and press-fit contacts shall be positively
+restrained so that they cannot demate under vibration. Provided they are done right, wire-wrap,
+through-hole solder, and surface-mount solder are all acceptable fabrication methods. Solderless
+breadboard (aka plug-in breadboard) shall not be used.
+
+Launch permission may be denied to rockets with safety critical circuit boards that do not meet these
+requirements. These rules place no requirements on payload circuit boards.
+
+Suggested Parts
+
+Here are some suggested components that can be bought from Digikey that will help to satisfy the
+wiring requirements. These are guidelines only, and you are free to choose other parts and buy from
+other suppliers. Look up the catalog pages associated with each number to find similar parts of
+different sizes.
+
+Part                               Digikey Number                     Notes
+Wire                               A5855W-100-ND                      This is good Teflon insulated
+                                                                      wire. Cold-flow is a long-term
+                                                                      consideration, but shouldn't be a
+                                                                      problem for a short lifetime
+                                                                      rocket.
+Ring terminals, uninsulated        A27021-ND (#6 hole)                The Solistrand series is a high
+                                                                      quality terminal. Various crimp
+                                                                      tools are available. You get what
+                                                                      you pay for – the expensive ones
+                                                                      are very nice, but the basic ones
+                                                                      will do in a pinch.
+Butt-splice terminal               A09012-ND                          Another Solistrand series
+                                                                      terminal
+“Faston” terminal                  298-10011-ND (check size)          These terminals are useful for
+                                                                      connecting switches, gel cell
+                                                                      batteries, and many automotive
+                                                                      devices
+9V battery snap-on terminal with BS12I-ND                             These are uniformly cheap and
+12” leads                                                             low quality. I'm not a fan.
+9V battery holder, with solder     708-1409-ND                        Screw this holder to your
+terminals                                                             chassis, and then cable tie the
+                                                                      battery in.
+4 AA battery holder                708-1399-ND                        This is a nice enclosed battery
+                                                                      box for 4 AA cells
+P-clamp                            7624K-ND (check size)              This particular unit is for a 0.25”
+                                                                      dia harness. Select the correct
+                                                                      size.
+Heat-shrink tubing                  A014C-4-ND (check size)             Material is clear polyolefin with
+                                                                        low shrink temperature.
+                                                                        Shrink with hot-air gun or oven.
+Barrier block (double row)          CBB206-ND                           Available in a range of lengths.
+                                                                        Can accept ring or spade
+                                                                        terminals (preferred), or bare
+                                                                        wire (acceptable).
+Barrier block jumper                CBB314-ND                           Connect adjacent strips, when
+                                                                        many wires need to be connected
+                                                                        together.
+D-sub connectors (9 contact)        A31886-ND (male shell)              The connectors and contacts are
+                                    A34104-ND (female shell)            cheap, but the crimp tools are
+                                    A1679-ND (male pins)                expensive.
+                                    A1680-ND (female pins)
+D-sub fixing hardware               MDVS22-ND (screw)                   These kits convert the D-sub
+                                    MDVS44-ND (socket)                  friction fit into a proper positive
+                                                                        lock.
+MIL-C-38999 connectors              956-1017-ND (13 pin panel           These connectors approach the
+                                    mount receptacle with pins)         style and quality used on orbital
+                                    956-1020-ND (13 pin plug with       launch vehicles. Extremely
+                                    sockets)                            robust, but very expensive!
+
+Contact
+
+Please feel free to email me during the lead-up to the 2013 competition. I will be happy to give advise
+on techniques and suppliers, and to inspect block diagrams and photographs of your work so that there
+are no surprises at the launch site. If you feel that there is an omission or error in this document, please
+let me know.
+
+Barring unforeseen circumstances I will be in Green River, IPC-A-610E manual and magnifier in hand,
+to inspect the rockets.
+
+Good luck!
+
+Doug Sinclair
+dns@sinclairinterplanetary.com
+
+About the Author
+
+Doug Sinclair is a certified IPC trainer for J-STD-001ES. At the time of writing he has hardware on 14
+orbiting satellites, with one more on the pad due to launch in 7 hours and another set to go in a few
+weeks. Check http://www.sinclairinterplanetary.com/spaceheritage for the latest list.
+

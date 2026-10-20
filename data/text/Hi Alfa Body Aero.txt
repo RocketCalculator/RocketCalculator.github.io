@@ -1,0 +1,472 @@
+Rocket Science and Technology                 4363 Motor Ave., Culver City, CA 90232
+                                            Phone: (310) 839-8956 Fax: (310) 839-8855
+
+                Body of Revolution High Alpha Aerodynamics 25 July 2013
+
+                                      by C. P. Hoult
+
+Introduction
+        When rockets with recovery requirements are flown to higher and higher altitudes
+the point is reached where familiar techniques no longer work. The problem is high
+dynamic pressure during descent. Even if a drogue is deployed near apogee the dynamic
+pressure build up as the denser lower altitudes are reached will exceed the strength of any
+drogue. Later drogue deployment would only exacerbate this problem.
+        The classical solution to this problem is to separate the payload from the rocket
+body, or the fins from everything else, trim the recovery package to ensure a high angle
+of attack (alpha), and then let aerodynamic drag slow it to modest subsonic speed before
+deploying a drogue parachute. Fin removal is essential to preclude lawn dart behavior.
+        The high angle of attack aerodynamics of a slender body of revolution
+documented here are coded into JORGENSN.xls.
+
+
+Mnemonics
+____ ____Mnemonic________________Definition_____________________________
+                        Reference length upon which the aerodynamic
+                        coefficients are based, ft
+                        Reference area upon which the aerodynamic
+                        coefficients are based, ft2
+                        Free stream Mach number
+                        Cross flow Mach number
+                        Cross flow drag coefficient based on crossflow dynamic
+                        pressure and local body radius
+                        Body station location of the center of gravity, in aft of
+                        the nose tip
+                        Axial force coefficient
+                        Axial force coefficient at zero degrees angle of attack
+                         Axial force coefficient at 180 degrees angle of attack
+                        Normal force coefficient
+                       Normal force coefficient slope
+                        Normal force coefficient slope at zero degrees angle of
+                        attack
+                        Normal force coefficient slope at 180 degrees angle of
+                        attack
+________Mnemonic________________Definition_____________________________
+                        Body station location of the center of pressure at zero
+
+
+                                                                                         1
+                                degrees angle of attack, in aft of the nose tip
+                                Body station location of the center of pressure at
+                                90 degrees angle of attack, in aft of the nose tip
+                                Body station location of the center of pressure at
+                                180 degrees angle of attack, in aft of the nose tip
+                                 Reynolds number based on ambient fluid properties and
+
+                             Crossflow Reynolds number based on
+                             ith tabular body radius at station , in
+                            ith body station, in aft of the nose tip
+                            Overall length of the body, ft
+                            Length of the ith body segment, ft
+                            Body planform aspect ratio,
+                             Broadside projected area of the body, ft2
+                              Axial projected area of the body, ft2
+                            Average body diameter, ft
+                            Flight speed, ft/sec
+                            Angle of attack, rad
+                            Ratio of crossflow drag for a finite-length cylinder to that
+                             for an infinite-length cylinder
+
+
+Analysis
+        This memo documents the process used to estimate the high angle of attack
+aerodynamics of a body of revolution needed to support this kind of recovery scheme.
+For the most part, this follows ref. (1). The aerodynamics at alpha = 0 and 180 degrees
+are assumed to be generated off line in other codes. There is no offline code to generate
+the aerodynamics at alpha = 90 degrees so this data is generated internally.
+        After estimating the aerodynamics as a function of angle of attack,
+JORGENSEN.xls finds the trim angle of attack and the associated trim drag coefficient.
+                       CM
+                                                                                     CA
+
+              XCP
+                       CN
+       XCG
+                                                 V
+                                                                           CN
+
+                                             α
+                            α
+
+                                        CA
+
+             0° ≤ α ≤ 90°                                 90° ≤ α ≤ 180°
+
+
+
+                                                                                           2
+       In the sketch above, the two angle of attack regimes are displayed. First, consider
+            . Since this is an interpolative scheme,
+
+                                                              ,
+(1)
+
+                                                                               ,
+(2)
+
+
+                                                                                       (3)
+                                            ,
+
+
+
+(4)
+and
+
+
+
+                                                                                       (5)
+
+                                                    .
+
+
+        Before proceeding to the case of                  a discussion of how one might
+estimate the parameters in these equations is needed. First,       can be found from ref.
+(4).      and        can be estimated from the codes in ref. (3). There are two of these,
+one for subsonic flight and the other for supersonic flight. The remaining aerodynamic
+parameters are for          and will be discussed later. The non-aerodynamic parameters,
+     ,      and       address the configuration under study.
+        For angles of attack > 90° the sketch above shows that the analysis is like that
+above with the ends swapped:
+
+                                                                  ,
+(6)
+
+                                                                                   ,
+(7)
+
+
+                                                                                       (8)
+                                                   , and
+
+
+
+                                                                                         3
+                                                                                            ,
+
+(9)
+
+
+
+                                                                                           (10)
+
+                                                                   .
+
+
+        Data for parameter estimation can be obtained as described above, except for the
+case of a blunt, flat-faced nose for which recourse to ref. (4) is needed. While the drag
+for a blunt, flat-faced nose is easy to estimate from ref. (4), the associated normal force
+coefficient is not. First, by definition, the flat face itself will not carry normal force near
+        °. The question is, how much normal force is carried over to the cylindrical
+afterbody? To answer this, consider a blunt cone-cylinder. In subsonic flow, there is no
+cylinder normal force. The same is true for hypersonic (Newtonian) flow. In the limit as
+the cone approaches a flat face, this is expected to remain true. Thus, in practice, assume
+zero         for a flat face.
+        Finally, in general
+
+                                                                                           (11)
+
+The conditions for static equilibrium, or trim, are that
+
+
+                                                                                           (12)
+
+
+
+
+Broadside Aerodynamics
+       Start by defining the properties associated to the body profile:
+
+
+                                                               ,
+
+                                                                                           (13)
+                                                           ,
+
+Next,
+                                                                       , and
+
+
+                                                                                                4
+                                                                                         (14)
+                                                                    .
+
+
+                                                                        .
+(15)
+
+With these, the broadside center of pressure can be found:
+
+                                                            .                            (16)
+Next,
+                                                        , and
+(17)
+
+                                                                                         (18)
+
+                                                    , and
+                                                                                         (19)
+                                                                .
+
+The broadside drag coefficient      and its aspect ration correction factor   are both
+represented as the product of two functions:
+
+                                                            , and                        (20)
+
+Note that if           , then
+
+                                                        .                                (21)
+
+        These functions are not known as analytical functions, but only in terms of their
+tabular values as derived from experiment in ref. (1)
+        With these results, we find that
+
+
+(22)
+
+
+        Crossflow       Function f1
+       Mach number
+          0.00              1.20
+          0.10              1.20
+          0.20              1.21
+          0.30              1.23
+          0.40              1.27
+
+
+                                                                                            5
+0.50   1.36
+0.60   1.47
+0.70   1.59   Crossflow   Function f2
+              Reynolds
+0.80   1.53
+               number
+0.90   1.56
+               8.0E+04      1.000
+0.95   1.88
+               1.0E+05      1.000
+1.00   1.97
+               1.5E+05      0.992
+1.10   1.78
+               2.0E+05      0.950
+1.20   1.67
+               3.0E+05      0.767
+1.30   1.61
+               4.0E+05      0.442
+1.40   1.55
+               5.0E+05      0.192
+1.60   1.50
+               6.0E+05      0.200
+1.80   1.45
+               8.0E+05      0.217
+2.00   1.41
+               1.0E+06      0.246
+2.40   1.37
+               1.5E+06      0.333
+2.80   1.34
+               2.0E+06      0.377
+3.20   1.32
+               3.0E+06      0.442
+3.60   1.30
+               4.0E+06      0.475
+4.00   1.29
+               5.0E+06      0.508
+5.00   1.27
+               6.0E+06      0.525
+6.00   1.26
+               8.0E+06      0.542
+7.00   1.25
+               1.0E+07      0.542
+8.00   1.25
+
+
+
+
+                                        6
+                             Crossflow function f1
+
+               2
+
+
+              1.5
+Function f1
+
+
+
+
+               1
+
+
+              0.5
+
+
+               0
+                    0    1    2      3      4      5       6   7      8
+                                  Crossflow Mach number
+
+
+
+
+                             Crossflow Function f2
+
+              1.2
+
+               1
+Function f2
+
+
+
+
+              0.8
+
+              0.6
+
+              0.4
+              0.2
+
+                0
+              1.00E+04       1.00E+05           1.00E+06       1.00E+07
+                             Crossflow Reynolds number
+
+
+
+
+                                                                          7
+Broadside             Function                Crossflow    Function
+ aspect                  f3                     Mach          f4
+  ratio                                        number
+   1.0                    0.530                  0.0         0.69
+   2.0                    0.560                  0.2         0.70
+   3.0                    0.580                  0.4         0.73
+   4.0                    0.600                  0.5         0.76
+   5.0                    0.620                  0.6         0.82
+   6.0                    0.635                  0.7         0.90
+   8.0                    0.660                  0.8         0.99
+  10.0                    0.680                  0.9         0.98
+  12.0                    0.695                  1.0         0.80
+  16.0                    0.725                  1.1         0.90
+  20.0                    0.750                  1.2         0.96
+  24.0                    0.770                  1.3         0.99
+  28.0                    0.785                  1.4         1.00
+  32.0                    0.795                  1.6         1.00
+  36.0                    0.805
+  40.0                    0.815
+
+
+                                      Crossflow Function f3
+
+                0.9
+                0.8
+                0.7
+  Function f3
+
+
+
+
+                0.6
+                0.5
+                0.4
+                0.3
+                0.2
+                0.1
+                  0
+                      0           5   10       15     20       25      30   35   40
+                                           Body Profile Aspect Ratio
+
+
+
+
+                                                                                      8
+                                           Crossflow Function f4
+
+                  1.2
+
+                       1
+    Function f4
+
+
+
+
+                  0.8
+
+                  0.6
+
+                  0.4
+                  0.2
+
+                       0
+                           0        0.2    0.4       0.6      0.8        1        1.2    1.4    1.6
+                                                 Crossflow Mach number
+
+
+
+Typical Results
+       To better see how this works, consider a body with a biconic nose as sketched
+below flying at Mach number 2 with its center of gravity located 59 inches aft of the nose
+tip.
+
+
+                                                       Body Profile
+
+                  4
+                  3
+                  2
+                  1
+  Diameter, In
+
+
+
+
+                  0
+                  -1 0         10     20    30       40     50      60       70     80   90    100    110
+                  -2
+                  -3
+                  -4
+                                                 Body Station, In Aft of Nose Tip
+
+
+
+
+                                                                                                      9
+                                High Alpha Aerodynamics
+
+               30
+               25
+               20
+               15
+ Coefficient
+
+
+
+
+                                                                                          CM
+               10                                                                         CD
+                5
+                0
+                -5 0   30         60          90         120         150         180
+               -10
+                                  Angle of Attack, degrees
+
+
+The figure above shows that any trim angle of attack between 45°and 135°will give
+significant aerodynamic deceleration during reentry. Two possible trim points in the
+figure are at a = 61.428° and 180°. The former would provide acceptable capability, but
+not the latter. Care must be taken to preclude this mode-it's very bad news.
+        Finally, the pitching moment curve is very sensitive to CG location. An inch
+either way on this 9 foot long body makes a significant change in the trim condition.
+
+
+References
+     1. L. H. Jorgensen, "Prediction of Static Aerodynamic Characteristics for Slender
+        Bodies Alone and with Lifting Surfaces to Very High Angles of Attack",
+        N.A.S.A. TR R-474, September 1977
+     2. C. P. Hoult, "Re Entry Trim Aero", FORTRAN code, 1978
+     3. C. P. Hoult, "Barrowman Equations", Rocket Science and Technologies web
+        site (rsandt.com), 2013
+     4. C. P. Hoult, "Drag Coefficients", Rocket Science and Technologies web site
+        (rsandt.com), 2013
+
+
+
+
+                                                                                     10
+

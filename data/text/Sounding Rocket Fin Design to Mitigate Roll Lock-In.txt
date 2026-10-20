@@ -1,0 +1,830 @@
+Sounding Rocket Fin Design to Mitigate Roll Lock-In
+
+                         C.P.Hoult (Author)                                                                     Hien Tran (Author)
+                 Rocket Science and Technology                                                             Rocket Science and Technology
+                        4363 Motor Ave.                                                                       2822 W. Borchard Ave
+                    Culver City, CA 90232                                                                      Santa Ana, CA 92704
+                         (310) 839-8959                                                                        hienttran@gmail.com
+                      houltight@aol.com
+
+
+    Abstract— Roll lock-in is a persistent high angle of attack,
+nonlinear coning motion sometimes observed in the flight of
+reentry vehicles and sounding rockets. For example, it has
+occurred during Aerobee sounding rocket and Sidewinder                                                              I.   INTRODUCTION
+missile flights prior to the introduction of rollerons. This paper                                Roll lock-in, or catastrophic yaw, is the most challenging,
+focuses on how fin design effects the probability of lock-in. The                            non-linear phenomenon in the field of sounding rocket
+high angle of attack response is driven by misalignment and/or                               dynamics. There are several causes for this phenomenon:
+offset thrust and drag forces, amplified by during pitch-roll
+                                                                                             First, poor design leads to configurational asymmetries.
+resonance. High angles of attack engender nonlinear roll
+                                                                                             Second, lateral offset of the center of mass relative to the
+moments which cause the roll rate to follow the pitch natural
+frequency. It is well known that such roll moments can arise
+                                                                                             symmetry axis leads to both pitch/yaw perturbing torques, and
+when the center of mass is offset from the vehicle symmetry axis.                            to nonlinear roll moments. Finally, the interaction of fore body
+However, this paper explores another source of nonlinear high                                vortices and tail fins causes nonlinear, high angle of attack roll
+angle of attack roll moments, interaction between vorticity shed                             moments. Since only the last is significantly relevant to fin
+from a fore body and tail fins. Both kinds of roll moment have                               design, it is the only one studied here. Note, however, that the
+similar magnitudes. However, lock-in due to center of mass                                   first two have generally valid remedial design prescriptions, e.
+offset is, apart from static margin, not affected by fin design.                             g., roll balancing.
+
+    The location and strength of the shed vortex pair are found
+                                                                                                  Experience has shown that sounding rocket roll lock-in
+from wind tunnel data. Roll moments are estimated from strip                                 usually begins in powered flight at the time of yaw-roll
+theory assuming incompressible cross flow. Conditions for                                    resonance when a rocket's pitch/yaw natural frequency equals
+steady state roll lock-in, and its probability of occurrence, are                            its roll rate1. During resonance the angle of attack response to
+derived from the rigid body moment equations. A technique for                                body-fixed perturbations is significantly amplified. Re-entry
+significantly reducing the probability of roll lock-in by adjusting                          vehicles are similarly afflicted during yaw-roll resonance2.
+the fin exposed semispan and static margin is presented, and                                 Then nonlinear roll moments will compel the roll rate to follow
+used to show that, for a typical university sounding rocket, static                          the yaw natural frequency indefinitely. Such locked-in motion
+margins larger than the classical two caliber heuristic rule can                             is said to be lunar with one side of the rocket always facing the
+mitigate this problem. Fin taper ratio was studied, and found to                             cone axis. The consequence is a prolonged period of excessive
+have a relatively minor effect. Little difference between three                              drag with severe adverse effects on the mission. The body-
+and four fins was found. But, more than four fins, at fixed static                           fixed perturbations driving all this are random. Therefore, for a
+margin, can significantly reduce the incidence of roll lock-in. Six                          given rocket flying a given mission, the occurrence of roll
+fins are much better than four, and eight are better still.                                  lock-in is also random.
+                                                                                                 In the past, most studies of roll lock-in have focused on
+                              TABLE OF CONTENTS                                              nonlinear transient phenomena1,4. But, some previous studies3,4
+I.    INTRODUCTION ............................................................ 1            have shown that catastrophic yaw is a continuing (quasi-steady
+II.   NOTATION ................................................................... 2         state) process. Two significant aerodynamic nonlinearities,
+III. VORTEX PAIR DESCRIPTION ......................................... 3                     Magnus moment and vortex-induced roll moment, are
+IV. ANALYSIS OF VORTEX-INDUCED ROLL MOMENT.......... 4                                       important. Our approach is to first estimate the steady state
+                                                                                             coning rate from the yaw moment equation, and, using the
+V.    LOCKED-IN LUNAR MOTION ........................................ 5
+                                                                                             pitch moment equation, the fin panel size to ensure the desired
+VI. EXAMPLE ..................................................................... 7
+                                                                                             (input) vehicle static margin is attained. Next, the minimum
+VII. IMPLICATIONS FOR FIN DESIGN .................................... 8                      angle of attack for which steady state lunar roll lock-in is
+VIII. RECOMMENDATION .................................................... 10                 possible is found from the roll moment equation. The
+REFERENCES ........................................................................ 10       probability of no roll lock-in is the objective function for
+APPENDIX I: STABILITY DERIVATIVES .................................. 10                      optimizing fin design, and is estimated from known body-fixed
+APPENDIX II: CENTER OF MASS OFFSET MOMENT................. 12                                perturbations15,16 .
+
+
+                                                                                         1
+                  II. NOTATION                                      g         Indefinite integral in the roll moment induced
+Mnemonic_________Definition________________________                           by a single fin by a single vortex,
+   a        Distance from a vortex core to a point on a fin,        IP        Pitch/yaw moment of inertia,
+   b        Exposed semispan of a fin,                              L         Rocket overall length,
+   CD       Fin airfoil drag coefficient for a section normal       lT        Distance from the nozzle to the rocket center of
+            to the leading edge,                                              mass,
+                  2C D                                             M         Free stream Mach number,
+   CD                ,
+                  2                                               N         Number of fin panels,
+   C M     Pitching moment coefficient slope,                      Pr        Probability on no roll lock-in,
+
+   CN       Normal force coefficient of the entire vehicle,         p, q, r   Roll, pitch and yaw rates,
+
+   C N     Fin span-average       airfoil normal      force        q         Dynamic pressure,
+            coefficient   slope     without   any      body         R         Body radius,
+            interference,
+                                                                    r         Distance from the body centerline to the core
+   C NF    Fin assembly normal force coefficient slope,                      of a free vortex,
+   CNN     Nose normal force coefficient slope,                    S         Aerodynamic reference area  R 2
+
+   CL       Roll moment coefficient CL  L qSd ,                    SM        Pitch/yaw static margin,
+                                                                    s         Distance from the body centerline to the core
+   C L     Single fin roll moment coefficient due to fin
+                                                                              of an image vortex,
+            cant,
+                                                                    T         Thrust force,
+   C Li     Amplitude of the vortex-induced roll moment
+            coefficient,                                            U         Free stream velocity,
+
+   C Lp     Roll moment coefficient due to fin damping in           v        Tangential velocity around a vortex,
+            roll,                                                   vN        Velocity normal to a fin panel,
+   C LV     Nonlinear roll moment due to interaction                x         Distance aft of the nose tip,
+            between nose vorticity and tail fins,
+                                                                    xCG       Distance from the nose tip to the Center of
+   C LO     Nonlinear roll moment coefficient due to CG                       Gravity,
+            offset,
+                                                                    xCPF      Distance from the nose tip to the fin assembly
+   C Np     Yawing moment coefficient due to roll rate,                       center of pressure,
+   C Np    Yawing moment coefficient due to roll rate and          xCPN      Distance from the nose tip to the nose center of
+            angle of attack,                                                  pressure,
+   C Nr     Yawing moment coefficient due to yaw rate,              xS        Distance aft of the nose tip where vortex
+                                                                              separation occurs,
+   CY       Magnus side force coefficient per unit length
+            based on cross flow velocity,                           y         Distance from the body centerline to a point on
+                                                                              a fin,
+   c( y )   Local fin chord at spanwise station y,
+                                                                    yV        Lateral distance from the body centerline to a
+   cR       Root chord,                                                       free vortex core,
+   cT       Tip chord,                                              zV        Vertical distance from the body centerline to a
+                                                                              free vortex core,
+   d        Aerodynamic reference length  2R ,
+                                                                             Body angle of attack,
+   fi       Integral functions,
+                                                                    *        Minimum angle of attack for which lock-in can
+                                                                              occur,
+
+
+                                                                2
+    local      Local angle of attack at a point on a fin,
+               Dimensionless exposed semispan  b / R ,
+               Fin cant angle,
+   T           Single plane thrust misalignment angle,
+               Body roll angle,
+
+   V           Roll angle attitude of a free vortex,
+               Circulation around a free vortex,
+               Fin sweep back angle, between root chord and
+                leading edge,
+               Fin taper ratio  cT / cR ,
+               Coning rate,
+   n           Pitch/yaw natural frequency, and                                             Figure 1 - Free Vortex Strength
+
+               Single plane center of mass offset,                              The approximate lateral location yV of a vortex core is
+
+   ( )o         Value of ( ) at low angle of attack.                                                     yV
+                                                                                                             0.7                           (2)
+                                                                                                         R
+                III. VORTEX PAIR DESCRIPTION
+    It will probably come as no surprise to the reader to find
+that there is an extensive literature on the vortex wakes in the
+lee of slender bodies of revolution5,6,7. These will provide what
+we need to know.
+    Our chosen point of departure is the longitudinal location
+ xS where the vortex pair separates from the body. While this
+is difficult to accurately determine experimentally, it would
+appear that the separation point approximately corresponds to
+the location where the zero  static pressure on the body is a
+minimum. Aft of this point, the longitudinal pressure gradient
+is adverse, i.e., pressure increasing as x increases. This is a
+strong argument for locating the vortex separation point there.
+In Fig. 1 the definitions are:
+                                                     ( x  xS )
+   Dimensionless Distance Aft of Separation                    
+                                                         R
+                                                                                     Figure 2 - Vertical Location of a Free Vortex
+   Dimensionless Vortex Strength 
+                                        2RU                                    The wind tunnel data6 for the vertical location of a free
+                                                                              vortex is shown in Fig. 2.
+   Using these definitions, the empirical data in Fig. 1 can be
+well represented by                                                                                                            zV  1
+                                                                                 Here, Dimensionless Vertical Location               .
+                                                                                                                                 R
+                                 ( x  x S ) 
+                                                   1.52
+                
+                     0.6  0.08                                  (1)
+              2RU                   R       
+                                                                                 The data displayed above cover the angle of attack range
+                                                                              from 10o to 30o, and extend aft from the body nose tip about 10
+                                                                              body diameters. The dashed line in Fig. 2 is a rough fit to the
+                                                                              data that could be used in other analyses. Its equation is
+                                                                                                  zV            ( x  xS )
+                                                                                                      1  0.21                            (3)
+                                                                                                  R                 R
+                                                                                 The image vortex is collinear with the centerline and the
+                                                                              external vortex, but with opposite sign. It can be shown8 that if
+
+
+
+                                                                          3
+                            rs  R 2                          (4)           The flow around an isolated vortex follows circular
+                                                                        streamlines centered on the vortex8. The tangential velocity v
+the boundary condition on the cylinder surface is satisfied
+                                                                        at a radial distance a from the vortex core to a point on a fin is
+everywhere.
+                                                                                                              
+                                                                                                      v                                (6)
+    IV.     ANALYSIS OF VORTEX-INDUCED ROLL MOMENT                                                           2a
+    First, consider the effects of vorticity shed from the fore
+body at high angles of attack. In the Reynolds no. range
+commonly encountered with sounding rockets at resonance a
+pair of vortices are shed into the leeward wake over the
+forebody. The vortex pair is initially symmetric about the
+angle of attack plane. As the leeward wake moves aft, the
+vortex pair grows stronger from additional vorticity shed from
+the body. In the neighborhood of the tail fins the vortex pair,
+and their image vortices induces a roll moment.
+    Figure 3 shows the important features of this problem. The
+solid dots represent the cores of the shed free vortices. The
+open dots represent the cores of the image vortices, located at a
+distance s from the centerline8. Each free-image vortex pair
+will satisfy the boundary condition of no flow through the
+cylindrical body surface. As described above the location and
+strength of the shed vortex pair ( r, v ) must be found from                Figure 4 - Vortex and Fin in the Cross Flow Plane
+wind tunnel experiment.                                                    The sign convention used here is to view the rocket from its
+   The fundamental assumption beneath the induced roll                  nose tip. A positive  and v follow the fingers of the right
+moment calculation is the idea of incompressible cross flow.            hand when the thumb points out of the paper. A positive roll
+That is, the flow in the cross flow plane may be considered             moment also follows this right hand rule.
+incompressible so long as the overall hypersonic similarity
+parameter H is small compared to unity:                                            Now, look at Fig. 4, and consider the interaction
+                                                                        between the fin at top dead center and the free vortex at ~2
+                   H  M 2  1 sin( )  1                   (5)       o’clock. The distance between the vortex core and a point on
+                                                                        the fin, a , is
+    Since for roll lock-in the angle of attack is often less than
+about 0.2 radians, this implies the flight Mach number M  5 ,                           a     y 2  r 2  2 yr cos(V   )            (7)
+or so. Equation (5) is automatically satisfied for subsonic free
+stream Mach numbers.                                                       Next, the angle  between the tangential velocity and the
+                                                                        normal to the fin panel is
+                                                                                                             a2  y2  r2
+                                                                                              cos 1 (                )              (8)
+                                                                                                                 2ay
+                                                                           Then, the vortex-induced velocity normal to the fin panel is
+                                                                                                 vN  v cos , or
+
+                                                                                                    ( y  r cos(V   ))
+                                                                                     vN                                         ,      (9)
+                                                                                              2 ( y 2  r 2  2 yr cos(V   ))
+                                                                            Assuming a fin planform with straight taper, the local chord
+                                                                        is given by
+                                                                                              c( y )  C1  C2 y , where                (10)
+
+                                                                                           R         R            R         
+                                                                             C1  cR (1  ( ))  cT ( )  cR 1  ( )(1   )  c1cR
+                                                                                           b         b            b         
+                                                                                                         and                            (11)
+                                                                                             c  cT       1
+          Figure 3 - Roll Geometry Looking Forward                                     C2   R      cR       c2 c R
+                                                                                                b          b
+
+
+                                                                    4
+   With this the rolling moment due to a fin strip in the                                             The variable appears explicitly in eq. (17) because has not
+presence of an isolated vortex is                                                                 yet been evaluated at the limits of integration. The vortex-
+                                                                                                  induced roll moment for a single fin is
+  d Induced Moment   qyc ( y )dyC N
+                                              vN
+                                               U                                                                    g First quadrant free vortex      
+                                                                                                                                                         
+                                   ( y  r cos(V   ))                                                  qC N     g First quadrant image vortex  
+       qy (C1  C 2 y )C N                                      dy                                     
+                             2U ( y 2  r 2  2 yr cos(V   ))                                           2U   g Second quadrant free vortex  
+                                                                                                                                                         
+                                                                                                                     g Second quadrant image vortex 
+              qC N  ( yC1  y 2C2 )( y  r cos(V   ))                                                                                               
+                                                          dy , or
+               2U       ( y 2  2 yr cos(V   )  r 2 )                                            Here g is the definite integral form of the indefinite
+                                                                                                  integrals given by eq. (18).
+   Induced Moment One Fin, One Vortex  
+                                                 b R                                                        g (C1 , C2 , r ,V , b  R, )  g (C1 , C2 , r ,V , R, )    
+                                     qC N             1                                                                                                                   
+                                             2      
+                                      2U R y  2 yr cos(V   )  r 2
+                                                                                       (12)
+                                                                                                  
+                                                                                                    qC N    g (C1 , C2 , s,v , b  R, )  g (C1 , C2 , s,V , R, ) 
+                                                                                                     2U   g (C1 , C2 , r ,V , b  R, )  g (C1 , C2 , r ,V , R, ) 
+                                                                                                                                                                               (19)
+                                     yC1r cos(V   )                                                     g (C , C , s, , b  R, )  g (C , C , s, , R, ) 
+                                     2                                   dy.                                       1    2        V                   1     2      V       
+                                     y (C1  C2 r cos(V   ))  y C2 
+                                                                     3
+
+                                                                                                      The signs in the various terms of eq. (19) arise from
+   To provide a useful result, this must be coded in a computer                                   integration limits and the signs of the various vortices.
+program. To this end define some functions:
+                                                                                                      The roll moment contribution from the second fin panel
+                           dy                                                                     takes exactly the same form except that the roll angle argument
+          f0   2
+                y  2 yr cos(V   )  r 2                                                        is increased to   2 / N . The roll angle argument for each
+                           1                            y
+                                                                                      (13)        successive fin panel is increased by 2 / N . The moment from
+                                     tan 1 (                       cot(V   ))               each of N panels takes two function evaluations to implement
+              r sin(V   )                     r sin(V   )                                   the integration limits times four for the four vortices. For a
+                                       ydy                                                        four-finned configuration, 32 g function evaluations are
+      f1      y  2 yr cos(   )  r
+                       2
+                                            V
+                                                            2                                     needed for each roll angle.
+                                                                                      (14)
+       1                                                                                                    Right-left symmetry is important. Assuming an
+       log( y 2  2 yr cos(V   )  r 2 )  r cos(V   ) f 0                                 airfoil normal force coefficient slope of 4 / radian, Fig. 6 below
+       2                                                                                          shows the induced roll moment coefficient for a four-finned
+                                        y 2 dy                                                    rocket at various angles of attack as found by the methods of
+          f2          y  2 yr cos(   )  r
+                           2                                    2                                 this paper. Note that for small angles of attack, the phasing can
+                                                V                                                 change by 180o. Figure 6 clearly shows the sinusoidal
+        y  r cos(V   ) log( y 2  2 yr cos(V   )  r 2 )                      (15)        character of a typical induced moment curve. It follows that
+                                                                                                  the induced moment can be represented well by a simple sine
+        r cos( 2(V   )) f 0
+              2
+                                                                                                  wave whose amplitude can be approximated by a single
+and                                                                                               calculation at a roll angle of about  / 2 N . The maximum
+                                                                                                  amplitude of C Li over the entire roll angle range is shown as
+                                  y 3dy                                                           solid curve in Fig. 7.
+      f3            y 2  2 yr cos(V   )  r 2
+        y2                                                  1                                                     V. LOCKED-IN LUNAR MOTION
+             2 yr cos(V   )  r 2 ( 2 cos 2 (V   )  )        (16)                            Next, consider the steady state lunar coning motion of a
+         2                                                  2
+                                                                                                  rocket in roll lock-in. In lunar coning motion one side of the
+      log( y 2  2 yr cos(V   )  r 2 )  r 3 cos( 3(V   )) f 0                                                                       
+                                                                                                  rocket always faces the spin rate vector  as shown in Fig. 5:
+    We can now write the vortex-induced roll moment for one                                       A further description of this motion is: The rocket is assumed
+fin in the presence of one vortex in the form                                                     to be both slender and to have pitch-yaw symmetry. It follows
+                                                                                                  that the roll moment of inertia can always be neglected when it
+                                   qC N                                                         appears in combination with the pitch or yaw moment of
+                                          g (C1 , C2 , r,V , y, )                  (17)
+                                    2U                                                           inertia.
+with the function g given by                                                                          The forcing function for this motion is assumed to be a
+                                                                                                  combination of thrust misalignment and lateral C.G. offset
+                           g  C1r cos(V   ) f1                                               acting in the pitch plane. Its palliation, mass balancing, is
+                                                                                      (18)        known to be easy and effective.
+                         (C1  C2 r cos(V   )) f 2  C2 f 3
+                                                                                                     Because the motion is assumed to be steady state, the angle
+                                                                                                  of attack  is assumed to be constant. In other words, the
+
+                                                                                              5
+rocket is in a "flat or lunar spin" with one side always facing                                           R sin         R cos  
+inward.                                                                             M Yaw  2qR 3  C Nr          C Np            (24)
+                                                                                                            U                U      
+    Then the steady state roll (x-axis) and yaw (z-axis) rates
+                                                                                             I P sin cos 
+                                                                                                   2
+are:
+                         p   cos                                            These three equations have three unknowns, a ,  and  .
+                                                                             Combining the second and third gives:
+                                and                              (20)
+                           r   sin                                                    2qR 3C M   T (lT  T  )
+                                                                                                        R sin          R cos  
+                                                                                           2qR 3 C Nr           C Np           
+                                                                                                          U                 U      
+                                                                                 Assuming the trim angle of attack is small lets us
+                                                                             estimate  :
+                                                                                                                T (lT  T  )
+                                                                                             
+                                                                                                                                  R 
+                                                                                                              
+                                                                                                                             
+                                                                                                       2qR 3 CM  C Np  C Nr
+                                                                                                                                  U 
+                                                                                                                                        
+                                                                                                              
+                                                                                Solve the third equation for  under the same conditions:
+
+                                                                                                                2qR 4
+                                                                                                        
+                                                                                                                 UI p
+                                                                                                                         
+                                                                                                                       C Nr  C Np                        (25)
+
+                                                                                                                                                   2
+                                                                                Note as always the period P of the motion is P                         .
+                                                                                                                                                   
+                                                                                Combining eq's. (24) and (25) results in:
+               Figure 5 - Lunar Locked In Motion                                                                    T (lT  T  )
+                                                                                                                                                          (26)
+   In body-fixed axes the three equilibrium moment                                                           2qR 5               
+equations8 are                                                                                    2qR C M  2 (C Nr  C Np ) 2 
+                                                                                                            3
+
+                                                                                                            U Ip                 
+                         R cos                           
+     M Roll  2qR 3 CLp           NCL  F  CLi ( ,  )  0 (21)           Equation (26) is important because it can be used to
+                           U                                               estimate the probability of not exceeding  . Due to roll
+and, assuming thrusting flight,                                              symmetry, the pitch axis in this analysis is defined by the
+                                                                             direction of the vector sum of the two transverse components
+    M Pitch  2qR 3CM a  T (lT  T  )  I P 2 sin cos  (22)          of the perturbing torque. If the statistics of both transverse
+                                                                             components have the same Gaussian distribution, then  has a
+    The perturbations driving this motion,  T and  , are                   Rayleigh distribution. Let
+random. Some estimates on them can be found in ref's. (15)
+and (16). The static pitching moment in eq. (22) above should                                                   T 2 var( l T  T  )
+                                                                              var( )                                                             , where
+be treated with respect. At sufficiently high angle of attack the                                                                              2
+                                                                                                               2qR 5                    
+fins are susceptible to stalling if the Mach number is subsonic.                           2 q R C M  2
+                                                                                              2    2    6
+                                                                                                                        (C Nr  C Np ) 2                    (27)
+    Now, the derivative C Np appearing in the third ( M Yaw ) of                                              U Ip                      
+these equations is tricky. If evaluated at zero  it will be                  var( l T  T  )  l T var( T )  var( )
+                                                                                                    2
+
+
+found to vanish. But, if evaluated at a non-zero  it can have                  Then, the probability of exceeding  is
+significant dynamic effects. It's basically a Magnus torque.
+That's because C Np is really CNp as shown in the Appendix.                                                               2 
+                                                                                                            Pr  1  exp                                  (28)
+                                                                                                                          var( ) 
+Thus,
+                      R cos         R cos                                  Next, to find the maximum  for which no lock-in is
+                CNp             CNp                            (23)
+                        U                U                                   possible, return to the roll equilibrium condition, eq. (21):
+   Then, the yaw moment equation becomes                                                       R cos                            
+                                                                                          C Lp           NCL  F  C Li ( ,  )  0
+                                                                                                 U                                
+
+
+
+                                                                         6
+    Now, at low angle of attack (just prior to entering the                      First, estimate the vortex-induced roll moment as a function
+resonant condition),                                                         of roll angle and plot it in Fig. 6 below:
+                                             pR
+                        NCL  F  C Lp
+                                             U
+    The roll rate just before resonance is just the pitch natural
+frequency. Then
+
+                                2qR 3 C M
+                  p  n                    , and
+                                    IP
+
+                                        R 5 C M
+                  NC L  F  C Lp
+                                           IP
+   With this, the roll equilibrium equation becomes
+
+           C Lp        2qR 5 C M 
+                 R                  C Li ( ,  * )  0      (29)
+           U               IP       
+                
+    Equations (28) and (29) are the key to our problem. At
+small angles of attack, the C Li term is too small to satisfy                      Figure 6 - Vortex-Induced Roll Moment for Various
+eq.(29) for any roll angle. That is, no steady state locked-in                                     Angles of Attack
+solution is possible. The smallest angle of attack  * for which                 Figure 6 shows the induced roll moment vs. roll angle at
+a steady state locked-in solution exists is given implicitly by              angles of attack = 0.05, 0.1, 0.12 and 0.15 radians for the
+                                                                             example vehicle. First, note that the roll moment vs. roll angle
+            C Lp        2qR 5 C M                                       curve goes through a 180° phase change from a small angle
+                  R                  C Li MAX ( * )         (30)       attack regime (  6  ) to different regime at larger angles of
+            U               IP       
+                                                                            attack. As  increases beyond this transition, the amplitude
+                                                                             of the induced roll moment increases to very large values. This
+where C LiMAX ( * ) is the maximum value of C Li obtained by                is caused by the changing position of the fin tips relative to the
+finding , at a fixed angle of attack, that roll angle  which                shed vortex pair. This pattern is generally observed for many
+maximizes/minimizes C Li . Since the induced roll moment                     different fin geometries and flight conditions.
+oscillates between positive and negative maximum values,                         Next, consider how this leads to roll lock-in. Begin by
+equation (30) should be interpreted to mean, for a lock-in                   finding the maximum value of C Li as a function of angle of
+solution to exist, that the C Li term has a sign opposite to that            attack. This is shown as the solid line hill-valley-mountain
+of the C Lp term. In effect, eq. (30) defines a necessary and                curve in Fig. 7 below. When the number of fins is increased
+sufficient condition for roll lock-in to occur. Unless it is                 to, say 6, the single humped shape (think dromedary) shown in
+satisfied, roll lock-in cannot happen, even though the                       Fig. 7 often changes to a two humped (think Bactrian camel)
+perturbing torque is very large. But, if it is satisfied, then it's          form. If lock-in were to occur it would first manifest itself at
+only a matter of statistics as shown in eq. (28).                            these relative maximum  ’s because at other roll angles (same
+                                                                              ) the necessary induced roll moment would not be as large.
+                                                                             The horizontal line in Fig. 7 corresponds to possible roll lock-
+                       VI. EXAMPLE
+                                                                             in conditions. In regions with a thin, solid horizontal line roll
+   As an example of this process, consider the following set of              lock-in cannot occur (not enough C Li ), but where the heavy
+parameters:
+                                                                             dashed line appears, steady state roll lock-in can happen.
+U  10000 in / sec           q  4 lb/in 2                 L  122 in            During the run up to pitch-roll resonance the angle of attack
+                                                                             starts small and increases as resonance is approached. Lock-in
+W  60 lb                    XCG  71 in          I P  27734 sl  in2       will then be observed where the vertical dot-dashed line
+                                                                             labeled  intersects the other two curves.
+b  6 in                     Rad  3 in                         2
+  0.3                    SM  3.33 cal                 SM  20 in
+
+C Nn  2 / rad            C Na  4 / rad               X S  36 in
+
+XCPF  108 in                XCPN  39 in                      N 4
+
+
+                                                                         7
+                                                                               Once we have a model of vortex-induced roll moment and
+                                                                          how it influences roll lock-in, it is appropriate to consider what
+                                                                          can be done to mitigate steady state roll lock-in. The obvious
+                                                                          first thing is to carefully roll-balance and align the structure to
+                                                                          minimize the pitch / yaw perturbing torques. This has been
+                                                                          known for a very long time.
+                                                                              So the next step in our mitigation strategy is to try to hold
+                                                                          the left hand side of eq. (30) above the C Li hump(s) occurring
+                                                                          low angle of attack. In achieving this goal, static margin is
+                                                                          more important than generally realized. There is a long
+                                                                          tradition of designing for two calibers (body diameters) of
+                                                                          static margin. But Fig. 8 shows that, apart from the perturbing
+                                                                          torque statistics, more than two calibers can extend the region
+                                                                          where lock-in is dynamically impossible.
+                                                                              The left hand side of eq. (30) depends significantly on
+                                                                          flight condition, more specifically dynamic pressure as shown
+                                                                          in Fig. 9 below. Larger dynamic pressure acts like larger static
+                                                                          margin by reducing angle of attack. It is expected that the
+         Figure 7 – Typical Conditions for Roll Lock-in
+                                                                          smaller dynamic pressures at higher altitude will exacerbate
+   Figure 7 above sketches the approach to solving eq. (30)               any lock-in tendencies.
+with the horizontal line representing the C Lp term. To this
+varying amounts of C Li are added with more as the angle of
+attack is increased. Lock-in first becomes possible when the
+maximum C Li is just tangent to the horizontal line. Thus,
+eq.(30) implicitly defines the minimum angle of attack for
+lock-in. Now, since the first (C Lp ) term in eq. (30) does not
+depend on roll angle, the boundary between no roll lock-in and
+just possible roll lock-in is that C Li be stationary with respect
+to roll angle, and that it be large enough to just balance the
+ C Lp term. Thus, at any specified angle of attack, there is a
+maximum / minimum for C Li . This can be found using
+numerical methods from the induced roll moment data like that
+plotted in Fig. 6 above.
+    Now add in the remainder of eq. (30) as depicted in Fig. 7.
+The left hand side, the C Lp term, appears as a horizontal
+straight line. Those parts of this straight line shown as heavy               Figure 8 - Typical Effects of Varying Static Margin
+dashed lines are regions where roll lock-in is possible, that is,
+where eq. (30) is satisfied. Equation (26) establishes a pitch
+perturbing torque needed for the lowest angle of attack for roll
+lock-in shown by the vertical line in Fig. 7. Thus, no roll lock-
+in is possible in the region to the left of this vertical line.
+Given this, eq. (28) can be used to estimate the probability that
+no roll lock-in can occur.
+
+             VII. IMPLICATIONS FOR FIN DESIGN
+    Begin by observing that there is no guaranteed fin design
+that will always prevent roll lock-in. It is always possible to
+have very large misalignment torques that, no matter how
+statistically rare, will cause roll lock-in. But, it is possible to
+design fins that have a very low probability of lock-in. Figure
+7 shows that if we can move the horizontal line high enough to
+clear the “hill” lock-in will be deferred to very high, and
+uncommon, angles of attack.
+
+
+
+                                                                      8
+       Figure 9 - Effect of Dynamic Pressure on the First
+                    (C Lp ) Term in Eq. 30)
+
+    The remaining choices involve manipulating fin geometry.
+Fin design usually is one of the last steps in vehicle design.
+The Fin Designer considers most of the key system parameters
+identified in the example as givens. His free variables are fin
+size (Static Margin), number of fin panels (N ) and fin shape
+ (  and  ) . The simplest approach is to manipulate the
+appearance of Fig. 7 by varying SM , N ,  and  to move the
+horizontal line above the camel's hump(s).
+    By far the most important fin parameter for mitigating lock-
+in is the number of fin panels, N . Most sounding rockets have
+flown with 4 fins with a small minority using only 3 fins, and
+almost none with 5 or more. Our model shows that there is
+very little difference between 3 and 4 fins when attempting
+implementation of the first part of our strategy. Small tweaks
+in taper ratio  or exposed fin span  can bring about very            Figure 11 - CL of 4 fins for Various Angles of Attack
+similar performance in these two cases. But, increasing the
+number of fins to 5 or more leads to dramatic improvements.
+Our model shows that with 6 fins major improvement is
+relatively easy, and it becomes trivially easy with 8. Note that
+mortar bombs are commonly flown with 8 fin panels.
+   Assuming the same baseline for all fin counts, results are
+shown in Fig’s. 10, 11, 12 and 13 for 3, 4, 6 and 8 fin panels.
+
+
+
+
+                                                                       Figure 12 - CL of 6 fins for Various Angles of Attack
+
+
+
+
+     Figure 10 - CL of 3 fins for Various Angles of Attack
+
+
+
+
+                                                                       Figure 13 - CL of 8 fins for Various Angles of Attack
+
+
+
+                                                                   9
+   The effect of increasing the number of fins beyond 4                                  where the second term in  is the inverse square upwash
+dramatically, improves resistance to roll lock-in.                                  around a cylinder8. The third term is the fin cant angle, the
+                                                                                    fourth is due to roll damping and the last is the sum of the
+                      VIII. RECOMMENDATION                                           in ’s induced by the four vortices.
+   To improve resistance to roll lock-in, consider using static
+margins greater than two calibers and more than four fins.
+
+                               REFERENCES
+[1]  Nicolaides, J. D., "A History of Ordnance Flight Dynamics", A.I.A.A.
+     paper 70-533, 1970.
+[2] Platus, D. H., "Ballistic Re-entry Vehicle Flight Dynamics", J.                                      Figure 14 - Airfoil Sketch
+     Guidance, Vol. 5, no. 1, pp 4-16 (1982).
+                                                                                        Before analyzing the roll moments, take a break and recall
+[3] Ananthkrishnan, N., and Raisinghani, S. C., "Steady and Quasisteady
+     Resonant Lock-in of Finned Projectiles", Journal of Spacecraft and
+                                                                                    that while we are trying to design fins to minimize nonlinear
+     Rockets, Vol. 29, no. 5, 1992, pp 692-696.                                     roll behavior, any resulting design must have the necessary
+[4] Clare, T.A., "Resonance Instability for Finned Configurations Having            static margin. This implies that the constraint takes the form of
+     Nonlinear Aerodynamic Properties", Journal of Spacecraft and Rockets,          eq. (33) below10,
+     Vol. 8, No. 3, 1971, pp 278-283.
+                                                                                                                                                 R2
+[5] Jorgensen, L. H. and Perkins, E. W., “Investigation of Some Wake
+     Vortex Characteristics of an Ogive-Cylinder at Mach Number 2”,
+                                                                                          d Fin Normal Force Slope  qC N c( y)dy(1             ) (32)
+     N.A.C.A. Report 1371, 1955.
+                                                                                                                                                 y2
+[6] Thomson, K.D. and Morrison, D. F., “The Spacing, Position and                       The last term accounts for body-fin upwash interference8.
+     Strength of Vortices in the Wake of Slender Cylindrical Bodies at Large
+     Incidence”, Journal of Fluid Mechanics, Vol. 50, Issue 04, 1971.
+                                                                                    Integrating across the exposed fin span gives the single panel
+                                                                                    result,
+[7] Spahr, J. R., “Theoretical Prediction of the Effects of Vortex Flows on
+     the Loading, Forces, and Moments of Slender Aircraft”, N.A.S.A.                  Single Panel Fin Normal Force Slope 
+     Technical Report R-101, 1961.
+[8] Rauscher, M., “Introduction to Aeronautical Dynamics”, John Wiley &
+     Sons, New York, 1953.
+                                                                                                                               
+                                                                                                         c1b  c2 b 2  2bR / 2  c1 R 2 b / Rb  R 
+                                                                                              qC N c R                                                 
+                                                                                                          c R 2 logb  R  / R                      
+[9] Hoult, C. P., “Strip Theory for Setting Fin Angles (revised)”,RST                                    2                                              
+     Memo, 13 September 2009.
+[10] Barrowman, J.S. and Barrowman, J.A., “The Theoretical Prediction of                For a complete symmetric fin configuration ( N  3) it can
+     the Center of Pressure”, Master of Science thesis, Catholic University,        be shown10 that the
+     1966.
+[11] Babister, A. W., "Aircraft Dynamic Stability and Response", Pergamon               Total Fin Assembly Normal Force Coefficient Slope 
+     Press, London, 1980.
+                                                                                                                                               
+                                                                                                                       c1b  c 2 b 2  2bR / 2 
+                                                                                                                Nc R                                (33)
+[12] Naselius, K. A., "A Wind Tunnel Study of Magnus Effects on a
+     Differentially Rotating Missile", AFIT M. S. Thesis, 1992.                                   C NF  C N          c1 R 2 b / Rb  R  
+[13] Reid, E. G., "Tests of a Rotating Cylinder", N.A.C.A. TN-209. 1924.                                       2R 2
+                                                                                                                                                    
+                                                                                                                        c 2 R 2 logb  R  / R 
+[14] Jacobson, I. D., "Magnus Characteristics of Arbitrary Rotating Bodies",                                                                       
+     AGARD-AG-171, edited by P. F. Yaggy, Harford House, London,
+     England, 1973.                                                                    Keep in mind that the tail fins are the most important
+[15] R. L. Ammons and C. P. Hoult, “Standardized Perturbation Values for            contributor to vehicle static margin. The static margin, and
+     Several Sounding Rockets to be Used in the Calculation of Dispersion           hence the fin assembly normal force slope, result from
+     and Structural Loads”, Aerojet-General Corporation memo                        requirements unconnected to roll lock-in. Therefore eq’s. (33)
+     8110:M0658:ak, 16 September 1970.
+                                                                                    and (37) acts as a constraint on the allowable changes in fin
+[16] R. N. Knauber, "Thrust Misalignments of Fixed-Nozzle Solid Rocket
+     Motors", Journal of Spacecraft and Rockets, November-December
+                                                                                    geometry. To apply it, select C N , b, R and  . Solve for c R .
+     1996, pp794-799.
+                                                                                       Then, the roll driving and damping moments of a single fin
+[17] Abbott, I. H., von Doenhoff, A. E., and Stivers, L.,Jr., "Summary of
+     Airfoil Data", N.A.C.A. Report 824, 1945.                                      panel9 are
+                                                                                                                           b R
+                APPENDIX I: STABILITY DERIVATIVES
+    Strip theory9 considers a fin panel to have only two
+                                                                                            Driving Moment  qC N          yc ( y)dy
+                                                                                                                            R
+dimensions; that is, it’s a pure airfoil. However, use of a 2D                                                    C           C
+airfoil lift curve slope can give highly erroneous results so the                                       qC N  ( 1 ) y 2  ( 2 ) y 3
+reader is advised to use the 3D lift curve slope averaged over                                                     2           3
+the exposed fin area. Now, consider Fig. 14 below. The local                                                      C1 2                          
+angle of attack  local on an airfoil strip is                                                                   ( 2 )(b  2 Rb)                
+                                                                                                        qC N                                 
+                                                          N                                                       ( C 2 )(b 3  3Rb 2  3R 2 b)
+            local   (1  ( R / y) 2 )    R y / U    in       (31)                                          3                         
+                                                          1
+
+
+
+                                                                               10
+                               c1                                             where the summation extends over all body elements
+                                ( )(( b  R) 2  R 2 ) 
+                     C N c R  2
+                                                                                including those with fins.
+              C L                                               (34)
+                     2R 3  c 2                       3 
+                                
+                               3(  )(( b  R ) 3
+                                                    R  ) 
+                                                                                C.   C Np
+                                                                                   The yaw moment due to rolling and angle of attack is tricky
+                                      b R                                      because it requires estimation of the Magnus force on the body.
+                                   p
+                                   U R
+ Damping Moment  qC N                y 2 c( y )dy                            Reference (13) provides an experimental estimate of the
+                                                                                Magnus side force acting on a uniform spinning cylinder:
+                        C1 3                                         
+                          ( )(b  3Rb 2  3R 2 b)                                                                  Rp
+                     p 3                                                                       CY  0 when              0.5             (39)
+             qC N                                                                                           U sin 
+                     U  C2                                           
+                         (   )( b 4
+                                        4b 3
+                                              R  6 R 2 2
+                                                       b   4 R 3
+                                                                  b )             Since this condition is abundantly satisfied for the current
+                              4                                                               Rp
+                                                                                problem (            0.05) , the body contribution to Magnus
+                                c1                                                        U sin 
+                                 ( )(( b  R) 3  R 3 ) 
+                      C N c R  3                                              moment can be neglected. But, the data8,12,13,14 show that there
+             C Lp                                               (35)        is a significant nonlinearity near zero roll rate. Once the
+                       R 4  c2                       4 
+                                ( 4 )(( b  R)  R )
+                                                 4                              condition in eq. (39) is exceeded, the side force increases more
+                                                                                                        Rp
+                                                                                or less linearly with         .
+   The stability derivatives needed for the lunar coning                                              U sin 
+version of roll lock-in are estimated above.                                        The fin contribution can be found with the aid of Fig. 15
+                                                                                below. Consider a strip of fin of span dy viewed from the left.
+A.   C M                                                                       While the basic, non-rolling angle of attack is still  cos 
+     A simple estimate on the static margin is                                  there is a additional local angle of attack due to roll rate:
+                                 xCPN C NN  xCPF C NF                                                 p 
+                                                                                                                   py
+          SM  xCP  xCG                                 xCG
+                                      C NN  C NF                                                             U cos 
+                                                                                    If we define lift L and drag D the usual way, normal to
+     the static pitching moment derivative is then
+                                                                                and parallel the relative velocity vector, the x -force X acting
+       dCM  xCG (C NN  C NF )  xCPN C NN  xCPF C NF (36)               on the chordwise strip for small  is:
+    Finally, the required fin assembly normal force coefficient                                                    py
+                                                                                                 dX  ( cos        )dL  dD
+slope is                                                                                                           U
+                                   SM  xCPN  xCG
+                 C NF  C NN                                      (37)
+                                   SM  xCPF  xCG
+     This is used in eq. (33).
+
+B. C Nr
+    The yaw moment due to roll rate can be estimated for a
+single fin panel using the strip theory methods of ref. (10).
+First, the definition of the yaw moment coefficient:
+                                       N
+                              CN 
+                                      qSR
+     Its derivative with respect to pR 2U is defined as C Np .
+
+   Now, decompose the body into a sequence of elements,
+each of which has a normal force coefficient slope c N . If an
+element were located a distance xi  xCG  xi from the
+center of mass, then
+                                             xi 2
+                      C Nr  2 c N i (       )                   (38)
+                                              R
+                                                                                               Figure 15 - Rolling Fin Geometry
+
+
+                                                                           11
+   The yawing moment contributed by the strip is                                so, in incompressible flow. For fins with supersonic leading
+                                                                                edges, the Ackeret result for airfoil wave drag should be used.
+           dN   y cos  ((local cos    p )dL  dD)                        The correction for sweep angle is based on infinite swept wing
+                                                                                theory.
+    Next, recall that body upwash adds to the local lift
+distribution, and that C L  C N . Then,
+                                                                                        APPENDIX II: CENTER OF MASS OFFSET MOMENT
+                          R    2
+                                          py                                      A second major source of nonlinear roll moment of offset
+                   ( (1  2 ) cos        )                                 center of mass. This is sketched in Fig. 16 below
+                          y              U                
+    dN  q cos                 2                         ycdy
+                   C ( (1    R              py
+                   N            2
+                                    ) cos       )  C D 
+                               y              U           
+   Converting to coefficient form, and noting that a
+symmetrical airfoil drag has a parabolic relationship with local
+angle of attack,
+                               1  2CD 2
+                CD  CD0              local sin 2 
+                               2  2
+                           cos           2C D
+                 dC N          (C N         sin 2 )
+                          2R 3            2
+                                 R2           py
+                         ( (1  2 ) cos   ) 2 ycdy
+                                 y            U
+
+   Retaining only those terms contributing to C Np , results in
+
+                           (C  CD sin 2 ) cos 2  
+                 dC N   N                         
+                                                                                    Figure 16 - Roll moment due to Center of Mass Offset
+                                    R 3                          (40)
+                             p   R 2                                               We easily find that the induced roll moment is
+                          (1  2 )(C1 y  C2 y )dy
+                                          2       3
+
+                             U   y                                                                         
+                                                                                                  CLCG      CN  sin(  CG )             (42)
+    The single panel stability derivative is found after                                                   d
+integrating from R to b  R , and differentiating:                                  The total nonlinear roll moment is then the sum of that due
+                                                                                to nose vorticity and that due to CG offset, including statistical
+                   (C  CD sin ) cos  
+                                      2        2
+         CNp   N                       
+                                             
+                                                                                correlations
+                              R 4          
+                 C1                   C           4 
+                 ((b  R)  R )  2 ((b  R)  R ) 
+                             3      3            4
+
+                 3                     4            
+                             C2                     
+                  R (C1b      ((b  R)  R ))
+                      2                   2  2
+                                                     
+                              2                     
+     The full fin assembly C Np requires adding the terms from
+all fin panels. Thus, for N  3 ,
+
+                   Nc (C  C D sin 2 ) 
+        C Np   R N                   
+                                           
+                            2R 4         
+                 c1                c2          4                  (41)
+                 ((b  R)  R )  ((b  R)  R ) 
+                            3     3           4
+
+                 3                 4             
+                            c2                   
+                  R (c1b  ((b  R)  R ))
+                     2                2     2
+                                                  
+                             2                   
+    Two comments are in order. Due to root and tip effects,
+ C N will vary across the fin span. A good first approximation
+is to take the full, 3D C N without body upwash, and average
+it over the span. Second, the derivative CD can be estimated
+from wind tunnel measurements17. Typically, CD  0.2 , or
+
+
+
+                                                                           12
+

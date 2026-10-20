@@ -1,0 +1,327 @@
+Rocket Science and Technology                   4363 Motor Ave., Culver City, CA 90232
+                                              Phone: (310) 839-8956 Fax: (310) 839-8855
+
+     Rocket Launches from a Stabilization Parachute(rev.1) 06 June 2013
+
+                                       by C. P. Hoult
+
+Introduction
+         The problem of an air dropped sounding rocket is very interesting because both its
+initial conditions and its "rail" ending condition must be considered. There are two ways
+to launch a sounding rocket from an aircraft.
+         In the first, after being dropped from an aircraft, the rocket is allowed to glide
+nose first for a while. When well clear of the mother aircraft, a stabilization parachute is
+deployed from the rocket's nose. After the nose whips around the rocket is slowed while
+flying tail first. Gradually the parachute brings the rocket to a more nearly vertical
+attitude. When the rocket pitch attitude reaches its desired value, and the mother aircraft
+has adequate separation the first stage is ignited.
+         In the second approach, the mother aircraft pulls up into a very steep climb, and
+launches the rocket like any other missile. While there are clear performance benefits for
+the second approach, the cost and schedule required to certify the aircraft for launching
+this particular type of missile mitigate against it.
+         This memo focuses on the first approach. Like ancient Gaul, there are three parts
+to the analysis:
+      First, the rocket's initial pitch attitude must be found.
+      Second the effective launcher length must be obtained considering the launcher
+         motion along its own length.
+      Third, the distance traveled after ignition along a moving rail must be found.
+Note that the launcher rail length in a well crafted point mass simulation never vanishes
+because of singular perturbation effects (1). The rocket will appear to be constrained as
+though it were on a physical rail aligned with its initial attitude until the end of the "rail"
+is reached.
+
+
+Initial Pitch Attitude
+         Consider a rocket dropped from a aircraft flying from right to left across the
+paper. Some time after stabilization parachute deployment, the system will appear as
+sketched below in Fig. 1. The sketch is accurate in that the rocket weight     pulls the
+rocket down away from streaming directly behind the stabilization parachute. The
+parachute drag       is in an opposite direction from the velocity . If we include an
+deceleration term        in the drag we can treat this as a statics problem. Neglect all
+aerodynamic forces except parachute drag because as the rocket becomes more vertical,
+these become increasingly less important due to slower speeds. Now, consider the
+balance of forces along the rocket's axis and normal to it:
+
+
+                                                                                           (1)
+
+
+                                                                                             1
+                                                                                        (2)
+                                                           X
+
+                                           θ
+                                                         ψ           D
+
+
+
+
+                                      γ        θ
+
+
+
+
+                  V
+
+
+                                        W
+                         Figure 1 Rocket on Parachute Geometry
+
+The forces can be eliminated from these two resulting in an angles only relation:
+
+                                                                                      (3)
+
+Next, geometry gives us that                                                           (4)
+
+From here on, it's a small slog through the algebra. Substitute eq. (4) into eq. (3) to find
+that
+                                                                                       (5)
+
+This is a quadratic equation with only one reasonable root,
+
+                                                                                        (6)
+
+During a simulation at any time step on the parachute is known, and, by virtue of eq.
+(6), the rocket's pitch orientation were it ignited at that time. Equation (6) is plotted in
+Fig. 2 below. If the rocket and parachute were initially traveling in a horizontal direction
+the rocket itself would droop 45o. And, if the parachute were descending vertically, the
+rocket would point straight up.
+
+
+
+
+                                                                                             2
+                                                            Initial Rocket Attitude
+
+                                     90
+   Initial Rocket Pitch Angle, deg
+
+
+                                     85
+                                     80
+            from Horizontal
+
+
+
+
+                                     75
+                                     70
+                                     65
+                                     60
+                                     55
+                                     50
+                                     45
+                                          90     100     110     120     130     140     150     160   170   180
+                                                        Initial Flight Path Angle, deg from Vertical
+
+                                                       Figure 2. Initial Rocket Pitch Attitude
+
+As a side benefit, if one times ignition carefully, it could be possible for the rocket to
+
+
+                                               Rocket Pointing above the Velocity Vector
+
+                                     45
+   Rocket Pointing Angle above the
+
+
+
+
+                                     40
+                                     35
+        Velocity Vector, deg
+
+
+
+
+                                     30
+                                     25
+                                     20
+                                     15
+                                     10
+                                      5
+                                      0
+                                          90     100     110     120     130     140     150     160   170   180
+                                                        Initial Flight Path Angle, deg from Vertical
+
+                                     Figure 3.    Initial Rocket Pointing Angle Above the Velocity Vector
+
+
+                                                                                                                   3
+miss the parachute canopy entirely. Figure 3. above shows the offset of the rocket's
+longitudinal axis relative to the initial velocity vector.
+        Finally, if the flight path angle , in radians, is redefined to be positive for
+rotations above the local horizon as is the practice in SKYAERO, the initial rocket
+Quadrant Elevation angle        , in radians, is given by
+
+                                                                                          (7)
+
+This should be used in trajectory simulations.
+
+
+Motion Along the Launcher Rail
+         The vast majority of air dropped/launched rockets do not actually fly from a
+physical launcher rail. How can the finite rail length developed in ref. (1) be reconciled
+with how a simulation is conducted? Let's consider a gedanken experiment. Suppose a
+rail of finite length is attached to the stabilization parachute. For inertia reasons, assume
+the rail's state of motion does not change during the time the rocket flies out along it.
+Because the rail is initially moving backward, it appears to shrink with time. That is, the
+rocket sees a launcher of apparent length           at any time after ignition. Then if the rail
+length were . and the speed on the parachute were            then
+
+                                                                                            (8)
+
+at any time after ignition. Here the launcher length is the physical length plus the single
+perturbation increment from ref. (1). As the physical launcher length is made shorter and
+shorter eq. (8) continues to hold. Passing to the limit
+
+                                                            ,
+(9)
+
+where     is the ref. (1) value of the minimum simulation launcher length for the rocket in
+question.
+       The trajectory flown along a moving rail is, when viewed from a stationary frame,
+curved. But, the s, for real world cases, are very short, on the order of one or two
+rocket lengths. Then, the flight path curvature of the trajectory on the rail can be
+neglected, and the distance      the rocket has flown after seconds is approximately
+
+                                                                                         (10)
+
+Physically, what's happening as seen by an observer who does not move relative to the
+atmosphere is shown in Fig. (4) below. The dashed line is the path followed by the
+rocket.
+
+
+
+
+                                                                                                4
+      To see what's quantitatively happening, consider a little constant acceleration
+model. The classical Galilean equations for motion along, and normal to, the rail when
+viewed by an observer fixed with respect to the atmosphere are:
+
+                                                          and
+                                                                                 (11)
+
+
+Here,
+    Displacement along the rail,
+   Displacement normal to the rail,
+    Thrusting acceleration along the rail,
+   Time after ignition,
+      Velocity descending on the parachute,
+    Rocket initial pitch attitude, and
+   Initial flight path angle.
+       Take typical numbers to be;
+
+   160o,
+   150 ft/sec2
+    25 ft/sec.
+
+The results are shown in Fig's. (5) and (6) below:
+
+
+
+                                 Separation
+
+
+
+
+                                                     L1
+
+
+
+
+                        V
+
+
+                                      Ignition
+                         Figure 4 Rocket Trajectory on the Rail
+
+
+
+
+                                                                                    5
+                                              Typical Rocket Trajectory on a Descending Rail
+
+                                     2
+  Distance Normal to the Rail, ft
+
+                                    1.8
+                                    1.6
+                                    1.4
+                                    1.2
+                                      1
+                                    0.8
+                                    0.6
+                                    0.4
+                                    0.2
+                                     0
+                                          0                  5                   10                15   20
+                                                                     Distance Along the Rail, ft
+
+                                                  Figure 5   Rocket Trajectory on a Descending Rail
+
+       Next, compare the distance traveled as found by numerical integration along the
+curve of Fig. 5 with the approximation found from eq. (10):
+
+
+                                                  Approximate Distance Traveled on Rail
+  Approximated Distance Traveled,
+
+
+
+
+                                      20
+                                      18
+                                      16
+                                      14
+                                      12
+                                      10
+               ft
+
+
+
+
+                                          8
+                                          6
+                                          4
+                                          2
+                                          0
+                                              0                  5                10               15   20
+                                                                      True Distance Traveled, ft
+
+                                                     Figure 6 Distance Traveled Along the Rail
+
+
+
+                                                                                                             6
+As can be seen, the approximation in eq.(9) should be plenty good enough.
+        When the initial velocity in the "QE" direction is negative (parachute is
+descending) select the simulation launcher length to be the sum of that needed to bring
+the velocity along the "rail" to zero plus an additional length .
+At any time after ignition, the velocity along the rail is
+
+                                                                                        (12)
+
+Here, the initial velocity components and flight path angle are in the notation used in
+SKYAERO. The change in velocity due to propulsion (and weight) is       .
+
+
+Summary
+        Let's recapitulate what has been laid our above. While the rocket descends on its
+stabilization parachute it awaits a time signal to ignite. When that happens, the initial
+flight path angle is obtained from eq. (6). The simulation launcher length is obtained
+from ref. (1), and the rail constrained equations of motion are integrated in the usual way.
+The phase boundary between rail-constrained motion and free flight is when          (eq.(10))
+equals       (eq. (9)).
+
+
+Reference
+1. "Launcher Length for Sounding-Rocket Point-Mass Trajectory Simulations", by C. P.
+Hoult, Journal of Spacecraft and Rockets, Vol. 13, No. 12, pp760-761
+
+
+
+
+                                                                                           7
+

@@ -1,0 +1,238 @@
+Rocket Science and Technology                 4363 Motor Ave., Culver City, CA 90232
+                                            Phone: (310) 839-8956 Fax: (310) 839-8855
+
+
+           Normal Force Acting on a Hemispherical Nose Tip 19 March 2010
+
+                                         by C.P.Hoult
+Introduction
+         Blunted, hemispherical nose tips are commonly used on sounding rockets. So, it
+behooves the analyst to develop approximate models for estimating their contribution to
+the static stability of a rocket. We start from known solutions for the incompressible and
+hypersonic flows over a sphere. The former is just that for a doublet plus free stream,
+and the later is based on the Lee modification to Newtonian flow.
+
+Analysis
+                         Consider a thin conical strip on a hemisphere
+
+
+
+
+                                                       α             θ
+                                                   U
+                                          R sinθ
+                                   φ                       R
+
+Any pressure on an element of this strip will contribute an element to its normal force,
+dN:
+
+                     dN = p * (R dθ * R sinθ dφ) * cosφ * sinθ, or
+
+                     dN = (q*Cp + p∞) * R2 * sin2θ dθ * cosφ dφ.
+
+Here q = Dynamic pressure,
+    Cp = Pressure coefficient, and
+    p∞ = Ambient atmospheric pressure.
+The remaining variables are defined in the sketches above.
+Next, the pitching moment M about the nose tip is
+
+                                 dM = R (1 – cosθ) dN
+
+Then, the center of pressure for a hemispherical nose xcp is located a distance behind its
+tip of
+
+                                       xcp = M / N.
+
+
+
+                                                                                             1
+Now, ref. 1 shows that the pressure distribution on a sphere in incompressible flow is
+
+                                    Cp = 1 – (9/4) sin2θ
+
+as long as α = 0. The corresponding result for supersonic flow is presented in ref. 2:
+
+                                      Cp = Cp0 cos2θ,
+
+where Cp0 = the stagnation point pressure coefficient obtained behind a normal shock
+followed by isentropic compression.
+        The approach taken is to assume that if there is a small angle of attack α both
+pressure distributions would follow the above relationships, but with a slightly different θ
+measured from the stagnation point. A little spherical trigonometry shows that, for small
+α, the modified θ = θ’ is
+
+                                      θ’ = θ – α cosφ.
+
+Then an element of normal force N in incompressible flow is given by
+
+                  dN = q (1 – (9/4) sin2θ’) * R2 * sin2θ dθ * cosφ dφ.
+
+Retaining only terms in α gives
+
+                       dN = (9/2) α q R2 sin3θ cosθ dθ cos2φ dφ.
+
+Integrating φ from 0 to 2π and θ from 0 to θT = the value of θ when the hemisphere
+becomes tangent to a conical frustum gives
+
+                                  N = (9 π/8) α q R2 sin4θT.
+
+The normal force coefficient slope is then
+
+                              CNα = (9 π/8) R2 sin4θT / SREF,
+
+where SREF = the aerodynamic reference area, and
+       CNα = the normal force coefficient slope.
+
+Consider the case of a full hemisphere nose for which θT = π/2. If the reference area is
+the body cross section area
+
+                                         CNα = 9/8.
+
+This is well below the slender body value of 2. The critical Mach number (the lowest for
+which sonic flow is first observed locally) for a sphere is about 0.41. Thus, as long as the
+
+
+
+                                                                                           2
+burnout Mach number is less than 0.41, there will be no wave drag penalty for a
+hemispherical nose while there will be significant mitigation of any static stability issues.
+This result is plotted in Fig. 1 below:
+
+
+                       Incompressible Hemispherical Nose T ip Normal
+                                       Force Slope
+
+                 1.2
+                  1
+  CNA, per rad
+
+
+
+
+                 0.8
+                 0.6
+                 0.4
+                 0.2
+                  0
+                       0            20             40             60              80
+                                                  Theta T, deg
+
+                                                 Figure 1
+
+                 The corresponding pitching moment is
+
+                           dM = R dN – (9/2) α q R3 sin3θ cos2θ dθ cos2φ dφ, or
+
+M / α q R3 = (9 π/8) sin4θT – (9 π/2) [(1/5) cosθTsin4θT – (1/15) cosθT (sin2θT + 2)
++2/15]
+
+With this, the hemispherical nose center of pressure is
+
+xcp/R = {sin4θT – 4 [(1/5) cosθTsin4θT – (1/15) cosθT (sin2θT + 2) +2/15]} / sin4θT
+
+This result is plotted in Fig. 2 below. Interestingly, it will be shown that the supersonic
+(modified Newtonian flow) result is exactly the same.
+
+
+
+
+                                                                                              3
+                                     Hemispherical Nose T ip Center of Pressure
+
+                           0.5
+  Centerof Pressure/Nose
+
+
+                           0.4
+
+                           0.3
+           Radius
+
+
+
+
+                           0.2
+
+                           0.1
+
+                            0
+                                 0              20             40              60           80
+                                                              Theta T, deg
+
+                                                           Figure 2
+
+        The supersonic case proceeds along similar lines. Again, retaining only first order
+terms in α results in
+
+                                          dN = 2 Cp0 α q R2 sin3θ cosθ dθ cos2φ dφ.
+
+The normal force coefficient slope is then
+
+                                               CNα = (π/2) Cp0 R2 sin4θT / SREF.
+
+For a full hemisphere CNα based on body cross section area is,
+
+                                                       CNα = (1/2) Cp0.
+
+This, too, is less than the supersonic normal force developed by a slender cone.
+However, at supersonic speeds a hemispherical nose tip has far more wave drag than a
+slender cone. Note that the supersonic CNα has the same form as that for incompressible
+flow.
+        The pitching moment now becomes
+
+                                     dM = R dN – 2 Cp0 α q R3 sin3θ cos2θ dθ cos2φ dφ, or
+
+M / α q R3 = (π / 2) Cp0 sin4θT – 2 Cp0 [(1/5) cosθTsin4θT – (1/15) cosθT (sin2θT + 2)
++2/15].
+
+The supersonic nose tip center of pressure is found as before:
+
+
+
+                                                                                                 4
+xcp/R = {sin4θT – 4 [(1/5) cosθTsin4θT – (1/15) cosθT (sin2θT + 2) +2/15]} / sin4θT.
+
+Interesting! The hemispherical nose tip center of pressure is independent of Mach
+number. Whodathunk that?
+        A final issue for the supersonic case is how to patch the Newtonian flow over a
+hemisphere into the shock expansion model used for the remainder of the body of
+revolution. Clearly the shock layer pressure at the nose base is
+
+                                    Cp = Cp0 cos2θT.
+
+        The classical Newtonian theory states that the shock layer would be very thin, and
+consequently, two dimensional oblique shock relations will be approximately valid. The
+primary concern arises when the local slope is small and/or the Mach number is low
+supersonic. In such a caser, the shock layer is not thin, but thick. Reference 3 provides
+the tools to resolve this dilemma. First, eq.(128) of ref.3 can be solved for the shock
+angle  that meets the other conditions. First,
+
+                                   p = q*Cp + p∞,or
+
+                               p/p∞ = (/2) M∞2 Cp + 1.
+
+Next,  can be found from eq.(128):
+
+                    sin = [(+ 1) p/p∞ + (M∞2.
+
+Here, M∞ = The free stream Mach number, and
+ = The ratio of specific heats for air ≈ 1.4.
+
+Knowing sin, eq.(132) of ref. 3 can then be used to find the shock layer Mach number
+M:
+
+         M2 = [( + 1)2 M∞4 sin2  4 (M∞2 sin2 1) ( M∞2 sin2/
+                 [2M∞2 sin2 1)] [ 1) M∞2 sin2 + 2]].
+References
+   1. J.Katz and A.Plotkin, “Low Speed Aerodynamics”, second edition, Cambridge
+       University Press, 2001, sec. 3.12, pp 67-59
+   2. C.P.Hoult, ”Modified Newtonian Drag Estimates”, RST memo, 15 November
+       2009
+   3. Ames Research Staff, “Equations, Tables, and Charts for Compressible
+       Flow”,N.A.C.A. Report 1135, 1953
+
+
+
+
+                                                                                          5
+

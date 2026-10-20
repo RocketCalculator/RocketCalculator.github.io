@@ -1,0 +1,100 @@
+Rocket Science and Technology                 4363 Motor Ave., Culver City, CA 90232
+                                            Phone: (310) 839-8956 Fax: (310) 839-8855
+
+                  The Pitch-Yaw Wave Number (rev.3)                       05 January 2013
+
+                                       by C.P.Hoult
+Introduction
+Most of you have heard me speak about the pitch/yaw wave number, and your eyes just
+glaze over when you hear that phrase. What sort of techno-mumbo-jumbo can that be?
+you’re thinking. Here’s the answer:
+
+Discussion
+First, our rockets are all more or less symmetric around their roll axes. Their pitch
+moments of inertia are the same as their yaw moments of inertia. And, the aerodynamic
+torques about the pitch axis are the same as about their yaw axis.
+
+Now, imagine a rocket model suspended horizontally by a pitch axle passing through the
+center of gravity. The rocket model is free to rotate about the pitch axis (passing through
+the center of gravity).
+
+
+
+
+                          U
+
+
+
+
+Now, imagine the model in a wind tunnel. Further, suppose you reached in and tweaked
+the nose such that the model would freely oscillate. Then, the differential equation
+describing the oscillations is
+
+
+
+
+                                                                                          1
+                                                            ,
+
+where     = Pitch moment of inertia,
+           Pitch/yaw wave length,
+         = Rocket length,
+         = Time,
+         = Atmospheric mass density,
+         = Reference area for aerodynamic coefficients, body cross section area
+         = Reference length for aerodynamic moment coefficients, body diameter
+         = Airspeed
+           = Slope of pitch moment coefficient with respect to angle of attack, and
+         = Angle of attack.
+To solve this differential equation, substitute
+
+
+
+After a bit of math, you will find that
+
+
+
+
+The quantity       is called the pitch natural frequency, and, as already noted, due to symmetry
+about the roll axis, it is the same as the yaw natural frequency.
+
+The pitch period is the time required for one complete pitch oscillation…that is, the time
+for to go through 2π radians, or
+
+
+
+
+But, during one oscillation period, the rocket will have moved through the air a distance
+       . This distance is the pitch wavelength. After a little more math you’ll find that
+
+
+
+
+Don’t worry about the minus sign;         is a negative number for a stable rocket.
+
+The pitch wave number is a kind of frequency in the spatial domain instead of the time
+domain. Instead of radians per second its units are radians per foot (or meter). Numerically
+it’s just
+
+
+
+
+                                                                                          2
+Finally, and most remarkably, the same formula holds when is not a constant, but is
+increasing under constant acceleration. Trust me. Even better, check it out yourself!
+
+        Finally, consider how the pitch wavelength scales with rocket size. Imagine two
+rockets, one scaled up from the other. In the equation for wavelength some parameters are
+not scale dependent. These are density , and         . However,     will be proportional to
+and is proportional to because the mass is proportional to and the radius of gyration is
+proportional to . Putting this all together,
+
+                                                .
+
+In other words, bigger rockets have longer pitch/yaw wavelengths.
+
+
+
+
+                                                                                        3
+

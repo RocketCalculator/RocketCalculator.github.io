@@ -1,0 +1,68 @@
+Rocket Science and Technology                  4363 Motor Ave., Culver City, CA 90232
+                                             Phone: (310) 839-8956 Fax: (310) 839-8855
+
+
+                             Barrowman Equations                              21 March 2010
+
+                                          by C.P.Hoult
+Introduction
+         Assessing the static pitch stability of a rocket is an important and contentious
+object. It has been seriously proposed that a cardboard profile of the rocket be made and
+its C.G. used as an estimate on the Center of Pressure. Another proposal would attach a
+string to the rocket at its C.G. When whirled around one’s head we have a very poor
+man’s wind tunnel. And, there are many more such cockamamie schemes, all found in
+the same dark and smelly place as these two.
+         For many years the amateur rocket community has considered the Barrowman
+Equations to the gold standard approach to estimating the center of pressure location.
+These use slender body loading for the body of revolution and Diederich’s approximate
+lifting surface theory. As such, this model only applies to a subsonic single stage rocket.
+The full Barrowman thesis1 can be found on Apogee Component’s web site.
+
+Discussion
+         The subsonic code documented here uses Munk’s slender body theory4 for the
+slender parts of the body of revolution. If the first entry in the body profile table of
+radius vs. station is not zero (pointed nose tip) at tangent hemispherical cap is fitted and a
+separate model for its normal force5 is used. The stand alone fins are modeled using
+Diederich’s approximate lifting surface model2 including the full Prandtl-Glauert
+compressibility corrections. Full slender body estimates for the wing-body and body-
+wing interference3 are used. For a two stage (two sets of fins) configuration, the vortex
+interference of the upper stage fins on the lower stage fins is modeled using vortex
+strengths3 and strip theory first stage normal force to derive a correction factor7.
+         There are two such files archived on this site: BarrowmanSub.xls (for subsonic)
+implements the original Barrowman equations except for a hemispherical nose cap and
+the full NACA Report 1307 interference corrections plus fin-fin vortex interference
+documented7. BarrowmanM.xls (M for high Mach No.) models a supersonic single stage
+rocket using second order shock expansion theory6 for the body loading and lifting
+surface theory for the fins. A hemispherical nose tip5 is also modeled using Lee’s
+modified Newtonian aerodynamics.
+
+References
+   1. Barrowman, J.S. and Barrowman, J.A., “The Theoretical Prediction of the Center
+       of Pressure”, Master’s Thesis, Catholic University. A copy can be found online
+       by Googling Barrowman equations, going to Model Rocket Stability, and then
+       opening Barrowman’s Original NARAM R&D Report
+
+
+
+
+                                                                                             1
+2. Diederich, F.W., “A Plan-Form Parameter for Correlating Certain Aerodynamic
+   Characteristics of Swept Wings”, N.A.C.A. Technical Note 2335, April 1951.
+3. Pitts, W.C., Nielsen, J.N., and Kaattari, G.E., “Lift and Center of Pressure of
+   Wing-Body-Tail Combinations at Subsonic, Transonic, and Supersonic Speeds”,
+   N.A.C.A. Report 1307, July 1953
+4. Munk, M.M., “The Aerodynamic Forces on Airship Hulls”, N.A.C.A. Report 184,
+   1924
+5. Hoult, C.P., “Normal Force Acting on a Hemispherical Nose Tip”, RST memo,
+   March 2010
+6. Syvertson, C.A. and Dennis, D.H., “A Second-Order Shock-Expansion Method
+   Applicable to Bodies of Revolution Near Zero Lift”, N.A.C.A. Report 1328,
+   October 1955
+7. Hoult, C.P., “N.A.C.A. Report 1307 Supplement for Downwash Dependent Fin-
+   Fin Interference”, RST memo, April 2010
+
+
+
+
+                                                                                2
+

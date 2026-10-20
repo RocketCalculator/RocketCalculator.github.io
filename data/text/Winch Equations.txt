@@ -1,0 +1,103 @@
+Rocket Science and Technology                 4363 Motor Ave., Culver City, CA 90232
+                                            Phone: (310) 839-8956 Fax: (310) 839-8855
+
+                                   Winch Equations                          27 March 2008
+
+Introduction
+For successful operation, our wind sensor needs a winch calibration that relates deployed
+tether length to the number of winch revolutions as measured by a bicycle odometer.
+Because the winch radius decreases as tether is deployed, the desired relationship is not
+linear.
+
+Nomenclature
+
+Symbol_____________________Definition____________________________________
+d                      Tether line diameter
+w                      Winch drum width
+l                      Length of deployed tether
+r                      Winch drum radius
+N                      Number of winch revolutions since tether deployment began
+
+Analysis
+The objective is to develop a relation of the form, l = f(N). First, assume that the line is
+wound uniformly and evenly over the drum. Even though this is perhaps a poor
+assumption, it will still provide an indication of what to expect. Then, the number of
+turns, n, to cover the drum width with one layer of tether is
+
+                                         n = w/d.
+
+The change in l as one drum-width of tether is deployed is
+
+                                     l = 2 π r w / d.
+
+Now,
+                 r/l ≈ dr/dl = – d/(2 π r w / d) = – d2 / 2 π r w, or
+
+                                r dr = – (d2 / 2 π w) dl, or
+
+                                 r2 – ro2 = – d2 l / 2 π w,
+
+where ro is the drum radius before any tether is deployed. Then,
+
+                                 r = √ ro2 – d2 l / 2 π w.
+
+Next,
+
+                  l/N = dl/dN = 2 π r = 2 π √ ro2 – d2 l / 2 π w, or
+
+
+                                                                                           1
+                                   dl / √ ro2 – d2 l / 2 π w = 2 π dN, or
+
+                                 N = (2 w / d2) [ ro – √ ro2 – d2 l / 2 π w].
+
+This can easily be inverted to give l as a function of N:
+
+                                l = (2 π w / d2) [ro2 – (d2 N / 2 w – ro)2], or
+
+                                        l = 2 π (ro N – d2 N / 4 w).
+
+This is the result that should guide the formula used in the Launch Day Tool. The first
+term is just what we’d expect if the drum radius did not shrink as tether line is deployed.
+The second term is a quadratic correction accounting for the shrinking drum radius as
+tether is deployed.
+
+To implement this in the LDT, it’s necessary to have an equation of the form,
+
+                                                 l = AN + BN2.
+
+Given some calibration data, plot the data in Excel, and fit a quadratic line to this as
+shown in the figure below:
+
+
+                                               Winch Calibration y = -2.2565x 2 + 304.78x + 5.1847
+                                                                                  R2 = 1
+                 3000
+
+                 2500
+
+                 2000
+  Distance, ft
+
+
+
+
+                 1500
+
+                 1000
+
+                  500
+
+                    0
+                        0   1      2       3         4      5       6      7        8      9     10
+                                                    Odometer Reading
+
+
+
+This is the winch calibration curve for our operational sensor.
+Q.E.D.
+
+
+                                                                                                      2
+3
+

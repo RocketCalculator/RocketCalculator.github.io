@@ -1,0 +1,329 @@
+          A New Launcher for University Sounding Rockets
+       Fernando Calderon*, Abd Al Chamas*, Thomas Wilson*, Adam Vore† & Berton Vite*
+                                               Long Beach, CA, 90840
+
+
+                                                      Abstract
+The Department of Mechanical and Aerospace Engineering at California State University Long Beach
+sponsors two student rocket programs: The California Launch Vehicle Education Initiative (CALVEIN) that
+uses bipropellant liquid propulsion and the Experimental Sounding Rocket Association Club (ESRA) that
+flies solid propellant rockets. Because ESRA rockets reach apogees between 3 and 8 km they can have
+significant impact ranges. ESRA requires that all flight hardware be recovered intact within 2 hours of
+launch. Recovery is done by student teams on foot. To minimize recovery times the impact point must be
+controlled to keep it close to the launcher. Impact point location could be controlled by measuring the winds
+aloft and adjusting the launcher accordingly. Current launchers are not readily adjustable in elevation or
+azimuth, and their launch rails tend to be excessively flexible. We have designed and built our new launcher
+to meet our requirements for accuracy, adjustability, stiffness and transportability. The launcher rail sits on
+an azimuth turntable. Its elevation angle can be changed with an automotive scissor lift. A SkyScout™ is used
+for leveling the azimuth table, and measuring the launcher rail orientation relative to local vertical and true
+north. The launcher rail is supported by a ham radio tower truss to ensure the necessary stiffness. The entire
+launcher assembly is stabilized by 4 legs that can be folded for transport. The purpose of the launcher
+electrical subsystem is to safely and effectively supply current to the rocket igniter. This battery powered
+subsystem is housed in two separate boxes incorporating safety switches, a key-operated switch and a flip-up
+covered switch, a warning horn and continuity switches with buzzers. It is capable of launching a rocket from
+a remote location up to 500 feet away.
+
+                                                 I.     Introduction
+    Sounding rockets and their launch systems are not new, but their use for educational purposes is. If they are to
+provide an effective environment for teaching engineering, the associated syllabi should include analysis and testing
+tasks. Otherwise, this activity degenerates into building and flying hobby rockets, although undeniably great fun, the
+results would not be sufficient in a proper educational learning experience to professional engineering standards.
+    One sounding rocket venue that does require analysis and testing is the Intercollegiate Rocket Engineering
+Competition (IREC) sponsored every year by the Experimental Sounding Rocket Association (ESRA). Student
+teams in the IREC are judged by several criteria1:
+      How closely their rocket approaches its target apogee. The competition has two classes, Basic (target
+          apogee is 10,000 ft) and Advanced (target apogee is 25, 000 ft). Apogee is determined by a recording
+          altimeter. A payload weighing at least 10 lbs must be flown.
+      Whether or not their rocket was recovered intact and returned to the launch site within 2 hours of launch.
+          Recovery is by student teams on foot searching the high desert environment near Green River, UT, in the
+          summer. Walky-talkies and water are very important.
+      The quality of the data returned by the payload.
+      A Safety Report must be prepared, and its quality judged.
+      An Engineering Summary Report describing the rocket and its payload must be prepared, and its quality
+          judged.
+      Written procedures must used to prepare and launch the rocket, and their quality will be judged.
+
+
+
+*
+  Undergraduate student, Department of Mechanical and Aerospace Engineering, California State University Long
+Beach, 1250Bellflower Blvd., AIAA student member
+†
+  Graduate student, Department of Mechanical and Aerospace Engineering, California State University Long Beach,
+1250Bellflower Blvd., AIAA student member
+
+
+                                                                                                                     1
+                              American Institute of Aeronautics and Astronautics
+             A briefing covering the material in the Engineering Summary Report must be presented to the judges for
+              their consideration.
+    As can be seen, this is far from a Sunday afternoon hobby rocket fly-for-fun process.
+             The Advanced competition is significantly more difficult than the Basic one. Assuming a GPS transmitter
+    and a homing beacon are flown the major challenge will not be locating the rocket and parachute; it will be the
+    travel time to and from the landing site. A hypothetical situation illustrates this problem, where with an 8 km
+    apogee and no wind compensation, the landing site can drift to an average of 10 km from the original launch site.
+    Due to a lack of mobility of the launch site, the only means of travel to obtain the rocket post-launch is via foot
+    travel. At 5 km/hr the results may lead to a 4 hour round trip in tough conditions.
+             The only remedy is to measure the winds aloft and adjust the launcher azimuth and elevation angles to
+    bring the landing site within an acceptable area near the launch site. This paper addresses a launcher design to do
+    this, something current off the shelf launchers can not do. The final product must also be transportable to and from
+    Green River, UT. A final general set of considerations is that the launcher should be designed to minimize
+    trajectory errors (dispersions).
+
+                                                   II.     Requirements
+
+
+       All launchers can be described in terms of an architecture having a mechanical subsystem and an electrical
+       subsystem.
+
+       A. Mechanical Subsystem Functional Requirements
+
+               Transportable using “U-Haul” trailer or similar size and shape
+               Ability to assemble and erect at the launch site using only manual labor & hand tools within a
+                reasonable time frame.
+
+               Ability to rotate about both Azimuth & Elevation axes independently
+
+               Ability to level launcher platform to align Azimuth axis to the local vertical
+
+               Have a zero tip off rail-lug combination
+
+               Ability to replace the blast plate as needed
+
+               Provide support to the electrical subsystem
+
+               Ability to tilt the rail down to load the rocket without tipping over the launcher
+
+       B. Mechanical Subsystem Performance Requirements
+            Elevation angle range: – 5 degrees to + 95 degrees
+            Azimuth angle range: 0 degree to 360 degrees
+            Ability to control both Elevation & Azimuth Angles: ± 0.5 degree
+            Maximum launcher length while holding maximum bending deflection of the rail: 0.05 degree
+              at a Quadrant Elevation of 80o
+            Max rocket weight: 150 lbs (carried by launch lugs)
+            Structural Margin of Safety: 3
+
+-      C. Mechanical Subsystem Environmental Requirements
+
+                Dry Sandy Soil California Bearing Ratio (CBR) > 6
+                Maximum ground slope: 5 degrees
+
+                                                                                                                       2
+                                 American Institute of Aeronautics and Astronautics
+             Corrosion resistant coatings in marine environments
+
+    D. Electrical Subsystem Requirements
+
+             Length of wire run from launcher to control box: 500 feet
+             Battery powered
+
+             Use a key operated switch to check continuity and battery voltages without arming
+              the firing circuit.
+
+             Use a flip up switch to arm the ignition circuit
+
+             Use a button to launch the rocket
+
+             Provide audio warning devices
+
+
+
+                                              III.     Mechanical Design
+
+          The first mechanical element to be discussed is the launcher rail. It uses 80-20™ precision aluminum
+extrusion with the slot milled to a wider width to eliminate tipoff. The design was first developed in the 1950’s at
+N.A.C.A. Wallops Station., where Fig 1 shows it in some detail. The main objective for this design is that both fore
+and aft lugs drop free at the same time, thus eliminating tipoff torques.
+
+          The 80-20™ is attached to a commercially available ham radio tower truss. The ham radio truss is made
+from three steel tubes in a tripod configuration welded together by steel rods in a “zigzag” like pattern as shown in
+Fig 2. After welding, each truss section is hot dipped in zinc for corrosion protection. It comes in 10 foot sections,
+which allows for the facilitation of transportation. The truss carries the 80-20™ on one of the three tubes. As shown
+in Fig 3, the truss also carries a blast plate to ensure no damage to the azimuth table occurs during launch of the
+rocket. The blast plate is carefully oriented to preclude a pitch torque from rocket plume impingement on the rail
+during launch. Estimates of the bending deflection of the truss assembly have been made 2. These show that a rail
+length of 20 feet will comply with the deflection requirement.
+
+         The launcher underpinnings resemble a large, four-legged spider as shown in Fig 4. The legs fold so the
+system can be transported in a dead spider configuration. The legs provide the necessary stability to prevent tipping
+during the launch of the rocket. The legs are adjustable so that they may provide a level top for the launcher over a
+gradient of the earth up to five degrees. The legs are conjoined to the base of the launcher via C-brackets, which
+mount to the base with two pins per leg. The pins effectively transfer the moment loads from the launch of the
+rocket efficiently to all four legs. The legs are initially installed at a 10 degree elevation relative to the surface of the
+ground to provide vertical clearance for the base of the launcher during launch.
+
+          The base of the launcher contains all the crucial components which allow precise alignment of azimuth and
+elevation angle thus minimizing the distance of impact from the rockets original launch location. Azimuth is
+controlled using a thrust bearing, or turn table device. The turn table is attached to the main base to one end, and the
+other end is attached to a circular plate of aluminum as shown in Fig 5. The main base contains 72 holes arrayed 5
+degrees apart with .0005in tolerance to allow control of azimuth for the full 360 degrees. The turn table can support
+a vertical load of up to 200 lbs with a margin of safety factor of 3. The aluminum circular plate supports two
+brackets that hold two triangular plates normal to the base. These triangular plates, as shown in Fig 6, support a
+smaller rectangular plate of aluminum in which the truss mounts to. This plate provides the truss the ability to
+change the elevation angle via a 1.5 ton scissor jack located in between the larger circular and smaller rectangular
+
+
+                                                                                                                            3
+                                American Institute of Aeronautics and Astronautics
+plate. The elevation is controlled by adjusting the height of the scissor jack, measured using a SkyScout™, and a
+tubular spirit level (bubble level). Final launcher rail adjustments are made using azimuth and elevation
+measurements from the SkyScout™
+
+         The blast plate protects the base from plumes generated by the rocket during lift-off. The plate is attached
+truss and the 80-20™ aluminum extrusion for stability. The blast plate is comprised of a quarter inch plate of steel
+which diverts the plume away from the base.
+
+        This design meets all of our requirements, allowing for a successful launch recovery. The final base
+assembly can be seen in Fig 7.
+
+                                               IV. Electrical Design
+
+         The purpose of the electrical sub-system of the launcher is to safely and effectively supply sufficient
+current to the rocket igniter in order to launch the rocket. The sub-system is battery powered and consists of two
+separate components incorporating safety switches, including a key operated switch and a flip up covered switch,
+warning horn, continuity switches with buzzers, and is designed to launch the rocket remotely.
+
+         The need for a new electrical sub-system for our launcher has propelled us to design and build a safe,
+portable, and effective electrical launcher. While convenience is beneficial in any design, the main focus of the
+launcher's electrical system is safety and reliability. The electrical sub-system of our launcher is composed of two
+components; the proximal box, which is 50ft away from the rocket, and the distal box, which is 500ft away from the
+launcher.
+
+          The proximal box is connected to the rocket igniter through a 14 gauge lamp cord with a port for easy
+connection on the side of the unit. The box contains a 12V sealed lead acid (SLA) battery that powers the complete
+electrical sub-system and a printed circuit board to control the relay and continuity switches. The proximal box also
+contains a multitude of safety features to ensure that no current is supplied unless the rocket is ready for launch. A
+continuity switch, which uses a momentary button switch, with a small buzzer attached has been installed to check
+continuity between the firing leads on the proximal box; this is done to remotely check the status of an igniter before
+launch or in the case of a misfire. A small car horn is installed in the proximal box that warns any bystanders that
+the rocket is armed and nearing launch. In addition to the continuity switch and the horn, a safety switch is installed
+at the proximal box that will not allow any current to flow to the rocket unless it is switched on; this guarantees the
+safety of anyone forward of the proximal box by allowing them to manually lock out any launch commands.
+
+         Figure 8 shows a schematic diagram of our circuit design. In Fig 9, it is shown as it has been implemented,
+
+
+                                                      V. Future Work
+
+         While we have designed and built a new launcher, but it has not yet been used for an actual launch. Our
+next task is to use it for our ESRA flight tests in May. Also, there is some limited evidence form tests done in the
+1960’s that very high rocket structural loads can occur while the rocket is still on the launcher. We hope to
+instrument our launcher in the future to explore this issue.
+
+                                                    VI. Conclusions
+         We have generated requirements for a new launcher, and used these to guide the design and fabrication of
+our new launcher. Our design incorporates new features not previously employed in a university sounding rocket
+program, and we expect great things from it in this year’s ESRA competition.
+
+                                            VII. Acknowledgements
+
+        We would like to express our thanks to Prof. Charles Hoult and Dr. Janet Hoult for their guidance and help
+in accomplishing this project.
+
+                                                                                                                        4
+                              American Institute of Aeronautics and Astronautics
+                                                References
+   1.   ESRA web site
+   2.   C.P. Hoult, “Launcher Tipoff Deflection”, RST memo, 28 August 2010
+
+
+
+
+                             W+
+            Section b-b                                            Section a-a
+                     b                        w+                             aa
+Free end                                                          t+
+
+                                      L
+
+
+                     b                                                       a
+                      View of the bottom of the Rail looking up
+
+              c                                           d
+
+
+                                  L
+
+
+              c              W              w             d
+                                             t
+
+
+                   Section c-c              Section d-d
+             Side view of Rocket and Riding Lugs
+                             Figure 1 Zero Tipoff Launcher and Lugs
+
+
+
+
+                                           Figure 2. Truss
+
+
+
+                                                                                  5
+                         American Institute of Aeronautics and Astronautics
+                                            Rocket
+                      ss                    Thrust C
+                   Tru th
+                       p
+                    De
+                                                Lateral
+                                                Offset
+Launcher
+Rail Truss
+                                                                 Blast
+                  QE                                             Plate
+
+
+    Quadrant Elevation
+    Hinge
+                                                    Longitudinal Offset
+
+
+
+             Azimuth Turntable
+               Figure 3. Arrangement of the Base of the Launcher Rail
+
+
+
+
+                         Figure 4. Launcher Underpinning
+
+
+
+
+                                                                          6
+                   American Institute of Aeronautics and Astronautics
+             Figure 5. Thrust Bearing Device (Turn Table)
+
+
+
+
+Figure 6. Base Support and Scissor Jack for Elevation Angle Manipulation
+
+
+
+
+                                                                           7
+             American Institute of Aeronautics and Astronautics
+      Figure 7. Launcher Base Assembly
+
+
+
+
+           Figure 8 Circuit Diagram
+
+
+
+
+                                                     8
+American Institute of Aeronautics and Astronautics
+        Figure 9 Printed Circiut Board
+
+
+
+
+                                                     9
+American Institute of Aeronautics and Astronautics
+

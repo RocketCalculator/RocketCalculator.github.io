@@ -1,0 +1,208 @@
+Rocket Science and Technology                  4363 Motor Ave., Culver City, CA 90232
+                                             Phone: (310) 839-8956 Fax: (310) 839-8855
+
+
+               Sounding Rocket Geophysical Environment 10 February 2010
+
+                                        by C.P.Hoult
+
+Introduction
+        Accurate knowledge of the geophysical environment is essential for a great many
+sounding rocket analysis tasks. Meeting this need means more than a simple
+recapitulation of the usual textbook results. Sounding rockets need a more refined
+atmosphere model than the usual standard, but a less detailed geodesy and gravity
+descriptions.
+        The model described in this memo is realized in GEOPHYSICS.xls Note that the
+cells with a sky blue fill require user inputs.
+
+Atmosphere Model
+        Sounding rockets have flight dynamics reminiscent of light aircraft. Due to their
+small size, they are sensitive to low altitude density altitude effects. This implies that we
+should use a local temperature-altitude profile reflecting the actual surface temperature
+and troposphere height. Since we seek a local atmosphere model, the other parameters in
+the Standard Atmosphere are retained.
+
+The absolute temperature profile in the atmosphere is modeled by a sequence of straight
+line elements, each covering an atmospheric layer. For most university sounding rockets,
+we need only consider the lowest two layers, the troposphere and the stratosphere. Their
+boundary is called the tropopause. The troposphere is characterized by weather and the
+stratosphere by its greater stability.
+
+It has long been known that the tropopause is far lower in the arctic than near the equator.
+We model the tropopause with an ellipsoid
+
+                           hT2 = 1 / [(cosφ / a)2 + (sinφ / b)2],
+
+where hT = Altitude of the tropopause above the geoid,
+       φ = Geodetic latitude,
+       a = Altitude of the equatorial tropopause ≈ 52,500 ft, and
+       b = Altitude of the polar tropopause ≈ 27,900 ft.
+
+The numbers above are from ref. (1).
+
+
+
+
+                                                                                            1
+                                         T ropopause Altitude
+
+                            60000
+
+                            50000
+  Tropopause Altitude, ft
+
+
+
+
+                            40000
+
+                            30000
+
+                            20000
+
+                            10000
+
+                                0
+                                    0   20              40            60     80
+                                                      Latitude, deg
+
+
+
+
+The tropospheric temperature is dominated by convective mixing. Parcels of air near the
+surface are warmed by contact with the hot ground, break free and ascend through the
+atmosphere just like a hot air balloon. As a parcel rises, it expands and cools
+adiabatically (without any external heat transfer). These parcels, called thermals, are the
+source of atmospheric turbulence and bumpy airplane rides. Condensation of water
+vapor modifies parcel cooling so that the average temperature lapse rate (dT/dh) is only
+about 75-80% of that for an ideal thermal expanding adiabatically. Note that there is very
+little convective mixing and turbulence above the tropopause leading to an isothermal
+stratosphere.
+
+Now, suppose the temperature T* is specified at a altitude h*. For example, this could be
+the temperature at a launch site. Now the temperature decreases linearly in the
+troposphere so the tropopause temperature TT is just
+
+                                             TT = T* +  (hT – h*),
+
+where  = Temperature lapse rate = – 0.00357448 oR/ft.
+
+The lapse rate is also taken from ref. (1).
+
+
+
+
+                                                                                         2
+The temperature above the tropopause, the stratospheric temperature, is invariant with
+altitude. Note that the lower polar tropopause implies the polar stratosphere is warmer
+than that in the tropics. This counterintuitive result is well documented in ref. (1).
+
+The rest of the atmosphere model is based on the perfect gas law and hydrostatic
+equilibrium. The perfect gas law states
+
+                                         p =  R T,
+
+where p = Atmospheric pressure, lb/ft2,
+ = Atmospheric mass density, sl/ft3,
+       R = Gas constant for air = 1716 oR/ft, and
+       T = Atmosphere absolute temperature, oR.
+Note the gas constant for air is based on a mean molecular weight of 28.9644 per ref. (1).
+
+The condition of hydrostatic equilibrium is
+
+                                       dp/dh = –  g,
+
+where g = local acceleration of gravity (See the following section)
+
+After a modest amount of calculus, the pressure as a function of altitude h is found to be
+
+                        p = pSL (1 / (1 +  h / (T* –  h*)))(–g / R ), (troposphere), and
+
+                                  p = pT exp(–g (h – hT) / R TT) (stratosphere,  = 0)
+
+Here, pSL = Sea level (geoid) pressure = 2116.217 lb/ft2, and
+      pT = Tropopause pressure = pSL (1 / (1+  hT / (T* –  h*)))(–g / R ).
+
+The remaining state variables can easily be found. Density comes from the perfect gas
+law knowing pressure and temperature. Sound speed is given by
+
+                                        a2 =  R T,
+
+where ratio of specific heats for air cp/cv = 1.400.
+
+Geodesy and Gravity
+Geodesy is the science of the Earth’s shape (the geoid); gravity is the science of its
+attractive force. To describe the shape of the Earth, first identify two distinct latitudes.
+These are geocentric latitude, defined as the angle between the equatorial plane and a
+radius vector from the center of the Earth, and geodetic latitude, defined as the angle
+between the equatorial plane and a vector normal to the geoid. Because the Earth spins
+
+
+                                                                                               3
+its shape is slightly flattened at its poles. Most maps and trajectory codes use geodetic
+latitude.
+Model the Earth’s shape as a sphere tangent to the geoid at a specified latitude. Model
+the geoid as an ellipsoid of revolution whose radius RE is given by
+
+                                       RE2 = ((a2 cosφ)2 + (b2 sinφ)2) / ((a cosφ)2 + (b sinφ)2).
+
+Here a = Equatorial radius of the Earth = 20,925,597.9 ft, and
+     b = Polar radius of the Earth = 20,855,437.3 ft.
+
+Both radii are consisted with WGS 84 as reported in ref. (2). Thus, knowing the geodetic
+latitude, one finds the geodetic radius of the tangent sphere from the result above.
+Finally, the Earth’s rotation rate is given by 2π / 86164.09 rad/sec. 86164.09 sec is the
+Earth’s rotation period as observed against the remote stars.
+
+
+                                                    Radius of the Geoid
+
+                            20930000
+                            20920000
+  Radius of the Earth, ft
+
+
+
+
+                            20910000
+                            20900000
+                            20890000
+                            20880000
+                            20870000
+                            20860000
+                            20850000
+                                       0             20            40             60                80
+                                                                 Latitude, deg
+
+
+The facts that on the geoid centripetal acceleration varies with latitude as does the
+distance from the center of the Earth guarantee that surface gravity will also vary with
+latitude. This is captured in another result from ref. (2), the Potsdam result:
+
+                             g(φ,0) = 32.0876228*(1 + 0.00530224 sin2(φ) – 0.000058*sin2(2φ)),
+
+where g(φ,0) = The acceleration of gravity at latitude φ and altitude 0. Note that g is in
+ft/sec2. The so-called “standard g” = 32.174 ft/sec2 used for a great deal of engineering
+work is just a mid-latitude evaluation of this formula.
+
+
+
+                                                                                                         4
+The approximate inverse square correction for a non-zero altitude h is just
+
+                           g(φ,h) = g(φ,0)*(RE / (RE + h))2.
+
+
+
+
+References
+   1. COESA, “U.S. Standard Atmosphere, 1976”, U.S. Government Printing Office,
+       Washington, D. C., 1976
+   2. Air Force Geophysics Laboratory, “Handbook of Geophysics and the Space
+       Environment”, Third Edition, Air Force Geophysics Laboratory, 1985.
+
+
+
+
+                                                                                  5
+

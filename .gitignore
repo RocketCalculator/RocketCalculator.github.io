@@ -1,0 +1,6 @@
+# GitHub rejects >100 MB; this 91 MB narrated deck is kept locally only (a PDF paper covers the same content)
+source/rsandt/media/Sounding Rocket Design to Mitigate Roll Lock-In Voice.ppt
+.venv/
+*.lock
+.~lock*
+node_modules/

@@ -1,0 +1,111 @@
+Rocket Science and Technology                 4363 Motor Ave., Culver City, CA 90232
+                                            Phone: (310) 839-8956 Fax: (310) 839-8855
+
+                             Parachute Reefing                               25 July 2013
+
+                                 By C. P. Hoult
+
+Introduction
+        A reefed parachute is one in which the canopy opening is constricted to reduce
+drag production. This is done by rigging a cord around the periphery to reduce canopy
+volume. When an increase in drag is needed, the cord is cut allowing full canopy
+deployment.
+        This memo answers the practical questions that arise with reefed parachute
+applications. For practical reasons, the data here is restricted to flat circular canopies
+with, or without, a vent hole at the center.
+
+Nomenclature
+__________Mnemonic____________________Definition_________________________
+                         Canopy diameter when laid flat, ft
+                         Diameter of the reefed canopy opening, ft
+                         Area of the canopy when laid flat, neglecting vent hole
+                               area, if any, ft
+                                Drag coefficient of the unreefed parachute, based on
+                                Drag coefficient of the reefed parachute, based on
+                               Coefficient in the equation for reefing line strength
+                               Breaking strength of the reefing line, lbs
+                               Dynamic pressure just prior to parachute deployment,
+                               lbs/ft2
+
+Drag Reduction
+        The first question is how much drag reduction can be obtained. The experimental
+data taken from the reference is shown below. When unreefed, the canopy opening is
+about 62% of the diameter when the parachute is laid flat. The drag coefficient for a
+typical unreefed flat circular parachute is about 0.8 based on .
+
+
+
+
+                                                                                        1
+                                        Drag of Reefed Flat Circular Parachutes
+
+                               1
+  Reefed Drag/Unreefed Drag
+
+
+                              0.8
+
+                              0.6
+
+                              0.4
+
+                              0.2
+
+                               0
+                                    0       0.1     0.2    0.3    0.4     0.5     0.6   0.7
+                                                  Reefed Diameter/Flat Diameter
+
+
+Limitations on Reefing
+        Size matters when considering limits on reefing. For large parachutes (
+ 4m), the reefed diameter can be as small as 6% of    . But, for smaller parachutes, one
+would be wise the limit the reefed diameter to about 20% of       . Below these limits,
+parachutes can be unstable.
+
+Reefing Line Attachment
+       While there are multiple answers to this question, the key issue is friction between
+the reefing line and its attachments to the canopy. With too much friction, full
+deployment when the reefing line is cut can be significantly impaired. The reference
+suggests that a metal reefing line ring be sewn to the canopy edge between each pair of
+suspension lines. Thus, if there are 6 suspension lines, the reefing cord would pass
+through 6 rings.
+
+Multiple Reefs
+        It is feasible to implement more than one reefing line for a parachute to achieve
+staged increases in parachute drag. Just be careful to avoid tangling.
+
+Reefing Line Strength
+       The required strength of a peripheral reefing cord is another common issue.
+Dimensional analysis suggests that the required strength be given by
+
+
+                                                                   .
+
+
+
+                                                                                              2
+First, note that when                 there is no reefing, and therefore, no tension load on
+any reefing cord. Assuming that         increases monotonically as      decreases, then data
+in the reference for a 28 ft personnel parachute indicate that
+
+
+
+should provide adequate strength for                .
+
+Disreefing
+        The process of restoring a reefed parachute to its full, unrestricted diameter is
+called disreefing. It is often accomplished with a piston-type guillotine cutter. The line
+to be cut passes transversely through the cylinder, and a black powder charge drives a
+piston down the cylinder where the line is sheared in two places. The only trick here is
+that ordinary nylon parachute cord is tough to shear. Attaching the reefing cord to a solid
+nylon strip used for forming wires into bundles will solve this problem.
+
+Reference
+T. W. Knacke, "Reefing of Parachutes", U. S. Air Force Aeronautical Systems Division
+Technical Report AD-A036 497, July 1976
+
+
+
+
+                                                                                          3
+

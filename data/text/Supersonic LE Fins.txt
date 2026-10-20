@@ -1,0 +1,268 @@
+Rocket Science and Technology                4363 Motor Ave., Culver City, CA 90232
+                                            Phone: (310) 839-8956 Fax: (310) 839-8855
+
+            Normal Force and Center of Pressure of a
+        Clipped Delta Fin with Supersonic Leading Edges                   11 March 2013
+
+                              by C. P. Hoult
+
+Introduction
+        Currently, LOW SUPERSONIC BARROWMAN EQUATIONS.xls models delta
+fin with tips clipped off and with subsonic leading edges. As in this code, the fin is
+assumed to be a flat plate with a clipped delta planform.
+       Reference 1 is the point of departure for this memo. Note that all the          used
+are averaged over their relevant regions.
+
+Nomenclature
+     Mnemonic                      Definition                                             .
+         b                Exposed semispan,
+       CN               Fin panel normal force coefficient slope, rad-1,
+         cR              Root chord,
+         cT              Tip chord,
+         M               Free stream Mach number,
+         p              Pressure difference across the two sides of the fin,
+         q                Dynamic pressure,
+       SREF              Aerodynamic reference area,
+                         Fin center of pressure, aft of the root chord leading edge,
+                        Angle of attack,
+                        Leading edge sweepback angle, and
+                        Mach angle.
+Analysis
+                                                    cT
+                                                         II     μ
+
+
+                                               I
+                                                                     b
+                Λ
+
+                                    μ              III
+                                cR
+        Figure 1 High Supersonic Mach number Fin Geometry
+Figure 1 above shows a sketch of the relevant fin geometry The Mach angle is
+
+
+                                                                                              1
+                                                                                         (1)
+
+Normal Force Slope
+      Next, consider the average lifting pressure difference found in the three regions
+sketched above as          . The following equations are taken from Ref. (2). For Region
+I it is given by
+
+
+                                                             ,                            (2)
+
+
+and for Region II
+
+
+                                                             ,and                        (3)
+
+
+
+finally, for Region III:
+
+
+                                                                                          (4)
+
+
+As the Mach number is reduced a small triangular region bounded by the Mach lines
+bounding Regions II and III forms on the trailing edge. Call this Region IV. According
+to Ref. (3)
+
+
+                                                         +          +       , or
+
+
+                                                                        ‒                (5)
+
+
+        To estimate the fin normal force coefficient slope, it is necessary to estimate the
+areas of the various regions. The entire fin area is
+
+                                                         ,                               (6)
+
+and the areas of regions II and III are
+
+                                                     ,                                   (7)
+
+
+                                                                                              2
+                                                    .                                  (8)
+The condition for the existence of a Region IV is
+
+                                                        .                             (9)
+
+If there is no Region IV the Region I area is
+
+                                                                                     (10)
+
+Then, the total fin normal force coefficient slope for no Region IV is
+
+
+
+(11)
+
+        For slightly lower Mach numbers, Region IV will exist. The formulas for normal
+force and area for Regions II and III remain unchanged. But, the area for Region I can be
+found after some grungy trig to be:
+
+
+
+                              and                   , where                          (12)
+
+
+                                                                .                     (13)
+
+
+                                                                    ,              (14a)
+
+
+Alternatively, and simpler,
+
+                                                            .                       (14b)
+
+The maximum Mach number for which there can be a Region IV is found to be
+
+
+                                                            .                       (15)
+
+
+Then, the total fin normal force coefficient slope when the root & tip Mach lines cross is
+
+
+                                                                              .
+(16)
+
+
+                                                                                             3
+Finally, while the is no upper Mach number bound for this theory, there is a lower Mach
+number for which this theory is valid. It occurs when the Mach line emanating from the
+root chord leading edge intersects the tip chord trailing edge. This minimum Mach
+number is
+
+
+                                                                  .                      (17)
+
+
+       Results for a typical fin with an 8" root chord, a 3" tip chord and a 8" exposed
+semispan are shown in Fig. 2 below:
+
+                                Fin Normal Force Coefficient Slope
+
+                      160
+    SREF*CNA, sq in
+
+
+
+
+                      140
+                      120
+                      100
+                       80
+                       60
+                       40
+                       20
+                        0
+                            0          1           2          3             4     5
+                                                 Mach number
+
+                                   Figure 2. Typical Normal Force Slope
+
+For the fin shown in Fig. 2, the theory is valid for Mach numbers greater than 1.4142, and
+there will be a Region IV for Mach numbers less than 1.7002.
+
+Center of Pressure
+        The approach to estimating fin panel center of pressure is to find the Regional
+area pitch moments about the fin root chord leading edge. Begin by considering the high
+Mach number (no Region IV). First consider the entire fin without any root or tip losses:
+
+                                                                                          (18)
+
+Next, recall that the flow in the root and tip regions is conical, and therefore self-similar.
+The root region (III) has an
+
+                                                                          , and          (19)
+
+
+
+                                                                                                 4
+for Region (II),                                                        .            (20)
+
+
+Then, the                                                                    .      (21)
+
+Once the Mach number is reduced enough to create a Region IV, its
+
+                                                                    .
+(22)
+
+The corresponding term for Region I is found per eq.(21):
+
+                                                                                  . (23)
+
+The normal force moment about the root chord leading edge is:
+
+
+                                                                .
+(24)
+
+Finally, the fin   is just
+
+
+                                                   .                                 (25)
+
+
+Using the same typical fin numbers as before, the fin center of pressure is shown below
+in Fig.3.
+
+Airfoil Effects
+        Finally, it is known that airfoil shape has a minor effect on   , but not on the
+center of pressure. The key is designing for a single wedge airfoil, one with a pointed
+leading edge and a blunt trailing edge. Reference (4) indicates about 10% enhancement
+to     . This leads to a multiplier applied to the above results.
+
+References
+1. W. C. House, "Aerobee-Hi (AJ11-6), "Fin Airloads", Aerojet Memo, 11 May 1954.
+2. C. P. Hoult, "Aerodynamic Influence Coefficient Matrix for the Astrobee D Fins",
+Aerojet Memo 8500:M0629:ak, 9 April 1970.
+3. R. P. Arnold, "Supersonic Aerodynamic Influence Coefficients for Fins", Space
+General memo:M0725:ak, 15 September 1972.
+4. C. P. Hoult, "Supersonic Single Wedge Airfoil", RST memo, 2009.
+
+
+
+
+                                                                                           5
+                                                      Fin Center of Pressure
+
+                                     5.05
+Center of Pressure, in aft of Root
+
+
+                                       5
+     Chord Leading Edge
+
+
+
+
+                                     4.95
+
+                                      4.9
+
+                                     4.85
+
+                                      4.8
+
+                                     4.75
+                                            0     1            2             3        4   5
+                                                                Mach number
+
+                                                Figure 3 Typical Center of Pressure
+
+
+
+
+                                                                                              6
+

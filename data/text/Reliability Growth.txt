@@ -1,0 +1,116 @@
+Rocket Science and Technology                      4363 Motor Ave., Culver City, CA 90232
+                                                 Phone: (310) 839-8956 Fax: (310) 839-8855
+
+                      Reliability Growth During Flight Test                        20 July 2013
+
+                                          by C. P. Hoult
+
+Introduction
+        This is a simple analysis of the process of finding and fixing defects in flight
+hardware reprising some of the results in the reference. It is intended to support
+management decisions on the extent of development analysis and testing, of the scope of
+quality assurance, and of the depth of the FMEA process and related test instrumentation.
+Although it's easy to derive more comprehensive models, they all have more parameters
+to estimate a priori, making them , in the end, no more useful.
+
+Analysis
+         In the narrow technical sense, a defect or fault or failure not in compliance with
+the applicable system spec. A fault becomes a failure when it is realized in flight.
+Assume that occurrence of latent design / workmanship defects is governed by binomial
+statistics with the occurrence of each fault independent of all others. In the present
+context, fault detection happens when a fault is realized, detected and corrected before
+the next flight. The analysis below is done on an expectation basis.
+
+Let
+            = Number of lethal latent defects after flight tests,
+           = Probability that any unique latent defect will occur during a specific flight,
+           = Number of flight tests,
+           = Probability that a lethal latent defect will be detected, characterized and
+              corrected if it is manifested during a specific flight test, and
+           = Reliability.
+
+First, note that reliability is the probability that no faults occur in a flight\. For the very
+first launch,
+
+                                           R = (1  ̶ p)Do
+
+In general, reliability = Prob (no defects are manifested during a flight after       flight
+tests)
+
+                         Dn
+            = (1–p)
+
+                         Do
+            = (1–p)           for the first flight test.
+
+The expected number of defects manifested in the nth flight (after n – 1 tests) is
+
+
+
+                                                                                                  1
+             = Dn-1 p
+
+And, the expected number of defects corrected as a result of the nth flight test is
+
+             = Dn-1 p d
+
+Then the expected number of latent lethal defects remaining after the nth flight is
+
+          Dn = Dn-1 – Dn-1 p d = Dn-1 ( 1 – p d )
+
+Thus,     D1 = Do ( 1 – p d ), and
+
+                                                 2
+          D2 = D1 ( 1 – p d ) = Do ( 1 – p d )
+
+In general, after n flight tests,
+
+                                n
+          Dn = Do ( 1 – p d )
+
+                                                                     T
+                                                 Do (1 – p d )
+Finally, the reliability is given by     R = (1–p)
+
+
+Results
+       This analysis can be readily coded into Excel™ to generate RELGRWTH.xls.
+Typical results are shown below for                   and         . The reference
+considered a set of development flight test histories and found these parameters to be
+representative.
+
+
+
+
+                                                                                         2
+                              Rocket Reliability Growth
+
+                 1
+
+                0.8
+  Reliability
+
+
+
+
+                0.6
+
+                0.4
+
+                0.2
+
+                 0
+                      0   2     4      6       8       10      12       14       16
+                                Cumulative Number of Flights
+
+
+Reference
+W. Schaechter and C. P. Hoult, "Economic Considerations in Sounding Rocket
+Utilization", Proceedings of the Sounding Rocket Vehicle Technology Specialist
+Conference, Williamsburg, VA, February 1967.
+
+
+
+
+                                                                                      3
+

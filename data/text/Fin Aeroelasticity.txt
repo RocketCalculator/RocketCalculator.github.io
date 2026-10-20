@@ -1,0 +1,404 @@
+Rocket Science and Technology                                   4363 Motor Ave., Culver City, CA 90232
+                                                              Phone: (310) 839-8956 Fax: (310) 839-8855
+
+                                Effects of Fin Static Aeroelasticity on Roll Rate 05 October 2013
+
+                                                     by C. P. Hoult
+
+Introduction
+        Thin fins are commonly flown on small sounding rockets. The airfoils used can
+be simple Al plate or they can be built up by wrapping carbon fiber around a foam core.
+This memo addresses the effects of subsonic static aeroelastic twisting on roll rate. The
+motivation is the roll rate profile for CSULB's P-18 D rocket as shown in Fig. 1. Here
+the roll rate starts to accelerate a few seconds prior to the failure at pitch-roll resonance.
+The question that motivated this study is whether or not this increase was due to fin static
+aeroelasticity. This memo documents the Excel™ code, TWISTIT.xls used to answer
+this question.
+
+
+                                                P-18 Data
+
+                       12
+  Frequency, rad/sec
+
+
+
+
+                       10
+                        8
+                                                                                      roll
+                        6
+                                                                                      ωN
+                        4
+                        2
+                        0
+                            0         2        4          6           8        10
+                                               TALO, sec
+
+                                              Figure 1 P-18 Flight test data
+
+Nomenclature
+_______Mnemonic_____________Definition________________________________
+                       Parameters in the fin chord vs. spanwise coordinate relation
+                       Fin semi span, ft from body centerline
+                                              Rolling moment coefficient
+
+                                             Roll damping moment coefficient
+
+
+_______Mnemonic_____________Definition________________________________
+
+
+                                                                                                      1
+                              Roll driving moment coefficient
+                              Fin average airfoil normal force coefficient slope, rad-1
+                               Constants of integration
+                             Local fin chord, ft
+                             Root chord, ft
+                              Tip chord, ft
+                             Torsional modulus of elasticity of the fin material, lb/ft2
+                             Torsional stiffness of a fin airfoil, ft4
+                             Rolling moment, ft-lb
+                             Number of fin panels
+                             Roll rate, rad/sec
+                               Functions in the torsional solutions
+                             Dynamic pressure, lb/ft2
+                            Body radius, ft
+                             Aerodynamic reference area, ft2
+                             Torque about the elastic axis, ft-lb
+                             Total fin thickness, ft
+                              Flight speed, ft/sec
+                             Fin skin thickness, ft
+                             Distance from center line to a fin strip, ft
+                             Local angle of attack, rad
+                             Cant angle of a single fin panel, rad
+                             Torsional deflection (twist angle), rad
+
+Analysis
+         First, the assumptions: The fin planform is assumed to be a clipped delta as
+sketched. Next, the Mach number is subsonic. The phenomena discussed here tend to be
+much less noticeable at supersonic speeds because there the airfoil center of pressure and
+elastic axis are much closer. All angles of attack are small compared to unity. The fin
+airfoil shape can be modeled as a flat plate. As is customary, the roll moment of inertia is
+negligibly small.
+         The simplified aerodynamic model used here is strip theory. In this approach the
+local normal force coefficient slope is approximated by an average taken over the entire
+planform. Considering the very approximate nature of the elastic twisting model
+employed, it does not seem worthwhile to expend much effort on refining the airload
+distribution.
+         It is common to assert that designers choose fin sweep back to reduce fin wave
+drag or to increase critical Mach number. In truth, it must be chosen to mitigate the
+possibility of a static aeroelastic failure due to chordwise curling of the leading edge in
+the tip region. It is assumed that the fin is swept back sufficiently to preclude chordwise
+bending; it can therefore be neglected. Swept fins are also known for coupling between
+torsion and spanwise bending. It is assumed that static bending-torsion coupling can be
+neglected because the coupling effects of fin cant and roll damping are approximately
+equal, but of opposite sign.
+
+
+
+                                                                                           2
+        The elastic model used considers the fin to be a slender beam of high aspect ratio.
+Results reported in ref.(2) indicate that the slender beam approximation will overestimate
+the torsion deflection by about 20%. However, all we are trying to do is provide the
+designer with a tool that indicates trends. For that purpose this error is acceptable.
+        Figure 2 below displays the fin geometry:
+                                                              cT
+                                     Strip
+
+
+                          Aerodynami
+                          c Centers                                          y       b
+                                                              Elastic
+                                                              Axis
+
+
+                                             cR
+                                                                                 R
+
+
+                                 Figure 2 Fin Geometry
+
+Torsional Deflections
+        Consider the fin to be a one-dimensional beam subject to torsional deformations.
+Assume the elastic axis lies on the fin half chord line. Since subsonic flow has been
+assumed, the aerodynamic loading will be centered on the quarter chord line as sketched
+in Fig. 2. The air loads of interest are due to torsion, cant angle, roll damping and angle
+of attack. Then, the torque about the elastic axis from a strip of fin will be:
+                                                                                         (1)
+
+The change in twist angle over the strip is given by the St. Venant theory
+
+                                                                                          (2)
+
+Torsional Stiffness
+       There are two kinds of fin structure to be considered: First, a solid plate 1 for
+which
+
+                                                    .                                     (3a)
+
+
+1
+  A more accurate approximation is                (1  ̶ 0.63t/c). In most practical cases, the
+two formulae differ by only a few percent.
+
+
+
+
+                                                                                               3
+Second, a built-up structure for which thin skins of thickness are laid up on a foam or
+balsa core to form a flat plate airfoil. Neglecting the contribution of the core leads to
+Bredt's formula for the torsional stiffness:
+
+                                                                                      (3b)
+
+Note that the chord varies with the spanwise coordinate according to:
+
+
+
+(4)
+
+
+Putting these pieces together gives
+
+
+                                                                                    (5a)
+
+
+For a straight-tapered planform, we can change the independent variable from   to :
+
+
+                                                                                   (5b)
+
+
+where                                                                                 (5c)
+
+
+The initial conditions for a root chord clamped to the body are:
+
+                                               , and                               (6a)
+                                                         @         , or
+                                                                                   (6b)
+
+Equations (5) have a general solution in terms of modified Bessel functions of the first
+kind and of fractional order. However Excel™ only supports I functions whose order is a
+positive integer. Therefore, recourse to numerical methods will be taken.
+        Because the response is proportional to the appropriate right hand side, each of
+the three solutions takes the form
+
+
+
+
+(8)
+
+
+                                                                                          4
+Then, the functions A,      and     can be found numerically integrating:
+
+
+
+
+                                                                                            (9)
+
+
+
+
+subject to the initial conditions ( eq's. (6) )
+
+Loads Acting on a Flexible Fin
+       Now, suppose we knew the three solutions,         ,           and        .
+We next show how to find the "elasticized" loading. Consider the angle of attack
+response on a strip of span dy. The rigid fin    remains the same as always. But,
+aeroelastic effects increase   by
+
+                                                                    ,
+
+(10a)
+
+and the corresponding increment in          is
+
+
+                                                                .
+
+(10b)
+
+Futhermore, there is an change to the normal force, including upwash around the body,
+acting on a fin panel
+
+
+                                                                .
+
+(10c)
+
+Thus, integrate eq's. (9) , and at the same time, evaluate eq's. (10) as auxiliary integrals.
+Use eq. (4) to relate and .
+
+
+
+
+Roll Equilibrium
+
+
+
+                                                                                                5
+        Roll equilibrium is achieved when the two roll torques are in balance. First,
+recapitulate the rigid fin strip theory for and      . Consider a strip of span for
+which
+d(Roll damping moment)                                            .
+Then, roll damping moment
+
+
+
+Then, for one fin panel
+
+
+(11a)
+
+d(Roll driving moment)                . And, for one fin panel,
+
+
+                                                                                      (11b)
+
+
+The full stability derivatives are the sum of eq's. (10) and (11). The equilibrium spin rate
+is estimated by setting sum of all the roll moments equal to zero, and solving for the roll
+rate. Then, if all fin panels have the same cant angle,
+
+                                                                                        (12)
+
+Equation (12), with its aeroelastic corrections, can be used to predict roll rate given fin
+cant angles, or vice versa.
+
+Results
+     The model described above has been coded into Excel™ and filed as
+TWISTIT.xls. For typical numbers, data for P-18D was used, and the results for ,
+and plotted below:
+
+                   Parameter                               Value
+                   Root chord                              24"
+                   Tip chord                               4"
+                   Body Radius                             12.5"
+                   Fin semispan from body centerline       39.6"
+                   Fin total thickness                     0.375"
+                   Fin skin thickness                      0.02742"
+                   Fin J/c                                 0.00771 in3
+                   Dynamic pressure                        800 psf
+
+
+
+
+                                                                                           6
+                         Cant Angle Function D(y)
+
+         0.4
+
+         0.3
+ D(y)
+
+
+
+
+         0.2
+
+         0.1
+
+             0
+                 0   5      10    15     20    25     30       35   40
+                         Distance from Rocket Centerline, in
+
+
+
+
+                         Roll Damping Function P(y)
+                     Distance from Rocket Centerline, in
+        0
+        -1 0              10            20            30            40
+        -2
+        -3
+P(y)
+
+
+
+
+        -4
+        -5
+        -6
+        -7
+        -8
+
+
+
+
+                                                                         7
+                        Angle of Attack Function A(y)
+
+         0.6
+
+         0.5
+
+         0.4
+  A(y)
+
+
+
+
+         0.3
+
+         0.2
+
+         0.1
+
+           0
+               0               10               20               30                40
+                           Dstance from Rocket Centerline, in
+
+
+         The following table summarizes the results:
+
+                           Parameter              CL             CLp
+                       Rigid                     2.399          -4.808
+                       Flexible increment        4.426          -6.141
+                       Total                     6.825         -10.949
+
+We immediately discover that the flexible fin roll rate is 25% greater than its rigid
+counterpart. The general dependence of the flexible roll rate to rigid roll rate ratio on
+dynamic pressure is shown below. Note that the maximum dynamic pressure observed
+during the P-18D flight was only 673 lb/ft2.
+
+
+
+
+                                                                                        8
+                                                  Roll Rate Ratio
+
+                                 1.3
+   Flexible / Rigid Roll Rate
+
+
+                                1.25
+                                 1.2
+                                1.15
+                                 1.1
+                                1.05
+                                  1
+                                       0   100   200   300   400    500   600   700   800
+                                                  Dynamic Pressure, lb/ft2
+
+
+
+Summary
+        This very approximate analysis shows that fin static aeroelasticity effects
+probably operated to increase the P-18D roll rate beyond its rigid fin value, but most
+likely there is an additional cause to the increase in roll rate observed near failure.
+
+
+       1. F. B. Hildebrand, "Advanced Calculus for Engineers", Prentice-Hall, Inc., New
+          York, 1949
+       2. R. L. Bisplinghoff, H. Ashley and R. L. Halfman, "Aeroelasticity", Addison-
+          Wesley Publishing Company, Cambridge, 1956
+
+
+
+
+                                                                                            9
+

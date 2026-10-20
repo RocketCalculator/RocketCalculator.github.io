@@ -1,0 +1,209 @@
+Rocket Science and Technology                 4363 Motor Ave., Culver City, CA 90232
+                                            Phone: (310) 839-8956 Fax: (310) 839-8855
+
+                  Tethered Pilot Balloon Bias Errors(rev.1) 27 February 2013
+
+                                     by C.P. Hoult
+
+Introduction
+       The continued use of tethered pilot balloons (Pibals) to measure vector winds in
+the lower parts of the planetary boundary layer provides the motivation for writing this
+memo. It is customary to assume the tether can be modeled as a perfectly straight string.
+However, this would violate the laws of physics were it so. This memo documents a
+study of the errors in the straight tether model due to gravity and aerodynamic drag.
+       Now consider the geometry of this wind measurement system as described in Ref.
+(1):
+
+
+
+           Wind                              Drag          The sketch on the right shows
+                                                           the wind sensor. Note the ele-
+                                     Pibal                 vation angle, Θ, measured by
+       LOS                                                 an optical sensor where the
+                                                           tether is grounded. As shown
+                                 Catenary Tether           in the sketch, the measured
+                                                           elevation angle is not the
+                                                           same as the elevation angle
+                                                           where the tether attaches to
+                                                           the pibal. This difference is
+                                   Elevation               due to gravity and aerody-
+                                   Angle, Θ                namic drag.
+
+
+            Sensor Optics
+
+The classical relation between wind speed    and elevation angle   at the top of the tether
+is found from statics to be
+
+
+                                                       , where                          (1)
+
+
+    Balloon buoyancy force (from Archimedes' Law),
+     Weight of balloon, inflation gas and tether,
+    Atmospheric mass density,
+    Balloon projected area =      , and
+     Balloon coefficient of drag.
+
+
+
+                                                                                          1
+        Strictly speaking the elevation angle appearing in eq. (1) is not that measured on
+the ground, but instead is that where the tether attaches to the pibal. Our error analysis
+consists of relating the elevation angle at pibal attachment to that measured on the
+ground.
+        Since the effects of gravity and drag are each expected to be small, they are
+analyzed separately and added to estimate the bias error in eq. (1) due to the analytical
+approximations in eq. (1).
+
+Gravity
+        Fortunately, there is a well known closed form solution for the response of a
+flexible cable to gravity. See Ref. (2) for a brief overview.
+
+
+
+                        Line of Sight
+
+                                                                  ΔΘ
+        Θ
+
+                            Tether
+
+            Ground
+
+
+
+
+As the sketch above shows gravity causes the tether to sag a small amount with respect
+the line of sight. Noting that the tether weight normal to the line of sight is
+,Ref. (2) gives the condition of static equilibrium at either end to be:
+
+
+                                                      , where
+
+
+     Weight of the deployed tether, and
+    Tension force in the tether.
+
+To first order the tension force is
+
+                                                        .
+
+Substituting, we have
+
+
+                                                                                        (2)
+
+
+
+Aerodynamic Drag
+
+
+                                                                                             2
+        Estimation of the bias error due to aerodynamic drag follows similar lines.
+According to Ref. (3) the cross flow drag is effectively decoupled from the longitudinal
+drag force. Assuming the wind lies in a plane parallel to the ground, the wind normal to
+the tether is       . An element of tether then experiences a drag load of
+
+                                                               , where
+
+
+     2D cylinder drag coefficient,
+     Transverse drag force acting on the tether,
+    Radius of cylindrical tether, and
+    Distance along the tether.
+
+The result clearly depends on the velocity profile, i.e., how wind speed varies with
+altitude. If it remains constant with altitude,
+
+                                                          , where                           (3)
+
+    Length of deployed tether.
+
+Then, following the same procedure used to estimate        for tether weight, we find that
+
+
+                                                                                            (4)
+
+
+Composite Bias Error
+       Both bias errors act to increase the elevation angle over its simple line of sight
+measured value. That is, if is interpreted as the measured value on the ground, the
+cotangent appearing in eq. (1) should be replaced with
+
+
+                                                                                              o
+                                                r
+                                                                                            (5)
+
+
+
+
+Now, consider numbers for a typical case. Let
+
+    600 ft,
+    500 ft ,
+                                         ,and
+        ft ==>Balloon diameter = 3 ft,
+
+
+                                                                                              3
+S = 7.07 ft2,
+Vol = 14.137 ft3,
+           ,
+              sl/ft3 (sea level standard day)
+                                                sl/ft3 (He at sea level)
+               2
+          ft/s ,
+    1.082 lb (from Archimedes' law),
+                    lb (balloon empty weight)
+      0.15 lb
+                            lb (total weight of inflated balloon)
+            ft/s (from eq.(1))
+                8.9233 ft/s normal to the tether
+            lb
+
+
+           in.
+The specific gravity of Spectra™2000 is 0.97 = 4x10-5 lb/ft. Then
+The Reynolds number for cross flow around the tether is
+
+
+
+
+        (based on tether diameter at sea level)
+          at this Re
+
+
+                         0.08820
+
+
+The total correction factor in eq.(5) = 1-0.01685-0.08820 = 0.89495.
+Hence the bias errors act to overestimate the wind speed by ~5.4%
+
+Recommendation
+        Since the bias errors turn out to be fairly significant, the recommended data
+processing procedure is to first compute wind speed from eq. (1), and then to compute a
+bias correction factor from eq. (5) using the approach outlined above. Use this to obtain
+an improved wind speed estimate from eq. (1).
+
+References
+   1. N. D. Suppanade, E. Cortes, Y. W. Lee and A. Pathan, "Wind Velocity Profile
+       Determination for Rocket Trajectory Correction", CSULA, 2013.
+   2. C. P. Hoult, "Kite Catenary", RST Memo, 2006.
+   3. R. T. Jones, "Effects of Sweepback on Boundary Layer and Separation",
+       N.A.C.A. Report 884, 1947.
+
+
+
+
+                                                                                            4
+4. E. W. Relf and C. H. Powell, "Tests on Smooth and Stranded Wires Inclined to
+   the Wind Direction, and a Comparison of Results on Stranded Wires in Air and
+   Water", R$M no. 307, British A.R.G., 1917
+
+
+
+
+                                                                                  5
+

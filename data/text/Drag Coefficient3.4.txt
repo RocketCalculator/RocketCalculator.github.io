@@ -1,0 +1,647 @@
+Rocket Science and Technology                    4363 Motor Ave., Culver City, CA 90232
+                                               Phone: (310) 839-8956 Fax: (310) 839-8855
+
+
+                                Drag Coefficient(Rev.3.4)                        08 April 2016
+
+                                         by C.P. Hoult
+
+Introduction
+         The coefficient of aerodynamic drag is a very important parameter having a major
+effect on the performance of small rockets. In fact, it’s influence on performance is greatest
+for the smallest rockets due to square-cube effects. Based on physics, there are four sources
+of drag:
+                      1. Skin friction
+                      2. Wave drag
+                      3. Base drag
+                      4. Parasite drag
+Skin friction is what it sounds like, the effect of viscous boundary layer friction between
+the air and rocket body. Wave drag is an unavoidable consequence of supersonic flow.
+Base drag is associated with a blunt base behind a body or airfoil. Parasite drag arises from
+all the little things like uneven joints, riding lugs, etc. Drag due to lift, or induced drag, is
+not addressed here because sounding rockets fly at very nearly zero lift. Each of these is
+discussed in its own section below. Finally, the reader is strongly urged to buy him/her
+self a copy of Dr. Hoerner’s most wonderful book used as ref. 1 in this report.
+         The material contained here tends to not generate a smooth curve over a wide
+range of Mach numbers. This is especially true when transonic flow appears. In such
+cases, the customary path followed by an analyst is to use his analytical tools whenever
+possible, and supplement these with a favorite set of french curves. Although it’s not exact,
+in a practical sense, it works.
+
+Nomenclature
+_________Mnemonic______ _________Definition____________________________
+               S wet                  Wetted area of body,
+               S fin                  Area of one side of one fin panel,
+               N                      Number of fin panels,
+               R( x )                 Body radius at body station x,
+               S ref                  Aerodynamic reference area,
+               S base                 Base area of the body,
+               S ex                   Rocket motor nozzle exit area,
+               Cf                     Average Skin friction coefficient,
+
+
+                                                                                               1
+              R                     Gas constant for air,
+                                                   ρ xU
+              Re( x )               Reynolds number μ ,
+
+_________Mnemonic______ _________Definition____________________________
+              ReT                   Reynolds number at boundary layer natural transition,
+               a                    Speed of sound in the atmosphere,
+              U                     Flight speed,
+                                                                         cv
+                                                                     =
+              γ                     Ratio of specific heats of air       cp ,
+              ρ                     Atmospheric mass density,
+              μ                     Atmospheric viscosity,
+              L                     Body overall length,
+               l                    Characteristic dimension of the problem,
+               lT                  Distance from stagnation point to transition,
+              M                     Free stream Mach number,
+              γ                     Ratio of specific heats for air = 1.4,
+              T                    Absolute atmospheric temperature,
+                                                        Drag Force
+              CD                   Drag coefficient =
+                                                         ½ ρ U 2 S ref
+              C PT                 Stagnation point pressure coefficient
+              C DB                  Base drag coefficient,
+              C Df                  Skin friction drag coefficient,
+              C PB                  Base pressure coefficient,
+               t                    Fin plate thickness,
+              b                     Fin exposed semispan,
+               p                    Local pressure, and
+               p∞                 Free stream atmospheric pressure.
+
+
+Skin Friction Drag
+        For the majority of small hobby rockets, skin friction is the dominant source of
+drag. The tricky part of estimating skin friction drag arises from the fact that the surface
+boundary layer can take on two forms, laminar and turbulent. Laminar boundary layers
+have a smooth orderly character whereas turbulent boundary layers are highly disorganized
+and chaotic. For both types, skin friction depends strongly on Reynolds number.
+
+
+
+
+                                                                                          2
+                                               ρ xU ρ ax
+                                 Re( x )=          =     M
+                                                 μ   μ                                  (1a)
+
+                                                                    ρa
+Here, x is a location of the body and M is a flight condition. But, μ is an atmospheric
+property
+
+                                 √
+                                       0 .76
+                         ρa      γ Tr
+                            = p∞      T −1.26 =8816603 p∞ T −1.26
+                         μ       R μr                                                   (1b)
+
+Thus, to estimate a flight Reynolds number, one obtains the Mach number, the pressure
+and the absolute temperature from a trajectory simulation or from flight data, and uses these
+in eq's. (1a) and (1b).
+         Now, refer to Fig. 1, Chapter II of ref. 1. First, note that it doesn’t matter much
+whether the surface is flat or cylindrical. Next, consider the Blasius laminar friction
+coefficient given by
+
+                                                      1.328
+                                               Cf =
+                                                       √ Re                              (2)
+
+The Schoenherr model for incompressible turbulent boundary layers is
+
+                                                           0 .242
+                                      log 10 ( Re C f )=
+                                                            √ Re                        (3a)
+
+A simpler model that is almost as accurate is
+
+                                                     0 . 427
+                                     Cf =
+                                            ( log( Re )−0 . 407 )2. 64                  (3b)
+
+We will use eq.(3b) instead of eq. (3a).
+        There has probably been more written about transition from the laminar to the
+turbulent state than on almost any other topic in fluid mechanics. We are more than a
+century after scientists knew that this was an important problem, but still there is no
+definitive answer. Here, we adopt the process commonly used industrially. Natural
+transition is assumed to happen instantaneously at a transition Reynolds number. For
+typical aircraft/rocket bodies of revolution at speeds less than hypersonic, take
+
+                                      ReT =400 , 000 ,                                  (4a)
+and for fins take
+                                        ReT =25 , 000 .                                 (4b)
+
+
+                                                                                           3
+        Of course, it is always possible to artificially induce transition by placing some
+surface roughness, or a boundary layer trip, on the body where transition is desired. DRAG
+COEFFICIENT3.xls provides for this via an input trip location. Body boundary layer
+transition then is assumed to occur at the trip site or naturally, whichever is closest to the
+nose tip.
+The reason for the difference in natural transition Reynolds numbers is the boundary layer
+on the fore body is being continuously thinned as body radius increases moving aft, and
+therefore is stabilized, as it moves aft. If the fin leading edges are not smoothly rounded to
+a good approximation to a hemicylindrical contour, boundary layer transition can occur at
+the low value given by eq. (4b) above. Note that the transition Reynolds number can be
+shown to make a significant difference in the estimated drag. Since the Reynolds number
+where the laminar and turbulent skin friction curves cross is about 10,000, it follows that
+is much larger than the laminar.
+        How might this be used to estimate the skin friction drag of a rocket? First, note
+that for slender bodies, at transition, and down stream, the turbulent skin friction
+
+                                                                           dS wet
+                                                                                  =2 πR ( x )
+                                                                            dx                                      ( 5)
+
+When the body is decomposed into elements, and the wetted area found by integration, a
+plot like Fig. 1 below can be constructed:
+
+
+                                                                      Body Wetted Area
+   Wetted Area, sq. in. & 100 Body
+
+
+
+
+                                                   800
+                                                   700
+                                                   600
+                                     Radius, in.
+
+
+
+
+                                                   500
+                                                                                                            100*Radius
+                                                   400
+                                                                                                            Swet
+                                                   300
+                                                   200
+                                                   100
+                                                     0
+                                                         0           50                 100           150
+                                                             Body Station, inches from Nose Tip
+
+                                                                Figure 1   Typical Body Wetted Area
+
+
+
+
+                                                                                                                         4
+A detailed graph of wetted area is not needed, only a few points need be done carefully.
+So, a conical body element, for instance, can be plotted as a straight line on the wetted area
+curve even though it's truly parabolic. Just make sure the end points accurate.
+       Next, find the maximum length l T of laminar boundary layer:
+                                                        μ ReT
+                                             lT =
+                                                         ρU                                (6)
+If l T ≥L then the entire area will have a laminar boundary layer, and Eq. (2) can be used
+           C
+to estimate f . Otherwise, use Eq. (2) up to the transition point given by Eq. (6).
+Downstream of the transition point, the boundary layer will be turbulent. The area of
+laminar boundary requires the S wet curve be interpolated to find the wetted area ahead of
+body station l T , lamS wet . Then, the remaining turbulent wetted area is
+
+                                  turS wet =S wet ( L)−lamS wet
+
+                                      lamS wet                         lamS wet
+                             1. 328                     0 . 427(1−                )
+                                      S wet ( L)                       S wet ( L)
+                      Cf =                         +
+                                 √ R eT                ( log ( R eT )−0 . 407 )2. 64 ,     (7)
+
+
+where R e is based on L . The third term is needed to eliminate the double bookkeeping over
+the forward (laminar) part of the surface.
+        Fin drag can be similarly estimated, but with two slight differences. First, keep in
+mind that both sides of a fin are subject to skin friction drag. Second, when estimating L
+and W we assume that all areal elements have the same W, but not the same L. Given a
+fin area and exposed semispan W find the L that matches the wetted are. The
+                                                                                         C f is
+estimated as for a body, and the skin friction drag is
+
+                                                           2 NS fin
+                                          C Df =C f
+                                                             S ref .                       (8)
+
+        Next, consider the effects of compressibility. See page 15-9 and 17-4 of ref. 1.
+The compressible boundary layer, both flavors, is known to depend on heat transfer, and,
+if applicable, on ablation. Reference 1 suggests for modest heating, the laminar skin
+estimate friction need not be altered, and the turbulent boundary layer skin friction as given
+by Eq. (3) above be reduced according to:
+
+                              C f ( M )=C f (0)(1+0 .15 M 2 )−0 .58                        (9)
+
+
+
+
+                                                                                             5
+assuming an adiabatic wall (probably a good approximation in most practical cases). This
+has been used in the spread sheet called DRAG COEFFICIENT3.xls to generate skin
+friction and base drag coefficients. For the body and fins mentioned above.
+
+                                      Skin Friction Drag at Sea Level
+
+                      0.4
+                     0.35
+                      0.3
+  Drag Coefficient
+
+
+
+
+                     0.25                                                           Body
+                      0.2                                                           Fins
+                     0.15                                                           Total
+                      0.1
+                     0.05
+                       0
+                            0   0.5          1        1.5       2        2.5    3
+                                                 Mach number
+
+                                      Figure 2 Typical Skin Friction Breakout
+
+
+Wave Drag
+         Wave drag is associated with the presence of shock waves in the flow around a
+body. Although these are seen locally at high subsonic Mach numbers, easy classical
+analyses are not possible until the Mach number is high enough for well-developed
+supersonic flow. For the wave drag of bodies of revolution, use the techniques of Ref. (3).
+For the very blunt parts of a rocket, e.g., a hemispherical nose cap on the body, or
+hemicylindrical fin leading edges, the Modified Newtonian theory of Ref. (4) can be used.
+         Consider next the ogive-cylinder shape discussed as an example in the Skin
+Friction Drag section. The Ref.(3) model has been coded into LOW SUPERSONIC
+BARROWMAN EQUATIONS3.3.xls. This code has been used to prepare the top plot
+shown below. The Ref. (4) model has been coded into NEWTON.xls, and used to evaluate
+the fin leading edge wave drag. The stagnation pressure coefficient is documented later in
+the Riding Lug section of this memo. It is implemented as a VB function in DRAG
+COEFFICIENT3. The lower plot, obtained from the spread sheet NEWTON.xls, is the
+Newtonian wave drag for 4 fins 3/16” thick swept at 45 o. Each fin has a hemicylindrical
+leading edge 0.707 feet long. Note that the fin wave drag is zero when the leading edges
+are subsonic.
+
+
+
+
+                                                                                            6
+                                                          Ogive Wave Drag
+
+                          0.8
+  Wave Drag Coefficient
+
+                          0.7
+                          0.6
+                          0.5
+                          0.4
+                          0.3
+                          0.2
+                          0.1
+                            0
+                                    1         1.5           2               2.5          3   3.5   4
+                                                          Free Stream Mach number
+
+                                                    Figure 3. Typical Ogive Wave Drag
+
+
+                                                Fin Leading Edge Wave Drag
+
+                           0.1
+  Wave Drag Coefficient
+
+
+
+
+                          0.08
+
+                          0.06
+
+                          0.04
+
+                          0.02
+
+                                0
+                                        1     1.5            2               2.5         3   3.5   4
+                                                                     Mach number
+
+                                            Figure 4. Typical Fin Leading Edge Wave Drag
+Base Drag
+      Reference 1, p 3-19, provides an estimate on incompressible pressure coefficient:
+
+                                                                       0 .029
+                                                         C PB =
+                                                                  √ C f S wet / S base             (10)
+
+
+
+
+                                                                                                       7
+     C
+Here f is the fore body (not including fins) skin friction drag as found above. The effects
+of compressibility are interesting as shown on p.16-4 of ref. 1. For well-developed
+supersonic flow, the base drag is approximately 65% of that for a vacuum:
+
+                                                  1.3
+                                       C PB =
+                                                  γM 2                                (11)
+
+For transonic flow, the base drag is independent of Mach number:
+
+                                     ΔC PB =0 . 055                                   (12)
+
+That is, the transonic base drag is the incompressible base drag given by Eq. (10) above
+plus the increment given by Eq. (12). The reference point for Eq. (12) is below the fore
+body critical Mach number, typically about 0.8, or so. This horizontal drag curve is
+extended in Mach number until it intersects the quasi-vacuum curve given by Eq. (11)
+above. The maximum Mach number M lim for the constant base drag coefficient is found
+to be
+
+                                 M lim =
+                                           √       1.3
+                                               γC DB + ΔC DB                          (13)
+
+Finally, the limited data in Ref. (1) for power-on base drag suggest it’s a very complex
+phenomenon significantly dependent on the nozzle exit pressure. The reader is directed to
+Ref. 1, p.20-16 which indicates the power-on base drag (based on “unpowered” base area)
+for well-developed nozzle flow could be 1.5 x that for the power-off case. Physically, the
+propulsive jet entrains and expels air in the base region thus reducing the base pressure.
+Absent a better understanding, it’s recommended that this result with the power-off drag
+be applied to the annulus outside the nozzle. That is,
+
+                                                               S ex
+                              C PB ( S ex )=1.5 C PB (0)(1−          )
+                                                               S ref                  (14)
+
+For the example body with a 4” diameter nozzle, power-on base drag is
+
+                                         42
+                                   1.5(1− 2 )=0 . 833
+                                         6            .
+
+The reader is cautioned that this be a significant contributor to power-on drag. The power-
+on base drag in this example is 83% of the power-off base drag!
+       An example (same body as before) of the power-off base drag is shown below:
+
+
+
+
+                                                                                         8
+                                              Base Drag at Sea Level
+
+                      0.14
+                      0.12
+  Drag Coefficient
+
+
+
+                       0.1
+                      0.08
+                      0.06
+                      0.04
+                      0.02
+                         0
+                             0          0.5          1            1.5           2         2.5       3
+                                                           Mach number
+
+                                              Figure 6. Sea Level Base Drag
+
+       Flat plate fin base drag at subsonic speeds can be found from Ref. 1, p. 3-21 to be
+given by
+                                            0 .135 Ntb
+                                     C DB =          1
+                                                           S ref (C f ) 3                           (15)
+
+
+Here
+                     C f is the skin friction drag of one side of one panel as per Eq. (7) above.
+
+Fin Airfoil Pressure Drag
+        The crude airfoil pressure/wave drag model incorporated in DRAG
+COEFFICIENT3.xls assumes that leading edges are either blunt or sharp, and that trailing
+edges are also either blunt or sharp. The truth table below shows how the airfoil pressure
+drag is modeled depending on the airfoil shape:
+
+                                 Leading Edge Trailing Edge      Leading Edge     Trailing Edge
+                                                                Drag Coefficient Drag Coefficient
+                                    Sharp          Sharp               0                 0
+                                    Blunt          Sharp           0 if M < 1,             0
+                                                                  Newtonian if
+                                                                      M >1
+                                    Blunt          Blunt           Newtonian           Eq.(14)
+                                    Sharp          Blunt                    0          Eq.(14)
+
+
+
+
+                                                                                                        9
+This model neglects wave drag of slender airfoil shapes. The Newtonian drag is based of
+the Newtonian reference. The blunt leading edge-sharp trailing edge model has no
+subsonic pressure drag due to d'Alembert's paradox.
+
+
+Riding Lugs
+        Two riding lugs are needed to hold a rocket on its launch rail. In appearance they
+consist of three concentric cylinders as sketched below:
+The rail edges slide between the two larger
+cylinders. The whole assembly is screwed to the
+rocket structure below with a round screw head
+standing above the upper larger cylinder. According                   2R
+to ref.(1), section 5, the incompressible drag of such
+a riding lug is about
+
+                  C D =0 .76−0 . 8
+
+based on projected frontal area. Then, the
+approximate drag area of a lug is just                                             h
+
+               C D S≃0 .76−0 . 8∗2 Rh
+
+                                                         Figure 7. Riding Lug Geometry
+
+        A compressible lug drag can be developed assuming the Ref. (4) Newtonian
+pressure distribution applies. This is strictly accurate only for supersonic free stream
+Mach numbers, but can be finagled for subsonic free stream Mach numbers. The
+stagnation pressure coefficient is
+
+
+
+                                       [
+                                 C pT = (
+                                            pT
+                                            p∞      ] 2
+                                               )−1 ∗( 2 )
+                                                     γM                                    (16)
+
+The pressure ratio above depends on Mach number:
+
+
+
+                                 [              ]
+                                              γ
+                              pT       γ−1 2 γ−1
+                                 = 1+(    )M
+                              p∞        2        for M ≤1
+(17)
+
+
+
+                          [          ] [                  ]
+                                γ               1
+                     pT γ +1 2 γ−1     γ +1
+                        =   M                  γ−1
+                     p∞   2        2 γM 2−γ +1     for M ≥1
+(18)
+
+
+                                                                                            10
+These relations can be used in the cylindrical Newtonian model, Ref. (4) to find the drag
+area:
+                                                                 4
+                                                           C D S= RhC pT
+                                                                 3                                    (19)
+
+This is plotted below:
+
+
+                                           Riding Lug Drag Coefficient
+                                                   based on Frontal Area
+
+                              1.2
+                               1
+           Drag Coefficient
+
+
+
+
+                              0.8
+                              0.6
+                              0.4
+                              0.2
+                               0
+                                    0                0.5                 1           1.5          2
+                                                              Mach number
+
+                                            Figure 8. Riding Lug drag Coefficient
+
+If one wished to fudge things to match the Hoerner data, we could take
+
+                                                      C D S=0.8(2 Rh)C pT                              (20)
+
+Flat Face Aerodynamics
+        Flat faced shapes are very commonly encountered, especially in conjunction with
+large angles of attack. First, Ref. 5 provides a comparison with experiment over a wide
+range of supersonic Mach numbers. The wind tunnel data therein all lie within 4% of Eq.
+(21). The streamline impacting the nose stagnation point passes through a normal shock
+before being isentropically compressed to zero speed. Equation (100) of ref. (1) is the
+Rayleigh pitot formula. It states that
+
+
+
+                                                                     [                 ]
+                                        pT                                             1/( γ−1)
+                                                           2 γ /( γ−1)       γ +1
+                                           =[ 1/2( γ +1) M ∞ ]
+                                        p∞                             2 γM 2∞ −( γ−1)                (100)
+
+
+                                                                                                        11
+The stagnation pressure coefficient is, by definition,
+
+                                             C PT ≡( pT − p∞ )/(1/2 γp∞ M 2∞ )=2 ( pT / p∞ −1 ) /( γM 2 )
+                                                                                                                     (21)
+
+This equation is plotted below in Fig. 1:
+
+
+                                               Stagnation Pressure Coefficient
+
+                          2
+                         1.8
+  Pressure Coefficient
+
+
+
+
+                         1.6
+                         1.4
+                         1.2
+                          1
+                         0.8
+                         0.6
+                         0.4
+                         0.2
+                          0
+                               0      0.5        1           1.5           2          2.5           3       3.5      4
+
+                                                       Free Stream Mach number
+
+                                   Figure 9. Supersonic Stagnation Point Pressure Coefficient
+
+Flat Faced Nose Aerodynamics
+       Flat faced shapes are very commonly encountered, especially in conjunction with
+large angles of attack. First, Ref. 8 provides a comparison with experiment over a wide
+range of supersonic Mach numbers. The wind tunnel data therein all lie within 4% of Eq.
+(21). The methods of Ref. (2), Chapter 15, suggest a subsonic model of the form
+
+                                                                                  C D = 0.85(1 + ¼ ( M 2 + M 4 ) )
+(22)
+
+The result of Eq’s. (21) and (22) plotted together are shown below:
+
+
+
+
+                                                                                                                         12
+                                       Flat Face Drag Coefficient
+                        2
+                      1.8
+                      1.6
+                      1.4
+   Drag Coefficient
+
+
+
+
+                      1.2
+                       1
+                      0.8
+                      0.6
+                      0.4
+                      0.2
+                        0
+                            0   1          2         3          4             5   6           7
+                                                   Mach Number
+
+                                Figure 10. Flat Faced Nose Drag Coefficient
+
+Parasite Drag
+         Parasite drag is often considered to be the dogs and cats of the drag world. It
+encompasses all the drag sources too small individually to merit formal analyses like
+those outlined above. Examples include skin joints, surface roughesses and RF antennas.
+Many, if not all, of these could be analyzed with the same methods described above, but
+the additional analysis is often considered a poor use of engineering resources. As a
+result, one frequently accounts for parasite drag by adding an additional 5%, or so, to the
+total drag obtained from formal itemized analysis.
+
+References
+       1. S. F. Hoerner, “Aerodynamic Drag”, Published by the author, 1965
+       2. Schoenherr, “Resistance of Plates”, S.N.A.M.E., 1932
+       3. C. A. Syvertson and D. H. Dennis, “A Second-Order Shock-Expansion
+           Method Applicable to Bodies of Revolution Near Zero Lift”, N. A. C. A.
+           Report 1328, 1957.
+       4. C. P. Hoult, “Modified Newtonian Aero (rev.4)”, RST memo, 06 April 2016
+       5. S. C. Sommer and J. A. Stark, "The Effect of Bluntness on the Drag of
+           Spherical-Tipped Truncated Cones of Fineness Ratio 3 at Mach Numbers 1.2
+           to 7.4", NACA RM52B13, 1952.
+       6. Lees, L. and Kubota, T., "Inviscid Hypersonic Flow over Blunt-Nosed Slender
+           Bodies", Journal of the Aeronautical Sciences, Vol. 24, No.3, March 1957, pp
+           195-202.
+       7. Ames Research Staff, “Equations, Tables and Charts for Compressible Flow”,
+           N.A.C.A. Report 1135, 1953
+       8. J. F. Campbell and D. T. Howell, “Supersonic Aerodynamics of Large-Angle
+           Cones”, NASA TN D-4719, Langley, VA, August 1968
+
+
+                                                                                         13
+

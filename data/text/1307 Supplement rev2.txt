@@ -1,0 +1,297 @@
+Rocket Science and Technology                 4363 Motor Ave., Culver City, CA 90232
+                                            Phone: (310) 839-8956 Fax: (310) 839-8855
+
+        N.A.C.A Report 1307 Supplement for Downwash-                      26 January 2014
+             Dependent Fin-Fin Interference (rev.2)
+
+                                    by C. P. Hoult
+Introduction
+       The justly famous NACA Report 13072 is the standard reference for estimating
+aerodynamic interference among the several components of a rocket. However, for a
+configuration with two, or more, sets of fins, 1307 is, in a practical sense, incomplete.
+The purpose of this memo is to document an approach to closing these gaps.
+
+Vortex Location
+         Fin-fin interference is estimated assuming that an upstream fin panel sheds a
+single horseshoe vortex with one trailing arm inside the rocket body and the other outside
+it. The outboard location of the exterior vortex arm is given by eq.(39) while the vortex
+strength Г is given by eq.(38). The problem is then to locate the positions of the
+horseshoe vortex at the position of the after most fins, often mounted on a part of the
+body with a radius differing from that supporting the forward fins.
+The sketch on the right shows a single                  r2
+second stage fin panel with its shed
+                                                             fin
+vortex located a distance       from the
+                                              g2
+centerline. The image vortex needed
+to satisfy the boundary condition on a                       f2
+cylinder of radius          is located a
+distance     from the centerline.
+
+The key relationship1 between these distances is
+
+
+
+
+        Now, if the first stage body radius is     , there is no issue. But, if this is not
+so, 1307 gives us only a gloomy excuse. Here is a quick, rough way to make the
+necessary adjustments to find : Apply the incompressible continuity equation to the
+cross flow. Consider the air inside an annulus of outer radius     and outside a radius
+at stage two. The mass flux in this annulus is
+
+                                                        ,
+
+where          = mass flux,
+               = mass density,
+                  stream tube area, and
+
+
+
+                                                                                         1
+                 = velocity.
+
+Note that the shed vortex core lies on the outer surface of this annulus. Since the only
+velocity component normal to the axis of the annulus is an infinitesimal angle of attack
+times V, the vortex core will remain on the boundary of the same air mass as it moves aft.
+Assuming slender body aerodynamics, variations in will be small compared to itself
+during passage aft. It immediately follows that
+
+                                                      , or
+                                                                .
+
+Here the subscripts refer to the stage in question.
+
+
+Fin Vortex Normal Force
+         Consider the common four-finned rocket configuration. The two fins normal to
+the fin in question contribute nothing to its normal force because their induced velocities
+cancel each other out. Induced velocities from the two vortices for the panel in question
+are supplemented by the induced velocities from the coplanar fin on the opposite side of
+the body. First, the external vortex at        gives an induced velocity of
+
+
+                                                        .
+
+
+where      = velocity induced normal to the fin plane, and
+           = vortex strength = circulation.
+
+The local angle of attack is
+
+
+                                                            .
+
+
+We will use strip theory to estimate the normal force consequences of this local angle of
+attack. Consider the fin planform geometry:
+
+
+
+
+                                                                                              2
+                                                                                  cT
+                                                                                                       y
+
+                                                    Λ
+                                                                      c                            b
+                                                                                          B
+                  xF
+
+                                                                cR                         R
+
+
+
+The local chord   is just
+
+
+                                                           ,
+
+
+where the sketch serves to define the parameters.
+       Then, the vortex-induced normal force      acting on a first stage strip of span    is
+
+                                                                     , or
+
+
+
+
+                                                                       , or
+
+
+
+
+                                                                              .
+
+
+Here,      Dynamic pressure,
+           Two dimensional lift coefficient slope, and
+          .Angle of attack.
+
+The subscripts “1” refer to the first stage fin parameters. At this point the reader is
+advised to proceed with caution: there’s a singularity within the range of integration.
+Let’s expand this to show the way out by using the principle value concept:
+
+
+
+
+                                                                                               3
+                                                                                        .
+
+This result follows because the two divergent logarithms are of the same order. With
+this, we can integrate from to to get
+
+
+
+
+This, however, is only the part of the story reflecting the additional normal force acting
+on the panel next to the vortex. It remains to estimate the additional, negative, normal
+force     acting on the panel on the opposite side of the rocket. For this panel, the angle
+of attack distribution is
+
+
+                                               , and
+
+
+
+
+Then, after integration,
+
+
+
+
+The sum,           , is the additional normal force induced on the stage 1 fins by one of the
+external trailing vortices. The image vortex result is similar except there is no singularity
+inside the integration region.
+
+
+
+
+,
+
+and
+
+
+
+
+                                                                                            4
+.
+
+The next step is to use these results to estimate a normal force coefficient by dividing the
+constant in front of the brackets by       :
+
+
+
+
+According to ref.(2), eq.(38),
+
+                                                          . Then,
+
+
+
+                                                              .
+
+
+The average value of the 2D lift curve slope is, in fact, just the 3D value. Thus,
+
+
+
+
+The total contribution from an image vortex is         , just as in the case of an external
+vortex. Add all four vortex terms, and multiply by 2 (to account for both fin panels) to
+the total first stage interference normal force. The remaining issue is the center of
+pressure of the vortex normal; force induced on the first stage fins. Assume that the
+vortex-induced normal force center of pressure is the same as for the basic normal force
+with body upwash.
+
+       The final vortex-induced normal force is that induced on the body behind the
+second stage fins. Report 1307, ref. (2), provides an estimate, eq. (38), for the vortex-
+induced body normal force. But, again, it’s silent of the subject of the corresponding
+center of pressure. Assume that this center of pressure is the same as for the body
+normal; force due to the presence of a wing.
+
+
+
+
+                                                                                          5
+Fin Vortex-Induced Bending Moment
+        The downwash on the first stage fins also leads to additional bending moment on
+the fin. Proceeding as before, consider a single vortex at        . The induced bending
+moment from the other three can be found from the same formula. First,
+
+
+                                                                     ,
+
+
+
+where                                                            .
+
+
+The only trick comes when              ; that is, when the vortex lies in the fin plane, and the
+evaluation station, , can approach . Then, near the vortex the integrand becomes
+indeterminate, essentially      .
+         But, to some extent, this is an artifact of the simplified analysis used. In the real
+world, the vorticity shed from the fore fins does not completely wrap up into pairs of
+concentrated vortices. Also, the fore fin wake does not remain perfectly coplanar with
+the aft fins. Instead, it usually is found above the aft fin plane. One could replace the
+troublesome denominator above by                      , where     the vertical displacement of
+the concentrated vortex. This would remove the troublesome pole at f, but still would not
+realistically model the distributed downwash field, especially near f. The plan is to go
+forward with the concentrated vortex keeping in mind the resulting bending moment is
+not valid near f, but would probably provide a satisfactory approximation near the fin
+root.
+         When the bending moment evaluation lies outboard of the vortex at               there is
+no problem. We must evaluate integrals of the form:
+
+
+
+
+Both logarithms have positive arguments, and hence are well-behaved. But, when the
+bending moment evaluation station lies inboard of the vortex, we are formally asked to
+evaluate a logarithm having a negative argument, a non-starter. Then, the necessary trick
+is to break the integral into two parts:
+
+
+
+
+Here the      and      limits differ from   by a small amount            . Then
+
+
+
+
+                                                                                               6
+In the limit as          we find that
+
+
+
+
+which is valid for all
+
+
+Then, if                   and             , the single vortex bending moment is
+
+
+
+
+This result should be summed over all four vortices to obtain the overall bending
+moment. Finally, the bending moment functions     in ref. (3) are
+
+
+
+
+As before, this is only for a single vortex (not all four).
+
+
+References
+   1. Rauscher, M., “Introduction to Aeronautical Dynamics”, John Wiley & Sons,
+       New York, 1953
+   2. Pitts, C.W., Nielsen, J.N., and Kaattari, G.E., ”Lift and Center of Pressure of
+       Wing-Body-Tail Combinations at Subsonic, Transonic, and Supersonic Speeds”,
+       N.A.C.A. Report 1307, 1953
+   3. Hoult, C. P., "Sounding Rocket Structural Design Loads (rev. 9)", 07 December
+       2013.
+
+
+
+
+                                                                                        7
+

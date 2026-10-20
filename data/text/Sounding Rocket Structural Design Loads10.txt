@@ -1,0 +1,1624 @@
+Rocket Science and Technology                                      4363 Motor Ave., Culver City, CA 90232
+                                                                 Phone: (310) 839-8956 Fax: (310) 839-8855
+
+
+               Sounding Rocket Structural Design Loads (rev.9)                                                   12 April 2014
+
+                                      by C. P. Hoult
+Abstract
+This report documents the math models used in BENDIT7.xls, a code for developing
+structural loads acting on sounding rockets. Body shear force, body bending moment and
+fin bending moment are reported for input flight conditions and probability of success.
+Limited corrections for body static aeroelasticity are incorporated. Either one or two
+stages, each with fins can be considered. Gauss/Rayleigh statistics for wind gusts, thrust
+misalignment, fin misalignment and center of mass offset are reflected in these estimates.
+Three possible roll rate profiles can be used. Mean body axial loads due to thrust and
+parachute deployment are calculated. Body ground handling loads are estimated,
+Finally, as a by product, rocket mass properties and stability derivatives are reported.
+
+Table of Contents
+
+Introduction.............................................................................................................page 2
+Nomenclature..........................................................................................................page 2
+Perturbations...........................................................................................................page 5
+Loading Conditions.................................................................................................page 6
+Body Elements........................................................................................................page 7
+Difference Equations and Initial Conditions...........................................................page 9
+Rigid Body Motion.................................................................................................page 11
+Static Aeroelastic Effects........................................................................................page 11
+Axial Load...............................................................................................................page 13
+Fins..........................................................................................................................page 14
+Parachute Deployment............................................................................................page 17
+Ground Handling Loads and Venting.....................................................................page 17
+Combinatorics.........................................................................................................page 18
+Summary.................................................................................................................page 18
+References...............................................................................................................page 21
+Appendices
+         A Fin Mass Properties................................................................................page 22
+         B Conical Element Mass Properties...........................................................page 25
+         C Fin Inertial Relief Bending Moment......................................................page 26
+         D Approximate Angle of Attack Estimates...............................................page 26
+         E Roll Rate Selection.................................................................................page 29
+         F Roll Stability Derivatives........................................................................page 32
+         G Pitch/Yaw Aerodynamics.......................................................................page 33
+         H Loading on an Asymmetric Structure....................................................page 34
+         I Fin Centripetal Acceleration...................................................................page 37
+
+
+
+                                                                                                                                        1
+Introduction
+The process of designing the structure of a new sounding rocket, or an element thereof,
+requires estimates of the structural loads imposed and the probability they will be
+exceeded, i.e., the risk of structural failure This is true for both fins and body of the
+rocket. Numerical results may be found from an associated spreadsheet, BENDIT, while
+this memo supplies the underlying rationale and derivations used to build BENDIT.
+BENDIT assumes rigid body motion with no pitch/yaw damping 1. For the body and its
+fins four perturbing effects are important, thrust misalignment, fin misalignment, and
+wind gusts. Thrust misalignment includes both the effects of the body CG offset from its
+symmetry axis and angular misorientation between the thrust vector and the body axis of
+symmetry. Gaussian statistics are used throughout.
+The loads described in this memo are only those arising from external forces and
+aerodynamics. Loads arising from any pressure difference between the external
+environment and internal cavity pressures are assessed elsewhere.
+
+
+Nomenclature
+
+    Mnemonic                          Definition
+                          Burnout axial acceleration, ft/sec2
+                          Normal acceleration due to angle of attack, ft/sec2
+                         Fin semispan , measured from the rocket centerline, ft
+                         Exposed fin semispan, ft
+                           Fin local chord at spanwise station y, ft
+                         Root chord of an exposed fin panel, ft
+                         Tip chord of a fin panel, ft
+                          Parachute drag coefficient
+                         Drag coefficient of the ith element
+                          Rolling moment coefficient ≡ Rolling moment /
+                          Rolling moment coefficient due to roll rate, (           )-1 for
+                          the entire rocket
+                          Roll driving stability derivative for a single fin panel, 1/rad
+                          Pitching moment coefficient ≡ Pitching moment /
+                         Aerodynamic pitching moment coefficient due to angle of
+                          attack, rad-1
+                        Single panel aerodynamic pitching moment coefficient due to a
+                          cant angle, rad-1
+    Mnemonic                           Definition___________________________
+
+
+1
+  Pitch (and yaw) damping arises from three distinct terms in the equations of motion:
+first, aerodynamic pitch damping (     ), second, aerodynamic plunging motion damping
+(     ), and third, rocket motor jet damping, (     ). Acting together, they damp the
+classical short period mode to much less than 1% of critical.
+
+
+                                                                                             2
+                       Normal force coefficient ≡ Normal force /
+                       Normal force coefficient slope for the entire rocket, rad-1
+        Average isolated single panel two dimensional
+fin airfoil normal
+                        force coefficient slope including tip effects, rad-1
+                       Normal force coefficient slope of the ith element, rad-
+                      Normal force coefficient slope of the upper stage/dart nose tip,
+                        rad-1
+                       Aerodynamic reference length, ft
+                       Drag deceleration at parachute deployment, ft2/sec
+                       Design load (either shear force or bending moment)
+                       Bending stiffness of the upper stage/dart, lbft2
+                       Nose tip normal force amplification due to flexibility
+                       Altitude above ground level, ft
+                       Total rocket pitch / yaw moment of inertia, sl-ft2
+                       Moment of inertia about the center of mass of the ith element,
+                        sl-ft2
+                       Center of mass from the front of the ith element, ft
+                         Normal force on a set of fins at angle of attack in the presence
+                        of the body / normal force acting on the fins at angle of attack
+                        in isolation
+                       Normal force on the body at angle of attack in the presence
+                        of the fins / normal force acting on the fins at angle of attack
+                        in isolation
+                        Normal force on a fin at cant angle in the presence of the body
+                        / normal force acting on a fin at cant angle in isolation
+                        Normal force on the body due to a fin at cant angle in the
+                        presence of the body / normal force acting on a fin at cant
+                        angle in isolation
+                       Launcher length, ft
+                       Axial distance from nozzle throat to rocket center of mass, ft
+                       Length of the ith element, ft
+                       Length of the upper stage/dart from the nose tip center of
+                        pressure to the base of the upper stage/dart, ft
+                       Fin bending moment, ft-lb
+                       Bending moment acting on the forward face of the ith element,
+                        ft-lb
+                         Fin bending moment at spanwise station , ft-lb
+                       Mass of the entire rocket, sl
+                       Mass of the ith element, sl
+      Mnemonic                       Definition___________________________
+                       Number of fin panels
+                        Axial force, positive in compression, acting on the front face
+
+
+                                                                                      3
+                     of the ith element, lb
+                    The probability that the design load       will not be exceeded.
+                                                           2
+                    Dynamic pressure = ½            , lb/ft
+                  Nose divergence dynamic pressure, lb/ft2
+                    Dynamic pressure at parachute deployment
+                     Radius from the body center line to the area centroid of a
+                     longeron, ft
+                    Mean element radius (Average over element length), ft
+                    Shear force acting on the forward face of the ith element, lb
+                    Parachute drag area, ft2
+                     Aerodynamic reference area, ft2
+                     Liftoff thrust, lb
+                     Fin tensile load, lb
+                    Time after liftoff, sec
+                    Flight speed, ft/sec
+                    Total rigid body center of mass from the nose tip, ft
+                    Distance from the fin root chord leading edge to the center
+                      of mass, ft
+                     Distance from the nose tip to the forward boundary of the ith
+                      element, ft
+                     Center of mass of the ith element from the nose tip, ft
+                     Center of pressure of the ith element from the nose tip, ft
+                      Center of pressure of a fin set in the presence of the body due
+                      to angle of attack, in
+                      Center of pressure of the body in the presence of a fin set due
+                       to angle of attack, in
+                      The distance from the nose tip to the exposed fin panel root
+                      chord leading edge, ft
+                      Spanwise distance from the rocket center line, ft
+ Angle of attack, rad
+                      Fin leading edge sweepback angle, rad
+                      Increment in        due to the influence of trailing second
+                      stage
+                      fin vortices impinging on the first stage fins, rad-1
+                      Increment in first stage fin normal force coefficient due to the
+                      influence of trailing second stage fin vortices on the first stage
+                      fins, rad-1
+  Single panel fin misalignment angle, rad
+    Mnemonic                      Definition___________________________
+  , 1 plane thrust misalignment angle
+                    Total roll angle since launcher departure, rad
+                    Reciprocal of 0.59*the longitudinal gust correlation scale
+                     length, ft-1
+
+
+                                                                                       4
+                   Pitch/yaw wavenumber, radians/foot of altitude
+                   Roll wavenumber, radians/foot of altitude
+    Fin panel mass density per unit area, sl/ft2
+    Atmospheric mass density, sl/ft3
+                    The planar standard deviation at a specific body station of the
+                     shear force or bending moment
+                     ,1 plane gust velocity, ft/sec
+                    Standard deviation in fin cant angle for a single fin panel, rad
+                    Rocket center of mass offset from the axis of symmetry, ft
+                    Short period pitch/yaw natural frequency, rad/sec
+                     Roll rate, positive according right hand rule with thumb
+                     pointing in the flight direction, rad/sec
+                     The ensemble averaging operator acting on ( )
+                    The variance operator acting on ( )
+                     = differencing from mean, squaring & ensemble averaging,
+
+
+Perturbations
+    I.     Thrust Misalignment
+           General experience has shown that misalignment of the thrust vector with
+           respect the rocket’s center of mass is the most important of the various body-
+           fixed misalignments arising from the fabrication and assembly processes used
+           to create rocket hardware. Since the angle of attack contributions from these
+           are usually independent, the overall standard deviation in angle of attack is the
+           RSS of the contributions of each. In this case, only the dominant effect (thrust
+           misalignment) has significant influence. Note that thrust misalignment has
+           two independent, orthogonal components in pitch and yaw.
+
+           Reference (1) documents the sounding rocket angle of attack response history
+           due to a thrust vector misalignment. It assumes that pitch/yaw damping is
+           negligible, and finds the angle of attack response by solving the 4 DOF
+           axisymmetric, time-varying equations of motion assuming constant axial
+           acceleration. By changing independent variable from time to altitude, the
+           equations are converted to new ones with constant coefficients. Since the
+           initial angle of attack is zero as the rocket separates from its launcher, it
+           should come as no surprise that the angle of attack initially overshoots the
+           steady state solution and oscillates. As dynamic pressure increases, the
+           oscillation amplitude decreases. For loads analysis, the oscillation amplitude
+           envelope should be used because accounting for the details of phasing is more
+           trouble than it’s worth.
+
+   II.     Wind Gusts
+             Wind gusts are stochastic turbulence in the atmosphere. See reference (2).
+           Unlike synoptic scale winds, the main issue with gusts is that they cannot be
+           deterministically predicted for more than a small fraction of a second ahead.
+
+
+                                                                                          5
+                    This immediately precludes any predictive scheme for mitigating the gust
+                    response. The variance in angle of attack at any altitude is found by summing
+                    over all the lower altitude bands accounting for the Batchelor correlations
+                    between altitudes. Gusts are modeled as having a Dryden autocorrelation
+                    function with Gaussian statistics. The angle of attack impulse response
+                    function is obtained, assuming constant axial acceleration, after changing the
+                    independent variable from time to altitude. Closed form integrals for the gust
+                    angle of attack variance are found.
+
+             III.   Fin Misalignment
+                    This is basically a fin panel angular orientation issue. Many fins are
+                    assembled to their rocket bodies without much care for a desired orientation.
+                    Best practice requires each fin to be surveyed in cant angle at several
+                    spanwise stations, and an angular cant angle adjustment at its root made to
+                    minimize pitch/yaw misalignment torques while achieving the desired roll
+                    rate. While fin misalignments also cause angle of attack excursions, in
+                    practice these are sometimes found to be of significantly lesser importance
+                    than those due to thrust misalignments or gusts.
+
+                    Solving the roll equation of motion is commonly done by assuming a quasi-
+                    static condition in which the roll moment of inertia is neglected. However,
+                    BENDIT7 also estimates the initial roll rate lag immediately after burnout. A
+                    key assumption is that any roll moments induced on the fin panels by vortices
+                    shed from the forebody at high angle of attack are not considered here.
+
+
+Loading Conditions
+The two principal sources of transverse loading, thrust misalignment and wind gusts have
+similar consequences. Thrust misalignment, see ref. (1), generates an oscillatory
+response that is essentially undamped. Gusts are stochastic and aperiodic, but the
+rocket’s small short period damping makes the angle of attack power spectral density
+show a pronounced spike at the fundamental natural frequency/wave number.
+
+We assume therefore that the rocket is oscillating in, say pitch, and the maximum air
+loads occur when the instantaneous angle of attack is at its peak value. Furthermore, we
+assume that these pitch motions behave as though there were an axle through its center of
+                                          Relative Loading
+
+
+
+                                                    Spring
+                                                    Dash pot
+Am plitude
+
+
+
+
+                                                                                 Phase,
+               0        1         2         3         4         5         6      rad
+
+
+
+
+                                           Pha se
+                                                                                                6
+mass2. However, when there is a non-zero angle of attack, aerodynamic normal forces
+
+
+
+
+                                 Relative Loading
+
+mass2. However, when there is a non-zero angle of attack, aerodynamic normal forces
+will cause the center of mass to accelerate laterally. It’s just that this acceleration results
+in negligible short period plunging damping.
+
+The sketch above displays the relative amplitude of the aerodynamic spring / inertia
+torques and of the dash pot, or damping torque. The damping shown has been
+exaggerated to make the point; the true level is about10% of that shown. The maximum
+loads are indicated by the arrows.
+
+For the tail fins, the angle of attack oscillation still occurs. But the local angle of attack
+on a tail fin also has contributions from the fin root cant angle and the roll rate. The fin
+loading condition is a steady state one to which the oscillatory angle of attack is added.
+
+The next issue is where in flight one expects he maximum loads to occur. Selection of
+events to be analyzed for design loads is the responsibility of the Loads Analyst whose
+judgment is essential. Maximum dynamic pressure is an obvious example of a candidate
+loads analysis event. Others are stage ignition, burnout & parachute deployment.
+Because the dominant body-fixed perturbations are perfectly correlated over time, the
+loads at different flight epochs are also correlated. Thus, the local maximum loading at,
+say maximum dynamic pressure, is also approximately the global maximum loading.
+
+BENDIT7 is designed to only analyze one condition at a time. For example, the
+parachute deployment loads for drogue and main chute deployment require two separate,
+distinct analyses even though much of the data used is the same for both. For a single
+stage rocket the maximum loading usually occurs near burnout. For a two stage rocket,
+there are typically three possible maximum loading flight conditions, near first stage
+burnout, second stage ignition and near second stage burnout. Local maximum dynamic
+pressures will occur near burnout.
+
+
+Body Elements
+Begin by constructing an inboard profile of the rocket. This shows the internal
+configuration of the rocket with dimensions. Since many rockets are built with a
+longeron and bulkhead structural concept, it’s convenient to partition the internal bays
+
+
+
+2
+  Freeing the rocket to plunge would only add a negligibly small amount of short period
+damping. In other words, the difference between angle of attack and inertial pitch angle
+is also negligible.
+
+
+                                                                                             7
+along the bulkhead midplanes. Consider the notional inboard profile below of an ESRA
+Basic Category rocket, together with other dimensional data needed:
+
+                      Body outside diameter = 6.0”
+                      Fin root chord          = 10”
+                      Fin tip chord           = 4”
+                      Exposed semispan        = 8”
+                      Fin thickness            = 0.125”
+                      Nose profile is a 6 to 1 tangent ogive
+
+
+
+
+                                                                                                6
+
+
+
+
+                  Typical Inboard Profile of an ESRA Sounding Rocket
+
+Now decompose the body into elements. Good practice considers an element to be
+everything between the midplanes of a pair of adjacent bulkheads. Everything includes
+skin & paint, longerons, functional equipment, wiring & fasteners and all, or part, of
+bulkheads. But, an element should not be too long; anything over about two body
+diameters. Excessively long elements should be broken up into multiple short elements.
+Finally, it’s good practice to select element boundaries such that the entire fin root chord
+is contained within the boundaries of a single element.
+
+Each element is assumed to have uniform mass density. Then the mass properties of an
+element are
+   Length                ,
+              3
+   Mass        ,
+                                                4
+   Center of mass from the front of an element         ,(uniform density), and
+   The air load acting on the element is:
+
+    Moment of inertia about element center of mass                         .
+
+    The aerodynamic torque (+ right hand rule, thumb into the paper) is:
+    Aerodynamic torque5 (+ right hand rule, thumb into the paper)
+
+3
+  These formulas are not valid for the body element to which the fins are attached. See
+Appendix A for a detailed description of the mass properties of this element.
+4
+  See Appendix B.
+5
+  The body elements carrying fins are assumed to have constant radius, and hence will
+have nearly zero subsonic         according to slender body theory. Even at supersonic
+speeds their normal force will be small. The         is essentially all due to the fins, fin-
+
+
+                                                                                           8
+                              .
+
+Finally, note that the implementation of this memo is BENDIT7.xls. This code,
+originally intended only for loads estimation, can also be used to estimate the rocket’s
+mass properties.
+
+
+                                                            CNi
+
+
+
+
+                                                ith Element                      2Ri
+
+ Nose tip
+                 xi
+                       xcgi
+                                  xcpi
+                                         xi+1
+
+                         Body Element Dimension Definitions
+
+Difference Equations and Initial Conditions
+Now, apply Newton’s second law to an element, in both the force and torque senses. The
+sketches below are guides that establish the relevant sign conventions and the coordinate
+frame used.
+
+
+
+
+                                                               CNαi
+
+                       +Mi        +Si                                          +Mi+1
+body and body-fin interference.
+
+
+                                                                                       9
+   Nose tip
+                                                                              +Si+1
+                              +x
+       +z                              xi
+
+
+                         +
+                     U
+                                                                    x
+                                   Element Sign Conventions
+
+Summing the forces acting on the element in the +z direction gives
+
+
+                                                                    , where            (1)
+
+
+                     The total rigid body center of mass given by
+
+
+                                               , and                                    (2a)
+
+
+          The normal acceleration given by
+
+
+                                                                                            (3)
+
+
+
+Similarly, summing the y axis torques (right hand rule) about the element center of mass
+gives
+                                                                                      (4)
+
+
+The nose tip initial conditions are that
+
+
+                                                                                             10
+                                                                                       (5)
+
+A marching solution of these difference equations is straightforward. Starting with the
+known value of , eq. (1) can be used to find . Then, given        , and , eq. (4) can
+be used to find . This marching process can be used for the second element, and so on.
+
+Finally, it must be emphasized that the air load acting on a body element is composed of
+contributions from both the body itself and any attached fins. For a discussion of the
+latter, see Appendix F.
+
+
+Rigid Body Motion
+Equations (1) and (4) have terms in     ,   and      . The rigid body moment equation
+relates the latter two. First, the total moment of inertia can be found from the parallel
+axis theorem:
+                                                         .                        (2b)
+
+Then,
+                                                              .                         (6)
+
+
+As noted in the Introduction, can be one of the major BENDIT inputs, or one can
+estimate it in BENDIT from first principles as described in Appendix D.. Using eq’s (3)
+and (6) to find   and      enables the marching solution of eq’s. (1) & (4).
+
+
+
+Static Aeroelastic Effects
+Up until now, the rocket body has been assumed to be perfectly rigid. But, sometimes
+rockets have slender upper stages or darts much more susceptible to bending than the
+main vehicle. At angle of attack their nose curls up increasing the normal force loading.
+And, the increased normal force causes additional deflection, and so on. In theory this
+cycle of air load and deflection can continue until divergence occurs. In practice this
+cannot happen because the increased loads cause structural failure first.
+
+Our point of departure is equations (1), (3), (4) and (6). The way to look at this problem
+is to consider that the     for the nose is increased by a factor to allow for flexibility
+
+effects. Equations (3) and (6) show that the rigid body motions,    and        , are slightly
+affected by the increase in nose normal force. Then, to estimate       model the flexible
+
+
+
+
+                                                                                          11
+nose as a uniform beam with a concentrated load at its tip. Reference (10) describes this
+process in detail. The slope     of the bent nose at its tip is
+
+
+                                                                                      .      (7a)
+
+
+After substituting from eq's. (3 and 6), this can be solved for          , and then for the total
+nose tip angle of attack,
+
+
+
+                                                                                             (7b)
+
+
+
+Note that the dynamic pressure which will make the denominator vanish in eq. (7b) is the
+divergence dynamic pressure:
+
+
+
+
+Next, to incorporate this effect in BENDIT7, it is only necessary to increase the nose tip
+normal force slope to
+
+
+
+
+                                                                                  .
+
+
+(7c)
+
+That is, in eq. (7c) the term in brackets is the amplification factor,    , applied to all
+elements forward of .
+
+When eq. (7c) is substituted into eq's. (3) and (6) the result is we still have two linear
+equations with two unknowns giving solutions for         and        both proportional to .
+
+
+Finally, note that the bending stiffness is the product of the material Young’s modulus,
+  , and the cross section moment of inertia, . For a beam of circular cross section,
+
+                                                          ,
+
+
+
+                                                                                               12
+where     and    are the outer and inner radii respectively.
+
+
+Axial Load
+It’s time for a cautionary note. In many rocket bodies parallel beam structures can be
+found. Examples are a payload rack inside a fairing or a rocket engine, surrounded by
+fins and aft fairing, attached at its injector to the main structure. Good design practice
+suggests these internal beams be laterally supported by the main structure over their
+length. That is, a good approximation is that such internal beams carry only axial load.
+The analysis reported here should be all right so long as the mass distributions for lateral
+bending and axial loading be distinguished and analyzed separately.
+
+The axial loads acting on an accelerating rocket are compressive forward of the body
+station at which the thrust is applied, and tensile at more after body stations. When thrust
+is applied to the after part of the rocket the inertial reaction comes from the masses
+above/forward. Experience indicates that burn out is the most severe steady loading
+condition. Then, the burn out acceleration is
+
+                                                                .
+(8a)
+
+Next, assume the thrust is applied to the aft face of the tth (pronounced “teeth”) element.
+Then, the compressive load acting on the front face of the 1st element must vanish
+        while the compressive load acting on the front face of the 2nd element is
+                  . The general recursion formula needed for a solution marching down
+towards the tth element is
+                                                                                      (8b)
+
+Below/aft of the tth element the axial load is tensile. Marching forward from the aft end
+where the axial load also vanishes results in a similar recursion relationship:
+
+
+   (8c)
+
+Note that tensile load carries a negative sign. Equations (8a) and (8b) can be integrated
+by marching just like eqs. (1) and (4). Modification of these equations to account for
+parallel structures, such as a payload rack inside a payload fairing, is straightforward.
+
+Finally, the above results are for statically loading the structure. In fact, the rocket
+structure should be considered to be an elastic column. At ignition, this column is
+subjected to rapidly rising compressive load from its propulsion system. This generates
+an elastic wave that propagates up the "stack". The result is that in many parts of the
+structure the instantaneous axial load is several times the steady state value. Rather than
+attempting a detailed analysis of this process, a simple amplification factor is applied to
+
+
+
+                                                                                         13
+all axial loads at an ignition event. The simplified model in ref. (22) suggests that a
+factor of 3 be used for this purpose.
+
+
+Fins
+The fins are decomposed into chordwise elements in a way directly analogous to what
+was done for the body. Consider the sketch below of a fin airfoil used to define sign
+conventions at an arbitrary spanwise station:
+
+
+
+                                        Airfoil
+         +α, + δF,
+         – ωRy/U
+             Flight direction
+
+                          Fin Angle of Attack Sign Convention
+
+The local angle of attack experienced by an element of fin airfoil is
+
+
+                                                                                 . (9)
+
+
+Here, the body angle of attack has been corrected per ref. (4) for incompressible cross
+flow upwash. In the case of a first stage fin, the downwash field from the second stage
+fins gives rise to the           terms. For an ordinary four-finned configuration this is
+modeled by 4 discrete vortices. See ref. ( 21) for a complete description of this vortex
+field, its angle of attack distribution and the resulting bending moments.
+
+
+
+                                                                        b
+
+                                                                   η
+
+                                                               y
+
+
+
+
+                             Fin Bending Moment Geometry
+
+
+                                                                                         14
+   Using strip theory, one can readily integrate the roll torque / aerodynamic bending
+   moment resulting from this local angle of attack. See ref. (3) for a more detailed
+   discussion of this topic.
+
+
+
+   (10a)
+   The local chord is given by
+
+
+   (10b)
+
+   The fin bending moment is found by substituting eq’s. (9) and (10b) into eq. (10a), and
+   integrating. The result is that
+
+
+
+
+                                                                                                 (10c)
+
+
+
+
+   The last term,          , is the bending moment on first stage fins induced by the vortices
+
+   shed from the second stage fins.
+
+   In going forward it will be convenient to define new functions based on eq. (10c):
+
+
+(11a)
+
+   Using a nominal mean values of           and     , one can easily find the nominal mean
+   spanwise distribution of bending moment from eq. (11a), noting that the mean value of
+   is zero. Note also that the roll inertial reaction moments have been neglected here
+   because the rocket’s roll acceleration is small. But, the pitch/yaw inertial reaction loads
+   due angle of attack are not negligible. Replace        in eq. (11a) with           from eq.
+   (19b). See Appendix C for a fuller description of the inertial relief fin bending moment.
+
+   Finding the standard deviation of bending moment is a little trickier. First, assume that
+   the fin cant angle errors are all mutually independent, and, also their correlations with
+   must be included. That is, assume          errors are not independent of       errors. Also,
+   assume that the cant angle error statistics are the same for all stages. Then,
+
+
+
+
+                                                                                            15
+(12a)
+
+Evaluate each of the terms in eq. (12a) in turn: The variance in          can be found in
+Appendix D. The variance in        is an input variable. The variance in roll wavenumber
+   requires consideration of the approximate rigid body steady state roll rate equation,
+
+
+                                                                   ,
+
+(13a)
+
+where the summations are over all the stages in the configuration analyzed. Then, the
+mean roll wavenumber is
+
+                                                          ,
+
+(13b)
+
+and the variance is
+
+                                                               .
+
+(13c)
+
+Next,
+
+                                                                       ,
+
+(12b)
+
+and                                                   .                            (12c)
+
+The cross correlation between      and     vanishes because the       response has two
+terms of opposite sign from the fins on opposite sides of the rocket while    has the same
+two     terms, only with the same sign. Thus the two       variances cancel each other.
+
+Finally,
+
+
+
+(12d)
+
+
+
+
+                                                                                        16
+In the development of eq’s. (12) one should keep in mind when ensemble-averaging
+terms with that this is just the cant angle of a single fin panel independent of all other
+cant angle errors. The variance in fin bending moment is found by substituting the above
+results into eq. (12a). Remember that the inertial reaction bending moment found in
+Appendix C leads to a modified form of the function F(y).
+
+The strip theory results for         and       are developed in ref. (5), and reported in
+Appendix E. As always,               is the variance sum of the wind gust, and thrust/CG
+offset and fin misalignment s.
+
+The last fin loading topic arises from the fact that rolling will load the fins in tension.
+Although this effect is usually small, it should be included in any fin loading analysis.
+See Appendix I for the details.
+
+
+Parachute Deployment
+Another important flight condition that should be considered when analyzing structural
+loads is parachute deployment. This applies to both drogue and main parachute
+deployments. The CSULB ESRA rockets all store their parachutes in the rocket body
+forward of the rocket motor. Their risers are laid on the outside of the rocket in faired
+trays. Attachment to the racket structure is at the aftermost bulkhead.
+
+At deployment a small black powder charge expels the parachute from its storage bay.
+As it inflates it swings into position directly behind the rocket. The design loading
+condition happens just as inflation behind the rocket is completed but before significant
+deceleration can occur. The maximum deceleration at that time is        . Here      is the
+opening shock as found from OSCALC in ref. (11). For the CSULB ESRA design the
+resulting structural loading is entirely in tension. It is given by
+
+                                                         ,
+(14)
+
+where the summation is over all the elements forward of body station i. As a caution to
+the analyst, note that the mass of the deployed parachute, risers and bridle has been
+moved from their storage bay to their deployed location behind the rocket.
+
+Next, suppose the parachute shock cord is attached to the forward bulkhead of the Nth
+element. If            it will be assumed that the rocket will instantaneously swing to a tail
+down orientation when the parachute is deployed. If                it will swing nose down. In
+the first case the axial force on elements ahead of        will be in compression while those
+aft of     will be in tension. In the second case, this is just reversed.
+Finally, the transient amplification factor used to correct estimated static axial loads for
+transient effects applies here as well. A value of three for the amplification factor is
+recommended.
+
+
+
+                                                                                           17
+Ground Handling Loads and Venting
+Although these topics are not described in this memo, they can significantly influence the
+estimated loads. Ground handling loads are documented in ref. (11), while only carrying
+loads are implemented in BENDIT7. Venting of rocket compartments and bays occurs
+naturally as a rocket ascends in the atmosphere. If one is not careful to provide proper
+venting holes, the pressure due to trapped air inside the rocket can easily burst the skin.
+The venting process is captured in ref. (13). Venting calculations are implemented in
+BLOWDOWN2.xls.
+
+
+Combinatorics
+The results so far described are the shear force and bending moment distribution along a
+rocket body for a given . Furthermore, if the value used is interpreted as a standard
+deviation (the root-sum-square of the contributions from thrust misalignment and wind
+gusts) then the shear force and bending moment at any body station are also standard
+deviations. Presumably these will follow a normal (Gaussian) distribution with zero
+mean. But, rocket bodies are rotationally symmetric about their center line. That is, in a
+plane orthogonal to the plane (the plane) there will be exactly the same distribution of
+shear force and bending moment. Because the and orientations are arbitrary, it’s the
+amplitude of the shear force and bending moment that matter, and these, for the above
+reasons, will follow a Rayleigh distribution:
+
+                                                           , where                    (15)
+
+     Design Load,
+    Standard deviation in the single plane load, and
+Pr = Probability the load    will not be exceeded.
+
+As an example, if the loads are to be exceeded no more than once in a thousand flights,
+eq. (15) gives
+                                                                                  (16)
+
+This offers a powerful technique to manage an important flight risk, that of structural
+failure.
+
+This result is easy to apply. First, consider a longeron-and-bulkhead structure with
+equally spaced longerons. According to ref. (19), the maximum / minimum axial load
+acting on a longeron is
+                                                                                      (17)
+
+
+Since the maximum / minimum bending moment                   has a random roll angular
+orientation, the worst case longeron axial load needed for design is found by substituting
+
+
+
+
+                                                                                        18
+from eq. (15) for into eq. (17) taking to be the standard deviation in planar bending
+moment. An analogous analysis for an asymmetric structure is described in Appendix G.
+
+Fin loading statistics are different because fins have planar geometry. Given the mean
+and standard deviation in fin bending moment profile, the one dimensional cumulative
+Gaussian distribution will generate the probability that any given bending moment,    ,
+will not be exceeded. Fortunately, Excel provides this function so BENDIT7 can provide
+consistent structural loads for both rocket body and fins.
+
+
+Summary
+This report documents the BENDIT7 code that generates design structural loads for
+rocket bodies and fins. These results are prepared for an input value of the probability
+that these loads will not be exceeded.
+
+As an example, the 99% reliable structural loads for an M class ESRA-like rocket at
+burnout as developed from BENDIT are displayed below:
+
+
+                                      99% Body Design Loads
+
+     800
+     700
+     600
+     500
+     400                                                                      Shear Force, lb
+     300
+                                                                              Bending Moment,
+     200                                                                      in-lb
+     100
+       0
+    -100 0    10   20      30   40    50   60    70   80       90   100 110
+                        Body Station, inches aft of nose tip
+
+
+
+
+                                                                                           19
+                                                                             Axial Force
+
+                                     300
+
+                                     200
+
+                                     100
+                   Axial Force, lb
+
+
+
+
+                                       0
+                                            0        10      20        30    40    50        60     70      80         90    100     110
+                                     -100
+
+                                     -200
+
+                                     -300
+
+                                     -400
+                                                                   Body Station, inches aft of nose tip
+
+
+As expected, the shear force resembles the derivative of the bending moment. The axial
+force shows the expected saw wave shape. It was estimated neglecting aerodynamic
+drag.
+
+
+                                                          Axial Load from Parachute Deployment
+
+                 250
+                 200
+                 150
+                 100
+Axial Load, lb
+
+
+
+
+                  50
+                       0
+                  -50 0                10       20   30     40    50    60   70   80    90    100   110   120    130   140   150   160
+
+                 -100
+                 -150
+                 -200
+
+                                                                  Body Station, in from Nose Tip
+
+
+
+
+                                                                                                                                     20
+                                   99% Fin Design Bending M oment
+
+                          40
+
+                          35
+  Bending Moment, in-lb
+
+
+
+                          30
+
+                          25
+
+                          20
+
+                          15
+
+                          10
+
+                           5
+
+                           0
+                               0    1             2            3              4    5
+                                        Spanwise Ordinate, Inches from root
+
+
+
+
+References
+1. C. P. Hoult, “Rocket Thrust & Fin Misalignment Responses”, RST memo, 06 August
+2010.
+2. C. P. Hoult, “Sounding Rocket Boost-Phase Gust Angle of Attack”, Journal of
+Spacecraft and Rockets, May-June 2012, pp507-511.
+3. C. P. Hoult, “Strip Theory for Setting Fin Angles (revised)”, RST Memo, 13
+September 2009.
+4. C. P. Hoult, “The Pitch/Yaw Wavenumber (rev.2)”, RST memo, 05 June 2009.
+5. W. C. Pitts, J. N. Nielsen and G. E. Kaattari, “Lift and Center of Pressure of Wing-
+Body-Tail Combinations at Subsonic, Transonic, and Supersonic Speeds”, N.A.C.A.
+Report 1307, 1953.
+6. R. L. Ammons and C. P. Hoult, “Standardized Perturbation Values for Several
+Sounding Rockets to be Used in the Calculation of Dispersion and Structural Loads”,
+Aerojet-General Corporation memo 8110:M0658:ak, 16 September 1970.
+7. R. N. Knauber, "Thrust Misalignments of Fixed-Nozzle Solid Rocket Motors", Journal
+of Spacecraft and Rockets, November-December 1996, pp794-799.
+8. Anon., “NASA 2000: Terrestrial Environment and (Climatic) Criteria Handbook for
+Use in Aerospace Vehicle Development”, NASA - HDBK - 1001, 2000.
+9. J. S. Barrowman and J. A. Barrowman, “The Theoretical Prediction of the Center of
+Pressure”, Catholic University Master’s thesis, 1966.
+10. C. P. Hoult, “Upper Stage Bending Influence on Static Stability (rev.3)”, RST memo,
+18 April 2012.
+11. G. Peek and J. Potvin, “OSCALC – Opening Shock Calculator, Version 1.01, User’s
+Manual”, Parks College Parachute Research Group, Saint Louis University, St. Louis,
+MO.
+
+
+                                                                                       21
+12. C. P. Hoult, “Ground Handling Loads”, RST memo, 04 July 2012.
+13. C. P. Hoult., “Payload Bay Venting in Flight (rev.2)”, RST memo, 04 April 2012.
+14. C. A. Syvertson and D. H. Dennis, “A Second-Order Shock-Expansion Method
+Applicable to Bodies of Revolution Near Zero Lift”, N. A. C. A. Report 1328, 1956.
+15. M. M. Munk, “The Aerodynamic Forces on Airship Hulls”, N. A. C. A. Report 184,
+1924.
+16. C. P. Hoult, “Modified Newtonian Aerodynamics (rev.2)”,RST Memo, 2011.
+17. C. P. Hoult et al, "SUBSONIC BARROWMAN EQUATIONS2.2.xls", RST code,
+2013.
+18. C. P. Hoult et al, "SUPERSONIC BARROWMAN EQUATIONS3.3.xls", RST code,
+2013.
+19. C. P. Hoult, "Longeron Bending", RST memo, 2013.
+20. C. P. Hoult, "Small Rocket Boost Phase Roll Rate", RST memo, 2013.
+21. C. P. Hoult, "N. A. C. A, Report 1307 Supplement for Downwash-Dependent Fin-Fin
+Interference, (rev.2)", RST memo, 07 December 2013.
+22. C. P. Hoult, "Rocket Engine Ignition Structural Shock", RST memo, 21 January
+2014.
+
+
+Appendix A: Fin Mass Properties
+Most small fins are constructed from a solid slab or sheet of material. Most large fins use
+a built-up construction technique similar to an aircraft wing with constant thickness skins.
+In either case the assumption of a constant surface mass density is a good approximation.
+Also, assume the fins are attached to a cylindrical body element. Now consider the fin
+geometry sketched below:
+                                                                             cT
+                                                                                                   y
+
+                                                    Г
+                           Fin Spar                                  c                         b
+                                                                                         B
+                 xF
+
+                                                                cR                      R
+
+
+
+                                        Fin Geometry
+
+Now, suppose good design practice has been followed, and each fin has been attached to
+the body by its spar. All bending and shear loads are carried out via the spar; torsion is
+
+
+                                                                                         22
+carried out by the spar and the fin cant angle adjustment tab. It follows that the body
+element with the attached fin spars is the one whose mass properties must be found.
+Then,
+
+      Fin mass = * area =                    , and
+      Total fin mass =                 .
+      Then since
+
+
+      Fin   mass moment
+
+
+
+
+      Fin   mass moment
+
+
+
+
+These two moments place the fin center of mass (              ) relative to the fin root
+chord leading edge:
+
+
+and
+
+
+
+The element center of mass
+
+                                                                                (18a)
+from the front of the fin bearing element.
+
+The fin contributions to the moment of inertia depend on whether the bending moment
+vector lies in the plane of a fin panel or is normal to it.
+
+
+
+
+                                                                                     23
+First, analyze the case of the bending moment vector in the plane of the fin panel, .
+Evaluate the moment of inertia about an axis parallel to the bending moment and passing
+through the root chord leading edge, making frequent use of the parallel axis theorem:
+
+                                    , where y = 0 corresponds to the outer body
+
+ surface. Then,
+
+
+                                       or
+
+
+
+
+                                                                                  (18b)
+
+Next, analyze the case of the bending moment vector normal to the fin plane,           .
+Evaluate the moment of inertia about an axis parallel to the bending moment and passing
+through the root chord leading edge:
+
+
+
+
+                                                                                     24
+                                                                                         (18c)
+
+These results are directly applicable to a four-finned rocket, the most common
+configuration. The same analysis technique can be applied to other numbers of fins, but,
+there is some additional labor involved.
+
+
+Appendix B: Conical Element Mass Properties
+It’s more than a little likely that some of the body elements will be conical. As in the
+main body of this memo, it is assumed that any conical element mass is obtained offline
+and provided to BENDIT7 as an input. However the element center of mass is probably
+not readily available offline, and therefore must be generated within BENDIT7.
+Assuming such an element has a constant volumetric mass density, the center of mass as
+a fraction of the element length l i, as measured from the larger end, , can be shown to
+be
+
+                                                               ,
+
+where = Smaller radius/Larger radius
+
+An appropriate reference for this result is William H. Beyer, editor, “CRC Standard
+Mathematical Tables”, 27th Edition, CRC Press, Inc., page 131.
+
+While a purist might demand the element pitch moment of inertia be also amended to
+reflect the conical geometry, the constant volumetric mass density assumption becomes
+significantly shakier. An analyst who wishes to capture this effect more accurately has
+only to break the body up into shorter elements.
+
+
+Appendix C: Fin Inertial Relief Bending Moment
+There will also be an inertial reaction to the imposed body angle of attack 6, and it will act
+in a way that opposes the aerodynamic loads given by eq. (10a).
+
+
+
+
+6
+ The inertial reactions to     and     loadings are much smaller than those due to      , and
+are therefore neglected.
+
+
+                                                                                           25
+where            The inertial pitch reaction fin bending moment. Then
+
+
+
+Next, use eq. (6) to find        :
+
+
+
+
+                                                                                     (19a)
+Finally, since the mean angle of attack vanishes, the mean inertial relief bending moment
+also vanishes. When this is added back into eq. (11a), the function         must be
+redefined as         :
+
+
+
+(19b)
+
+Using eq. (19b) in eq. (12a) will provide the appropriate fin bending moment result. In
+BENDIT7 this result is coded to find the fin bending moment standard deviation.
+
+
+Appendix D: Approximate Angle of Attack Estimates
+First, consider a single stage rocket in boost for which the design loads can be expected
+around burnout. Other flight conditions such as upper stage ignition will require slightly
+different treatments.
+
+References (1) and (2) provide formal estimates of the angles of attack due to gust, and
+thrust and fin misalignment that are both dynamically and statistically valid. These are
+developed in terms of pitch and roll wavenumbers. See ref. (4) for a description of the
+pitch wavenumber. Basically, a wavenumber is just a frequency in the altitude domain
+rather than the more familiar frequency in the time domain.
+
+The gust model presented here assumes that the rocket encounters a stochastic gust field
+described by a Dryden autocorrelation function. Then, neglecting any short period
+damping, eq. (13) of ref. (2) can be used:
+The gust model presented here assumes that the rocket encounters a stochastic gust field
+described by a Dryden autocorrelation function. Then, neglecting any short period
+damping, eq. (13) of ref. (2) can be used:
+
+
+
+
+(20)
+Then, the 1 sigma, 1 plane gust angle of attack is
+
+
+                                                                                          26
+                                                                                         (21)
+
+For events after first stage burnout, the asymptotic bound of eq. (17), as found in ref. (2),
+can be used
+
+
+
+
+Gust parameter data can be found in ref. (8).
+Reference (1) includes steady state angle of attack estimates for thrust misalignment, fin
+misalignments and C.G. offset for a rolling rocket. The results are that the 1 sigma, 1
+plane steady state thrust misalignment response is
+
+
+                                                                                       (22a)
+
+
+This is valid except immediately after ignition of an upper stage. The transient response
+after upper stage ignition includes an overshoot the doubles the angle of attack. That is,
+immediately after upper stage ignition
+
+
+                                                                                       (22b)
+
+
+See references (6) and (7) for parameter data on     and    .
+
+As always, because these two angle variances are statistically independent, the system
+variance is the sum of its two contributors. The steady state fin misalignment response is
+that:
+
+
+
+(23)
+
+Again, ref. (6) has data for fin misalignment errors. The stability derivative,      , can
+be obtained from the fin assembly normal slope due to cant angle and its center of
+pressure from the BARROWMAN EQUATIONS, ref's. (9), (17) & (18), and knowledge
+of the rocket center of gravity. Finally, the complete system planar    is just the RSS of
+the four independent contributors
+
+                                                                                     (24)
+
+
+
+
+                                                                                            27
+A summary of typical results is shown below. These results are for a typical single stage
+M class sounding rocket flown in the ESRA-sponsored IREC competition evaluated at
+maximum velocity (near burnout):
+
+
+                    Summary of Typical Angle of Attack Contributions
+
+                               Source             1 σ Alpha, rad
+                      Thrust Misalignment         0.044730143
+                      Fin Misalignment            0.001774548
+                      Center of Gravity Offset    0.006957534
+                      Gusts                       0.020323395
+
+                      Root Sum Square             0.049652617
+
+The large effect due to thrust misalignment, typical of small sounding rockets, strongly
+suggests that coasting flight need not be considered for evaluating design flight loads.
+
+
+Appendix E: Roll Rate Selection
+For multistage rockets, first establish the last stage fin cant angle, then the penultimate
+stage fin cant angle, and so on. There are three possible choices for selecting the booster
+roll rate and fin cant angle. Only two of these apply to upper stage(s). For a single stage
+rocket the mean fin cant angle     for a given     can be found from ref. (20):
+
+
+                                                                                            .
+
+(25a)
+
+Equation (23a) also applies to a two stage configuration if
+
+              and                      where the summations extend over all stages.
+
+The first choice for the booster      is to set the total number of roll revolutions to an
+integer value to minimize trajectory dispersions arising from body-fixed perturbations.
+Trajectory dispersion considerations are relatively far less important for the upper stages,
+and, so this does not apply to them. See eq. (13a) on page 15 for the details. Then, the
+ideal the boost phase roll angle at booster burnout would be an integer number of roll
+cycles. That is,
+
+
+                                                                        ,           (25b)
+
+
+
+
+                                                                                         28
+where                                                    .                               (25c)
+
+
+Again, this result also applies to a two stage rocket if the codicils developed for eq. (23a)
+above apply. M should be at least 2 or 3. More is better. Once M has been selected,
+eq's. (25b) and (25c) can be used to establish the mean fin cant angle                . The
+corresponding roll wavenumber         is given by eq. (25a).
+
+The second possible choice, applicable to any stage, is to select    to be an inputted
+fraction of the pitch wavenumber, . There are two conflicting considerations. First,
+the body-fixed perturbations elicit an angle of attack (and structural loads) response
+
+proportional to          . Thus, roll rate tends to “destroy” the pitch static stability.
+
+However, as long as      is less than 30-40% of the damage is not too great. Then for a
+single stage rocket the roll wavenumber , as input can be used to find the mean fin cant
+angle     from eq. (25a).                 .
+
+When analyzing loads on an upper stage at its ignition, the high dynamic pressure usually
+occurring there implies the      roll transient from the lower to upper stage will be very
+rapid. Assume it is instantaneous. Note that both        and     will be proportional to flight
+speed. It follows that     as a fraction of      at ignition will be the fraction near second
+stage burnout. Then, the upper stage roll wavenumber at ignition is just the steady state
+asymptotic value obtained from eq. (25a),
+
+
+
+
+(25d)
+
+where     is the mean upper stage cant angle.
+
+The third choice is to do nothing to adjust fin cant angles. When fin cant angles for small
+rockets are calculated it often turns out that these angles are to small too be accurately
+measured without special equipment. Under these conditions one frequently decides to
+fly with the so called "natural roll rate", the roll rate obtained from assembly tolerance
+build up with no attempt made to apply corrections. Equation (13a) on page 15 of this is
+our starting point. For a single stage rocket, assuming all fins have the same cant angle
+statistics, this can be manipulated to give the variance in :
+
+                                          .      (26a)
+
+Now, by appealing to the central limit theorem, it can be safely assumed that    has a
+normal distribution. Therefore, so does . But, only the absolute value of    appears in
+
+
+
+                                                                                            29
+every context in which it occurs. The distribution for the absolute value of a normal
+variable is just a normal distribution folded about its ordinate. Therefore, assuming no
+bias errors, it is easy to show that the mean value of   is given by
+
+
+                                                                                    (27a)
+
+
+The corresponding fin cant angle is
+                                                          .                          (27b)
+
+
+For upper stages the cant angles are all found from eq. (27b). The variance in      is
+found from the steady state version of eq. (26a):
+
+                                                                        (26b)
+
+When applying these results, one must start with the idea that any given rocket can have
+only one roll program, and this will be manifested in all loading conditions analyzed. We
+consider only three choices for the first stage fins:
+
+   1. Roll a specified integer number of turns from liftoff to burnout
+   2. Set     to a specified fraction of the burnout
+   3. Take what ever the shop gives us, i.e., use a random roll program
+
+Denote the chosen roll program by a digraph (1st, 2nd). For example, roll program (1,3)
+tells us that the first stage fins will be set to yield a specified number of turns during
+boost while the second stage fins will not be adjusted at all. Or, (3,3) implies both stages
+will roll randomly. Since choice 1. only applies to the first stage, there will be only 6
+possible roll programs. Since there are only three main loading conditions identified on
+the bottom of page 7, the following table of fin cant angles and roll wavenumbers can be
+prepared. It was predicated on the assumption that there will always be at least a brief
+coast between first stage burnout and second stage ignition. In the following table, when
+more than one stage is analyzed as a system, one always finds the upper stage fin cant
+angle, and use these in estimating the booster roll wavenumber and cant angles. The
+table is provided as a guide to coding these roll models into BENDIT7.
+
+
+
+
+                                                                                         30
+                                Summary of Roll Models
+
+                                Stage 1         Stage 1           Stage 2         Stage 2
+    Analysis       Roll
+   Condition      Digraph
+1st Stage BO       (1,2)      Eq. (25a) +     Eq. (25b) +     %  2nd stage       Eq. (25a)
+1st Stage BO       (1.3)      Eq. (25a) +     Eq. (25b) +      Eq. (27a)         Eq. (27b)
+1st Stage BO       (2,2)     % 1st stage       Eq. (25a)      % 2nd stage        Eq. (25d)
+1st Stage BO       (2.3)     % 1st stage       Eq. (25a)       Eq. (27a)         Eq. (27b)
+1st Stage BO       (3,2)       Eq. (26a)       Eq. (27b)      % 2nd stage        Eq. (25d)
+1st Stage BO       (3,3)     Eq's. (26a) &     Eq. (27b)       Eq. (27a)         Eq. (27b)
+                                 (27a)
+2nd Stage IG        (1,2)         NA              NA          %  2nd stage       Eq. (25d)
+2nd Stage IG        (1.3)         NA              NA           Eq. (27a)         Eq. (27b)
+2nd Stage IG        (2,2)         NA              NA          % 2nd stage        Eq. (25d)
+2nd Stage IG        (2.3)         NA              NA           Eq. (27a)         Eq. (27b)
+2nd Stage IG        (3,2)         NA              NA          % 2nd stage        Eq. (25d)
+2nd Stage IG        (3,3)         NA              NA           Eq. (27a)         Eq. (27b)
+2nd Stage BO        (1,2)         NA              NA          % 2nd stage        Eq. (25d)
+2nd Stage BO        (1.3)         NA              NA           Eq. (27a)         Eq. (27b)
+2nd Stage BO        (2,2)         NA              NA          % 2nd stage        Eq. (25d)
+2nd Stage BO        (2.3)         NA              NA           Eq. (27a)         Eq. (27b)
+2nd Stage BO        (3,2)         NA              NA          % 2nd stage        Eq. (25d)
+2nd Stage BO        (3,3)         NA              NA           Eq. (27a)         Eq. (27b)
+
+
+
+
+Appendix F: Roll Stability Derivatives
+Reference (3) documents strip theory for setting fin cant angles. As a by-product, it also
+develops the roll stability derivatives, for the single fin driving and overall damping
+torques:
+
+                                                                                  (28a)
+Then,
+
+
+
+
+                                                                                       31
+                                                                              ,    (28b)
+
+
+   and                                                                                 , or
+
+(28c)
+                                                                                  (28d)
+
+Here, A and C are defined on page 11. Both these derivatives are based on body cross
+section area and body diameter. The damping derivative is taken with respect to
+.
+
+Finally, the airfoil normal force slope       with respect to local angle of attack is an
+average across the fin span. Take it to be just that for an isolated single fin panel,
+referenced to its own area, from the relevant BARROWMAN EQUATIONS:
+
+                                                                                     (29)
+
+This implies that the “average airfoil” normal force coefficient slope includes the effects
+of tip losses, but no body interference. We have already included an inverse square body
+upwash in the loading so that this will cover all the loads on the exposed fin panels. Note
+that the entire fin assembly normal force coefficient slope, an input to BENDIT7,
+includes the fin alone and the body-on-fin interference and the fin-on-body interference
+per ref. (5).
+
+In the case of a multistage rocket, one just adds the individual         s to arrive at the
+system level result. The same should be done for the stage            s to obtain a system
+level result.
+
+
+Appendix G: Pitch/Yaw Aerodynamics
+The pitch/yaw aerodynamic data must be input from another analysis tool(s) in the form
+of normal forces and local centers of pressure. There are two such that can be used in
+support of BENDIT7, references (17) and (18), for subsonic and supersonic flight
+respectively. But, pitch moment and pitch dynamics data require knowledge of the
+overall center of mass and moment of inertia. BENDIT7 generates these internally as
+described by eq’s. (2a) and (2b).
+
+Each set of fins can generate aerodynamic normal forces consisting of loading on the fins
+themselves and loading carried over to the body of revolution. The loads on the fins
+themselves include interference effects due to the body. Also, each type of aerodynamic
+load has its own distinct center of pressure which can lead to the aerodynamic load being
+spread over two body segments. Finally, it is assumed that the centers of pressure due to
+angle of attack are the same as those due to fin cant angle.
+
+
+                                                                                          32
+Then, following ref. (5), the fin contribution(s) to a single stage configuration can be
+described as
+
+                                                                                   ,
+
+and                                                                                        (30)
+                                                                            .
+
+Here the first term in each equation arises from the loads on the fin panels and the second
+from the body carryover loads. For a two stage configuration, each stage contributes all
+the terms in eq’s. (22), but with an additional vortex interference term appearing for the
+first stage.
+                                                                                        (31)
+
+The body contributions to the normal force are documented in ref. (16) for supersonic
+flow, in ref. (15) for subsonic flow, and in ref. (16) for blunt supersonic regions. Results
+for these air loads, and their local centers of pressure, must be input from offline
+source(s). Their contributions to       are found in the usual way.
+
+Reference (4) provides the definition of the pitch /yaw wavenumber and pitch natural
+frequency:
+
+                                                            ,
+
+and
+
+
+Appendix H. Loading on an Asymmetric Structure
+This topic originated with a wide door needed for parachute deployment. Typically, this
+implies cutting away one of four longerons, and doubling up the remaining longeron in
+that plane.
+
+The sketch below shows the general cross section arrangement. The longerons are shown
+as simple lumped areas; their detailed shape is unimportant. Simple direct calculation
+locates the Y neutral axis as sketched.
+
+
+
+
+                                                                                            33
+                                        Z Neutral
+                                          Axis
+
+
+
+
+                                          door
+
+
+
+
+                                   R
+                                                     R/2
+                                                                         Y Neutral
+                                                                           Axis
+
+
+
+
+                    Cross Section Sketch of an Asymmetric Structure
+
+There are three sources of loading: axial force, bending about the Y axis and bending
+about the Z axis. Now label the three structural elements according to their location on
+the face of a clock. That is, the right hand longeron is labeled with a subscript 3.
+
+The static equilibrium equations are
+
+                                                      ,
+
+                                              ,&                                     (32)
+
+                                                      ,
+
+where      total axial load, and
+             loads carried by the individual structural elements.
+
+These can be solved to yield
+
+                                                     and
+                                                                                      (33)
+                                                 .
+
+The interesting thing is that the lateral members,  and     carry twice the axial load that
+they would have had all four longerons been in place.
+
+
+                                                                                        34
+Bending about the Z axis is especially simple:
+
+                                                      ,                     (34a)
+
+where          the bending moment about the Z axis, and
+                the axial force carried by or .
+
+Bending about the Y axis is not much more difficult.
+
+                                          , (from symmetry)
+
+                                         (from total force =0), and
+
+                                                              .
+
+These can be solved to give
+
+                                                      , and
+                                                                            (34b)
+
+
+When the loads from all three sources are combined,
+
+                                                              , and
+                                                                            (34c)
+
+
+Note that the load      is spread over two adjacent longerons.
+
+A brief example illustrates these results. Let
+
+          ,
+        lbs,
+            in-lbs and
+            in-lbs.
+Both bending moments are at the 99.9% level as found in BENDIT6.2. Then the worst
+case longeron load is
+
+               lbs for the symmetrically arranged longerons, and
+               lbs for the asymmetrically arranged longerons.
+
+
+Appendix I. Fin Centripetal Acceleration
+
+
+                                                                              35
+Rolling fins experience a centripetal acceleration that requires a tensile load on the fin
+attachment point. While this is usually small, it can be significant for spin stabilized
+rockets. Now, consider a infinitesimal strip of chordwise fin:
+
+
+
+The local chord can be found from eq. (10) on page 13. Then, after integration,
+
+
+
+
+The most critical part of the fin is at its root where it is attached to the body.
+
+
+                                                                                     (35)
+
+
+Equation (35) provides an estimate on the tensile load acting on the root attachment point
+of a spinning fin.
+
+
+
+
+                                                                                       36
+

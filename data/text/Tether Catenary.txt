@@ -1,0 +1,326 @@
+Rocket Science and Technology                 4363 Motor Ave., Culver City, CA 90232
+                                            Phone: (310) 839-8956 Fax: (310) 839-8855
+
+
+                                      Kite Catenary                   26 November 2006
+
+                                       by C.P. Hoult
+Introduction
+         While in kite mode the usual aircraft equilibrium equations must be modified to
+reflect the forces from the attached anchor line. Since the wind speed is low for the most
+interesting condition, minimum speed, we neglect aerodynamic drag on the anchor line.
+This implies the anchor line can be modeled as a classical catenary.
+
+Catenary in Equilibrium
+       Consider an element of perfectly limp line in equilibrium under the influence of
+only gravity and axial tension as sketched below:
+                                                    T+dT
+                              y
+                                                   Ө+dӨ
+
+
+                                      Ө
+                                 T            dW
+                                                x
+The conditions for force equilibrium of the x and y components are
+
+                      ( T + dT ) cos ( θ + dθ ) – T cos θ = 0, and                     (1)
+
+                    ( T + dT ) sin ( θ + dθ ) – T sin θ = dW, where                    (2)
+
+T = Tension force in the line,
+W = Weight of the line, and
+θ = Slope of the line.
+
+Expanding the trigonometric functions, simplifying and noting that
+
+                                     dW = ρ g ds, where
+
+ρ = Mass of the line per unit length,
+g = Acceleration of gravity, and
+s = Distance along the line,
+
+we obtain
+
+
+
+
+                                                                                          1
+                                    d ( T cos θ )/dx = 0, and                             (3)
+
+                                  d ( T sin θ )/dx = ρ g ds/dx.                           (4)
+
+
+
+Next, recall that
+                                 ______                      ______
+                    cos θ = 1 / √ 1 + y′ , and sin θ = y′ / √ 1 + y′2 .
+                                        2
+
+
+
+As a consequence of eq. (3),
+                                               ______
+                                        T = C √ 1 + y′2,
+
+where C is a constant of integration. Substituting this into eq.(4), and simplifying,
+                                                     _______
+                              d (C y′) / dx = ρ g √ 1 + y′2 .                             (5)
+
+Noting that the origin of the x,y frame is at the catenary minimum (where y′ = 0), the
+first integral for eq. (5) is
+
+                                     y′ = sinh ( ρ g x / C ),                             (6)
+
+and, the line tension is
+
+                                     T = C cosh ( ρ g x / C ).                            (7)
+
+The second integral for eq. (5) is
+
+                              y = ( C / ρ g) [ cosh ( ρ g x / C ) – 1 ].                  (8)
+
+Finally, eq. (4) can be construed to state that the vertical component of line tension at any
+x value must equal the weight of the line below it. Then,
+
+                           T sin θ = ρ g  = C sinh ( ρ g x / C ), or
+
+                                ρ g  / C = sinh ( ρ g x / C ).                           (9)
+
+where  = Length of line from the origin to x.
+
+Equation (9) is a simple transcendental result that can readily be solved. Since many of
+the practical aerospace applications of catenaries use specified line lengths, use eq’s. (9)
+and (8) to establish the family of catenary shapes.
+
+Aircraft Kite in Equilibrium
+
+
+
+
+                                                                                               2
+        Next, consider an aircraft kite in static equilibrium. The four forces acting on an
+aircraft kite are aerodynamic lift and drag, weight and tension from the catenary line.
+The force equilibrium eq’s are:
+                        _______                                             L
+D = T cos Ө = T / √ 1 + y′2, and
+                                    _______                 V
+L = W + T sin Ө = W + T y′/ √ 1 + y′2.                                                      D
+                                                                Ө
+Substituting from eq’s.(6 ) and (7) leads to                                  W
+                                                                  T
+D = C, and
+
+L = W + D sinh ( ρ g x / D ).                                                           (10)
+
+       Now, consider an algorithmic implementation. First, define two points along an
+imaginary catenary. Point “0” is at the top of the catenary where it attaches to the aircraft
+kite. Point “1” is at the ground anchor point. From eq. (10), the value of x0 is found to be
+                           x0 = ( D / ρ g ) sinh-1 ( ( L – W ) / D ).
+
+Next, find x1 for a specified line length from anchor to aircraft:
+
+                                  or
+
+            ( D / ρ g ) [ sinh ( ρ g x0 / D )  sinh ( ρ g x1 / D ) ], or
+
+                   x1 = ( D / ρ g ) sinh-1 ( ( L – W – ρ g D
+
+The aircraft equilibrium altitude is found from eq. (8)
+
+              y0 – y1 = ( D / ρ g ) [ cosh ( ρ g x0 / D ) – cosh ( ρ g x1 / D ) ].
+
+Last, the line tension is greatest at the aircraft attachment point, and is given by
+
+                         Tmax = D cosh ( ρ g x0 / D).
+
+
+Tethered Pibal
+        In sounding rocket parlance, the word “pibal” is short hand for pilot balloon.
+Pibals (typically a 1 meter helium-filled neoprene rubber sphere) are launched at intervals
+prior to a sounding rocket launch. Because they drift laterally with the wind, a sequence
+of position estimates taken on a pibal as it ascends can be used to estimate the vector
+wind profile as a function of altitude. Knowing the wind profile the sounding rocket
+trajectory can be predicted and controlled.
+
+For financially constrained amateur sounding rocket operations, the expense of operating
+dual tracking theodolites and multiple balloon launches per sounding rocket launch can
+prove excessive. As a counter, I suggest the use of a few tethered balloons observed with
+
+
+                                                                                           3
+a single theodolite located near the tether anchor point. The observed data consist of
+wind azimuth and balloon zenith angle. These two parameters can be used to estimate
+one point on the vector wind profile as a function of altitude. Other points can be found
+from additional tethered balloons. The thing is, the balloons can remain in place all day,
+and can, up to a point, be reused.
+
+        The tethered pibal works just like the aircraft except the aerodynamic lift is
+replaced by the static buoyant lift. However, there is one important difference: Most
+aircraft kites are flown with a tether of fixed length while most pibals are planned to be
+flown at fixed, specified altitude, H. Then
+
+                 H = ( D / ρ g ) [ cosh ( ρ g x0 / D ) – cosh ( ρ g x1 / D ) ].
+Also,
+                           x0 = ( D / ρ g ) sinh-1 ( ( L – W ) / D ), and
+
+                      x1 = ( D / ρ g ) sinh-1 ( ( L – W – ρ g D
+
+
+Solve the first eq. for x1:
+
+                      ρ g x1 / D = cosh-1 [ cosh ( ρ g x0 / D ) – ρ g H / D ], and substitute
+into the third eq.:
+
+        cosh-1 [ cosh ( ρ g x0 / D ) – ρ g H / D ] = sinh-1 ( ( L – W – ρ g D
+
+Next, substitute for x0 from the second eq.:
+
+cosh-1 [ cosh ( sinh-1 ( ( L – W ) / D ) ) – ρ g H / D ] = sinh-1 ( ( L – W – ρ g
+D, or
+
+cosh-1 [ √ 1 + ( ( L – W ) / D ) )2 – ρ g H / D ] = sinh-1 ( ( L – W – ρ g D.
+
+    √ 1 + ( ( L – W ) / D ) )2 – ρ g H / D = √ ( ( L – W – ρ g D, or
+
+(ρ g H / D)2 – 2 ρ g H √ 1 + ( ( L – W ) / D ) )2 / D = 2 √ 1 + ( ( L – W ) / D ) )2 x
+
+(ρ g D + (ρ g D)2
+(12)
+
+Equation (12) is quadratic in the necessary tether length, and can be solved in the
+usual way
+
+
+
+
+An Approximation
+
+
+
+                                                                                                4
+         A good first approximation is that for a weightless line. In this approximation, the
+tether is a straight from ground to pibal. Then, the static equilibrium equations are
+
+D = T sin θ, or T = D / sin θ, and L – W = T cos θ, or tan θ = D / L – W, and
+
+the tether length is cos θ.
+
+The zenith angle can be found from
+
+tan-1 [ (x0 – x1) / (y0 –
+y1) ].                 (13)
+
+
+
+           Pibal Altitude vs. Windspeed                    Consider a typical example of a
+                                                           1 meter neoprene rubber
+                                                           weather balloon tethered with
+                   1                                       100 m of 0.007” Spectra 2000
+ Altitude/Line
+
+
+
+
+                 0.8                                       line. The result is sketched on
+    Balloon
+
+    Length
+
+
+
+
+                 0.6                                       the left. First, the Spectra line
+                 0.4                                       is so strong that a weightless
+                 0.2                                       line approximation works well.
+                   0                                       The breaking stress of the tether
+                       0         2       4          6      is not reached until the
+                               Windspeed, m/s              windspeed is about 5.7 m/s.
+
+                                                           As a corollary, the zenith angle
+                                                           vs. windspeed is essentially
+                  Pibal Zenith Angle vs.                   universal…it is independent of
+                       Windspeed                           line length. And, lastly, the
+                   90                                      balloon altitude curve is also
+   degrees
+    Angle,
+
+
+
+
+                                                           universal in the same sense.
+    Zenith
+
+
+
+
+                   45                                      The catch is that a greater
+                                                           lifting force can make a big
+                       0                                   difference. The bottom sketch
+                           0      2     4       6          shows the result for an artificial
+                                                           balloon with 10 kg of net lift,
+                               Windspeed, m/s
+                                                           about 20 times that available
+                                                           from a real weather balloon.
+                                                           But, the line tension at 5.7 m/s
+                                                           has only increased from 10 lbs
+                                                           to ~23 lbs.
+
+
+
+
+                                                                                            5
+                       Pibal Altitude vs. Windspeed
+
+ Altitude/Line
+                              1
+    Balloon
+
+
+                         0.95
+    Length
+
+
+                          0.9
+                         0.85
+                                  0       2      4            6
+                                       Windspeed, m/s
+
+
+
+Spectra® 2000
+        Spectra® 2000 is the latest in high strength synthetic fibers. It is a carefully
+formulated polyethylene literally ten times stronger than steel on a pound for pound basis.
+Its small diameter makes it hard to detect visually, and its low dielectric constant makes it
+nearly invisible to radar. Marketed by Honeywell International, it is used for kite line,
+fishing line (PRT Braid), bullet-proof vests, etc. Its density of only 0.97 gr/cc means it
+can float on water. If we need to cut it to depart kite mode, it can be electrically melted at
+150º C.
+
+The figure below shows line diameter as a function of ultimate tensile strength.
+
+
+                                           Spectra 2000
+
+                      0.025
+                       0.02
+   Diameter, Inches
+
+
+
+
+                      0.015
+                       0.01
+                      0.005
+                         0
+                              0       25     50       75     100       125   150
+                                           Ultimate Tensile Load, lb
+
+
+                                      Spectra® 2000 PRT Braid
+
+
+
+
+                                                                                            6
+

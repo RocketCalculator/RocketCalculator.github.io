@@ -1,0 +1,130 @@
+Rocket Science and Technology                4363 Motor Ave., Culver City, CA 90232
+                       Phone: (310) 839-8956 Fax: (310) 839-8855
+
+   Design Bending Loads for a Multiple Longeron Structure 16 May 2013
+
+                                        by C.P.Hoult
+
+Introduction
+       The use of a structural concept consisting of longerons and bulkheads to carry
+bending loads is fairly common in small sounding rockets. The purpose of this memo is
+to document how the loads are distributed among the longerons.
+
+         Another view of essentially the same problem is that of a joint. The joint under
+consideration here connects two tubes, one sliding inside the other. Their attachment
+uses n radial fasteners, rivets, bolts, etc., located symmetrically around the tubes. Any
+bending moment at the joint is carried by fastener shear. The other option, fastener
+compression/tension, is usually not preferred because many fasteners are stronger in
+shear than in tension. As a corollary, the two concentric tubes are usually clamped
+together to some degree near a fastener so that friction can also play a role in carrying
+bending moment. In fact, when n is large friction is the dominant mechanism and the
+joint is as stiff as the parent tube. Failure occurs by tearing of the parent tubes between
+fasteners.
+
+        In general, this is a statically indeterminate problem. That is, there are more
+fastener loads to be estimated than there are static equilibrium constraint equations. We
+therefore assume that plane cross-sections remain plane after bending.
+
+
+Nomenclature
+_____Mnemonic_________________Definition_________________________________
+                     Number of longerons,
+                      Cross section area of a longeron,
+                      Axial load acting on the ith longeron,
+                     Young’s modulus of the longeron material,
+                      Axial force acting on the structure,
+                     Axial strain in the ith longeron,
+                      Bending moment acting on the structure
+                     Radius of a circle passing through the longeron area centroids,
+                     Radius of bending curvature,
+                      The roll angle of the ith longeron,
+                      Distance from the neutral axis to the areal centroid of the ith
+                      longeron, and
+
+
+
+
+                                                                                              1
+Analysis
+       Consider a structure of identical, equally spaced longerons. Then the ith
+longeron lies a distance from the neutral axis:
+
+                                                   .                                     (1)
+
+Neglect the intrinsic bending stiffness of the longerons, and assume the entire bending
+moment is carried by axial load in the longerons. The axial load action of the ith
+longeron is given by Hooke’s law:
+
+                                                   .                                      (2)
+
+Since plane sections are assumed to remain plane after bending, the strain of the ith
+longeron is         . Thus,
+
+
+                                                       .                                 (3)
+
+The ith longeron’s contribution to the bending moment is given by
+
+                                                           .                            (4)
+
+       Next, we show that there is no net axial force:
+
+
+                                                           .                              (5)
+
+
+Use the complex definition of the sine function:
+
+                                                                            .
+(6)
+
+It follows that the phase angle of the first longeron simply acts as a multiplier. The
+second term above starts off with a longeron on the neutral axis for which the sine
+vanishes. Each successive longeron is paired with one on the opposite side of the neutral
+axis so that the two sines cancel each other. If is even the final longeron is also on the
+neutral axis.
+
+       The situation is different in the case of the bending moment. Here we must assess
+
+              using an inductive proof . The total bending moment is
+
+                                                   , or
+
+
+
+                                                                                               2
+                                                       .                                   (7)
+
+
+Note that this is equivalent to the bending deflection of a solid section whose cross
+section moment of inertia is
+
+
+
+
+Finally, the maximum axial load acting on a longeron is
+
+                                                       .                                   (8)
+
+Equation (8) is the preferred result to be used in a stress analysis of a longeron-bulkhead
+structure. The sign indicates that some longerons are in compression while others are
+in tension.
+        If the structure is required to carry an axial force due to, say, acceleration, then
+these loads must be added to the bending moment load. If all longerons carry axial force
+equally,
+                                                                                           (9)
+
+Then the appropriate combination of eq's. (8) and (9) should be used in stress analysis.
+
+
+Monocoque Shell Joints
+        Consider two circular monocoque shells joined by rivets, bolts, etc. acting in
+shear. The design shear loads carried by the most heavily loaded fastener are given by
+eq'a. (8) and (9) if there are fasteners and is the design shear force.
+        That's all, folks!
+
+
+
+
+                                                                                             3
+

@@ -1,0 +1,264 @@
+Rocket Science and Technology                4363 Motor Ave., Culver City, CA 90232
+                                           Phone: (310) 839-8956 Fax: (310) 839-8855
+
+
+                              Ground Handling Loads                          09 July 2014
+
+                                         by C.P.Hoult
+Introduction
+       Although they’re often in the shadow of flight and parachute deployment loads,
+ground handling loads can be important. Ground handling failures, while they can
+usually be repaired, often still have important schedule impacts.
+       There are two known ground handling loading conditions: The first is associated
+with bending loads on a slender rocket carried from each end while transported. The
+second is tearing extraction of riding lug/button while the rocket is being loaded on the
+launcher rail.
+
+Nomenclature
+
+__Mnemonic_____________Definition_________________________________
+     x               Axial coordinate,
+     xJ            Axial location of a joint,
+     xCG             Axial location of the center of mass,
+     xF              Axial location of the forward support force,
+     xA              Axial location of the aft support force,
+     xL            Axial location of the aft riding lug/button,
+     FF              Forward support force,
+     FA              Aft support force,
+     FL              Force on the aft riding lug, positive in tension,
+     W               Rocket weight,
+                     Safety factor
+     N                Load factor,
+     wi              W eight of the ith body element,
+     xi               Axial location of the center of mass of the ith body element, and
+     M                Bending moment,
+                     Aft button shear force
+
+Transportation Loads
+         Consider a slender rocket carried at each end while transported. Assume there’s a
+critical potential weakness at some midpoint, e.g., an interstage joint. See the sketch
+below:
+
+
+
+
+                                                                                            1
+                         xCG
+                    xJ
+          x
+
+
+
+     xF       FF
+                                                                      FA
+                                      xA
+
+
+
+The equations of statics are
+                                                  , and
+                                                                                       (1)
+                                                             .
+
+These may be solved for the two support forces:
+
+
+                                                    , and
+                                                                                       (2)
+
+
+
+
+        Next, decompose the body into a sequence of elements with the weight and center
+of mass of each being wi and xi. Suppose further that the body were subject to a phantom
+“cut” at station xJ, assumed to be aft of xF. Consider the front piece. A shear force and
+bending moment must act at the phantom cut to maintain equilibrium. The shear force is
+just the difference between the weight forward of xJ and the forward support force.
+Similarly, the bending moment is
+
+
+
+
+But, this is not the total story. While being moved, the rocket will be subjected to
+bouncing and jouncing. We account for this by using a load factor:
+
+
+                                                                                       (3)
+
+What value should be used for N? All designers will be must happier using a value too
+high (engendering a heavier structure) rather then a value slightly too small. I suggest
+that we take N = 2.
+
+
+
+                                                                                           2
+       Finally note that these results can be readily implemented in BENDIT, the Excel
+software for loads estimation.
+
+Riding Button Extraction
+         The riding lug/button failure has been observed at least twice. The relevant
+operations concept uses a rail of 80-20™ aluminum. 80-20™ is a slotted precision
+extrusion designed to be used as soft tooling for assembly and manufacturing. When
+used as part of a launcher, cylindrical plastic buttons attached to a rocket ride in the 80-
+20™ slot to initially guide the rocket’s flight. The 80-20™ is attached to the top side of
+a rail truss.
+
+        To install the rocket on the rail, the rail is first lowered to a horizontal position
+where ground crew holds it in place. A second ground crew slides the aftermost (of 2)
+rocket lug into the free end of the 80-20™ slot. The problem comes as the second crew
+moves the rocket down the rail and tries to engage the forward button. This often results
+in manhandling the aft lug to the point where its attachment to the rocket fails.
+
+                             Rocket Body
+
+
+
+
+                                                                 Fins
+
+
+
+
+                                                  80-20
+                    Button
+
+
+
+
+                                      Truss
+
+
+
+
+ The notional sketch above shows the general arrangement. Inserting the forward button
+(often near the rocket midpoint) is difficult because it is not easily seen from above. The
+natural tendency is to elevate the nose to get a better view. Direct calculation with
+typical dimensions shows that a pitch-up of only 1.5o to 5o, or less is sufficient to bring
+
+
+
+                                                                                                3
+the nozzle exit plane into contact with the rail. If the button attachment has a small
+compliance (not much stiffness) it is possible to go beyond the 5o, or so without
+significant kinesthetic feedback. It works just like a claw hammer extracting an
+undesired nail, only this time it’s the lug/button that’s extracted.
+
+
+
+
+                                                             Nozzle Exit
+                                                             Plane
+                                                                                  Launcher Rail
+                                                                                  with 80-20
+
+
+
+
+                                         Aft Lug
+       FF
+                                                   FL             FA
+ XF
+                                  xL
+                                                        xA
+
+
+
+       What’s the remedy? Next, look at the character of the nose force, FF, generated
+by a ground crew member. Initially, before the rocket body exit plane comes into contact
+with the rail, it is that given by eq.(2) in the previous section:
+
+
+                                                                                             (4)
+
+
+Here, the lug force FL is supporting the aft end of the rocket by pushing up. Now,
+following eq’s. (1), we can write the equilibrium equation for the moments about the CG:
+
+                                                                       ,
+
+together with the equilibrium equation for the forces:
+
+
+
+Eliminating     results in
+
+                                                                           , or
+
+                                                                                             (5)
+
+
+
+                                                                                                  4
+        Now, the angular change as FF increases is too small to make an effective
+feedback mechanism. But the increase in force, if large enough, can be used as a warning
+signal to a ground crewman. Suppose the warning threshold were K times the initial
+level given by eq. (4). Then, if the lug/button were designed to a limit load of
+
+
+                                                                         ,               (6)
+
+
+then the button would not be extracted
+
+Now, consider an ESRA typical example. Take
+
+
+
+
+Then, eq.(5) has been coded into an Excel file named UNBUTTON.xls, and the results
+shown below. Here the lift force is that applied by a ground crewman pushing up near
+the nose, and the button extraction force is the tension load attempting to pull the button
+off the rocket.
+
+
+                                      Aft Button Extraction Force
+
+                           600
+   Aft Button Extraction
+
+
+
+
+                           500
+
+                           400
+        Force, Lb
+
+
+
+
+                           300
+                           200
+                           100
+                             0
+                                 20     30     40      50       60           70       80
+                                              Forward Lift Force, Lb
+
+
+Absent better knowledge, it’s recommended that K = 2 be used. . In this example, the
+limit extraction load would be about 243 lb. corresponding to a lift force of 51 lb.(K = 2).
+Yes, I have known ground crewmen who did not know their own strength. Do not assign
+such individuals to the delicate task of lifting the rocket nose.
+
+
+
+
+                                                                                              5
+         Finally, it’s recommended that both forward and aft lugs be designed to the same
+criteria. Also note that if the buttons are attached with round head fasteners, the top of
+the heads may rub against the bottom of the 80-20™ channel. Therefore, use
+countersunk fastener heads.
+
+Aft Riding Button Shear
+        Beside the extraction load estimated above, the aft riding button must support the
+entire weight of the rocket when it is erect on the rail. Absent better insight, it is
+suggested that the same safety factor used to develop the button extraction load be used
+for the button shear force:
+
+                                                 .
+
+
+
+
+                                                                                             6
+

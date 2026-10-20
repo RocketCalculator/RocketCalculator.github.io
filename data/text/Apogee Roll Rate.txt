@@ -1,0 +1,161 @@
+Rocket Science and Technology                 4363 Motor Ave., Culver City, CA 90232
+                                            Phone: (310) 839-8956 Fax: (310) 839-8855
+
+                   Small Sounding Rocket Apogee Roll Rate 15 January 2013
+
+                                      by C.P. Hoult
+
+
+Nomenclature
+______Mnemonic_______________Definition________________________________
+                              Roll moment coefficient             ,
+                             Roll moment coefficient damping derivative near             ,
+                             Roll moment coefficient driving derivative near         ,
+                             Aerodynamic reference length,
+                             Acceleration due to gravity,
+                             Altitude,
+                             Roll Moment of inertia,
+                             Rolling moment,
+                             Mach number,
+                             Roll rate,
+                             Aerodynamic reference area,
+                              Time,
+                             Flight speed,
+                             Atmospheric mass density,
+                             Fin cant angle,
+                             Value of at apogee, and
+                             Value of () at burnout.
+
+
+Introduction
+        In recent years university programs teaching engineering by having students
+design, build and fly small sounding rockets have proliferated. Mostly these university
+rockets have apogees less than 10 km. For these rockets, there are two major reasons
+why apogee roll rate is important. First, many experiments flown aboard small university
+sounding rockets with apogees in the troposphere are sensitive to roll rate, especially near
+apogee where payloads linger longest. For example, consider a sensor that images the
+scenes around it. The frame rate needed will depend on roll rate. Second, many
+sounding rockets deploy their drogue parachutes near apogee at low dynamic pressure.
+Roll rate can be a consideration when there is a risk of fouling riser lines.
+        Estimation of an approximate roll rate at lower altitudes near burnout is easy:
+Neglect the roll moment of inertia, balance the damping and driving torques, and solve
+for the helical roll rate. But, as dynamic pressure falls during ascent, the roll moment of
+
+
+
+                                                                                             1
+inertia acquires more and more importance until it dominates the solution. The roll rate
+near apogee could, of course, be found directly by numerically integrating the roll
+equation of motion, but this can be time-consuming. In this note we seek an approximate
+result amenable to rapid evaluation.
+
+
+Assumptions
+     A few simplifying assumptions are needed for this analysis.
+     1. Take the trajectory to be vertical. Even though this cannot be not true near
+         apogee, there is no mechanism for trajectory curvature there to change roll
+         rate. Apogee is assumed to lie in the troposphere.
+     2. The rocket vehicle is slender with a very small roll moment of inertia.
+     3. Assume the angle of attack is small while the dynamic pressure remains large
+         enough to engender significant aerodynamic roll moments. This implies
+         negligible aerodynamic nonlinearities.
+     4. Aerodynamic drag is much smaller than weight near apogee. Low dynamic
+         pressure near apogee ensures this will be so.
+     5. All fin panels have the same cant angle.
+     6. Only roll rate, flight speed and altitude vary with time during ascent. While
+         other parameters such as atmospheric density also vary, this variation has
+         negligible influence on roll rate during most of ascent because it is not part of
+         the classical helix solution. Density and the stability derivatives do matter
+         near apogee. Their local values at apogee are used in the analysis.
+
+
+Analysis
+       Consistent with the Assumptions, the roll equation of motion is per Ref's. (1 and2)
+
+                                                                     .                   (1)
+
+Now, let
+
+
+                                          and                    .                 (2)
+
+
+Note that the burnout roll rate can be estimated by neglecting the roll moment of inertia:
+
+                                                .                                         (3)
+Then,
+                                                    .                                (4)
+
+
+
+
+                                                                                               2
+Next, change the independent variable from time to velocity. Then, near apogee, since
+gravity is the primary force changing the velocity,                                             giving
+
+
+                                                                                            .                          (5)
+
+An integrating factor                                     for Eq. (5) can be found to be:
+
+
+                                                                                                                           (6)
+
+
+After integrating Eq. (5) and substituting from Eq. (3), we find that
+
+
+                                                                                                         .
+
+(7)
+
+Unfortunately, the integral in Eq. (7) cannot be written in closed form except in the limit
+as G   goes to . But, Eq. (7) shows that the dimensionless independent variable for
+
+this problem is                                        , and that the dimensionless dependent variable is    . Numerical
+
+integration can then be used to generate Figure 1 below which is applicable to any small
+university sounding rocket.
+      Apogee Roll Rate / Burnout Roll Rate
+
+
+
+
+                                               1
+                                             0.9
+                                             0.8
+                                             0.7
+                                             0.6
+                                             0.5
+                                             0.4
+                                             0.3
+                                             0.2
+                                             0.1
+                                               0
+                                                   0     1            2            3            4            5         6
+
+
+
+                                                                 Figure1   Apogee Roll Rate
+
+
+
+
+                                                                                                                            3
+Conclusion
+         Figure 1 can be used to estimate the typical university sounding rocket's apogee
+roll rate. The reader is cautioned that this approximation is only valid for small rockets
+having apogees well within the tropopause.
+
+
+References
+   1. Babister, A. W., Aircraft Dynamic Stability and Response, Pergamon Press Ltd,
+       Oxford, 1980.
+   2. Etkin, B., Dynamics of Flight, Stability and Control, John Wiley and Sons, New
+       York, 1959.
+
+
+
+
+                                                                                             4
+

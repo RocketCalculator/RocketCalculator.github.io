@@ -1,0 +1,139 @@
+Rocket Science and Technology                  4363 Motor Ave., Culver City, CA 90232
+                                             Phone: (310) 839-8956 Fax: (310) 839-8855
+
+
+                                   Launcher Tipoff Errors                     31 March 2008
+
+                                        by C.P.Hoult
+Introduction
+         It is common to imagine a rocket’s travel up its launcher rail as perfectly
+constrained except for the one obvious degree of freedom. When the rocket reaches the
+end of the launcher, it magically changes from constrained to unconstrained motion with
+no hitches. This mind set is not supported by the facts. The purpose of this memo is to
+set the record straight.
+
+The Right Way
+        While there are many ways to design a launcher rail and its interface with rockets,
+the right way was discovered in classical antiquity (early 1950’s). The process followed
+is to describe the right way, provide the rationale supporting the “right” assertion, and
+discuss the wrong ways together with rationale for why they are wrong.
+
+       Suspend the rocket beneath the rail.
+       The major argument in favor is when the riding lugs and rail part company,
+       gravity, even if the rail is nearly vertical, helps to move the twain apart. This
+       minimizes the possibility of recontact with concomitant tipoff torque. Best of all,
+       this design enables simultaneous lug release. By contrast, if the rocket rides
+       above the rail, gravity impedes separation and increases the likelihood of
+       recontact.
+
+       Use simultaneous release lug designs
+       Nearly all sounding rockets are constrained to fly along the launcher rail with two
+       riding lugs, one forward and one aft. It is not commonly known that simultaneous
+       releasing lug designs are possible. The sketch on the next page shows how it can
+       be done: This was the standard operating approach in antiquity.
+
+       Basically, the two lug flanges have different widths with the forward flange being
+       the wider one. The slot in the rail bottom plate has two different widths. When
+       the front lug drops free the aft lug also drops free at the same time.
+
+Consequences of not using the right way
+         The current custom is to ride the rocket above the launcher rail with a lug design
+that releases both lugs at the free end of the rail. While the rocket is constrained by only
+the aft lug, any perturbation torque, primarily weight and thrust misalignment, acts to
+induce a rotation about the aft lug. Since all lug designs are intentionally loose-fitting to
+minimize running friction, there is no effective yaw constraint during this time. The aft
+lug can be analyzed as though it were a ball joint.
+
+
+
+                                                                                                1
+Tipoff Torques
+
+      Weight
+      The weight torque is just
+
+                              = – W cos(QE) * (xcg – xl2),
+      where      = Torque,
+               W = Weight,
+              QE = Quadrant Elevation angle,
+              xcg = Distance from the rocket nose tip to its CG, and
+              xl2 = Distance from the rocket nose tip to the center of its aft lug.
+
+      Note that there is no lateral or yaw component to this torque. It acts purely in
+      pitch in a sense to reduce the QE to a value lower than the launch crew thought
+      they were achieving. This torque is not in any way random; it happens the same
+      way every time.
+
+
+
+
+                                                                                         2
+                            W+
+           Section b-b                                           Section a-a
+                    b                       w+                            aa
+Free end                                                         t+
+
+                                     L
+
+
+                    b                                                     a
+                     View of the bottom of the Rail looking up
+
+              c                                          d
+
+
+
+                                 L
+
+
+              c             W              w             d
+                            t               t
+
+
+                  Section c-c             Section d-d
+             Side view of Rocket and Riding Lugs
+
+     Thrust Misalignment
+             Thrust misalignment is a little trickier. First, because the longitudinal
+     distance between nozzle throat and the aft lug is apt to be small, the l term in
+     thrust misalignment torque can be neglected. But, there is no such relief for the
+     cg offset torque. It is
+
+                                     T Ω,
+
+     where T = Thrust, and
+           Ω = Lateral CG offset
+
+     The lateral CG offset is random with both the pitch and yaw components being
+     normally distributed with zero mean.
+
+     Action time
+     Ordinary mechanics gives
+
+
+                                                                                         3
+                           t = √2/a (√s1+ L + √s1 ),
+
+where t = Time during which only the aft lug acts to restrain motion,
+       a = Acceleration along the rail,
+      s1 = Total distance traveled by the fron lug from first motion until release
+      L = Distance between the two lugs.
+
+Tipoff Errors
+The initial angular rate and angle of attack when the rocket has completely
+separated from its launcher rail are just
+
+                               ω = t / IP, and
+
+                             α = θ = ½ t2 / IP,
+
+where ω = Pitch/yaw rate,
+       α = Angle of attack/sideslip,
+       θ = Pitch/yaw angle, and
+      IP = Pitch/yaw moment of inertia.
+
+
+
+
+                                                                                 4
+

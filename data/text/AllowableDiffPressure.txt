@@ -1,0 +1,197 @@
+           Sounding Rocket Allowable Differential Pressure
+
+                                           Ashlee Espinoza1, Berton Vite2,
+                                           Raul Rios3, and Charles Hoult4
+                              California State University, Long Beach, CA, 90840, USA
+
+
+             During the 2011 Intercollegiate Rocket Engineering Competition ( I.R.E.C.) one of the
+         California State University Long Beach (CSULB) rocket’s payload bay doors failed by
+         prematurely separating during the early part of the flight causing excessive drag. The door
+         failure root cause was determined to be excessive differential pressure. This problem can be
+         corrected by increasing the vent hole size to reduce the differential pressure. Simulation can
+         be used to establish the relation between vent hole size and maximum flight differential
+         pressure. However, the allowable differential pressure must be estimated experimentally.
+         Our experimental apparatus consisted of a portion of the rocket payload bay made of the
+         same tubing as the original rocket. End caps and a bicycle tire Presta valve were attached,
+         doors cut and attached, and the assembly sealed water tight. Pressurization was with a
+         bicycle tire pump, and the differential pressure was measured with a commercial
+         sphygmomanometer pressure gauge. The maximum differential pressure for no leakage was
+         estimated by slowly pumping air into the submerged apparatus while measuring differential
+         pressure. Leaks were detected by doing a visual check for escaping air. The maximum
+         differential pressure for the rocket without door failure was then recorded in dry conditions.
+         Future CSULB IREC rockets will use this data to preclude premature payload door
+         separation.
+
+
+                                                   Nomenclature
+              = Door area, sq in,
+              = Differential pressure, psi
+L             = Door peripheral length, in, and
+              = Peel strength, lb/in.
+
+                                                  I. Introduction
+
+I  N 2010 and in 2011 the California State University, Long Beach (CSULB) rocket did not reach the apogee
+   predicted by our precision trajectory code, SKYAERO. This analysis was based on measured weights, extensive
+motor static firings and a mature aerodynamic drag code. Failure review highlighted the drag estimate as the most
+likely cause of the failures, but no physical explanation for this was immediately forthcoming.
+          In last year’s competition, soon after CSULB Experimental Sounding Rocket Association (ESRA) Rocket
+was launched, the Embry- Riddle team found a Plexiglas window about 700 feet from the launch site. This window
+covered our optical payload. With the knowledge the window failed very near our burnout location (which was not
+visually observed because it was within a low cloud), we discovered that the cause of the extra drag was the freshly
+exposed payload and structure.
+          To preclude future door failures we need to increase the ventilation of the rocket. To know how much
+larger to make our ventilation holes we need to first determine the maximum differential pressure the rocket doors
+can handle. With this information we can use the BLOWDOWN program to help determine the vent size. To find
+the allowable differential pressure, we used the experiment reported here to measure the lowest differential pressure
+at which door failure occurs.
+
+1
+  Student, AIAA Student Member
+2
+  Student, AIAA Student Member
+3
+  Student, AIAA Student Member
+4
+  Adjunct Professor, AIAA Lifetime Senior Member
+                                                         1
+                                 American Institute of Aeronautics and Astronautics
+                                         II. Experimental Apparatus
+         The CSULB sounding rocket used for the ESRA competition has a fuselage made from a 6-inch diameter
+cardboard mailer tube. All precautions were taken to ensure that the apparatus was not only an accurate
+representation of an actual rocket payload bay, but also inexpensive. In order to mimic the design of the rocket
+during pressurization the same type of mailer tube was also used. The tube was cut down to a length of 4 feet. Two
+doors of size 12 in. x 5.19 in. and 11.88 in. x 4.25 in. were cut from the tube to act as the payload doors for testing.
+Plastic end caps were set in place with epoxy on each open end of the tube to seal it shut.
+
+
+
+
+                              Figure 1. Testing Apparatus with Respect to the Actual Rocket.
+
+          A hole was drilled into the side of the tube and a Presta valve (basic bicycle tire valve) was put into place
+so that a bicycle tire pump could be used to pressurize the apparatus; a gauge on the bicycle pump measured the
+pressure. After attempting to pressurize the tube it became apparent that air was escaping. Further inspection
+proved that the air was coming through the tubing spiral seams. Although this leaking also occurred during actual
+flight of the rocket, in this experiment it became a problem because the tube was becoming pressurized at a much
+slower rate than during actual flight. This led to a significantly larger portion of air lost, deeming the results
+inconclusive.
+        The next step was to seal the seam. Plumber’s caulk was used as an inexpensive and simple way to do this.
+It was applied to the seams on the main tube and the doors. From the first trial it was also determined that the gauge
+on the bike pump would not be accurate enough to measure such small pressures. A sphygmomanometer gauge was
+used in its place. This was attached to the tube in the same manner as the Presta valve. To keep it in place and leak-
+proof the gauge was sealed with epoxy. A way to ensure the test article was leak proof was also needed. It was
+determined that this would best be done by submerging the apparatus in water. Once submerged it was possible to
+do a visual check for leaks by looking for escaping air bubbles.
+       In preparation for performing the actual experiment the final steps were sealing the edges of the doors and
+attaching them to the mailer tube. The doors were sealed to be somewhat water/air tight by applying lithium grease
+to the edges. The doors were then attached using aluminum tape. This was applied in a 3-layer system as it was
+actually flown on the rocket.
+
+
+
+
+                                                         2
+                                 American Institute of Aeronautics and Astronautics
+ Aluminum         Sphygmomanometer
+   Tape             Pressure Gage
+
+                                                     Mailer Tube
+                                                      (Sealed)
+
+
+                                                     Bicycle Tire
+                                                     Presta Valve
+
+
+
+
+         Figure 2. Experiment Underway
+
+
+
+
+         Figure 3. Test Article Sketch.
+
+
+
+                        3
+American Institute of Aeronautics and Astronautics
+                                          III. Experimental Results
+          The apparatus was assembled by taping both doors on with three layers of adhesive-backed aluminum tape
+in the same way as the flight doors & windows were attached. Skin-to-door gaps were filled with a soft lithium
+grease to ensure an air-tight joint. When fully assembled, the unpressurized apparatus was immersed in the bathtub
+to check for leaks. None were detected.
+          The bicycle pump was then mated to the apparatus bicycle tire valve, and the apparatus again immersed in
+the bath tub as shown in Fig2. Next, the pressure inside the apparatus was slowly increased using the bicycle pump.
+No change was observed until the differential pressure reached 10-12 mm Hg at which point leaking was first
+observed. The pressure was increased further to about 20 mm Hg when the leakage outflow matched the maximum
+inflow achievable with the bicycle pump.
+          Initially two doors were cut expecting that the leakiest of the two would fail first as pressure was increased.
+However, the bottom door experienced a hydrostatic pressure about 12 mm Hg higher than that acting on that acting
+on the top door. Since 10-12 mm Hg was found to be the maximum without leakage, it’s almost certain that the top
+door always fails first.
+
+                                        IV. Comparison with Theory
+         Reference 1 provides a theoretical model for door failure by tape peeling from the rocket skin. It basically
+describes the failure as peeling of the tape from the tube. See Fig. 4 for a sketch of this failure mechanism.
+          Reference 1 also provides a crude mathematical model of the process:
+
+                                                                          ,                                           (1)
+
+where           The door area = Length * Chord, in2 ,
+                The differential pressure acting on the door, lb/in2,
+               The door peripheral distance, in , and
+
+               Ultimate peel strength of the tape-to-tube joint, lb/in
+
+
+The experiment described here had a top door area of 50.47 sq. in, a periphery of 32.25 in, and a pressure at door
+failure of about 0.2 psi. From this, we find that the peel strength is about 0.3 lb/in
+                         Peeling Failure                          Duct Tape
+
+
+
+
+                                                                  Door
+                   Rocket Skin
+
+
+
+
+                                                         Excessive Internal Pressure
+                                          Figure 4. Peeling Failure Sketch
+
+
+
+
+                                   V. Conclusions and Recommendations
+       We encountered a large reduction in apogee altitude at the ESRA-sponsored 5 th Intercollegiate Rocket
+Engineering Competition (IREC) in June 2010. Excessive drag was found to be the likely culprit, but no physical
+mechanism for this could be found. In the 6th IREC in June 2011 our payload optical window was found alone near
+
+                                                         4
+                                 American Institute of Aeronautics and Astronautics
+our launcher. It clearly separated from the rocket near burnout, most likely from excessive differential pressure. The
+extremely “dirty” exposed payload and structure easily account for the extra drag and reduced apogee.
+          It is straightforward to estimate the differential pressure in a payload bay as a function of the size of the
+holes venting the bay. The problem is, what’s the allowable differential pressure? Since this will depend on the
+hole size and shape, the allowable peel load is the determining factor. We found that a peel load of about 0.3 lb/in is
+the most that taped-on doors can hold. It is recommended that a peel load of 0.2 lb/in be used to size the venting
+holes.
+           Through this experiment, we have had the opportunity to develop unique research applicable to sounding
+rockets. We now have one less factor to worry about that could cause mission failure. From a theoretical standpoint,
+if all other systems work well now that the differential pressure has been accounted for, great success shall be
+achieved at various IREC’s to come.
+
+                                                     References
+   1
+    Hoult, C. P., “Pressure Strength of Taped-On Doors,” RST Memo, 01 December 2011.
+
+
+
+
+                                                         5
+                                 American Institute of Aeronautics and Astronautics
+

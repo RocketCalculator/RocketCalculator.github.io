@@ -1,0 +1,1867 @@
+                       R-222
+
+
+A N ANALYSIS OF T H E MOTION OF          LIQUIDS IN A
+       PARTIALLY-FILLED             ENCLOSURE
+
+
+                            by
+
+                    Charles Hoult
+
+
+
+
+       INSTRUMENTATION             LABORATORY
+ MASSACHUSETTS      INSTITUTE OF        TECHNOLOGY
+       CAMBRIDGE      39,        MASSACHUSETTS
+
+
+
+
+ Approved
+            Group   Leader
+
+
+
+
+                        1
+                           ACKNOWLEDGMENT
+
+
+
+    I would l i k e to express m y thanks to M r . D.                        Goldenberg
+of t h e M . I . T .    Instrumentation Laboratory.                        Without his
+e n t h u s i a s m and e n c o u r a g e m e n t ,   t h i s note   probably would
+not have been w r i t t e n .        A l s o I a m indebted to the f o l l o w i n g
+Instrumentation Laboratory personnel:                           M r . J . Thorpe        who
+contributed a careful,               c o n s c i e n t i o u s p r o o f r e a d i n g job and
+many helpful comments,                   and the M e s s r s .        R. H u t c h i n s o n ,
+E.C. Hanks and J . Stevens for t h e i r m o s t useful c r i t i c i s m .
+
+
+
+
+       T h i s r e p o r t was p r e p a r e d under the auspices of
+       DSR P r o j e c t    52-142, s p o n s o r e d by the W e s t e r n
+       Development           D i v i s i o n of the A i r R e s e a r c h     and
+       Development           Command through USAF                     contract
+      AF     0 4 ( 6 4 7 ) - 103.
+
+
+
+
+    T h e p u b l i c a t i o n of t h i s r e p o r t does not c o n s t i t u t e
+    a p p r o v a l by the A i r F o r c e of the f i n d i n g s o r the
+    conclusions contained t h e r e i n . It is published only
+    f o r the exchange and s t i m u l a t i o n of ideas.
+
+
+
+
+                                           2
+                                ABSTRACT
+
+
+
+
+               In this note,          the m o t i o n of the f l u i d i n a
+p a r t i a l l y f i l l e d enclosure is analyzed subject to the
+r e s t r i c t i o n s that viscous effects are negligible,                        that
+the t o t a l m a s s of f l u i d p r e s e n t and the l o c a l          fluid
+density are both constants,                    and that the m o t i o n of the
+e n c l o s u r e c o n s i s t s of s m a l l p e r t u r b a t i o n s f r o m    a
+predetermined             mean motion.              The analysis is c a r r i e d
+out u s i n g a f r a m e f i x e d to the e n c l o s u r e , t h u s m a k i n g
+it r e l a t i v e l y easy to t r e a t cases i n v o l v i n g         complicated
+tank geometries.               A s an e x a m p l e , the behavior                 of
+fluid i n a rigid,         c i r c u l a r l y c y l i n d r i c a l tank is i n v e s t i -
+gated.       T h e r e s u l t s a r e e x p r e s s e d as t r a n s f e r        functions
+applicable to m i s s i l e           dynamics.
+
+
+
+
+                                          3
+                  LIST          OF         SYMBOLS
+
+
+
+
+A            U n p e r t u r b e d a c c e l e r a t i o n of the o r i g i n of the
+             b o d y - f i x e d f r a m e w i t h r e s p e c t to an i n e r t i a l l y -
+             fixed frame
+
+a            Radius of a c y l i n d r i c a l t a n k
+
+a"  t        Thrust acceleration = Thrust - Drag
+                                   missile mass
+
+Cy . C ^ Q   Constants of i n t e g r a t i o n
+
+
+F            Force
+
+f            E q u a t i o n of the tank surface
+
+g"           Gravity vector
+
+h            D i s t a n c e f r o m the o r i g i n of the b o d y - f i x e d
+             axis to the u n p e r t u r b e d p o s i t i o n of the f r e e             surface
+
+J            B e s s e l f u n c t i o n of the f i r s t k i n d of o r d e r     n
+    n
+
+k, n         Separation         parameters
+
+M            Moment
+
+m            T o t a l m a s s of f l u i d i n the tank
+
+p            A m b i e n t p r e s s u r e i n the f l u i d
+
+q            A p p a r e n t v e l o c i t y o f a f l u i d p a r t i c l e as s e e n
+             i n the b o d y - f i x e d   frame
+
+q            M a g n i t u d e o f "q
+
+R            P o s i t i o n vector i n the body-fixed                frame
+
+
+
+
+                                   5
+s                     Laplace t r a n s f o r m variable
+
+t                     Time
+
+U                     V e l o c i t y v e c t o r o f a f l u i d p a r t i c l e as s e e n i n
+                      the i n e r t i a l l y - f i x e d   frame
+
+1,1,1                 Unit vectors defining the b o d y - f i x e d                frame
+ x y z
+
+V                     U n p e r t u r b e d v e l o c i t y of o r i g i n of   body-fixed
+                      frame with inertially-fixed                     frame
+
+i7                    Perturbation in V
+
+dVol                  D i f f e r e n t i a l e l e m e n t of v o l u m e
+
+x, y, z ; r , 0 , x   C o o r d i n a t e s of b o d y - f i x e d   frame
+
+a                     Perturbation in A
+
+$                     Velocity potential
+
+p                     Fluid mass density
+
+?                     P e r t u r b a t i o n i n the l o c a t i o n of the f r e e     surface
+
+~u                    A n g u l a r v e l o c i t y of b o d y - f i x e d f r a m e w i t h r e s p e c t to
+                      inertially-fixed               frame
+
+
+
+
+                                            6
+                               TABLE          OF      CONTENTS
+
+
+                                                                 Page
+
+1.   I n t r o d u c t i o n and A s s u m p t i o n s             9
+
+         A.      Introduction                                      9
+
+          B.     Assumptions                                      10
+
+2.   Kinematics                                                  11
+
+3.   Dynamics                                                     13
+
+          A.     The P r e s s u r e Relationship                 13
+
+          B.     The Flow Pattern                                 17
+
+4.   S u m m a r y of the G e n e r a l P r o b l e m             19
+
+5.   An Example                                                   ^0
+
+          A.     The Flow Pattern                                 20
+                       Fig.     1 Example                         20
+          B.     F o r c e s and M o m e n t s                    28
+
+References                                                        35
+
+
+
+
+                                                  7
+1.      I n t r o d u c t i o n and      Assumptions
+
+        A.      Introduction
+
+                The d y n a m i c s of l i q u i d fuel m i s s i l e s a r e affected                  signifi-
+cantly by the m o t i o n of the fuel i n the t a n k s .                      T h i s m o t i o n has been
+called       "fuel sloshing".                  The effects have been s t u d i e d by v a r i o u s
+scientists,           and the m a j o r w o r k s i n the f i e l d a r e i n c l u d e d i n the
+r e f e r e n c e s at t h e end o f t h i s r e p o r t .        The fuel sloshing p r o b l e m is
+a c o m p l e x one         a n d w i l l c o n t i n u e t o be a n a r e a o f s t u d y f o r         some
+time.        T h i s r e p o r t i s a n a d d i t i o n a l e f f o r t at d e s c r i b i n g t h e     forces
+a n d m o m e n t s a c t i n g o n a m i s s i l e due t o f u e l s l o s h i n g .
+
+                T h e g e n e r a l p r o b l e m i s solved f o r a r b i t r a r y tank g e o m e t r y
+subject to the assumptions dealt w i t h below.                               Kinematical relation-
+s h i p s b e t w e e n v e l o c i t i e s i n the f i x e d and m o v i n g frames are displayed.
+F r o m Newton's               second law and the a s s u m p t i o n of z e r o v o r t i c i t y , a
+p r e s s u r e relationship (3-29) is obtained.                        The b o u n d a r y c o n d i t i o n s at
+t h e t a n k w a l l a n d at t h e f r e e s u r f a c e      y i e l d t w o r e l a t i o n s , (3-28) and
+(3-33) w h i c h , w i t h L a p l a c e ' s equation, d e t e r m i n e the flow                        pattern.
+T h e f l o w p a t t e r n a n d t h e p r e s s u r e r e l a t i o n m a y t h e n be i n t e g r a t e d t o
+f i n d the forces and moments f o r a p a r t i c u l a r t a n k g e o m e t r y and v e l o c -
+ity potential.
+
+                In the example,                boundary conditions for a r i g i d c i r c u l a r -
+c y l i n d r i c a l tank are incorporated into eq(3-28), (3-26),                              and (3-33).
+L a p l a c e t r a n s f o r m s of these equations               a r e t a k e n , and t h e n a g e n e r a l
+s o l u t i o n i s obtained i n t e r m s of B e s s e l f u n c t i o n s and                  hyperbolic
+f u n c t i o n s of e i g e n v a l u e s .    T h e constants a r e evaluated by means                        of
+the boundary conditions and orthogonality properties of eigenfunctions.
+
+                T h e L a p l a c e t r a n s f o r m ( 5 - 3 9 ) of t h e p r e s s u r e r e l a t i o n s h i p
+(3-29) i s t a k e n , and w h e n the v e l o c i t y p o t e n t i a l , ( 5 - 3 8 ) ,        is introduced,
+the expressions               f o r f o r c e s and m o m e n t s       m a y be i n t e g r a t e d .      These
+
+
+
+                                                      9
+r e s u l t s a r e w r i t t e n as f o u r t r a n s f e r f u n c t i o n s :
+
+
+                              F    z                   M   y                M      y
+
+
+
+                             ~v        '   T   '       V          an<
+                                                                     ^      ~
+                               z           • y             z                       y
+
+        B.      Assumptions
+               The assumptions made and t h e i r significance are l i s t e d
+below:
+
+               (1)      T h e f l u i d i s a s s u m e d t o be i n c o m p r e s s i b l e .        In
+        m o s t p r a c t i c a l c a s e s , t h e p r e s s u r e g r a d i e n t due t o a c c e l -
+        e r a t i o n i s not g r e a t enough to effect a p p r e c i a b l e                changes
+        i n the f l u i d density.           T h i s a s s u m p t i o n r e m o v e s the t h e r m o -
+        dynamic p r o b l e m s associated w i t h the m o r e general case,
+        i . e . , the energy equation ( B e r n o u l l i ' s equation) is found
+        by i n t e g r a t i n g the m o m e n t u m equation.
+
+                (2)     The t o t a l m a s s of f l u i d i n the t a n k i s a s s u m e d
+        t o be c o n s t a n t .       Except for l o c a l effects i n the n e i g h b o r -
+        hood of the " s i n k " o r d r a i n , the m a s s flow r a t e s u s u a l l y
+        encountered i n r o c k e t r y a r e s m a l l enough to p r e c l u d e
+        the appearance of s e r i o u s e r r o r s a r i s i n g f r o m t h i s s o u r c e .
+
+                (3)     T h e t a n k static p r e s s u r e i s g r e a t enough to
+        prevent cavitation.                 Because this is a design c r i t e r i o n ,
+        t h i s a s s u m p t i o n s e l d o m presents any d i f f i c u l t i e s .
+
+                (4)     Surface tension forces are negligible.                                 Here
+        again, the e r r o r s i n t r o d u c e d a r e l o c a l i n scope.                  Often
+        the r a t i o of i n e r t i a , o r D ' A l e m b e r t , f o r c e s         to   surface
+        t e n s i o n f o r c e s i n t h e r e g i o n o f t h e f r e e s u r f a c e w i l l be
+        high, thus justifying this assumption.
+
+                (5)     Viscous effects are neglected.                             When this      assump-
+        t i o n i s w a r r a n t e d , i t c a n be s h o w n t h a t a n             enormous
+        m a t h e m a t i c a l s i m p l i f i c a t i o n r e s u l t s , since the w e l l developed
+        t o o l s o f p o t e n t i a l t h e o r y m a y be b r o u g h t t o b e a r o n t h e
+        problem.           T h e n e c e s s a r y arid s u f f i c i e n t c o n d i t i o n f o r t h e
+
+
+
+
+                                                     10
+      existence of a v e l o c i t y potential is that the v o r t i c i t y , i . e . ,
+      the c u r l of the v e l o c i t y ,      vanish everywhere                 i n the f l u i d .
+      I n the case of an u n b a f f l e d             tank oscillating w i t h             small
+      amplitude, this condition                    is v e r y n e a r l y met because the
+      v o r t i c i t y c o n t r i b u t i o n s f r o m s k i n f r i c t i o n on the t a n k w a l l s
+      and f r o m s p l a s h i n g on the f r e e s u r f a c e a r e b o t h s m a l l .
+
+             T h e p u r p o s e o f b a f f l e s , i t s h o u l d be n o t e d , i s t w o - f o l d :
+      first,    some d a m p i n g is added to the s y s t e m ; second, the
+      n a t u r a l f r e q u e n c i e s of the v a r i o u s m o d e s a r e a l t e r e d .      The
+      d a m p i n g effect a r i s e s w h e n s o m e of the k i n e t i c e n e r g y of
+      o r d e r e d m o t i o n i s c o n v e r t e d to k i n e t i c e n e r g y of        random
+      eddying, whence i t is dissipated by viscous effects.                                    Changes
+      i n n a t u r a l f r e q u e n c i e s a r e due t o a l t e r e d t a n k g e o m e t r y . I n
+      other words,           a completely           i m p e r f o r a t e baffle would give
+      r i s e to a t o t a l l y different p r o b l e m ,         which is, i n many               ways,
+      easier to analyze.               A good d i s c u s s i o n of baffles m a y               be
+      f o u n d i n r e f e r e n c e (1).
+
+             (6)     The tank m o t i o n is r e s t r i c t e d to s m a l l d i s t u r b -
+      ances f r o m a z e r o l i f t t r a j e c t o r y .       In addition to the             rea-
+      sons d i s c u s s e d above, t h i s p e r m i t s l i n e a r i z a t i o n of the
+     b o u n d a r y c o n d i t i o n at t h e f r e e s u r f a c e .    Also,      variations
+      in thrust acceleration                 a r e not p e r m i t t e d because the
+      various n a t u r a l frequencies are p r o p o r t i o n a l to this
+      quantity, and hence such a v a r i a t i o n w o u l d give r i s e to
+      non-linear effects.                I n the l a r g e m a j o r i t y of p r a c t i c a l
+      cases, the v a r i a t i o n i n t h r u s t a c c e l e r a t i o n      is small i n
+,     the t i m e i n t e r v a l of i n t e r e s t .
+
+
+2.    Kinematics
+
+      T h i s r e p o r t uses two f r a m e s ,          one f i x e d w i t h r e s p e c t t o i n e r t i a l
+space, the o t h e r f i x e d to the a x i s of s y m m e t r y of the t a n k .                       Although
+other schemes are feasible for uncomplicated                                  tank geometries, this
+method is generally the simplest to apply i n practice.
+
+
+
+
+                                                  11
+           The k i n e m a t i c a l r e l a t i o n s h i p s used a r e those d e r i v e d i n r e f (2),
+ o r any s i m i l a r t e x t .     T h e y m a y be w r i t t e n as        follows:
+
+                        TT = V + ~         + q+       u X "R,           and                                (2-1)
+
+
+                      ^      = A+                 + CT X q + ^             [u X      R]                    (2-2)
+
+
+ Here the c r o s s product is defined i n the usual way.                                 I t s h o u l d be
+ r e m a r k e d that i n f l u i d m e c h a n i c s the d e r i v a t i v e s               and
+                                                                                                      dq
+                                                                                                            are
+                                                                                     dt               dt
+ u s u a l l y w r i t t e n as
+                                   4? • TJF • f               +
+                                                                    lU.VlTI.              and              (8-3)
+
+
+                                    ff•       T 3 -      S     +
+                                                                                                           < - >
+                                                                                                            2   4
+
+
+
+
+ because the d i f f e r e n t i a t i o n is p e r f o r m e d w h i l e f o l l o w i n g a specific
+ fluid particle.            The expressions for such " s u b s t a n t i a l " d e r i v a t i v e s
+ m a y be f o u n d f r o m t h e c h a i n r u l e f o r p a r t i a l d e r i v a t i v e s .
+
+           As a p a r t of the k i n e m a t i c a l d e s c r i p t i o n of the p r o b l e m an
+ e q u a t i o n f o r t h e c o n s e r v a t i o n o f m a s s m u s t be w r i t t e n .    This equa-
+ t i o n , o f t e n c a l l e d the " e q u a t i o n of c o n t i n u i t y " , i s of the s a m e f o r m
+ in both frames:
+
+                                          V    • U = 0,            or                                      (2-5)
+
+                                          V   • q = 0.                                                     (2-6)
+
+ T h i s r e s u l t is v a l i d only for an i n c o m p r e s s i b l e       f l u i d , i . e.,
+
+                                          p = cpnstant.                                                    (2-f)
+
+
+
+* T h e t e r m s , A + a, a r e t h e a c c e l e r a t i o n o f t h e o r i g i n o f t h e m o v i n g
+  f r a m e as m e a s u r e d i n i n e r t i a l s p a c e a n d t h e n r e s o l v e d i n t o t h e a p p r o -
+  p r i a t e c o m p o n e n t s i n t h e m o v i n g f r a m e . T h e s e c o m p o n e n t s w o u l d be
+       +
+             ^ +     u " X ( 7 + !/)      i f a l l quantities w e r e m e a s u r e d i n the
+
+ moving frame.
+
+
+
+
+                                                  12
+3.        Dynamics
+
+         A.       The P r e s s u r e       Relationship
+
+                  Newton's           Second L a w ,       when w r i t t e n f o r the        body-fixed
+f r a m e takes the f o r m ,
+
+
+                               F - ( p d V o l ) ^ = (pdVol)g- Vp(dVol),                 or               (3-1)
+
+
+
+                           f     = ? - ^ 7 p     =A+a+^              + w X q + - i . [uXR] .              (3-2)
+
+
+H e r e only the p r i n c i p a l diagonal t e r m s i n the s t r e s s                  tensor       are
+u s e d ; t h e o f f - d i a g o n a l t e r m s ^ w h i c h a r e due t o v i s c o s i t y ,   are i m -
+p o r t a n t only i n the b o u n d a r y l a y e r and such p l a c e s .               When these
+viscous t e r m s are neglected,                     K e l v i n ' s t h e o r e m states that the c i r -
+c u l a t i o n a r o u n d a c l o s e d c o n t o u r c o n s i s t i n g of a g r o u p of p a r t i c l e s
+r e m a i n s constant.              I f we p r e s u m e zero i n i t i a l c i r c u l a t i o n for a l l
+such paths, then i t follows that the v o r t i c i t y m u s t always v a n i s h , o r
+
+
+                                                   7 X U      = 0.                                        (3-3)
+
+
+                 T h i s i n t u r n i m p l i e s that U - V i s the g r a d i e n t of a s c a l a r
+p o t e n t i a l , <j).
+
+
+                                      U - V = v +"q + w X R ^             .                               (3-4)
+
+
+                 T h e a u t h o r r e a l i z e s that the above d i s c u s s i o n i s but a b r i e f
+outline of s o m e of the m o s t i m p o r t a n t m a t e r i a l i n the f i e l d of h y d r o -
+dynamics.             F o r those i n t e r e s t e d i n a m o r e detailed discussion,                   the
+first      five c h a p t e r s of L a m b , r e f ( 9 ) ,       i s c o n s i d e r e d t o be one o f t h e
+best d i s s e r t a t i o n s on h y d r o d y n a m i c s available.
+
+                 The next step i s to m a n i p u l a t e equations ( 2 - 5 ) , ( 2 - 6 ) , ( 3 - 2 ) ,
+(3-3),        a n d ( 3 - 4 ) i n s u c h a m a n n e r as t o e n a b l e u s t o i n t e g r a t e e q u a -
+t i o n (3-2) w i t h respect to the t h r e e s p a t i a l coordinates.
+
+
+
+
+                                                    13
+               F r o m ( 3 - 3 ) and (2-1) i t f o l l o w s t h a t
+
+
+             V X U = V X V + 7 X y                       t 7 X q + 7 X                     [u X R ] = 0                         (3-5)
+
+
+N o t i n g that V and v a r e functions of t i m e alone,                                             ^7 X V a n d         7 x     v
+vanish,       leaving,
+
+
+                              7 X q        = -V          X         [U       X R]                                                (3-6)
+
+                                                -[ V • R ] u                    + [ u • V ]R
+
+                                                - 3u + u                    .
+
+                              VXq          = - 2w                                                                               (3-7)
+
+T h a t i s , t h e v o r t i c i t y as s e e n i n t h e b o d y - f i x e d f r a m e i s s u c h t h a t i t
+counterbalances            the a n g u l a r m o t i o n of the f r a m e .
+
+              W e n e x t i n v e s t i g a t e t h e C o r i o l i s a c c e l e r a t i o n t e r m , io X q.
+
+
+                          2 u X q = - [ V X q ] Xq = qX [ y X q ] .                                                             (3-8)
+
+
+D i r e c t e x p a n s i o n of the x c o m p o n e n t (the o t h e r t w o a r e s i m i l a r )
+shows that
+
+                                           "3q   y
+                                                              xH
+
+                 2 u X q^> j q                                                                                 1       .        (3-9)
+                                                             9yJ             ~           h-3z
+                                       y
+                                           -dx                                   q
+                                                                                     z            dx 1             x
+
+                                             9q
+A d d i n g a n d s u b t r a c t i n g q.       x           inside the bracket r e s u l t s i n
+                                         x      9x
+
+                          3q.              8q                      9q                      aq           aq             aq   x
+
+     2u Xq^»           1     ^ + Q              Y. + Q                  i                                                           1
+                       *x ax     y q
+                                           dx        q   z
+                                                                   dx
+                                                                                                                            -•J
+                                                                                                                             (3.-10)
+
+o r that
+
+
+                               2uxq = V [ | q                       2
+                                                                        ] " [q             • v j q .                            (3-11)
+
+
+Noting that
+
+                                                = y +q + u x R                                                                  (3-4)
+
+
+
+
+                                                     14
+e q u a t i o n (3-11) b e c o m e s
+
+
+              2wXq =V               [|q ]-        2
+                                                         [q»V ] [ v l - i ? - u X R ]        ,              or           (3-12)
+
+
+
+              2U X q = V ^ q                  2
+                                                      ] - [q«V]K7         tf-tfXR]       .
+
+
+               Expansion                     of the t e r m         [q»^7] [u X R ]                     as b e f o r e
+leads to
+
+
+            [q.v][wxR]^>                              Cq a|+qya|+qza|-]fej
+                                                         X                                    y
+                                                                                                  z
+                                                                                                      -w y]~
+                                                                                                        z        x       < - >
+                                                                                                                          3   1 3
+
+
+
+
+The expansion of the y and z components is s i m i l a r .
+
+
+                                         [q»V ] IwXR] = wXq.                                                             (3-14)
+
+The C o r i o l i s a c c e l e r a t i o n now b e c o m e s
+
+               _     _               i        2
+
+              2 w x      q   = v L 2     (
+                                             i 3 -       l q » v ] v 0 + [ q • V H U X R ]                               (3-15)
+
+
+                                     1        2                                      _
+
+
+                             =
+                                 V [ 2 q J "             [q » V ]        <^   +
+                                                                                  wXq,       or
+
+                 S i m i l a r manipulations enable us t o e x p r e s s the angular
+a c c e l e r a t i ownXtqe r= m , -d_
+                                     tHq UJX" R ][ q, »as
+                                                        V]V0 •                     (3-16)
+                                               2
+
+
+                                   dt
+
+
+
+                   |[WXR] = | [ V f ^ - q ]                          ,    or                                             (3-17)
+
+
+                   |[«XR]= | [ V f q ] + y                               X [ V * - q ] "              a , or             (3-18)
+
+
+                   |[WXR]=                   | v ^ + [ q . y ] V * - § +uX[ V 0 - q ] -                          a   .   (3 19)
+
+
+
+
+                                                             15
+We now s u b s t i t u t e equations (3-16)                     and    (3-19) i n t o e q u a t i o n ( 3 - 9 ) .
+It f o l l o w s that
+
+
+
+                                      A+a+          §9 +«Xq + |                              + [q.y]V<^             (3-20)
+
+
+                                      § ? +w X [ y ^ - q ] - a ,             or
+
+
+
+
+                          7 p ^ A - g + |                      [q»V]V*+u                     x
+                                                                                                     and            (3-21)
+
+
+
+
+                  -^•^7p = A - g + - ^ V ^ + ^7C-|q J + u X [ V # - q ] .
+                                                                        2
+                                                                                                                    (3-22)
+
+
+
+               A s s u m i n g i n t e r c h a n g e a b i l i t y of t h e o r d e r o f p a r t i a l d i f f e r e n -
+t i a t i o n i s v a l i d , t h e m o m e n t u m e q u a t i o n m a y be w r i t t e n as
+
+
+
+                  - -    \7p=V[|q ]+            2
+                                                                 +A-g+uX[y +yXR]                              .     (3-23)
+
+
+
+               Since any body m o v i n g i n a g r a v i t a t i o n a l f i e l d has a t e r m ,
++ g,     c o n t a i n e d i n A , i t i s a p p a r e n t t h a t t h e d i f f e r e n c e , A - g, i s t h e
+total specific force,                 o r i n the case of a zero l i f t t r a j e c t o r y , the
+t h r u s t a c c e l e r a t i o n , "a .
+                                        t       With this result, equation (3-23)                                 maybe
+w r i t t e n i n the f o r m ,
+
+
+
+     V          ^ +      |q     2
+                                    + |f +~a .R-v   t         (wXR)--|           w
+                                                                                     2
+                                                                                         R +2(w.R) | =0 .
+                                                                                                 2        2
+
+
+
+
+                                                                                                                   (3-24)
+
+A f t e r i n t e g r a t i o n w i t h respect to the t h r e e spatial coordinates,                               it is
+found that
+
+
+         p = - p{-|q        2
+                                + |^ +l .R-vt                (w X R ) - | u R + - | ( w . R ) + C ( t ) } ..
+                                                                             2           2            2
+
+
+
+
+                                                                                                                   (3-25)
+
+
+
+                                                        16
+w h e r e C(t)         i s the f u n c t i o n of i n t e g r a t i o n .                Since C(t) m a y       be
+i n c o r p o r a t e d into $ w i t h o u t a l t e r i n g the flow p a t t e r n or the f o r c e s
+and m o m e n t s e x e r t e d b y the f l u i d on the t a n k w a l l s , i t i s h e r e a f t e r
+omitted.
+
+
+          B.         The Flow P a t t e r n
+
+                     The s o l u t i o n f o r the flow p a t t e r n i s found by s o l v i n g
+Laplace's            equation subject to c e r t a i n boundary conditions.                                   We obtain
+Laplace's            equation by substituting equation (3-4) into equation (2-5).
+That i s ,
+
+                                                      V < £ = 0-
+                                                       2
+                                                                                                                     (3-26)
+
+                     T h e b o u n d a r y c o n d i t i o n at t h e t a n k w a l l i s t h a t t h e f l u i d
+v e l o c i t y n o r m a l to the tank w a l l is z e r o .                      f ( x , y , z , t ) = 0 is the
+e q u a t i o n of t h e t a n k w a l l ,        t h i s c o n d i t i o n m a y b e w r i t t e n as
+
+
+                                                q • V f = -f£               ,                 for*                   (3-27)
+
+
+                                         ( V * - v - u X R ) . V f              = -•§[         ,       or
+
+
+                                   V^'Vf         = w X R • V f + F « V f ~ J£                                        (3-28)
+
+
+                     S i m i l a r l y , the b o u n d a r y c o n d i t i o n at the f r e e s u r f a c e          is
+that the p r e s s u r e i s a constant.                        If only s m a l l perturbations f r o m
+the assumed m o t i o n are considered,                                  i . e., ?       is s m a l l , then the
+h i g h e r o r d e r t e r m s i n e q u a t i o n ( 3 - 2 5 ) m a y be n e g l e c t e d ,                yielding
+
+
+                                                      JB=-a x-J4 t                   .                               (3-29)
+
+
+^The      fluid        v e l o c i t y n o r m a l to the surface                        is    q • J.... .    Since f=0,
+                                   J                                                           M
+                                                                                                  |Vf|
+     -               • V f +           -7^- =    0.             Hence the surface                    velocity    normal
+
+
+                                                      8f
+
+to itself      1 B     _     . _           -     - p ^               .
+
+
+
+
+                                                           17
+D i f f e r e n t i a t i n g equation (3-29)and r e t a i n i n g only the f i r s t                                                order
+terms results in
+
+
+
+                    £ < f >       " - J - | J - [ q . v ] | f - 0 .                                                             or        (3-30)
+
+
+                                                      ,2
+                                                      3 0   A               3?              0 •                                              (3-31)
+                                                                    afr -3s rtf -
+                                                      at 2
+                                                         ¥r +                           =
+                                                            1       a
+
+
+
+
+I n d e r i v i n g e q u a t i o n s ( 3 - 2 9 ) a n d (3-3]) i t has b e e n a s s u m e d t h a t t h e
+x a x i s of the m o v i n g f r a m e i s a l i g n e d w i t h the u n p e r t u r b e d flight
+path.      I n t h i s s i t u a t i o n o n l y t h e x c o m p o n e n t o f "a^ d o e s n o t v a n i s h .
+
+               There also exists a kinematical relation, namely
+
+
+                              q
+                                  x       =
+                                                  f    =
+                                                           3 i - x - V                      +   u
+                                                                                                    z   y
+                                                                                                                    •                    (   3
+                                                                                                                                                 "   3   2   )
+
+
+
+                                                                                                        f
+S u b s t i t u t i n g e q u a t i o n (3-33 i n t o (3-31) g i v e s t h e f i n a l r e q u i r e d r e s u l t ,
+
+
+
+                            i ^   +   a
+                                              t l x -       =   a
+                                                                        t   [   l   /
+                                                                                        x   +
+                                                                                                V -         U
+                                                                                                                Z
+                                                                                                                    y   l
+                                                                                                                            -            ( 3
+                                                                                                                                                 "   3 3 )
+
+
+
+
+F u r t h e r m o r e , t h i s c o n d i t i o n m a y be a p p l i e d a t t h e u n p e r t u r b e d f r e e
+surface position, x = - h .                             T h i s m a y be s h o w n b y o b s e r v i n g a T a y l o r ' s
+expansion of the f o r m ,
+
+
+               ||(-h +?,y, ,t)=       Z                     ||(-h,y,z,t) +? |-|(-h,y,z,t)                                                (3-34)
+
+
+
+                                              1        2 3 ^ (b
+                                  + y §
+                                  — * ( - h , y , z, t ) + h i g h e r o r d e r t e r m s ,
+                                  3x
+and n o t i n g again that § i s a s m a l l q u a n t i t y .
+
+
+
+
+                                                                18
+4 .     S u m m a r y of the G e n e r a l           Problem
+
+
+        To    find the f o r c e s and m o m e n t s               excited by a   moving
+t a n k one   first determines              the flow p a t t e r n using       equations:
+
+
+
+                                    V   2
+                                            0 = 0,                                    (3-26)
+
+
+
+                          • Vf= u x R - V f + F - V f - |                                 (3-28)
+
+
+
+
+                         ^    +
+                                   ^ - M » x           +
+                                                           V   B
+                                                                   .   y   l          (   3
+                                                                                              "   3   3   )
+
+
+
+
+        The local pressure              m a y t h e n be f o u n d f r o m t h e e q u a t i o n
+
+
+
+                                  J U - a . x - l f                                   (3-29)
+                                   p             t    dt
+
+
+
+        Properly      weighted i n t e g r a t i o n then y i e l d s the         required
+f o r c e s and   moments.
+
+
+
+
+                                            19
+5.    An Example
+
+
+             A.    The F l o w P a t t e r n
+
+                        A s an e x a m p l e ,        w e now c o n s i d e r the case of a
+perfectly rigid,           c y l i n d r i c a l tank of c i r c u l a r c r o s s - s e c t i o n w h i c h
+i s s i m u l t a n e o u s l y u n d e r g o i n g p i t c h i n g and v a r i a t i o n i n the angle
+of a t t a c k .   T h i s i s t h e s a m e p r o b l e m as t h a t o f r e f (8) e x c e p t t h a t
+p i t c h i n g m o t i o n i s now p e r m i t t e d .     We note t h a t , because of              sym-
+m e t r y , the y a w i n g , s i d e s l i p p i n g tank p r e s e n t s a s i m i l a r p r o b l e m .
+
+
+
+
+                                         Fig.     1        Example
+
+
+
+
+                                                      20
+Noting that
+
+                                         v    =
+                                                      v = u = u = 0 ,                                                                                   (5-1)
+                                          y             x   x   z
+
+we m a y f o r m u l a t e the r e q u i r e d boundary conditions.                                                                           On the tank
+b o t t o m , i.e.,     at     x =-h —                 ,                        e q u a t i o n (3-28) b e c o m e s
+
+
+
+                                                        = UyZ = u ^ r s i n 0 .                                                                          (5-2)
+
+
+On the tank w a l l ,          at       r = a,                  we have
+
+
+                   -|£ = [T c o s G + T s i n e W u z T - u x ! + i / T ]                                                                     .         (5-3)
+                    3r     y
+                           1
+                                       z           y x y z z z              J     l                                             J                   v
+
+
+
+
+A f t e r s i m p l i f i c a t i o n , equation (5-3)                                        is
+
+
+                                                      = [ - u x + i/ ] s i n 0 .                                                                        (5-4)
+                                        or                   y      z                              J
+
+
+
+
+             I n c y l i n d r i c a l c o o r d i n a t e s , L a p l a c e ' s e q u a t i o n ( e q u a t i o n [3-26] )
+is
+
+
+                                        +         I     14                  +             1            d| + 3 ! i                   =   o.              (5-5)
+                               8r   2             r     9       r
+                                                                                      r   2
+                                                                                                   BO   2
+                                                                                                                     6x     2
+
+
+
+
+             I n o r d e r t o use a r b i t r a r y i n p u t s , i t i s convenient to t a k e
+the L a p l a c e t r a n s f o r m of the above equations.                                                            A s s u m i n g that a l l
+i n i t i a l c o n d i t i o n s a r e z e r o , e.g,                            v           (t=0)=            0,     i t follows that
+
+
+
+                               i V       +        I         ^           +        l                 ^1       +     H =                   o .             (5-6)
+                                er  2         r             a       r
+                                                                                 r    2
+                                                                                               bd       2
+                                                                                                                  3x    2
+
+
+
+
+                                  30    =                                                                        m
+                                                                                      0, x = - h                                                        (5-7)
+                                  —-£ = u r s i n                                                                      2'
+                                  3x      y                                                                     7rpa
+
+
+
+
+                                                                        21
+                                         | £ = [-(0 x + v                                  ] sine                           , r = a,                                            (5-8)
+
+
+a n d f r o m (3 -33)
+
+
+                             s6
+                             2
+                                          + a | ^ = aw r s i n Q , x = - h ,                                                                                                    (5-9)
+                                             t 3x    t y
+                                                  +
+                                     Y
+
+
+
+
+w h e r e the double b a r i n d i c a t e s the t r a n s f o r m e d q u a n t i t y .
+
+                        To solve equation (5-6)                                                                        a product solution of the
+form,
+                                                                   JT= X ( x ) R ( r ) T ( 0 ) ,                                                                            (5-10)
+
+is assumed.             W h e n e q u a t i o n (5-10) i s s u b s t i t u t e d i n t o e q u a t i o n ( 5 - 6 ) ,
+
+the r e s u l t i n g equation is
+
+
+                  I     EL ^     2
+                                          =       1               d^R          X                       dR                   _±_ d T            2
+                                                                                                                                                               ,2                          m
+
+
+
+                  X
+                        dx       2
+                                          ~~          R
+                                                                  dr   2
+                                                                           "   R       r           d       r
+                                                                                                                   "        r2      T         d0   2                    (              }
+
+
+
+
+It follows f r o m t h i s that X i s given by
+
+
+              X = C j s i n h (kx) + C c o s h                             2                                   (kx) ,                                      k * 0            (5-12)
+
+
+              X = C x + C3                        4           ,                                                                                            k = 0            (5-13)
+
+Similarly,
+
+
+                      iL         d?R          +           £ dE             +       k   2 2 r                   =           _±       d^T            =   n   2        (
+
+                       R     d     2 r                     R d r           +                   r
+                                                                                                                                T     2 d Q
+                                                                                                                                                           n
+                                                                                                                                                               '        <   b    i 4
+                                                                                                                                                                                       >
+
+
+and t h e r e f o r e
+
+                                         T =C cos(n0)+ C sin(n0) ,
+                                                          5                                                6                                                                (5-15)
+
+and
+
+
+                                         R - C„J ( k r ) + C Y ( k r ) ,                                                                                   k * 0            (5-16)
+                                              < n            o n
+                                                                                                       Q
+
+
+
+
+                                         R=           C r     g
+                                                                   n
+                                                                       +       C   1 Q     r"              n
+                                                                                                                       ,                                   k = 0.           (5-17)
+
+
+
+
+                                                                               22
+The m o s t g e n e r a l s o l u t i o n is a s u p e r p o s i t i o n of the k = 0                                                            and
+k *0 solutions.
+
+        % = [ c c o s (n0) + C s i n (n0)J j j c x + c j c g r
+                        5                        6                                    3
+                                                                                                                1   1
+                                                                                                                            +C    1 0   r"   n
+                                                                                                                                                 j
+                                                                                                                                                     (5-18)
+
+            + 1 0 , 3 ^ ( k x ) + C c o s h (kx)                                     C J (kr) + C Y (kr)
+              [ l
+                                                 r )                                      ?       n                 8       n
+                C       S   i
+
+
+
+
+I n o r d e r that equation (5-18) s a t i s f y equation ( 5 - 8 ) , we have
+
+
+                    5                       0 ) M{[c|C
+       | | = | c c o s ( n 0 ) + C s i n ( nfl>]
+                                             6       x x +C
+                                                          C ]n[c a - -C         3     0       +       4     9
+                                                                                                                        n   1
+                                                                                                                                    1 0     a- - ]
+                                                                                                                                                 n   1
+
+
+
+
+            + JCjSinh (kx) + C c o s h (kx)      2                                  j j C J ^ ( k a ) + Cg
+                                                                                          ?                                     (ka)
+
+
+
+                "to X + V           sin 0                                                                                                            (5-19)
+                   y      z
+
+It is apparent that             =_ C ^ Q = Cg = 0 ; t h e l a t t e r t w o c o n s t a n t s m u s t
+vanish i n o r d e r that                        w i l l be f i n i t e at                            r = 0 .           Also,
+                                dr
+
+                                n =1                                                                                                                 (5-20)
+
+                                C X C =                                                                                                              (5-21)
+                                 '6 9^3              n       c
+                                                                      _ u
+                                                                            y
+
+
+                                         6               9   4          z                                                                            (5-22)
+
+
+                                J    l       (ka) = 0                                                                                                (5-23)
+
+
+                We denote the r o o t s of e q u a t i o n ( 5 - 2 3 ) by                                                           X   n
+
+
+
+
+                                                             k =                                                                                     (5-24)
+
+
+
+
+                                                                 23
+Ref(8)                     gives                                                1. 84 ,
+
+
+                                                                                5.335 ,                                                                                                  (5-25)
+
+
+                                                                    A   3    = 8.535 ,                                      etc.
+
+T h e g e n e r a l r e l a t i o n f o r the p o t e n t i a l i s now
+
+
+<f> -              sin0 < r[-UyX+i/ ]                       z
+
+
+
+
+               00                                                                                                                                          -v
+
+     +
+              I l{\i)[\        J                  Sinh
+                                                                                             %            COSh
+                                                                                                                              ( nl)]
+                                                                                                                                   X
+                                                                                                                                                                                         (5-26)
+             n =l                                                                                                                                           -
+
+
+                                         W e now a p p l y t h e b o u n d a r y c o n d i t i o n at t h e t a n k
+bottom,                        equation (5-7) :
+
+
+             = (J r s i n 0 = s i n 0 < - w r
+3x               y                    1    y
+
+
+         +
+              l ¥ i ( U > [s M — )-v ^( ^)]}
+                                     j                                  cosh                h+
+                                                                                                                    2
+                                                                                                                                               inh                      h+J
+
+                                                                1                       N
+                                                                                                  7rpa '                       2                                N
+                                                                                                                                                                              7rpa       1
+                                                                                                                                                                                           J
+                                                                                                                                                                                         (5-27)
+
+
+                       00
+
+
+ 2
+     \ * - l k - h f e )
+     J
+           ri,
+          n-1
+                   L
+                         '               x
+                                                         [V°
+                                                           1
+                                                             ^(         Sh
+                                                                                    N
+                                                                                            h +J I
+                                                                                                7T a
+                                                                                                          4 ) - V2
+                                                                                                          P
+                                                                                                          F
+                                                                                                                7
+                                                                                                                                   lnh
+                                                                                                                                                           lK       x
+                                                                                                                                                                        h +
+                                                                                                                                                                              - 2 - )' ]
+                                                                                                                                                                              wpa
+
+
+                                                                                                                                                                                         (5-28)
+
+
+                                             W e now u s e t h e o r t h o g o n a l i t y p r o p e r t y o f t w o                                                             eigen-
+functions to find a r e l a t i o n between C                                                     n           and C            n           .           By noting certain
+                                                                                                      1                                2
+u s e f u l r e l a t i o n s i n r e f ( 5 ) and r e f ( 7 ) , i t i s found                                                                  that
+                       a
+
+               f           r
+                                   h i \ i ) h ( Y ^            d   r
+                                                                            ' - %   1
+                                                                                            2 ^       2
+                                                                                                              ^ i       2
+                                                                                                                             - ^           J
+                                                                                                                                               i   2   (
+                                                                                                                                                           V            •            (   5
+                                                                                                                                                                                             "   2   9   )
+
+
+
+
+where                  6.. i s K r o n e c k e r ' s                delta.
+                         J
+
+
+                                                                               24
+It i s also found that
+                                                a
+
+                                            f   r 2 j
+                                                        l( ii)
+                                                           A                d r =
+                                                                                    X2                   J
+                                                                                                                 i       U       i       )
+                                                                                                                                                     •                                 (    5
+                                                                                                                                                                                                "   3   0   )
+
+
+
+
+                  When these results a r e applied to equation (5-28),                                                                                                                 it
+follows that
+
+
+
+
+                                                                                                                                                                                        (5-31)
+                              [   C n i   =osh i n (           h   +   ;   i| ).2                C   n       2       S       i       n       h       ^(       h   +   -   )]       ,
+
+or
+
+         c
+             n = ^ c c h ^ h ^ ) -
+                  2                                                                                          __««L*.
+                                                                                    X (X -l)J[(X )sinh
+                                                                                     n               n
+                                                                                                         2
+                                                                                                                                                     n                                      , )
+                                                                                                                                                                               7Tpa
+                                                                                                                                                                                        (5-32)
+
+
+T h e p o t e n t i a l i s now
+
+
+                                                        <j> = s i n 0 - j r (-WyX + y )                                                          z                                              (5-33)
+             00
+
+        +
+         "2, i    J   (   X
+                              n     i )[c sinh ( X f ) + C
+                                                ni                 n                 n l         coth^h+- -^cosha f)]                                     m
+                                                                                                                                                                               n
+
+
+        n=l
+
+
+                                                               2—                  x
+                                                         4a                cosh(X -g-)           n
+
+
+
+
+                                          X ( X ^ - D J ^ X n ) s i n h - ( h + - ^ L _ Yft.
+                                            n   n                                        £
+                                                                                             n
+
+
+
+                                                                                 7Tpa^
+
+
+
+
+                                                                           25
+                        The final boundary condition, equation ( 5 - 9 ) ,                                                                                                                                           specifies
+conditions on the f r e e s u r f a c e .                                                                                   When equation (5-33) is s u b s t i -
+tuted           into equation (5-9) and r e a r r a n g e d                                                                                                              the r e s u l t i s
+
+                                                                                     s r(t3yh+i7 )-2a rSy
+                                                                                         2
+                                                                                                                                 z               t                                                                                   (5-34)
+
+
+
+        +       s f     2
+                                                    iL n£)_
+                                                         x
+                                                                                                     r     C n i        coshfV^Vl^y                                                          c o s h
+                                                                                                                                                                                                       ( ^)l x
+
+
+                    n   ^sinh^l(h _i| )                              +                   2
+                                                                                                 L
+                                                                                                                                     Vpa<V                                X (X 2-l)J X )
+                                                                                                                                                                             n           n             l (           n
+                                                                                                                                                                                                                             J
+
+
+
+
+                        V                       a Jl^n-il                                            r                       J V n )                         +       4 25 sinh(X |)l
+                                                                                                                                                                         a       y                           n                   =   Q >
+
+
+
+                    ^ s i n h ^ h                                        +       m               L
+                                                                                                                                 \   p a   3>                         X      ^       -       D   J     ^         )       J
+
+
+or
+
+                                                                                     r [ 2a u -s (3 h+^ )]  t       y
+                                                                                                                             2
+                                                                                                                                       y                     z               -                                                       (5-35)
+
+
+
+
+            n=l                                 a   *                        upa.^' "        v
+
+
+
+
+                +
+
+                        A g a i n the orthogonal                                                                    p r o p e r t i e s of the eigenfunctions
+are used.                           The r e s u l t i n g equation for C ^                                                                           n               is
+
+                                                     3
+                                                                     Ji(X )[ 2a U -s2(
+                                                                                     n                          t       y              W y       h+° )] -        z                                                                   (5-36)
+
+
+     iH^h -l)Ji (X )f           n/  2
+                                        \            /X„m\l  2
+                                                                                 n                              r                            x
+
+
+        — >-     ~    «C   s cosh( n     )+ a,^nsinh   ™ )1                                          n i
+                                                                                                                        2                    A               m                                                   A n
+
+
+
+      sinh^2(h+-i - \ j  U       % p 3 '     t a     V ^ / J     n
+                                                                         2
+                                                                                                     n
+                                                                                                                                                         a
+
+
+
+
+                                4a u„   2
+
+
+                                                                                 [a ^sinh(x A)-s cosh(xJ
+                                                                                             t                                         n
+                                                                                                                                                                     2
+
+            +
+                        X (Xn           n
+                                            2
+                                                -l)J (X )1                   n
+
+
+
+
+                                                                                                                    26
+Hence,
+
+
+         Cn,.     =           r-:           ™                                                                    *         ^ T .                     (5-37)
+           ^ ( X n ^ D J ^ t s Z c o s h / ^ )                                                                a . ^ s i n h f ^ ) ]
+
+
+
+                    X       | [ 2a ^            t                . 2(^h 7 ) ]sinh-^(h
+                                                                    8                          +   z                                 +       _E| )
+                                                                                                                                                 2
+
+
+
+
+                        - ^ [ a ^           t           S   1   n       h       ( X   n   ^ ) -    S   2 c o s h ( A             n   # ) j ] .
+
+
+
+              The complete                                      v e l o c i t y p o t e n t i a l i s now found by s u b s t i t u t i o n .
+It i s
+
+                                                <j> = s i n 0 ^ r ( - t o x + v )                             z                                          (5-38)
+
+
+               oo                               2aJ ( A     x               n    X)                                          a   =
+
+
+              + /               o                                                         ^                           - 2
+                                                                                                                            T ~ UvCosh Xj,—)
+
+
+
+
+           cosh - ^ l ( x + h                                   ^-^2 )                         / =            a                              h       h
+
++    ^        r       r    ^P " .       ( 2 u J S t — c o s h ( X - o ) - a. s i n h ( Xy,— ) j
+                                                                        3                                 2
+                                                                                                                                         n
+
+     2     / X m»,  n A    .   X m \         yL A„  n        \      U      t/     n » t ia / J                                       I l a /
+
+    s coshi 3. o) + a —tisinh(_£L.oJ    +
+                                                                                                                  n
+
+             7i p a
+              v         d
+                                71-pa '
+                                    1       a                                             13
+
+
+
+
+          +       [2a^      y   -s (U h +^ ) ] s i n h ^ ( h + ^ ) ) j ] '
+                                            2
+                                                            y                                                                    2
+
+
+
+
+                                                                                      27
+         B.      F o r c e s and M o m e n t s
+
+                  I n a s m u c h as t h e f o r c e s a n d m o m e n t s e x e r t e d b y t h e f l u i d
+on the tank w a l l s a r e found by i n t e g r a t i n g the p r e s s u r e ,            an i n s p e c t i o n
+o f e q u a t i o n (3-29) i s i n o r d e r .     I t i s c l e a r t h a t t h e a^x t e r m c a u s e s no
+sidewise difference i n pressure,                       a n d h e n c e no n e t f o r c e o r m o m e n t .
+T h u s we a r e l e d to the w o r k i n g f o r m of equation (3-29),
+
+
+                                                 p = -ps0 .                                           (5-39)
+
+                   R e f e r r i n g t o F i g . 1 . , i t c a n be s e e n t h a t t h e n e t f o r c e i n
+the positive z d i r e c t i o n is given by the i n t e g r a l ,
+
+
+
+                                                                                                      (5-40)
+
+
+
+                                        Trpa
+
+the i n t e g r a t i o n b e i n g t a k e n o v e r that p a r t of the t a n k w a l l w h i c h i s
+immersed.           S u b s t i t u t i n g equations (5-38) and (5-39) into equation
+(5-40) gives
+
+
+
+
+                                                        m
+
+
+
+                                                                                                     (5-41)
+
+
+
+
+                                                   28
+or
+                                                                                                               •h                  o
+                                                                                                                         7/pa
+
+
+                                                                  F   z   = 7rpa Ss           2
+                                                                                                           I/                ^
+                                                                                                                             j ( (- -UhyLXx ++ Ii /L )      z                       (5-42)
+
+
+
+
+                  oo
+                                                            2
+          +
+                   1   <X                n
+                                                 2
+                                                     -l)sinhjWh +                               na             2 )   [-2^aycosh(X ^)                            n
+
+
+                  n =l                                                                        ''pa"
+
+
+
+
+              cosh' n(x + h +J H )           V
+                                                                              2
+
+
+     +                       ?rpa        ^2uy[s ^cosh(Xf^)-a sinh(Xn^)]                                                        2
+                                                                                                                                                                      t
+
+
+         s cosbi-^ J + a ^ s i n h t e )
+              2                              n
+
+                7r 3'   t ar      \ 3'
+                                                              +
+                           n
+                                       p a                                            p   a
+
+
+
+
+          + sinh4p(h+                                        - ^ - ) [ 2a w -s (
+                                                                      2           t               y
+                                                                                                           2
+                                                                                                                 W y     h   + v )j)] Jz                        dx.
+
+
+
+
+                       When the i n t e g r a t i o n i s f i n a l l y c a r r i e d out, the z                                                                              compo-
+nent of f o r c e i s
+
+
+
+
+                                                     F   z   = »pa s J    2
+                                                                                                  —.
+
+
+
+
+          oo
+
+
+         „ 4 X (X      n       n
+                                   2
+                                       -l)sinh^(h + m ^ X n                                                          1
+                                                                                                                         ^             l   2 7 r p a   3)             T
+                                                                                                                                                                          l   2 »   p   a   ^
+         n-i                                  a \   7rpa
+
+
+
+
+                                                                                                      29
+                   tanhf^L „\    m
+
+
+                       '77p a '
+                                                       (^yfs^n c o s h ( X ^ ) - a s i n h ( A # ) ]
+                                                                                  n     t       n
+
+          s +a ^tanh^L™
+               2
+                       +
+
+
+              Id.      X
+                                          7rpa                                                         (5-43)
+                                                                                                        cont'd.
+
+     +
+         [2a   t W y   -s2(   U y h   +   V z ) ]   s i n h   ^   ( h +   _ £ ,j J J
+                                                                             2
+
+
+
+
+                   I n a s i m i l a r f a s h i o n t h e m o m e n t i s f o u n d t o be
+
+
+
+
+                                                                                                        ( 5 - 44)
+
+
+
+
+w h e r e the f i r s t i n t e g r a l r e p r e s e n t s the c o n t r i b u t i o n of the tank w a l l
+and the second that of the tank b o t t o m .                                     Using equations (5-38) and
+( 5 - 3 9 ) as b e f o r e g i v e s t h e m o m e n t :
+
+
+
+                                                                                                        (5-45)
+
+
+
+                                                                                 7rpa
+
+
+
+
+                                                                    30
+            oo
+
+    f
+            ) ~2      T~,   m~~ F                                                                            2
+                                                                                                                         f W cosh(X -f)
+                                                                                                                                     y                   n                          (5-45)
+    n       y(^ -l)sinh^(h+^ )L
+                      2
+                                                                                               2
+                                                                                                                     X       n   Y
+                                                                                                                                                                                    cont'd.
+
+
+
+                              coshAi                                   (   x       +   h   +       m     )
+                    -j—                                                       * P v ^ (2EL s - ^ c o s h ^ ^ - a . s i n h ( X - f r )
+                                                                               s
+                                                                                                   a                                             2
+                                                                                                                                                                                    n
+
+
+            s^cos h ( ^ ) + a                                  +       J ^ s i n h / J ^        n         ^      t           V
+                                                                                                                               ^ J   y   L           X                          n       ;
+
+                              "7rpa""                              L           a
+                                                                                                   Vpa* '        5
+
+
+
+
+   + [2a (j - s (                     2
+                                           U y       h+^ )] sinhAi(h+          z                                                      -EL)                   xdx
+                                                                                                                                     7rpa
+
+
+
+
+   + * s      P           /       ) r [                  U y   (h +                                    — )+v ]
+                                                                                                         2               z
+
+
+                                                                                           7rpa
+
+
+
+
+        f                                 2 a
+                                                 Jl<*n-P
+                                                      S                                                                              -2^w cosh^(h +                   m
+   v                      —       —                                                                                                                  v
+
+
+                                                                                                                                                                     7rp a.'
+   n=i ( V - D W                                                                                       Trpa
+
+
+
+
+                              ^rpa         1 3
+                                                 '             x           a
+                                                                                                   »7rpa^'
+
+
+
+
+  + [2a w -s (    t       y
+                                  2
+                                          W y    h + F ) ] s i n h ^ i ( h + — )}]J                                                          2               r dr
+                                                                                                                                                              2
+
+
+
+                                                                             7rp a
+
+
+When the i n t e g r a l s i n equation (5-45) a r e evaluated,                                                                                                     i t is found that
+
+
+
+                      M       y   = 7rp 2            a         s
+                                                                                                                                                                                (5-46)
+
+
+
+
+                                                                                                         31
+                                           ^P -        3               J
+                                                                                                                                                                                                                          cont'd.
+
+
+     00                                                                                                                 -A,
+ +   %                                                            2a   2
+
+
+
+
+ n   f ^n (A
+     1
+               2
+                           n
+                               2
+                                       -l)sinh^{h                                  + 7 r   - - )^
+                                                                                               m
+                                                                                                       2                             S    2          +                   V a n h / V " )
+                                                                                                                                                                                   pa-
+
+
+
+     ( [2a u - s ( u h + r ) ] s i n h ^ . ( h + —
+                           y
+                                           2
+                                                           y                   z                                                         2       ) + 2Wy[s                           2
+                                                                                                                                                                                                    cosh(A -|-) n
+
+
+
+                                                                                                                                  7rp a
+
+
+ -a.sinMA                                                             + 4 f u ( ^      y                       (h +                          ) sinh ^                                (h +     ™   )     2
+   t                                       a       J
+                                                       /                  An y \ 2 a                           v
+                                                                                                                                                                         a                  Trpa^
+
+
+
++| c o s h ( A                             n       | ) - ^                     sinhtAn^) - c o s h ^ ( h +                                                                               )j j           J
+
+
+
+
+          I n o r d e r to use equations ( 5 - 4 3 ) and ( 5 - 4 6 ) i n m i s s i l e                                                                                                                          dynamics
+work,          i t i s convenient to w r i t e the above r e s u l t s i n t e r m s of four
+transfer               functions:
+
+
+
+                   F       z                                           o f          _m                             v                         2   a       s   2   t   a   n   h   (
+                                                                                                                                                                                     »fa 3' 1
+                                                                                                                                                                                                                              •)
+
+
+
+                                                                                                                                                                                                                          (5-47)
+
+
+
+                   J               =                       ffpa2 (__Ei
+                                                                  8                        (       h   +   l        J£   )                                                                                            (            4   8   )
+
+
+                   -                                               ]   Trpa^                   1
+                                                                                                                   2 7rpa^'
+                       y                                            ^
+
+          00
+
+     +Y                                                                                                                r4^sinh/V?Jcosh^(h +4                                                                         — J
+      ^
+      n   =    ! -An v( -An - l ) s i n h ^ (V"
+                       n               n      h +
+                                               2
+                                                • ™ j L *                  a                                   2
+                                                                                                                              n
+                                                                                                                                                 ^ p a *                                        a   V
+                                                                                                                                                                                                            ^       .pa ' 2
+
+
+
+                                                  7rpa
+
+
+
+
+                                                                                                                   32
+                                                                                                                                                                    (5-48)
+                                                                                                                                                                    cont' d.
+    +     [2a - 2 ]sinhLn
+                    t               S           h                                      ( h + ;   ^ ,)J2                          j
+
+
+
+    J =        7   rpa2                 s       )    +(h + l
+                                                         a
+                                                                                                                                                                    (5-49)
+     7.                                          J *         ^Trpa
+
+
+
+
+n   4i                                  A ^ U ^ - D p + a ^ t a n h f - t o ) ]
+
+
+
+
+f~            " '       P       a       S
+                                                 I *Ta '              2       h    +
+                                                                                         V a              2
+                                                                                                                                               '                   <5-50)
+ y
+                                                00                                                                                        c/
+4    1
+               "Pa                  2
+                                            n   4 X  1       n
+                                                                 2
+                                                                     (X   n
+                                                                              2
+                                                                                  -Dsinh|n(h H/V                         +                         _       '           »       7
+                                                                                                                                                               a
+                                                                                                                                                                   7rpa3'
+
+
+
+         ([2a -s h]sinh-^(h+
+               t
+                            2
+                                                                                        ™ ) +2[ ^coshlX ^)-a^inhf^)]
+                                                                                                              B                      Ir                               )
+
+
+
+
++ 4      fAv,(\-Za.
+          n     t 2'< — > - i n h i » ( h       h+
+                                                                 2                                +           -2 ) ^co.h(> |»
+                                                                                                                    2        +                         n
+
+                                                         7Tpa                                                 7r pa
+
+
+
+
+          ^         S       inhU -|)-cosh^(h             n                                            +           ^ -    2       ) ) ] }
+
+                                                                                                                  7rpa                ' J J
+
+
+
+
+                                                                                                 33
+                                    REFERENCES
+
+
+
+
+(1 )   A s h l e y , H . , D y n a m i c Effects of F u e l i n T a n k s ,            Notes
+       for a Special Summer P r o g r a m ,                     16.059-Aerodynamics
+       of M i s s i l e s , M . I . T. Dept. of A e r o . E n g . ,          Cambridge,
+       1957
+
+(2)    C o b u r n , N . , V e c t o r and T e n s o r A n a l y s i s , The M a c -
+       M i l l a n Co. , New Y o r k ,             1955
+
+(3)    G r a h a m , E. W. , The F o r c e s P r o d u c e d by F u e l O s c i l -
+       lation i n a Rectangular Tank, Douglas A i r c r a f t                          Co.
+       Report No. SM-13748,                       1951
+
+(4)    G r a h a m , E. W. and Rodriguez, A . M . , The C h a r a c t e r -
+       i s t i c s of F u e l M o t i o n W h i c h A f f e c t A i r p l a n e D y n a m i c s ,
+       D o u g l a s _ A i r c r a f t Co.    R e p o r t No. SM-14212,1951.             Also
+       i n J o u r n a l of A p p l i e d M e c h a n i c s ,   V o l . 19, N o . 3,    Sept.
+       1952, pp 3 8 1 - 3 8 8 .
+
+(5)    Hildebrand, F. B. , Advanced Calculus for Engineers,
+       P r e n t i c e - H a l l , I n c . , N e w Y o r k , 1949
+
+
+(6)    H o w e l l and E h l e r s , E x p e r i m e n t a l I n v e s t i g a t i o n ofjthe
+       Influence of M e c h a n i c a l Baffles on the F u n d a m e n t a l
+       S l o s h i n g Mode of W a t e r i n a C y l i n d r i c a l T a n k ,         Ramo-
+       Wooldridge Report No. G M - T R - 6 9 ,                     1956
+
+(7)    J a h n k e , E . and E m d e , F. , Tables of_Functions_with
+       F o r m u l a e and C u r v e s ,          Fourth Ed. , Dover Publications,
+       New Y o r k ,       1945
+
+(8)    K a c h i g a n , K. , F o r c e d O s c i l l a t i o n s of a F l u i d i n a
+       C y l i n d r i c a l Tank, Convair Report No. Z U - 7 - 0 4 6 ,                  1955
+
+
+
+
+                                             35
+(9)       L a m b , H. , Hydrodynamics, Sixth Ed. , Dover Publica-
+          t i o n s , New Y o r k ,     1945
+
+(10)      Lorell,      J. ,    F o r c e s Produced by F u e l O s c i l l a t i o n , Jet
+          Propulsion Laboratory Progress                         Report      20-149,
+          C a l i f o r n i a I n s t i t u t e of Technology,     1951
+
+(11)      L u s k i n , H . , and L a p i n , E. , ' A n A n a l y t i c a l A p p r o a c h to
+          the F u e l Sloshing and B u f f e t i n g P r o b l e m s of A i r c r a f t , "
+          J.    of the A e r o .    S c i . , V o l 19, N o . 4, A p r i l     1952,pp217-
+          228
+
+(12)      M i l e s , J . W. , 'An Analogy A m o n g T o r s i o n a l R i g i d i t y ,
+          Rotating F l u i d I n e r t i a , and Self Inductance f o r an
+          Infinite C y l i n d e r , " j . of the A e r o .      S c i . , V o l 13, N o . 7,
+          J u l y 1946,       pp377-380
+
+(13)      M i l e s , J . W. , ' A p p r o x i m a t e A n a l y s i s of D a m p i n g Rings
+          in Fuel Tanks," Interoffice Correspondence,                             The     Ramo-
+          W o o l d r i d g e C o r p . , 1956
+
+(14)      Schy, A . A      , A T h e o r e t i c a l A n a l y s i s of the E f f e c t s of
+          F u e l M o t i o n o n A i r p l a n e D y n a m i c s , N . A . C. A .      Tech-
+      l   n i c a l N o t e 2280,     1951
+
+(15)      W i d m a y e r , E . a n d R e e s e , J . R. , M o m e n t o f I n e r t i a , a n d
+          D a m p i n g of F l u i d i n T a n k s U n d e r g o i n g P i t c h i n g O s c i l -
+          lations, N . A . C.A.           R e s e a r c h M e m o r a n d u m L 5 3 E 0 1 a , 1953
+
+
+
+
+                                           36
+

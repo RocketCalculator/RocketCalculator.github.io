@@ -1,0 +1,447 @@
+Rocket Science and Technology                  4363 Motor Ave., Culver City, CA 90232
+                                             Phone: (310) 839-8956 Fax: (310) 839-8855
+
+
+                     Flight Path Angle Dispersions (rev.1)                    08 May 2011
+
+                                     By C. P. Hoult
+
+Introduction
+         “Dispersion” can take on several, distinct meanings within engineering. Here, we
+mean the errors in trajectory state vector at a specific time, or errors in a defined event,
+e.g., apogee or impact. Errors are usually, but not always, described in statistical terms,
+e.g., the mean value of altitude 30 seconds after second stage ignition. Dispersions can
+be, and often are, a major concern in mission planning and flight operations. For
+example, post impact payload recovery planning is contingent upon good prior
+knowledge of the likely impact point location.
+
+         For sounding rockets, all dispersions act to either rotate the velocity vector or to
+change its length (energy). Sounding rockets tend to fly nearly vertically. It follows that
+their apogee errors mainly arise from energy errors while their impact errors are
+principally due to velocity vector rotations. At launch, there are no dispersions because
+we know where the launch site is. As perturbations continue to act, dispersions gradually
+build up with the passage of time. However, it is convenient to assess the trajectory state
+after all the perturbations have acted, and for those perturbations that rotate the velocity
+vector, define an equivalent launcher angle that would produce the same effect.
+
+        There are two prime perturbations that rotate the velocity vector, thrust
+misalignment1 and wind gusts2. These both excite the both rocket modes, the short period
+and the phugoid (trajectory). The essential short period response does not cause the
+rocket center of mass to move much. Rather, it excites angle of attack rotations about the
+C. M.. For this reason, short period motion is very important for structural loading, but
+of secondary importance to trajectory dispersions. In contrast, the phugoid mode
+response has very modest angle of attack motions but large center of mass motions. It is
+the phugoid, then, that describes trajectory dispersions. The key idea here is to take
+existing short period analyses for thrust misalignment and gusts, obtain their behaviors at
+points remote from the launcher, and assuming that most oscillations have been damped
+out, find the implied trajectory rotations.
+
+        One more element of the dynamics story needs mention, and that is the distinction
+between body-fixed and earth-fixed perturbations. Thrust misalignment is, at its roots, a
+conflation of structural misalignments that rotates with the body while the wind field,
+including gusts, is the quintessential earth-fixed perturbation. For both perturbations, the
+greatest velocity vector rotations occur at very low altitude. Thus, the prolonged
+constraint provided by a longer launch rail reduces dispersions.
+
+
+                                                                                            1
+         Finally, this analysis is expected to be conservative; i.e., it will probably
+overestimate impact point errors. The thrust misalignment response is approximated by
+its steady state value. The actual transient response never has time to reach its steady
+state value. Similarly, the low altitude gust response is represented by its long term
+asymptote. In fact, at low altitudes the response is mostly less than the long term
+asymptote.
+
+Nomenclature
+________Mnemonic_____________________Definition_________________________
+                            Standard deviation in flight path angle from the
+                            vertical down to the velocity vector
+                           Standard deviation in one component of the
+                            dispersive flight path angle due to thrust
+                            misalignment
+                            Standard deviation in one component of the flight
+                            path angle due to wind gusts
+                            Dispersive flight path angle = vector amplitude of
+                           Easterly component of the dispersive flight path angle
+                           Northerly component of the dispersive flight path angle
+                           Steady state standard deviation in angle of attack due to
+                            thrust misalignment
+                           Standard deviation in gust angle of attack
+                           Roll angle
+                           Thrust
+                            Distance from nozzle throat to center of mass
+                            One component of the thrust misalignment angle
+                            between the thrust vector and the rocket axis of
+                            symmetry
+                            One component of the lateral offset of the center of
+                            mass from the thrust vector
+                            Lift coefficient slope
+                            Dynamic pressure
+                           Atmospheric mass density
+                           Aerodynamic reference area
+                            Aerodynamic lift force
+                           Launcher length
+                            Altitude
+                            Vertical flight velocity
+                            Acceleration along the flight path
+                           Acceleration due to gravity
+                            Rocket mass
+                           Rocket pitch moment of inertia
+
+
+
+                                                                                           2
+                                    Standard deviation in planar gust velocity
+
+________Mnemonic_____________________Definition_________________________
+                            Pitch wave number
+                            Roll wave number
+                            Pseudo gust correlation wave number
+
+Thrust Misalignment Analysis
+        Dynamically, neglecting the short period damping per ref. 1 does not have a great
+effect on angle of attack estimates. But, one of the neglected terms,               ,
+provides the only mechanism, apart from gravity, for rotating the velocity vector. So, in
+order to estimate the flight path angle response, we neglect short period damping to
+estimate the steady state angle of attack, but retain aerodynamic lift to estimate the flight
+path angle. Specifically, neglect the     contribution to the high frequency part of the
+solution in which the velocity vector has not the time to rotate significantly while
+retaining it for the low frequency part of the solution for which there is enough time for
+significant rotation..
+
+        It can be easily shown that a transient analysis for the angle of attack response can
+be obtained in terms of Fresnel integrals. Even though damping has been neglected in
+deriving short period solutions, it’s still there. We assume short period damping will act
+promptly (in the phugoid time frame) to suppress any oscillations. The approach used
+here is to assume the steady state angle of attack is immediately attained upon departing
+the launcher. With this simplification, an approximate flight path angle solution can be
+easily found. However, the need to numerically integrate to resolve the flight path angle
+response into northerly and easterly components remains.
+
+         Next, there are two sources for the normal force causing the flight path angle to
+change, gravity and aerodynamic lift. The normal force due to thrust misalignment itself
+can be neglected because, while the thrust misalignment is in pitching moment
+equilibrium with the aerodynamic lift, the aerodynamic moment arm, the static margin, is
+must less than the thrust misalignment moment arm, the distance from nozzle throat to
+the c.g.
+
+         Reference1 derives the steady state angle of attack response for a rolling sounding
+rocket accelerating in vertical flight. Its treatment of the steady state response follows the
+lines laid down in ref. 2 which addressed the analogous problem for aircraft flying at
+constant speed. The adaptation to accelerated, time-varying, response of a rocket is
+documented in ref. 3.
+
+       Now, start with the steady state angle of attack as given by eq. (16) of ref. 1:
+
+
+                                                                                          (16)
+
+
+
+                                                                                                 3
+It is important to note that the perturbing effects,   and , are statistical in nature. See
+ref. 5 for data on these parameters. If these be taken at the standard deviation level, their
+sum in eq. (16) above must be replaced by               to generate     at the standard
+deviation level. The resulting lift (a constant) is
+
+
+                                                                                          (2)
+
+
+Now, use the methods of ref. (2) to write
+
+
+                                                        , or
+                                                                                           (3)
+                                                         ,
+
+
+
+subject to the initial condition that        .
+The solution is
+                                                                                           (4)
+
+
+Figure 1 below shows a typical plot of eq. (4) when             . Note that most of the
+velocity vector rotation happens at low speed and altitude.
+
+
+
+
+                                                                                                4
+                                         Flight Path Angle due to T hrust M isalignment
+
+                               0.9
+                               0.8
+  Weight * Flight Path Angle
+
+
+
+                               0.7
+                               0.6
+                               0.5
+              / Lift
+
+
+
+
+                               0.4
+                               0.3
+                               0.2
+                               0.1
+                                 0
+                                     0                 100              200               300         400
+                                                             Altitude / Launcher Length
+
+                                          Figure 1 Flight Path Angle due to Thrust Misalignment
+
+        If the rocket did not roll, Fig. 1 would show a typical boost phase flight path angle
+history. But, flight path angle is, in fact, a vector quantity. That is, it has both a northerly
+component and an easterly one as well. Thus, in time the change in flight path angle
+   can be resolved into its northerly and easterly components, and .
+
+Now, look at Fig. 2. The northerly
+component of flight path angle is                                                  N
+                                     ,
+                                                                    Launcher
+                                                                                           
+and the easterly component is
+                                                                                                  E
+                                     .
+                                                                               Figure 2
+
+Recall from ref.1 the roll angle as a function of altitude is
+
+                                                                                                        (5)
+
+The process to be followed now is straightforward. We get from eq. (4) and the roll
+angle from eq.(5). Numerical integration using a simple Euler scheme develops the and
+   components. A brief numerical study shows that three figure accuracy can be attained
+using an integration step size of 4 feet. Their root sum square generates their vector
+amplitude, called the dispersive flight path angle .
+
+
+                                                                                                            5
+                                                                                                                    (6)
+
+Since the thrust misalignment torque can have arbitrary roll phasing (it’s uniformly
+distributed with roll angle), the dispersive flight path angle is what’s needed to estimate
+impact point dispersion due to one component, say, in pitch, of the perturbing effects. Of
+course, there is a second, or yaw component, statistically independent, set of perturbing
+effects acting at right angles to the first and having the same standard deviation as the
+first. In the statistical sense, the easterly yaw displacement is the same as the negative of
+the northerly pitch displacement, and the northerly yaw displacement is the same as the
+easterly pitch displacement.
+
+
+                                                       Dispersive Flight Path Angle
+
+                                        0.045
+  Amplitude of Flight Path Angle, rad
+
+
+
+
+                                         0.04
+
+                                        0.035
+                                         0.03
+                                        0.025
+
+                                         0.02
+                                        0.015
+                                         0.01
+
+                                        0.005
+                                           0
+                                                0            0.5               1                1.5                  2
+                                                             Burnout Altitude / Roll Wavelength
+
+                                                    Figure 3 Typical Dispersive Flight Path Angle
+
+
+The basis for Fig. 3 is                                       ,          and       feet. It clearly indicates the
+benefits of rolling an integer number of roll wavelengths during boost. It also shows that
+a single roll cycle provides the least dispersion, a characteristic of a wide variety of axial
+accelerations.
+
+Wind Gust Analysis
+       Reference 6 documents the short period gust response statistics. The important
+conclusion to be drawn from ref. 6 is above the first correlation distance, the standard
+
+
+
+                                                                                                                          6
+deviation in angle of attack is approximately constant. This insight can be used as the
+foundation of an approximate analysis of gust-induced phugoid motion.
+        Now, following eq. (18) of ref. 1 and assuming a nominally vertical trajectory,
+
+
+                                                       .                              (18)
+
+
+
+                                                                   ,
+
+
+where eq. (15) of ref. 6 gives
+
+                                                           .                           (15)
+
+
+Here is the asymptotic value of the standard deviation in the gust angle of attack. Since
+the forcing function is at the standard deviation level, the flight path angle response is
+also at the same level. That is, if the aerodynamic lift is always at the standard
+deviation level, then the flight path angle will always be at the one standard deviation
+level.
+
+       After integration we have
+
+
+                                                      , where
+                                                                                            (7)
+
+                                                               .
+
+
+Quantitative parameters needed to evaluate eq. (7) can be assessed from data in ref. 5.
+Equations (7) above describe the planar gust-induced flight path angle standard deviation.
+
+Statistics
+         The last issue is that of converting a dispersive flight path angle to an impact
+point error. First, combine the thrust misalignment and wind gust errors. Since these
+arise from statistically independent causes, the planar standard deviation in flight path
+angle is
+
+                                                                                       (8)
+
+The flight path angle standard deviation in eq. (8) above will vary with time/altitude. It is
+suggested that foe purposes of trajectory dispersion analysis, that it be evaluated at
+
+
+
+                                                                                              7
+burnout when all the thrust misalignment effects and nearly all the wind gust effects can
+be captured.
+
+       Suppose we could make a point mass trajectory simulation starting from
+
+                                                                                         (9)
+
+This would yield the impact range corresponding to . All that remains is to select to
+match the calculated burnout dispersive flight path angle as given by eq. (8). Refer now
+back to eq. (3) without any aerodynamic lift. Its solution is
+                                                   , or
+
+                                                                                        (10)
+
+
+Here, evaluate and h at burnout using eq. (8) to find the planar standard deviation in
+flight path angle. Then, eq.(9) generates the initial condition for a point mass trajectory
+run to assess one component of the impact point displacement error.
+
+                 The statistics of the problem merit some attention. First, we assume there
+are no biases. Wind gusts are known to have no mean value as documented in ref. (5).
+Next, we assume there are no known biases in          and because the manufacturing and
+assembly processes used don’t have any. Next, a close examination of these same
+processes usually shows that each vector component of error effect (in body-fixed axes)
+arises as a sum of many smaller, independent effects, thus justifying the use of the central
+limit theorem. The two vector components of error are, by the same reasoning, mutually
+independent, as are and . Wind gust effects arise also from the sum of many small
+gusts with two mutually independent vector components. Finally, we unleash the power
+of the central limit theorem to assert that each component (north-south or east-west) of
+the impact point displacement error is normally distributed and independent of the other
+component.
+
+       Now, let’s explore the uses of this model. First, plug in some typical numbers and
+see how the effective launcher QE error, , varies with burnout altitude. As shown
+below, in this example, thrust misalignment has the most significant influence.
+
+
+
+
+                                                                                              8
+                                            Effect of Burnout Altitude Variation
+
+                          0.03
+  Launcher QE Standard
+
+
+                         0.025
+      Deviation, rad.
+
+
+                          0.02
+                         0.015
+                          0.01
+                         0.005
+                                0
+                                        0           500            1000             1500     2000
+                                                            Burnout Altitude, ft
+
+
+The two design variables that can be easily adjusted to vary this are and . Suppose
+that the burnout altitude were 1850 feet. The great beauty of working in a spread sheet is
+the rapidity with which design trade studies can be accomplished. For this case, the
+nominal results above were based on a roll wave length of 1000 feet and a pitch wave
+number of 0.015867 radians/foot. Extensive exploration has shown that the 1000 foot
+roll wave length is close to optimum over a broad band of pitch wave numbers. But, as
+sketched below, the pitch wave number makes a big difference!
+
+
+                                                  Effect of Static M argin
+
+                         0.08
+  Launcher QE Standard
+
+
+
+
+                         0.07
+                         0.06
+      Deviation, rad
+
+
+
+
+                         0.05
+                         0.04
+                         0.03
+                         0.02
+                         0.01
+                            0
+                                    0           0.005       0.01          0.015       0.02   0.025
+                                                        Pitch Wave Number, rad/ft
+
+
+This displays a very interesting knee in the curve. That is, in this part of design space,
+more static margin can significantly reduce trajectory errors. The reader is cautioned
+
+
+                                                                                                     9
+however, to consider other consequences of bigger fins before revisiting the old drawing
+board (Yes, I know it’s all done in a computer these days.)
+
+       Finally, the above analysis is for a nominally vertical flight. These results can be
+adjusted for non-vertical flight per ref. (3), to create the product needed for mission
+planning and range safety.
+
+References
+   1. “Thrust Misalignment Response”, by C. P. Hoult, RST memo, 30 December 2010
+   2. Phillips, W.H., “Effect of Steady Rolling on Longitudinal and Directional
+       Stability”, N.A.C.A. TN 1627, 1948.
+   3. Hoult, C. P., “A Simplified Ballistics Model for Sounding Rockets”, Proceedings
+       of the Unguided Rocket Ballistics Conference, University of Texas at El Paso –
+       Texas Western College, El Paso, 30 August – 15 September 1966
+   4. Hoult, C.P., Camera Pod Drag Estimation”, RST memo, 08 December 2010.
+   5. “Standardized Perturbation Values to be Used in the Calculation of Dispersion
+       and Structural Loads”, by R. L. Ammons and C. P. Hoult, Aerojet-General
+       Corporation memo 8110:M0658:ak, 16 September 1970
+   6. “Sounding Rocket Gust Angle of Attack”, by C. P. Hoult, to be published in the
+       Journal of Spacecraft & Rockets
+
+
+
+
+                                                                                         10
+

@@ -1,0 +1,174 @@
+Rocket Science and Technology                 4363 Motor Ave., Culver City, CA 90232
+                                            Phone: (310) 839-8956 Fax: (310) 839-8855
+
+                   Trajectory Constraint Solution Algorithm                   15 July 2014
+
+Introduction
+        In some sounding rocket competitions, notably the annual Intercollegiate Rocket
+Engineering Competition (IREC) sponsored by the Experimental Sounding Rocket
+Association (ESRA) the contestants are asked to achieve apogee altitude and landing
+range as close as possible to specified aim points. Usually the rocket itself is fully
+defined a priori. That is, the thrust curve, the weight statement, and the drag coefficient
+are fully known and defined at the start of the process. The purpose of this memo is to
+document an iterative, man-in-the-loop algorithm for solving this problem. A man-in-
+the-loop algorithm is needed because many trajectories are significantly nonlinear. The
+control variables available are the drogue parachute deployment time and the initial
+launcher quadrant elevation angle (QE).
+
+Several problems can arise in this process. In no particular order these are:
+   1. The sensitivity determinant is singular, or nearly so. In this case the corrections to
+       the initial estimates of the drogue deployment time and launcher QE become very
+       large. The remedy is to create a new starting point and try again.
+   2. Suppose the solution is a QE too high from a range safety perspective. Then select
+      the highest QE allowed and find the drogue deployment time that yields the
+      desired apogee.
+   3. What if there is no solution? That is, the rocket lacks the energy to satisfy both
+      constraints. In this case, satisfy the apogee constraint while maximizing the
+      impact range.
+
+These issues will be addressed in that order in the remainder of this memo.
+
+Notation
+______Mnemonic_____________________Definition____________________________
+                         Drogue parachute deployment time, sec after liftoff
+                        Initial launcher quadrant Elevation angle above the
+                         horizon
+                        The maximum QE allowable for range safety reasons
+                        Apogee altitude, feet
+                         Landing range from the launcher, feet
+
+
+
+
+                                          Desired apogee altitude, feet
+______Mnemonic_____________________Definition____________________________
+                        Desired landing range, feet
+
+
+                                                                                          1
+                               Increment dilution factor
+
+Nominal Analysis
+        Begin by guessing the nominal values of drogue deployment time and quadrant
+elevation angle. Make a trajectory simulation using these values. Then make two more
+simulations, one with slightly different drogue deployment time and the other with
+slightly different quadrant elevation angle. Increments of 1 second and 1 degree are
+appropriate. Label the values for the first trajectory with the subscript 1, and the next
+two with subscripts 2 and 3 respectively. Then, estimate the partial derivatives:
+
+
+                                                    ,
+
+
+
+
+                                                    ,
+
+
+
+                                                    , and
+
+
+
+                                                    .
+
+
+Clearly, trajectory 2 has the same quadrant elevation angle as trajectory 1. Similarly,
+trajectory 3 has the same drogue deployment time as trajectory 1.
+             The next trajectory, labeled with subscript 4, is the first with adjusted
+estimates on drogue deployment time and launcher quadrant elevation angle. If these
+adjustments are small, a linear Taylor series will provide the tool needed:
+
+                                                            , and
+
+                                                            , where
+
+                                                        , and
+
+                                                        .
+
+Here   and are the desired apogee and landing range.
+
+
+
+
+These can be solved to give:
+
+
+
+                                                                                       2
+                                                           , and
+
+                                                           , where
+
+
+
+
+As already noted, the sensitivity determinant should always be checked to ensure it's
+not too small. Here is a factor (          intended to slow down the rush to a solution to
+prevent overshoot.
+             From here on it's straightforward. Run a new trajectory simulation with
+and       . A new set of adjustments can be found using the above process. Set the
+trajectory 4 just found as the new trajectory 1, and iterate.
+
+Excessive Quadrant Elevation Angle
+            Consider what can happen if the QE resulting from the above process were
+too high. This implies the desired landing range is too close to the launcher, and, will,
+therefore, be unacceptable to range safety. In such a case, select the maximum allowable
+QE, and iterate for the drogue deployment time:
+
+                                                 , and
+
+
+                                                    .
+
+
+Insufficient Energy
+              Another potential problem is that no viable solution meeting both constraints
+can be found. In essence, the rocket does not have enough energy to reach both the
+desired altitude and landing range. Then, because the apogee constraint is the more
+important one in the ESRA culture, continue to try to satisfy it while seeking the greatest
+possible range.         To find the maximum range possible while still reaching the
+constraint altitude, simply set the coast time to a very large value (e.g., 999 sec) and
+iterate to find the QE that maximizes landing range while achieving the desired apogee.
+
+            These results have been coded in an Excel® spreadsheet named
+TRAJCON.xls. The example below is based on a desired apogee of 10000 feet AGL, a
+desired landing range of 5000 feet and      . We start with an initial iteration based on
+experience/guesswork. The following table summarizes the initial steps in the trajectory
+design based on SKYAERO runs:
+
+   Iteration          Apogee         Landing Range,        Quadrant           Drogue
+                     Altitude, ft          ft            Elevation, deg     Deployment
+                                                                             Time, sec
+               1         11237.65            2822.23                 85.0            13.5
+
+
+
+                                                                                         3
+              2         10473.11            3689.75            82.216            10.163
+              3         10243.85            3968.63            81.282             9.530
+              4         10090.37            4454.73            80.013             9.386
+              5         10047.32            4729.53            79.371             9.475
+              6         10023.51            4865.98            79.049             9.517
+
+Note that the drogue deployment time is measured from booster burnout. Each iteration
+requires 3 SKYAERO runs, one for the nominal case and the other two for the partial
+derivatives.
+             Finally, for this case the QE that maximizes range while still meeting the
+10000 foot apogee constraint is about73.34°.
+
+Resolution
+            When the iteration is close to a solution, stop and recall that drogue
+deployment is altitude based using an altimeter. Commercial digital altimeters typically
+have a granularity or resolution of 100 feet. From here on fix the drogue deployment
+time to that corresponding to the nearest 100 feet, and iterate to find the quadrant
+elevation angle matching the desired apogee. It may be necessary to do this with several
+drogue deployment altitudes to find the one matching the desired landing range most
+closely. In the above example, the best drogue deployment altitude is 9300 feet.
+
+
+
+
+                                                                                      4
+

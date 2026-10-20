@@ -1,0 +1,433 @@
+                                   G .     Le-itmann*
+
+         U . S .        N«?yaj: 0 r c t a a h . c e Test S t a t i o n
+
+
+
+
+                                                                                            Optimum                                Thrust P r o g r a m i n g                                for
+                                                                        High-Altitude                                         Rockets
+
+                                                                        .4 discussion of the problem of establishing the thrust-lime relation
+                                                                        which will achieve the optimum compromise between reduction in gravity and drag losses
+                                                                        and thereby result in minimum fuel        expenditure.
+
+
+
+                                                  INTRODUCTION                                                                     m a s s n e c e s s a r y t o be e x p e l l e d w i l l b e e x c e s s i v e l y l a r g e .
+                                                                                                                                   Evidently,         then, the          velocity       of       ascent m u s t      have      a
+
+        3        :\E      OF        THE         MOST
+
+                    o r o bbllee;m s a s s o c i a t e d
+                                                             IMPORTANT
+
+                                                                with
+                                                                                    exterior
+
+                                                                             high-altitude
+                                                                                                            ballistic
+
+                                                                                                           rocketry
+                                                                                                                                   special value at each p o i n t in space."
+                                                                                                                                   on    to   state      that the        determination               of
+                                                                                                                                                                                                          Goddard
+                                                                                                                                                                                                          the
+                                                                                                                                                                                                                         went
+                                                                                                                                                                                                                 necessary
+ • t h a t of                   c a r r y i n g a specified p a y                  load          to    a     desired
+                                                                                                                                   velocity-time           function        presents          a    new     and       unsolved
+height                  most             economically--i.e.,                    with        minimum                    ex-
+                                                                                                                                   problem          in the calculus          of v a r i a t i o n s .     Consequently,
+p e n d i t u r e of f u e l .                   T h e t w o m a i n deterrents to achiev-
+                                                                                                                                   he a b a n d o n e d a r i g o r o u s a p p r o a c h a n d c o n s t r u c t e d        an
+».ng a l t i t u d e a r e t h e f o r c e s o f g r a v i t y a n d                            aerodynamic
+                                                                                                                                   approximate,            numerical           solution.           Almost       a    decade
+drag, b o t h of w h i c h d i m i n i s h w i t h increasing a l t i t u d e .
+                                                                                                                                   after      the    publication           (1919)       of       C^oddard's         classical
+Oniortunately,                             the         requirements               for       reducing                   the
+                                                                                                                                   paper,      Hamel,      2
+                                                                                                                                                               in a very          brief      publication,           objected
+d e t e r r e n t effects of g r a v i t y a n d d r a g are a n t i t h e t i c a l .
+                                                                                                                                   t o t h e l a c k of r i g o r i n G o d d a r d ' s a n a l y s i s a n d        pointed
+( G r a v i t y losses a r e p r o p o r t i o n a l                         to flight t i m e whereas
+                                                                                                                                   o u t t h e existence of a s o l u t i o n b y m e a n s of the                  calculus
+frag               losses          are        proportional               to     some        power            of        the
+"elocity.                    Thus,            d i m i n u t i o n o f g r a v i t y losses                  requires
+             short         flight          time         i.e.,      a     high     velocity-                whereas
+reduction                   of       drag       losses c a l l s         for     low       velocity.               One
+^             the         problems              which        confronts            the       designer              of     a
+                                                                                                                                                                                                 RAYL          OAD
+ Moh altitude rocket,                                  t h e n , is t h e e s t a b l i s h m e n t           of       an
+optimum                      thrust             program                the     thrust-time                 relation
+v
+        'i'h           w i l l achieve the o p t i m u m c o m p r o m i s e                               between
+••-•-!-.iction i n g r a v i t y a n d d r a g losses a n d t h e r e b y                                     result
+                 i i n i m u i n fuel          expenditure.
+                 he A m e r i c a n            rocket       pioneer K. I I . G o d d a r d                    in his
+        ••        r "A       Method               of      Reaching             Kxtrcme            Altitudes"'
+             - rust in c a l l i n g a t t e n t i o n to the p r o b l e m                            of     thrust
+        " .{raming.                      For    purposes of               mathematical                     analysis,
+                 d'»rd      eonsideie/l                an     idealized           rocket              namely,            a
+                 • ' i r f ulai          cone,      pay         load      at. I he         tip, and           easing
+             .         drops             away      continuously                  (with          zero        velocity
+              .. r e ' . p e e t     t o the r e m a i n i n g r o c k e l )               as    (he       burning
+        -.'.]{(           feri-drs         (s«*c        I'ig-      0-        Goddard             inferred              the
+              .'.< n< f fij ',[ s o l u t i o n i<> h i - , p r o b l e m f r o m t h e f o l l o w i n g
+              NtjM'iit              " I I , at         any       i n t e r m e d i a l.e        altitude,              the
+•                  i( v    of       a.eent        be        very        great,     the air             icsistaiice
+        spending                   o n t h e s q u a r e of             the velocity)             w i l l also b e
+        < ry           j/reat.           On     the      other          hand,      if      the        velocity           of
+    ;
+         ' ' n t be v e r y s m a l l , f o r c e w i l l be r e q u i r e d t o o v e r c o m e
+K »vitv l o r a l o n g
+        ,:
+                                                 period         of      time.      Ill both            cases t h e
+
+
+             * iir.ui.     \crf.»lKil)istii-s A n a l y s i s S e c t i o n , C h i n a L a k e ,            Calif.                                    F i o . 1.   O c H i d a n l ' s ide:i|i/i-d r<K*kct.
+                                                                                                                              63
+                                                         A E R O N A U T I C A L                                      E N G I N E E R I N G                                     REVIEW — JUNE,                                                19 5;
+
+
+of    variations.                          More                    recently,                 other               workers—e.g.,                                              i>D            ( dD      2
+                                                                                                                                                                                                                                      dD2
+                                                                                                                                                                                                                                                              s            dD
+                                                                                                                                                                   =        _   _          Is —                  +        5 — —                      +       ~ —                     +
+Tsien        and             Evans,                           Lawden,                  and         Leitmann - —-have
+                                                                                                                                                         e
+                                                    3                             4                                           5    6
+                                                                                                                                                                                OS          \     OS                        osos                              C OS
+derived             necessary                                conditions                    for        the        existence                       of
+                                                                                                                                                                                                                     2s odD
+                                                                                                                                                                                                                          J
+                                                                                                                                                                                                                                                                       & + g                         \
+minimum                     initial            mass o f                     a rocket               required to                         trans-
+                                                                                                                                                                                                                           r
+
+
+                                                                                                                                                                                                                                                             1                 —5-       J)              = o            (4)
+p o r t a g i v e n b u r n o u t mass t o specified a l t i t u d e .
+                                                                                                                                                                                                                                C                OS                         c~                   f
+
+                                                                  THEORY
+                                                                                                                                                         A t burnout, /                          =
+     L e t m b e t h e mass o f t h e r o c k e t a n d 5 t h e a l t i t u d e
+                                                                                                                                                                            s.UbD/ds)                +         (D/c)]         tmtll              -       m    lg           +     D(s       u         h)                 (5)
+at    time             /.      A           dot                will          denote            differentiation                              with
+                                                                                                                                                                   T h e p r o b l e m of d e t e r m i n i n g t h e o p t i m u m                                                                       solution,
+respect t o t i m e .                           I t is a s s u m e d t h a t t h e                                   aerodynamic
+                                                                                                                                                         the               function             s(t)         which                     corresponds                               to        a         stationary
+drag D             is a f u n c t i o n o f s a n d 5 o n l y .                                                  The              effective
+                                                                                                                                                         value                  of    W o , is t h e n d e t e r m i n a t e .                                                 Eqs.            (3)         and         (5)
+exhaust            velocity                    c and                   the acceleration                          of         gravity g
+                                                                                                                                                         may                 be       solved             for         Si a n d                 s .            Eq.               (4)         is a                second-
+a r e t a k e n as c o n s t a n t .                                  ( T a k i n g account of t h e change
+                                                                                                                                                                                                                                                 t
+
+
+
+                                                                                                                                                         o r d e r d i f f e r e n t i a l e q u a t i o n i n s(t) f o r w h o s e i n t e g r a t i o n
+of g w i t h                a l t i t u d e modifies                              the f o r m of                  the             solution
+                                                                                                                                                         Si        and 5 i constitute initial values.                                                                          Upon              integration
+slightly. )    6
+                             C o n d i t i o n s a t t h e o u t s e t of p o w e r e d                                                    flight,
+                                                                                                                                                         of E q . (4) o v e r 0 <                                    / <              tu t h e v a l u e s o f h a n d So+ a r e
+t =        0, w i l l b e d e n o t e d                                b y subscript zero;                                conditions
+                                                                                                                                                         obtained.                         Eq.           (1)         can               then              be            integrated                          to       give
+at b u r n o u t , t =                     h, b y s u b s c r i p t o n e .                             Symbols +                              and
+                                                                                                                                                         mo+—^i.e.,
+— attached                     to the subscripts                                        will denote                       conditions
+                                                                                                                                                                                                                                            D     f's +                          gt\
+at t h e i n s t a n t succeeding / =                                                  0 and preceding t =                                       tj,     m    0+            =        exp                                                    - exp                                £ )           d l       _|_
+respectively.                      Coordinate                               s(t)       is a s s u m e d                   continuous                                                       (-                *                K
+over the whole                                 trajectory.                            Functions              s(t)             and              m(t)
+are t a k e n c o n t i n u o u s                                 over the interval                              0        <        /       <    t\.                                                                                                  nti           exp                                                 (6)
+T h e d i s c o n t i n u i t y of s a n d m a t t =                                                   0—i.e.,                impulsive
+boosting               at launch—is                                    permitted.                      (As       a        matter                 of      T h e v a l u e of i n i t i a l r o c k e t mass m                                                       0       is n o w f o u n d                      from
+fact,       it will            be              shown                   that           impulsive boosting                                   is        a   Eq.                (2).       T h e acceleration                                    s can be determined                                                   from
+r e q u i r e m e n t of t h e s o l u t i o n . )                                    A t t h e outset of                          powered               E q . ( 4 ) , w h e r e u p o n E q . (1) y i e l d s t h e t h r u s t
+flight,      / =             0, 5 =                      s0       =        0, 5 =           So =        0, a n d m =                            m.   0
+
+                                                                                                                                                                                            T     =          —cm                  — m(s                  +         g) +               D                                (7)
+After initial                  impulsive boosting,                                           s     =     So +           =          So =              0
+still, b u t 5 =                5      0   +   and m                                          A t burnout, t =                                 t\.                 It        is e a s y t o              show         6
+                                                                                                                                                                                                                               that              Eq.               (4)         possesses a                             first
+s =                =        Su $ = h-                             =        $u a n d m = W i _ =                               nil ( t h e s e            integral
+functions               being                  assumed continuous).                                          However,                          the
+acceleration s a n d the mass-flow r a t e m are n o t assumed                                                                                                                                                                                             i +                           gt
+                                                                                                                                                                                nig +       D                                                    I I exp I -                                                   0       (8)
+continuous                   at burnout.                                   Thus,            at t =                            §        =        §i_                                                            \os                          c,
+and m =                mi—                 A t t h e o u t s e t of coasting                                      flight,              / =       ti,
+                                                                                                                                                         Eq.                (8)       leads          to          the             immediate                                 conclusion                          that       £
+s — Su and m                       =           ?hi            —       0.
+                                                                                                                                                         c a n n o t v a n i s h i n t h e i n t e r v a l 0 < t < tj.                                                                     Since D                 =      0
+     The       equation                        of            rocket              motion           for       vertical                       flight,
+                                                                                                                                                         w h e n 5 = 0, b u t mg ?£• 0, i t f o l l o w s t h a t 5 ^ 0 .                                                                                          Hence
+neglecting                   earth's                     rotation                     and         taking             account                     of
+                                                                                                                                                         £©+               7^ 0, a n d i m p u l s i v e b o o s t i n g is a l w a y s r e q u i r e d .
+d r a g a n d g r a v i t y f o r c e s o n l y , is
+
+                             cm +                   (s        +       g)m        +     D(s,       s) =           0                              (i)                                                              SPECIAL                         CASE
+
+I n t e g r a t i o n o f E q . (1) o v e r t h e i n i t i a l b o o s t p e r i o d 5,                                                                           It        is c u s t o m a r y                to        express t h e                                   aerodynamic                             drag
+w h e r e 8 —* 0, is                                                                                                                                     force i n the f o r m
+
+                                           m    Q        =        wo + e x p                (s +/c)
+                                                                                              0                                                (2)                                                           D        =                      (l/2)paC s            D
+                                                                                                                                                                                                                                                                       2
+                                                                                                                                                                                                                                                                                                                       (9)
+
+                                                                                                                                                         where
+T h e e q u a t i o n of coasting                                           flight         is m e r e l y E q . (1)                        with
+m     =     0 (no             thrust).                                                                                                                             p            =     air density
+     The       problem                         is            then:               Given            mu        c,       g,           and          the                 a            =     reference area
+function            D(s,            s ) , what                         is t h e f u n c t i o n                  s(t)             in       order                   C   D        =     drag       coefficient
+t h a t the rocket reach s u m m i t a l t i t u d e S w i t h m i n i m u m
+                                                                                                                                                         T h e a i r d e n s i t y p i s e s s e n t i a l l y a f u n c t i o n o f a l t i t u d e 5.
+initial        mass                m ?     0             Integration                        of        the        equation                        of
+                                                                                                                                                         The                d r a g coefficient                       C                is a f u n c t i o n                           of         Mach               and
+coasting            flight          between 5 =                                  Si a n d s =                5 (s =                    Sy a n d
+                                                                                                                                                                                                                          D
+
+
+
+                                                                                                                                                         R e y n o l d s N u m b e r s a n d is t h e r e f o r e a f u n c t i o n o f                                                                            both
+s =       0) y i e l d s a r e l a t i o n b e t w e e n si a n d Si s y m b o l i z e d
+                                                                             r
+                                                                                                                                                by
+                                                                                                                                                         altitude and velocity.                                                A            simple, idealized                                            expression
+                                                                                                                                               (3)       for d r a g results w h e n C                                     D           is t a k e n as c o n s t a n t .                                       A    fair
+                                                                                                                                                         a p p r o x i m a t i o n t o p is a n e x p o n e n t i a l i n s.                                                                     W i t h these
+     By      m e a n s of                      the calculus                           of     variations i t can                                 be       assumptions
+shown         t h a t t h e f o l l o w i n g relations m u s t be                                                                satisfied
+                                                                                                                                                                                                         D       =        PFexp                            {-as)'s         2
+                                                                                                                                                                                                                                                                                                                   (10)
+i n o r d e r t h a t W o be a m i n i m u m .                                               Throughout                           powered
+             W        =                (i/2)a C      Po       D
+
+
+
+             p   0    =     sea-level a i r d e n s i t y
+             a        =      constant
+
+If the expression                                         for drag given b y                                                                Eq.            (1)             is       used,
+Eq.                  (4)    becomes
+
+                                   s                  V[V         2
+                                                                               +               (1 -                                   fi)V-2$]
+                                                                                                                                                                                      (11)
+                                   g                              0[V          2
+                                                                                               +            4F +                      2]
+
+where                                        V =                  s/c      }                            0 =               g       1
+                                                                                                                                      ac       2
+
+
+
+
+E q . (11) m a y be i n t e g r a t e d f o r s(V)                                                                                         and                     t{V)—i.e.,
+
+                                 -rr                           7 .                     2V+                       (1                    j8)             - _ y
+                -      V                                                                                                                                               X
+                                 T o +       +
+                                                              T       l   n
+                                                                               ?FT(i"                                                      h       +           7
+
+                                                                                   2 T V + (1 -                                                0) +            7
+                                                                                                                                                               '           +
+                                                                                   2F + +          0                  (1              - 0 )                    7
+
+                                       3 +                0,           I  +                /   2
+                                                                                                             (1 -                          « K                 20
+                                                                  In - -                                                                                                              (12)
+                                                                      Io+ +                    2
+                                                                                                            (l ~                        0 ) I n                +   - ^
+
+    0                  .     I-o+ ,              7 ,                  2 F +                            (1                 0)            ~          7
+7            - i n —               +             y        i n - —                                       [    r       ^        r        r       -   T       x
+                                                                                   2Vo +                              (1 - 0 )                         +           7
+                                                                                                                                                                        +
+                                                                                                        +
+
+
+
+                                                                                   2K.+                     +         (1 - 0 )                         -           7
+
+                                   1         +                                     v       2
+                                                                                                       + (i - « r -                                                20
+                                                               In                                                                                                                     (13)
+
+
+where                                        7            = V(l -                                           0)   2
+                                                                                                                      +               80
+
+vSubstitution o f                                Eqs.                     (12)                     and               (13)               in the integrated
+f o r m of E q . (1) r e s u l t s i n
+
+
+                                       exp I — V                                                                                                           X
+                                                                                                   c        A Wig
+                           exp(F   0 +   )       [Vo+-                     +                   (1 -              0)F              O +          -       20]              X
+
+                            I* +         2                                                                                    V, +                     2
+U'"' + ( ] -                       0)V-                        2/3                                     K,* +              (1 -                 fi) Vt -                        2/3.   +
+                                                                                                                 exp                  (Vt          + ^ ) |                            (14)   F I G . 2 (Top).    Rate of mass flow as a function of time.
+                                                                                                                                                                                             F I G . 3 (Center).  Nondimensional velocity as a function of t i m e .
+                                                                                                                                                                                             F I G . 4 (Bottom).   Acceleration as a function of time.
+    ' he t l i r u s t is t h e n g i v e n                                                    by
+
+
+
+                                                                                                                                               K )
+                                                                                                                                                                                                                /REALISTIC                 BOOST
+                             =                            V2
+                                                                  e x p ( — as) H                                                                                                     (15)
+
+                      Wig          w ^                                                                                                tHi
+
+
+    '' l-c
+                      >; t a k e s t h e f o r m
+
+    i                                            /                    Wc           a
+                                                                                                        \
+                             20 e x p                20                                        xi                X
+
+                                                                           f
+                                                                          J xi
+                                                                                       "exp ( - 2 0
+                                                                                            \
+                                                                                                                                       —
+                                                                                                                                       niig
+                                                                                                                                                           x       )
+                                                                                                                                                                   J
+                                                                                                                                                                           -
+                                                                                                                                                                               x
+                                                                                                                                                                                      (16)
+
+
+
+
+                            vj =         e x p ( — asi),                                                    Xo        =           e x p ( — aS)
+
+        1 , H
+                ' i n t e g r a l of E q . ( 1 6 )                                         m a y be e v a l u a t e d b y                                                          means
+    (,f
+                           tabulated integral                                          7
+
+
+
+
+                                                                                                             exp                        (-s)
+                                                                                                                                                                                                 ffise
+                                 Ei(-y)                                                                                                                                                                  T/ME                T A L L   T,^<B       E A L L   r , , ^   e
+
+
+
+
+                                                                                                                                                                                                                 F I G . 5.        Realistic thrust program.
+66                                                  A E R O N A U T I C A L                                           E N G I N E E R I N G                     REVIEW                 — JUNE,                  1957
+
+
+                                                                                                                                               a           short      p h a s e of         high      thrust.          Thereafter,               the       ideal
+                                                                                                                                               thrust program may                                 be followed.               To        investigate          the
+                                                                                                                            1          :
+                                                                                                                                               effect            on     summit             a l t i t u d e of   replacing               the ideal,         im-
+                                                                                                                                               p u l s i v e boost b y a realistic, h i g h - t h r u s t phase, c o n s i d e r
+
+
+                                                                   /     /                                                                     t h e a p p l i c a t i o n of a constant,
+                                                                                                                                               1.2           sec.    during which
+                                                                                                                                                                                                                 h i g h t h r u s t of d u r a t i o n
+                                                                                                                                                                                                   the same a m o u n t of fuel, W o —
+
+
+
+                                                         /
+                                                                                                                                               w f,0            is c o n s u m e d          as     in the ideal boost.                         Thereafter,
+                                                                                                                                           i   burning                 proceeds              according           to        program.                Account
+                                                                                                                                               is a l s o t a k e n o f                the finite time to b u i l d up and                                drop
+                                                                                                                                           !
+                                                                                                                                               the            thrust, with                 0.1    sec.   as     the    rise- and               fall-times.
+                                                     /                                                                                         The             m a s s - f l o w r a t e f o r t h e h i g h - t h r u s t p h a s e is                   quite
+                                                                                                                                               attainable.                   For           example,        if    the       rocket            under        con-
+                                                                                                                                               sideration                has       a       burnout        mass,        mlt        of     10 s l u g s ,     the
+                                                                    -fCf^/o* , 2
+                                                                                          s e c - '
+                                                                                                                                               booster                t h r u s t is        51,700 lbs.            Fig.       5        illustrates         this
+F I G . 6.         S u m m i t altitude as a function of mass-flow r a t e -
+                                     constant thrust.                                                                                          realistic               thrust          program.            For        comparison,                  consider
+                                                                                                                                               also            the      effect         on        summit         altitude           of        keeping        the
+o r f r o m t h e series s o l u t i o n                                                                                                       thrust               constant               throughout            burning                (see       Fig.     6).
+                                                                                                                                               Integration                   of    the           equations       of    motion                was     carried
+                                             dx                                          bx                (bx)   2
+
+
+               exp              ( - k v ) ~               I n Lx                                                                               o u t on an I B M 701 digital computer.                                                  The        following
+       /                                                                                                  2-2!
+                                                                                                                                               s u m m i t altitudes                       resulted:
+
+F i n a l l y , E q . (5) b e c o m e s
+                                                                                                                                                                          Thrust                                             Summit Altitude
+                               {Wct/myg)             IV (1 +
+                                                           2
+                                                                               Fi) =                exp                              (17)                     Ideal program                                                        488,950 f t .
+                                                                                                                                                              Realistic           program                                          471,680 f t .
+     The          solution                    p r o c e e d s as               follows:                   (a)     Solve              Eqs.
+                                                                                                                                                              Best constant t h r u s t                                            440,500 ft.
+(16)           a n d (17)                f o r Si a n d             V%\ ( b ) s u b s t i t u t e s i a n d                            \\
+for 5 a n d                      V, r e s p e c t i v e l y ,            in Eq.                 (12)        and         solve         for      Thus              t h e r e is a l o s s o f a b o u t            3.5 p e r c e n t i n s u m m i t
+F    0 +   ;     (c)           u s i n g t h i s v a l u e of                      F + and setting V
+                                                                                     0                                           =    V\       altitude in going f r o m ideal to realistic t h r u s t p r o g r a m .
+in E q .           (13)             y i e l d h;          (d)          Eq.               (14)       then         gives           m(F),         A           f u r t h e r decrease of                about       6.6    per        cent in           summit
+a n d E q . ( 1 5 ) w i t h E q . ( 1 1 ) is u s e d t o find T( V).                                                             Since         altitude               is e x p e r i e n c e d w h e n           t h r u s t is h e l d            constant
+t(V)           is k n o w n , m a n d T c a n b e e x p r e s s e d as                                                  functions              at its best value.
+o f t i m e /.
+                                                                                                                                                                                                 CONCLUSION
+
+                                              NUMERICAL                      EXAMPLE
+                                                                                                                                                           I t seems r e a s o n a b l e t o c o n c l u d e t h a t t h e i d e a l t h r u s t
+      C o n s i d e r a r o c k e t of t h e f o l l o w i n g                                        characteristics:                         program                 can        be       approximated               by      a        realistic      one—
+                                                                                                                                               one            with      a h i g h - t h r u s t phase i n place                          of     impulsive
+                   W/mi                  =     10~   5
+                                                          ft.,                 c =            5,500 f t . / s e c .
+                                                                                                                                               boost—without                           greatly           affecting           summit                altitude.
+required t o reach a s u m m i t a l t i t u d e                                                                                               Whether                 or n o t        the added complexity                             of     controlling
+                                                                                                                                               t h e t h r u s t is w o r t h t h e g a i n o v e r b e s t c o n s t a n t                           thrust
+                                    5     =       02.6 m i l e s =                   488,950 f t .
+                                                                                                                                               is a p r o b l e m w h i c h c a n o n l y b e a n s w e r e d i n p a r t i c u l a r
+with            m i n i m u m fuel expenditure.                                                 Also                                           cases.
+
+                   a =              22,000 f t . " ,           1
+                                                                              g «             32.2        ft./sec.      2
+
+                                                                                                                                                                                                  REFERENCES
+
+      Applying                      the           equations               of             the        preceding                   section             Goddard, R. H . A Method of Reaching Extreme
+                                                                                                                                                       1
+                                                                                                                                                                                       t                                         Altitudes,
+results i n                                                                                                                                    Smithsonian M i s c . C o l l . , V o l . 7 1 , No. 2, 1919.
+                                                                                                                                                    Hamel, G., Uber eine mil dcm Problem der Rakete
+                                                                                                                                                       2
+                                                                                                                                                                                                                               zusammen-
+                       5! =             62,576 f t . ,                    .v, =            5,3()S f t . / s e c .                              hdngende Aufgabe der Variationsrechnung,                       Z A M M , V o l . 7, 1927.
+                       /   x    =       18.7       sec,                   5 - =
+                                                                             ( ) 4              2,199       ft./sec.                               3
+                                                                                                                                                    Tsien, H . S. and Evans, R. C , Optimum Thrust
+                                                                                                                                                                             F                                            Programming
+                       Mo+/m\                 =     2.10,                 nh/nii                =         3.14                                 for a Sounding Rocket, J . A m . Rocket Soc, V o l . 2 1 , No. 5, 1951.
+                                                                                                                                                   4
+                                                                                                                                                    Lawden, D . F., Stationary                     Rocket Trajectories,      Quart. J .
+The            normalized                      mass-flow rate . 1 / =                                     m/nii,            velocity           M e c h . & A p p l . M a t h . , V o l . V I I , P t . 4, 1954.
+ F         =    s/c,            a n d acceleration                       s/g         are s h o w n               as     functions                  6
+                                                                                                                                                    L e i t m a n n , G., A Calculus of Variations Solution of Goddard's
+of         t i m e i n Figs.                      2-4.             The       idealized                thrust             program               Problem, Astronautica A c t a , V o l . I I , Facs. 2, 1956.
+                                                                                                                                                   6
+                                                                                                                                                    L e i t m a n n , G., P h . D . Dissertation, U n i v e r s i t y of California,
+r e q u i r e s t h e a t t a i n m e n t of an i n i t i a l v e l o c i t y                                           of        2,199
+                                                                                                                                               Berkeley.
+f t . / s e c . b y m e a n s of a n i m p u l s i v e b o o s t .                                               In      practice,                 7
+                                                                                                                                                    Jahnke, E., and Emde, F., Tables of Functions;                       Dover P u b -
+the            initial            impulsive               boost can                        be       approximated                      by       lications, New Y o r k , 1943.
+

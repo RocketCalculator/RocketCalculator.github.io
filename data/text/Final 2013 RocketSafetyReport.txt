@@ -1,0 +1,582 @@
+             Safety Report
+8th Intercollegiate Rocket Engineering Competition
+                     (2012-2013)
+
+    California State University, Los Angeles
+
+
+                Sonic Eagle
+                       By
+                  Elvia Cortes
+
+
+                   May 26, 2013
+
+
+
+
+      MECHANICAL ENGINEERING DEPARTMENT
+              CALIFORNIA STATE UNIVERSITY LOS ANGELES
+                     5151 STATE UNIVERSITY DR.
+                       LOS ANGELES, CA 90032
+
+                     Sonic Eagle Safety Report
+
+Introduction
+California State University Los Angeles will be entering the Sonic Eagle
+(25,000 ft category) in the 8th Intercollegiate Rocket Engineering Competition
+2012-2013. The Sonic Eagle is a single stage with a dart, solid propellant
+sounding rocket. Details of the rocket are outlined in the technical report. 1
+This report describes the safety processes for person(s) fabricating, building,
+operating, testing of the rocket, rocket components and/or supporting
+systems. This report is posted on the RS&T website (rsandt.com). It is in the
+reports section dealing with safety.
+
+
+
+General Safety
+Student participants are educated on University safety requirements and
+applicable safety codes. All CSULA safety regulations are applicable when
+working on CSULA campus2. All work conducted outside of the university
+shall follow all city laws, state laws and national laws. All typical industry
+safety standards are expected to be followed at all times, unless they
+override school, state and/or national regulations.
+
+      Know where any first aid kits are and know what is in them.
+      Always be alert and stay alert in the fabrication lab.
+      Do not drink/eat/run around or engage in any unsafe behavior in the
+       lab
+      Wear appropriate attire when operating equipment. Secure long hair
+       when working around rotating or moving equipment, open heat
+       sources, wear proper shoes where drop hazards exist, etc.
+      Use safety glasses during all fabrication activities.
+      No unsupervised use of laboratories without prior authorization by
+       the Faculty Advisor/Mentor.
+      No working alone in the laboratories.
+      All equipment, chemicals and tools must be returned to original
+       storage after use.
+
+
+                                                                             2
+Any member of the Sonic Eagle team, liaison, student or faculty, has the
+inherent right to halt any launch or testing activity if he or she has a safety
+concern regardless of the perceived magnitude of concern. When a team
+member raises a safety concern, activities shall not continue until the safety
+concern has been resolved.
+
+
+Earthquake Safety
+      In case of an earthquake during fabrication, shut down all activities
+       and evacuate the building.
+
+
+
+Electrical Safety
+      Never work with electrical equipment when any part of you is wet.
+      Never work with any equipment that has exposed wires.
+      Unsafe or hazardous electrical conditions in the fabrication laboratory
+       must be reported to the Faculty Advisor/Mentor.
+
+
+
+Fire Safety
+      No open flames are permitted in the laboratory, e.g., no lighters or
+       matches may be used.
+      Know where the fire extinguisher(s) is for the lab.
+         o Usage:
+                 1. Remove from wall.
+                 2. Pull pin.
+                 3. Point at base of flames.
+                 4. Squeeze handle
+
+
+
+Chemical Safety
+      Any unsafe or hazardous conditions in the lab such as chemical liquid
+       spills must be immediately reported to the Faculty Advisor/Mentor.
+      Use of safety glasses is mandatory for all use of chemicals.
+      In the event chemicals or foreign objects enter the eyes, rinse eyes
+       with water for 15-20 minutes at eye wash station. Then seek medical
+       attention. Note: It is important to keep eye lids open. Support
+
+
+                                                                              3
+       person(s) can assist in holding eye lids open. If contact lenses are
+       worn, they must be removed.
+
+
+
+Emergencies
+      Know where the (nearest) phones are in the VEC building and Dial 911
+       or during working hours (7:30 AM to 4:30 PM) calls should be directed
+       to extensions: 3-3527; or 3-3531. All emergencies after hours should
+       be directed to the Public Safety Dispatcher at 3-3700.
+Flight Safety
+Section I
+The CSULA Team implements several safety-enhancing techniques for their
+rockets. CSULA’s rockets use canted adjustable fins to obtain self induced
+roll stability. The launch rail system has elevation and azimuth control to
+improve desired rocket trajectory (even under wind conditions). On-board
+flight hardware with programmed software is used to control parachute
+deployment at desired altitudes and the wind profile is measured in order to
+control rocket impact.
+
+      The Sonic Eagle has fin cant angle adjustments to achieve the desired
+       roll rate. The burnout roll rate is approximately one third the burnout
+       pitch / yaw natural frequency; yielding 10 roll revolutions during
+       boost phase respectively. As long as the resonance frequency is not
+       obtained, fin cant angles will improve the safety of the rocket by
+       providing additional stability. The roll rate will minimize trajectory
+       errors that are due to body-fixed misalignments. The fin cant angle is
+       determined using aerodynamic strip theory.
+
+
+
+      CSULA utilizes a combination of tools and information: tethered
+       weather balloon measurement system, MS Excel and visual basic
+       based trajectory program (SkyAero) and local wind data provided by
+       the FAA, custom launch rail system. The tethered weather balloon
+       system and local wind data from the FAA allow the team to determine
+       winds at different altitudes. Those winds are then input into SkyAero
+       with other launch conditions and Sonic Eagle specifications and motor
+       thrust curve data. SkyAero outputs the required azimuth and
+       elevation launcher angles for a desired landing point. The launch rail
+
+
+                                                                            4
+       is then adjusted to the azimuth and elevation angles required to
+       achieve the desired landing point.
+
+
+
+      To further improve the rocket trajectory, hardware and software are
+       used to control the drogue and main parachute deployments. First,
+       our second stage parachute is deployed to slow down the rocket and
+       precisely reach an apogee at 25,000 feet. The second stage parachute
+       is deployed in a reefed condition to obtain a relatively high descent
+       rate and to minimize the drift distance. It is disreefed with line cutters
+       at about 1,000 feet AGL to ensure a soft impact. The first stage uses a
+       drogue and main parachute combination. The drogue is deployed
+       during ascent to give a high descent rate. The main parachute is
+       deployed about 1,000 AGL to ensure a soft impact. Ultimately, a more
+       controlled trajectory leads to enhanced safety by preventing
+       dangerous hikes over hostile environments to recover the rocket.
+
+
+
+Generalized Standard Procedures
+Below are generalized standard procedures that have been established for
+individual systems to increase safety and proper operation of the rocket and
+launch rail. Detailed procedures are developed by individual teams.
+
+   a) Trajectory Procedures
+         a. Call-in for local wind data from FAA.
+         b. Determine wind at ground level from pilot tether balloon
+            system
+         c. Plot inputs into SkyAero
+         d. Relay desired elevation and azimuth angles.
+
+   b) Launch Pad Procedures
+         a. No power shall be connected to rocket ordnance until the last
+            time prior to launch.
+         b. Load the rocket onto the launch rail (ensure the rocket slides
+            freely up and down the rail before connecting igniters).
+         c. Activate onboard flight computers when the rocket is in the
+            vertical position.
+         d. Carefully connect the launch wires to the leads.
+         e. Continuity check at the local station.
+
+                                                                               5
+      f. Our people (both students and advisors) should all wear their
+         CSULA T-shirts at all times when at the launch site. This is to
+         facilitate tracking our people, especially around the launch pad.
+      g. The minimum crew working around the pad should carry a
+         walkie-talkie for communication with our CAPCOM.              This
+         precludes the necessity of walking out to the pad to answer a
+         simple question, and therefore is much safer.
+
+c) Launch Rail Setup
+      a. Assemble the launch rail per detailed instructions.
+      b. Tighten all tension wires after the system has been assembled.
+      c. The number of personnel working around the launch pad shall
+         be minimized while rocket is on pad.
+      d. Once the rocket is loaded and erect, adjust the launch rail to
+         trajectory team’s desired orientation.
+      e. Spray the riding lugs with Teflon
+
+d) Motor Assembly Procedures
+     a. Follow outlined detailed motor assembly instructions.
+     b. Load the motor into the casing.
+     c. Install the electrical matches into the motor.
+     d. Install motor retainer to prevent the motor casing assembly
+        from falling out the aft end of the rocket.
+     e. Treat all items with extreme care when handling.
+     f. There is a minimum of (2) people allowed to work with motor
+        assembly at one time.
+
+
+
+e) Parachute Packing Procedures
+      a. Fold the parachute (drogue or main) into halves and place cord
+         into the last sections of the parachute folds.
+      b. Wrap the cords around the parachute (do NOT tangle) and put
+         inside parachute holding bag.
+      c. Check all attachment points along the rocket to the parachute
+         and from the parachute to the shock cord.
+
+f) Payload & Electronic Procedures3
+      a. All batteries and power sources must be charged.
+
+
+
+                                                                         6
+      b. Ground Test electronic systems prior to bringing the rocket to
+         the pad.
+      c. Check all connections of flight and power hardware to
+         electronic payloads.
+      d. Lens caps must be open for all still and video cameras.
+      e. At the pad, make sure that all electronics are functioning
+         properly.
+
+g) Recovery Procedures
+           NOTE: All flight ordnance must be expended in flight.
+     This includes upper stage rocket motors, line cutters, parachute
+    expulsion charges, etc. It’s a good idea for the flight computer to
+issue dual commands to all such devices in flight.         The issue is
+   a hazard to recovery personnel if they pick up a rocket with
+   active ordnance. It’s possible that a stray static charge could set
+   off any unexpended ordnance.
+        a. Travel in pairs. All pairs must have visual contact with a
+           member of another team at all times.
+        b. Use all (5) senses at all times.
+        c. Each person shall carry a minimum of 1 liter of water when
+           recovering the rocket.
+        d. Proper attire and gear must be worn when recovering the
+           rocket.
+           Walkie Talkies
+        e. Make sure the batteries are fully charged
+        f. Both walkie talkies should be on the same channel.
+        g. Test walkie talkie before departure.
+        h. At the end of each statement the speaker must say “over” to
+           ensure that the other individual is aware that they have
+           completed statement.
+           GPS Receiver
+        i. Make sure the battery is fully charged
+        j. Find current location and elevation by pointing the antenna
+           towards the sky and recording the data.
+        k. To recover the rocket, input the location of the rocket into the
+           location field (latitude and longitude) and save. (Follow the
+           Magellan eXplorist 400 manual instructions)
+        l. Use the map provided by the GPS receiver from the current
+           location to where the rocket is to find rocket.
+
+                                                                         7
+   h) Procedure after finding rocket
+      After finding rocket parts a recovery team should always
+         a. First, visually inspect the items on the ground. If
+             relevant, photograph them.
+         b. Using the key, turn the ordnance arming switch to
+             DISARMED before further handling any hardware. In case of
+             unignited ordnance this will make it safer to transport.
+         c. We should mark and label on the rocket's external skin
+             around the hole for the arming switch the positions for
+             "disarmed" and "armed".
+         d. The checklist for recovery teams should include the arming
+             switch key.
+
+      After ordnance is disarmed, it is “safe” to handle the rocket for
+      transport back to the home base. However, it is good practice to aim
+      the rocket ordnance upward, as a further safety measure. In case of
+      accidental discharge the ordnance will not be facing anyone and will
+      shoot upward minimizing the chance of injury to any person
+      transporting the rocket.
+
+Design Requirements
+
+The 2011 Intercollegiate Rocket Engineering Competition video 4 provides
+ample motivation for better flight safety. A simple analogy shows why this is
+important.
+
+What’s the comparison between the kinetic energy of our rocket and an
+ordinary car? Assuming our rocket is at the first stage burnout and the car
+is traveling at about 60 mph, the KE ratio is:
+
+
+
+
+             =                             = 2.5
+
+
+
+
+                                                                           8
+The rocket has 2.5 the kinetic energy of a car; of course nearer to the
+ground the rocket has less kinetic energy. Nonetheless, the chemical energy
+associated with unburnt propellant could, after impact, continue to release
+potentially dangerous fumes and heat.
+
+a) Means to Command
+      ESRA will require that all boosters be fitted with a means to
+      command early deployment of recovery parachutes in the event
+      that a catastrophic boost phase failure causes the rocket to pitch
+      over to an approximately horizontal attitude. It should be
+      implemented for all future CSULA rockets whose burnout KE is
+      greater than 0.1 a car’s KE as defined above. When done properly, a
+magnetometer input axis is aligned with the rocket's     symmetry     axis,
+and the threshold for emergency parachute deployment is zero output from
+the magnetometer.
+
+b) Hang Fires
+       To ensure safety around the launch area, only essential personnel
+shall be allowed in the pad area after the igniter is installed. To make all
+aware of a pending rocket launch and to       ensure that safety distances are
+maintained, an audible 10         second countdown shall be implemented. In
+case of a misfire or       hang fire, all subsequent launch attempts shall
+also be preceded by a 10 second countdown. No one shall approach the
+pad area      until one minute (60 sec.) has elapsed after the final launch
+       attempt. The Team Safety Officer shall ensure that a functional fire
+extinguisher is available on the launch pad.
+
+
+
+c) Ordnance Circuit Arming Procedures
+       The circuits that initiate either black powder charges for parachute
+expulsions or ignite a rocket motor are all battery powered. Circuit arming
+general safety considerations strongly           suggest that these batteries be
+electrically isolated from their powder charges and igniters while
+personnel are in proximity to the rocket.
+
+c) Safe Viewing Distance for Rocket Launches
+        Introduction
+        Everyone, it seems, wants to get as close as possible to watch a rocket
+liftoff. But, a little reflection reveals that this can be very dangerous.
+
+                                                                              9
+Another dangerous habit is assuming that the      hazards associated with
+small Boy Scout Estes rockets are the same as for an advanced ESRA rocket.
+They're not.
+      The purpose of this memo is to explore the consequences of    these
+thoughts.
+
+        Analysis
+        First, consider an ordinary rocket flight during which there are no
+        failures, only normal trajectory errors. For nearly vertical flight,
+        the significant trajectory errors all involve rotation of the velocity
+        vector near the ground. Since all rockets have similar trajectory
+        errors, impact errors are proportional to apogee altitude. In        figure
+1, this is shown as "90% Impact Point Capture line.            That is, if 90% of
+all randomly perturbed trajectories are to land        in a square field, then the
+field size for this is that shown. This curve can be thought of as a generic
+trajectory dispersion         analysis. Most interesting is the fact that field size
+depends         linearly on the burnout energy.
+
+
+
+
+                           Figure 1: Safe Viewing Distance
+
+                                                                                 10
+        It also seems reasonable that the degree of danger when there is      a
+malfunction early in boost is also proportional to the rocket's energy,      in
+this case largely chemical energy. After witnessing a
+     flight of ESRA class rocket in which a major malfunction occurred
+     prior to burnout, the blue line in the figure is intended to
+     envelope these.
+
+     Recommendation
+     The blue line will be used for safe personnel viewing operations
+    of rocket launches.
+
+
+
+
+References
+
+ 1. Pathan, A., Liu, B., Ramos, J., Suppanade N. D., Cortes, E.,
+    Khalighi, S., Garnica, S., Lee, Y., Wells J. D. 2013 June.
+    Experimental Sounding Rocket: Sonic Eagle
+
+ 2. CSULA Environmental, Health & Safety (EHS). College of Natural and
+    Social Sciences, California State University Los Angeles. Jan 26, 2012
+    <www.calstatela.edu/univ/ehs/index.php>
+
+ 3. Sinclair, Doug. 2012 Oct. 8th Intercollegiate Rocket Engineering
+    Competition: Safety-critical Wiring Rules.
+    <http://www.rsandt.com/media/WiringRules.pdf>
+
+ 4. Koehler. "The 2011 Intercollegiate Rocket Engineering Competition
+    (IREC)." 13 August 2011. Online video clip. YouTube. Accessed on 22
+    April 2013.
+   < http://www.youtube.com/watch?v=Ry9P_FSbn3c>
+
+                                                                             11
+5. Federal Aviation Regulations, Part 101, Federal Aviation Agency
+
+6. 1122 Code for Model Rocketry, American National Standards Institute /
+   National Fire Protection Association
+
+7. Tripoli Safety Code for Advanced Rocketry, 01 August 1987
+
+8. Model Rocketry Safety Code, Estes
+
+9. “Trajectory Simulation for CSULB Sounding Rockets”, Oscar Mejia,
+   2008 AIAA Region VI Student Research Competition
+
+10.“A New Wind Sensor for Rocket Launches”, Mohamed Samir,
+    Mohideen Faisal Buharie, 2008 AIAA Region VI Student Research
+    Competition
+
+11.Model Rocket Safety Code. National Association of Rocketry, May
+   30, 2010 <http://www.nar.org/NARmrsc.html>.
+
+12.Buharie, Mohideen Faisal, Safety Report 6th Intercollegiate Rocket
+   Engineering Competition CSULB, 2009-2010
+
+
+
+
+                              Appendices
+
+ An ESRA project implies significant ground testing of components to
+ support rocket design and operational processes. These include
+
+       Thermite-enhanced igniters
+       Parachute deployment
+       Parachute disreefing line cutters
+
+ NOTE: Safety Officer MUST be present while all tests are conducted
+
+
+
+ Copper Thermite Testing
+
+                                                                        12
+a) Mixing Procedure:
+    1. Obtain steel plate and place it on the work table
+    2. Set Scale on plate with a piece of filter paper on it
+    3. Open one jar at a time, scoop small amounts of powder(using a
+        metal spoon) and place it on the filter paper until desired amount
+        is obtained
+    4. Make sure to close the lid after obtaining sample
+    5. Label the filter paper with the measured amounts of powder
+    6. Obtain a stainless steel bowl and mix them together until it is an
+        even mixture
+    7. Place mixture inside the silk bags
+
+   Safety:
+       Work in a static-free environment and wear anti-static straps
+       Make sure there is no wind
+       Stay away from any sparks or open flames
+       Wear a full face shield
+
+b) Testing Procedure:
+       1. Dig a hole in the ground away from people and objects. It
+          should be about 1 foot deep and wide.
+       2. Uses the Estes electric igniter to light up the thermite
+       3. Place igniter clips inside the tea bag (KEY ALWAYS OUT UNTIL
+          READY FOR TEST)
+       4. Wrap bag around wire, tape it together and place it inside the
+          hole
+       5. Walk 30 feet away
+       6. Insert key, push down firmly and hold until thermite ignites
+       7. Remove key
+
+   Safety
+       Stay away from electrical poles, trees, buildings, dry grass or
+          weeds
+       Do not test if there is wind
+       Stay 30 feet away from the testing location
+
+
+
+                                                                          13
+         If thermite does not ignite, take key out of controller, and wait
+          10-15 minutes before walking over to it
+         Must have at least 2 people present while testing/mixing
+          thermite in case of an emergency
+         Use sand/soil as an extinguisher if needed
+         Find out if it is legal to conduct the thermite test at location
+
+
+
+
+Parachute Deployment Testing
+
+  Procedure:
+      1. Place rocket facing up tilted slightly sideways
+      2. Configure rocket the same way as it will be for a flight. Pack
+          Parachute and recovery harness exactly the same as it would
+          be for launch
+      3. Place a small measured amount of black powder inside
+      4. Connect to an electric igniter
+      5. Stand 30 feet away and ignite
+      6. Repeat steps 1-5 until desired amount of black powder is
+          found
+
+  Safety:
+        Stand 30 feet away from the testing site
+         Use an open space for testing
+         Wear full face shield and anti-static straps
+         Stay in a static free environment
+         Only a small amount of black powder should be brought out
+          to the field
+         Black powder container should be kept on the ground
+         Open and close black powder cans very slowly
+         Make sure no grains are lodged in cap threads when opening
+          and closing can
+
+
+
+  Disreefing Line Cutter Testing:
+
+
+                                                                          14
+    Testing:
+          1. Slide O-ring into the bottom of the cable cutter
+          2. Insert cable tie through the hole of the cable cutter
+          3. Insert the shearing piston
+          4. Measure 0.1 mL of black powder using the centrifuge tube
+              provided
+          5. Insert black powder inside the cable cutter
+          6. Insert an insulated match
+          7. Slide the Kevlar thread loop over threads of screw and attach
+              the other side to your provided connection point (Anything
+              heavy enough to keep it in place, such as a water bottle)
+          8. Slide hex screw over match leads and screw into cable cutter.
+          9. Attach match leads to an electric igniter
+          10. Place the cable cutter inside a cinder block (with
+                    dimensions of 16x8x8)
+          11. Ignite line cutter
+          12. Repeat test with 0.75 mL and 0.15 mL, and using black
+                    powder grain Fg and FFFg to find optimal amount and
+                    grain type.
+    Safety:
+           Same as stated above for the parachute deployment
+                 testing.
+     Results:
+           For best results 0.1 grams of black powder grain FFFg will
+                 be used.
+
+
+
+
+Black         Amount of            Did it cut   Comments
+Powder        Black Powder         the line?
+
+                                                                           15
+Grain   (ml)
+Fg              0.1     no      Two trials, both failed.
+                                Grain is coarse, the piston in the
+                                line cutter was a tight fit
+FFFg           0.075   yes/no   two trials, 1 worked 1 failed
+
+FFFg            0.1     yes     Two trials, optimal amount
+
+FFFg           0.15     yes     Piston inside line cutter was a tight
+                                fit
+
+
+
+
+                                                           16
+

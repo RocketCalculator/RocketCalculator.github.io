@@ -1,0 +1,336 @@
+Rocket Science and Technology                  4363 Motor Ave., Culver City, CA 90232
+                                             Phone: (310) 839-8956 Fax: (310) 839-8855
+
+                      Payload Bay Venting in Flight (rev. 2)                   04 April 2012
+
+                                           by C.P.Hoult
+Introduction
+Knowledge of the internal pressure in a sounding rocket is important for several reasons.
+First, if the internal pressure differs from that outside in the atmosphere, the payload shell
+will be in tension. This can, in extreme cases, cause structural failure1. Another issue is
+measurement of atmospheric pressure inside a payload cavity. In both cases one would
+like to have the internal pressure match as closely as possible the external atmospheric
+pressure. We assume that a system of vents between the payload cavity and the
+atmosphere has been provided with all vents having the same external pressure.
+
+This memo documents an EXCEL code called BLOWDOWN2.xls.
+
+Assumptions
+While the analysis that follows is simplistic, it captures the major features of the relevant
+phenomenology. First, note that the vent throat Mach number can be subsonic or sonic
+(choked) depending on the vent pressure drop. Second, assume that the pressure
+coefficient at the vent exit is a known function of flight Mach number. Suppose we wish
+to locate the vent exit so that its exit pressure coefficient vanishes. This generally implies
+that the vents be placed well aft of the rocket nose, but not too close to its fins. Since air
+can flow into the payload as well as out, the same orifice coefficients are used for both
+cases. Third, assume that the vent holes are cylindrical. This implies their exit and throat
+areas are the same. Fourth, assume the flow through a vent is adiabatic and isentropic.
+Fifth, absent any additional sources of gas in the payload cavity, we assume the air
+trapped in the payload cavity remains stagnant; i.e., has negligible velocity as it expands.
+Sixth, assume the air trapped inside a payload cavity expands isentropically as the rocket
+ascends. Finally, throughout, we assume that the trapped air behaves as perfect gas.
+
+Notation
+           = Velocity in the vent,
+           = Free stream velocity,
+           = Altitude (MSL),
+           = Pressure,
+           = Mass density of air,
+           = Temperature of air inside the payload cavity,
+           = Gas constant for air = 1716.4827 ft2/sec2 oR,
+           = Ratio of specific heats of air = 1.4,
+
+1
+ A dramatic example was the first test launch of the Space General Astrobee 1500 in
+which test instrumentation indicated the failure happened early in first stage (a Sergeant
+solid rocket) burn. Definitive evidence came from ballistic camera imagery that showed
+a large black area where part of the payload shroud had been.
+
+
+                                                                                             1
+          = Mach number,
+          = Sound speed,
+          = Area of the vent throat,
+          = Volume of the payload cavity,
+          = Pressure coefficient,
+           = Incompressible pressure coefficient,
+          = Nozzle orifice coefficient,
+           = Nozzle orifice coefficient for sonic (choked) flow,
+           = Nozzle orifice coefficient for incompressible flow,
+           = Nozzle orifice coefficient for subsonic flow,
+           = Time,
+     ()   = Value of ( ) inside the cavity,
+     ()   = Value of ( ) in the vent throat,
+     ()   = Ambient atmospheric value of ( ),
+     ()   = Free stram value of ( ),
+     ()   = Value of ( ) at the vent exit, and
+     ()   = Value of ( ) in the cavity at liftoff.
+
+Introduction
+For the venting under discussion, consider the steady, isentropic flow of a perfect gas.
+The mass flow rate through a vent is given by
+
+                                                                                       (1a)
+
+Several comments on eq. (1a) are in order. First, it doesn’t matter whether the vent area
+is for a single vent hole or is the area sum for multiple holes as long as the vent exit
+pressures are the same for all. Good engineering practice suggests that a minimum of
+three vents, equally spaced in azimuth, be provided to mitigate first order angle of attack
+biases. Second, the factor C is an empirical correction to the theoretical mass flow rate.
+
+Next, the mass flow rate out the vent must be matched by the rate of mass loss inside the
+cavity:
+
+                                                                                      (1b)
+
+The essence of this problem is matching the two parts of eq.(1), and numerically
+integrating the result to find the cavity pressure history.
+
+
+
+Nozzle Orifice Coefficient
+
+
+
+
+                                                                                             2
+First, consider incompressible vent flow. For a sharp edged hole, C can be as low as
+~½. But, if the upstream corner contour is smoothly radiused, C can approach 0.8. For
+choked flow, C approaches 0.96-0.98.
+
+With these assumptions we can use the results in ref. (1), eq. (44), to calculate the vent
+pressure ratio for sonic (choked) flow in the throat:
+
+
+                                                                                             (2)
+
+
+As long as eq.(2) is satisfied the vent throat will have choked flow            , and its
+orifice coefficient     will remain constant and           . For subsonic throat flow the
+orifice coefficient will vary smoothly with throat Mach number from its incompressible
+value to its value for choked flow. The throat Mach number is found from ref.(1), eq.
+(44), to be
+
+
+
+
+(3)
+
+The subsonic orifice coefficient is based on a hodograph solution by Busemann, see ref.
+(2), for a two dimensional orifice. The Busemann interpolator is
+
+
+                                                              , where
+
+(4)
+                                                     .
+
+Thus, one inputs        and        , computes the throat Mach number, and finds the nozzle
+orifice coefficient. See ref. (4) for a survey of incompressible orifice coefficients.
+
+External Pressure
+The vent external pressure is found from the external rocket aerodynamics, and defined in
+terms of a pressure coefficient    :
+
+
+                                                                                        (5)
+
+It’s necessary to start with a numerical solution for the trajectory variables, altitude and
+velocity . When these are known, the atmospheric pressure            and density , both
+functions of altitude alone, can readily be found. The exit pressure coefficient        is
+customarily considered to be a function of free stream Mach number. It includes the
+
+
+                                                                                               3
+effects of both general body shape and any devices near the vent exit intended to
+influence venting behavior. For subsonic free stream Mach numbers, one first finds the
+incompressible value of       using the methods of ref. (6). Then, based on ref. (5), use
+the Karman-Tsien correction for subsonic pressures:
+
+
+                                                                                        (6)
+
+
+The Karman-Tsien correction is a good approximation so long as the local flow over the
+rocket body surface is subsonic everywhere. Local supersonic flow leads to shock
+waves and a flow pattern unlike that for incompressible flow. To ensure this does not
+happen, find the minimum incompressible pressure coefficient from MUNKSHIP2 and
+plug it into CRITICAL MACHNUMBER. Keep in mind that the vent location under
+analysis may not be that for the critical Mach number.
+When the free stream Mach number is supersonic, a different approach is needed.
+Estimate the surface pressure coefficient     using ref. (7) as a guide. Engineers often
+develop “eyeball” estimates for the transonic surface pressure coefficient by laying their
+favorite french curve between the subsonic and supersonic data points. The current
+version of BLOWDOWN2 uses eq.(6) for Mach numbers less than the critical Mach
+number,       ,the free stream Mach number for which the local Mach first reaches unity.
+For Mach numbers greater than critical, BLOWDOWN2 uses linear interpolation to
+estimate an exit pressure coefficient.
+
+Nozzle Mass Flow Rate
+Equation (1a) can also be written as
+
+
+
+
+Again, from ref.(1), eq’s. (45) and (46)for isentropic nozzle flow, give
+
+                                         [               ]
+
+Since the air trapped in a payload bay expands isentropically from its initial state,
+
+
+                                                [               ]
+(7)
+
+Substituting eq’s.(3) and (7) into the modified eq.(1) allows the nozzle mass flow rate to
+be found in terms of the vent throat Mach number and payload cavity pressure.
+
+
+
+
+                                                                                             4
+Payload Bay Expansion
+The mass of trapped air inside the payload bay is just    . The relationship we need
+between pressure and density is just that for an isentropic process:
+
+
+                                                                                          (8)
+
+Here, the subscript o refers to conditions inside the payload bay at liftoff. Then,
+
+
+
+
+Nozzle-Cavity Matching and Integration
+Clearly the rate of change of mass of trapped air must equal that lost through the vent
+hole(s) as captured in eq. (1b). Matching the two mass rates of change gives:
+
+
+                                                                [               ]
+(9)
+
+Equation (9) is a nonlinear first order differential equation for the cavity pressure. Note
+that the first part of the right hand side is a constant for every case, and need be evaluated
+only once at the start of each case.
+
+
+In the event that       , eq.(9) remains the same except that the leading “–“ sign is
+replaced with a “+” sign.
+
+BLOWDOWN2.xls
+BLOWDOWN2.xls uses a fourth order Runge-Kutta method to perform the needed
+numerical integration for      as a function of time. See ref. (3) for a description of this
+algorithm. All cells colored with a robin’s egg blue require user inputs. The magenta
+cells are natural constants, and the white cells are generated by BLOWDOWN2.
+
+The trajectory altitude and velocity are input as tabular functions of time after liftoff. The
+pressure coefficient at the vent exit is input as a tabular function of free stream Mach
+number. BLOWDOWN2 uses linear interpolation to establish the instantaneous values in
+the code. Trajectory data must be obtained from a trajectory simulation such as
+SKYAERO, and the vent external pressure coefficient must be found from an
+aerodynamic code.
+
+
+
+                                                                                               5
+The numerical example reported here is for an ESRA IREC sounding rocket designed to
+have an apogee of exactly 10,000 feet AGL. Its solid propellant motor burns out at ~6
+seconds after liftoff.
+
+The first graph shown below displays the history of atmospheric pressure, the pressure at
+the vent exit, and the payload cavity pressure. The atmospheric pressure decreases with
+the altitude, but the pressure at the vent exit decreases even more, especially near
+burnout. This is typically the case since most vents are located just behind the base of the
+nose cone where the subsonic pressure coefficient is usually negative. This case used an
+incompressible vent pressure coefficient adjusted using the Karman-Tsien method for
+compressibility. The critical Mach number for this location is about 0.85, and since the
+burnout Mach number is about 0.8, no shock effects are expected.
+
+
+                                       ESRA Payload Venting Behavior
+
+                          14
+
+                          12
+  Pressure, lb/sq. inch
+
+
+
+
+                          10
+
+                           8                                                Cavity
+                                                                            External Vent
+                           6                                                Atmosphere
+                           4
+
+                           2
+
+                           0
+                               0   2        4          6         8     10
+                                       Time after Liftoff, sec
+
+
+Next, explore the pressure difference between the payload cavity and the external
+pressure near the vent. This difference can be used to support a stress analysis of the
+payload shell, or to size the vent holes to satisfy a maximum p requirement.
+
+Note the angular nature of this plot from 5 to about 7 seconds. This is an artifact of the
+granularity (1 second) of the SKYAERO trajectory data used. A more extensive
+trajectory table with finer granularity would give a smoother result.
+
+The next study done was to assess the impact of various integration step sizes. It turns
+out that the maximum step size is a function of vent throat area. Large vents depressurize
+a payload bay very quickly. If the step size is too great, the Runge-Kutta integrator will
+overshoot the exit pressure resulting in flow from the outside back into the cavity,
+
+
+
+                                                                                             6
+something not reasonable. A step size of about 0.005 sec. will provide the results shown
+here.
+
+                                     ESRA Payload Bay Differential Pressure
+                                          Vent Area = 0.0144 sq. inch
+
+                           0.7
+                           0.6
+  Pressure, lbs/sq. inch
+
+
+
+
+                           0.5
+                           0.4
+                           0.3
+                           0.2
+                           0.1
+                            0
+                                 0     2            4              6          8        10
+                                                 Time after Liftoff, sec
+
+
+In the example, the maximum pressure difference is about 0.6638 psi at 6.0 sec after
+liftoff (burnout).
+
+References
+   1. “Equations, Tables and Charts for Compressible Flow”, Ames Research Staff,
+       NACA Report 1135, 1953
+   2. Busemann, A., “Hodographenmethode der Gasdynamik”. Z.f.a.M.M., Bd.12,
+       1937, pp 73-79
+   3. Young, D.M., and Gregory, R.T., “A Survey of Numerical Mathematics, Vol. 1,
+       Dover Publications, Inc., New York, 1973, p. 477
+   4. King, H. W., “Handbook of Hydraulics”, McGraw-Hill Book Company, Inc.,
+       New York, 1954, Chapter 3
+   5. Shapiro, A. H., “The Dynamics and Thermodynamics of Compressible Fluid
+       Flow, Volume 1”, Ronald Press, New York, 1953
+   6. Munk, M. M., “The Aerodynamic Forces on Airship Hulls”, N.A.C.A. Report
+       184, 1924
+   7. Syvertson, C. A. and Dennis, D. H., “A Second-Order Shock-Expansion Method
+       Applicable to Bodies of Revolution Near Zero Lift”, N.A.C.A. Report 1328, 1958
+
+
+
+
+                                                                                            7
+

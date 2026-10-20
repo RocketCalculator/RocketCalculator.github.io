@@ -1,0 +1,474 @@
+Rocket Science and Technology                  4363 Motor Ave., Culver City, CA 90232
+                                             Phone: (310) 839-8956 Fax: (310) 839-8855
+
+
+                        Nose Pressure Distribution (rev.4)                     14 May 2012
+
+                                        by C.P. Hoult
+
+Introduction
+        This memo addresses the design of a rocket nose shape having a prescribed
+pressure distribution in incompressible flow. The idea is to delay vortex separation to a
+point as far aft as possible to mitigate induced roll moments and roll lock-in.
+
+Motivation
+         Consider a sounding rocket subject to both earth-fixed (winds and gusts) and
+body-fixed (fin and thrust misalignments) perturbations. In general, the rocket is rolling.
+Viewed dynamically in a non-rolling frame, the response to the earth-fixed perturbations
+appears to not be influenced at all by the roll rate because its roll moment of inertia is of
+order of 1% of its pitch/yaw moments of inertia. Even though the rocket dynamics are
+not significantly influenced by roll, the response to body-fixed misalignments appears in a
+non-rolling frame to be driven by sinusoidal torques whose frequency is the roll rate.
+         Trouble can come when the roll rate equals the pitch/yaw natural frequency. In
+the steady state case, the response amplitude becomes very large because sounding
+rockets have very low pitch/yaw damping. In electrical engineering parlance, they would
+be said to have a high Q. Usually this resonance condition is a transient, not a steady
+state event so that the very large response amplitudes are not observed.
+         Nonetheless, higher angles of attack are commonly seen near resonance. If the
+angle of attack  exceeds a modest threshold, the cross-plane flow field near the tail looks
+like:
+                                           .
+        See the pair of vortices, one on each
+side, created from vorticity shed from the
+boundary layer. As we move this cross-flow
+picture further aft, the vortices grow stronger
+fed by more vorticity from the separated
+boundary layer.
+
+
+
+                                                               U sin
+
+        When the separated vortex pair reaches the tail fins, bad things start to happen.
+Vorticity induces an angle of attack distribution over the fins that integrates to a roll
+torque. This torque can exceed the roll driving torque from fin cant angles, and thus
+lead to roll lock-in.
+
+
+
+                                                                                            1
+Pressure Distribution
+        We can now state the reason why the external pressure distribution over a rocket
+nose matters. If the external pressure profile is smooth and continuously decreasing, the
+boundary layer can be inhibited from separation. Adverse pressure gradients in which the
+pressure increases moving aft facilitate boundary layer separation and the development of
+a separated vortex pair as sketched above. There are two components of pressure
+gradient: that in the circumferential direction and that in the longitudinal direction, and
+three velocity components, those in the axial, radial and circumferential directions. The
+circumferential velocity qθ is, in the absence of separated vorticity, given by3
+
+                                 qθ = 2 U∞ sinsinθ.
+
+The corresponding circumferential pressure distribution for pure cross plane flow is given
+by
+                             Cp = sin2 (1 – 4 sin2θ),
+
+where Cp = Pressure coefficient ≡ ( p – p∞) / ½  U∞2,
+        p = Static pressure,
+Mass density
+       U = Flight speed,
+     ( )∞ = Conditions at a great distance from the body,
+        Angle of attack, and
+        θ = Circumferential angle.
+
+It can be seen that the circumferential pressure distribution is a maximum on the leeward
+and windward meridians. Also, this velocity component and pressure distribution does
+not depend in any sense on body shape or size. There’s nothing for a designer to do but
+address flight speed and angle of attack. But, as we shall see in the next section, the
+meridional shape has a significant bearing on the longitudinal pressure distribution.
+
+Munk4 Airship Theory
+        The basic idea here is to represent the incompressible flow external to body of
+revolution at zero  by a superposition of singular elementary sources along the body
+centerline. Note that negative sources, or sinks, are included. A source is defined by its
+strength Q and location. Consider a source continuously emitting Q cubic feet per
+second of an incompressible fluid. Conservation of mass requires that the radial velocity
+qR through a control surface at distance r from the source be given from
+
+3
+  M. Rauscher, “Introduction to Aeronautical Dynamics”, John Wiley & Sons, Inc., New
+York, 1953, p. 241
+4
+  M. M. Munk, “Note on the Pressure Distribution over the Hull of Elongated Airships
+with CircularCross Section”, N.A.C.A. TN-192, March 1924.
+
+
+                                                                                         2
+                            Q = 4 π r2 qR, or qR = Q / 4 π r2
+
+Such sources are called singular because of their behavior as r becomes vanishingly
+small.
+       Next, consider a body of revolution as sketched below:
+
+                                    qr       qR
+
+
+
+                                             qz
+ r                                  R                           r = rB
+
+
+
+                              θ
+                                                                               z
+           z1                                                                          Z=L
+                              dz1
+
+Here the body mold line (assumed to be continuous) is given by r = rB(z). The local
+source strength at z = z1 is
+ (z1) dz1. Then,
+
+              qR = (z1) dz1 / 4 π R2 = (z1) dz1 / 4 π ((z – z1)2 + r2).
+
+Also,
+
+        sin θ = r / ((z – z1)2 + r2)         and cos θ = (z – z1) / ((z – z1)2 + r2)
+                                         ½                                             ½
+
+
+Putting these pieces together results in
+                                             L
+                                              ∫
+                    qr(z, r) = (1 / 4 π ) r (z1) dz1 / ((z – z1)2 + r2)3/2, and
+                                        0
+                                     L
+                qz(z, r) = (1 / 4 π )    ∫ (z – z1) (z1) dz1 / ((z – z1)2 + r2)3/2.
+                                    0
+       The source intensity distribution is determined by the tangency boundary
+condition at the body surface. The flow from the z axis source distribution can be
+thought of as nearly radial because the qz contributions from nearby regions tend to
+
+
+                                                                                             3
+cancel each other out, an assumption valid except near the nose stagnation point. Then
+the radial velocity is
+
+                                 2 π r dz1 qr(z, r) = (z1) dz1, or
+
+                                     qr(z1, r) = (z1) / 2 π r
+
+Also, the longitudinal velocity is approximately U∞, the free stream velocity. Then, if
+there is no flow through the surface,
+
+                                 qr(z1, r) / U∞ = drB/dz, or
+
+                                 (z1) = 2 π U∞ rB drB/dz.
+
+Pressure Coefficient
+       From Bernoulli’s law (obtained by integrating the momentum equation along a
+streamline)
+
+                                p + ½  U2 = p∞ + ½  U∞2
+
+This can be rewritten as
+
+                       Cp ≡ ( p – p∞) / ½  U∞2 = 1 – (U / U∞)2.
+
+Note that Cp = 1 at a stagnation point. Expanding this gives
+
+           Cp = 1 – ( U∞2 + 2 qz(z, r) U∞ + qz(z, r)2 + qr(z, r)2 + qθ2) / U∞2
+
+For a slender body,
+                           Cp = – 2 qz(z, r) / U∞ – 4 sin2 sin2θ
+
+The last term above is just that due to cross plane (circumferential) flow, and, as already
+noted, because it offers no opportunity to the designer, will be ignored hereafter. Then,
+
+                                       L
+                                       ∫
+        Cp (z, rB) = – (1 / 2 π U∞) (z – z1) (z1) dz1 / ((z – z1)2 + rB2)3/2, or
+                                   0
+                        L
+                           ∫
+        Cp (z, rB) = – (z – z1) rB(z1) drB/dz (z1) dz1 / ((z – z1)2 + rB2)3/2
+
+Body Profile
+
+
+                                                                                              4
+        It might be thought that the body profile would not be an issue, but it is. The
+thing is, if one terminates the body profile at the base of the body, significant error will
+be introduced to regions well forward of the base. Consider a streamline surface
+covering the body just outside the boundary layer. Absent any thrust, at the body base
+this flow separates and converges along a conical shape until the wake core is reached.
+The wake core can be modeled as a vey long cylinder. With thrust, a more complex
+wake shape emerges. However, we do not need a highly accurate description of the near
+body wake so the non-thrusting wake profile will be used for the general analysis. When
+the wake after body is included in the body profile, Cp estimated over the forebody has
+greatly improved accuracy.
+                D
+                                                               w
+
+                                      θ
+      Body                Wake
+
+
+
+
+       The first relationship we obtain is that for Impulse – Momentum in the cylindrical
+after wake. Consider the element of mass added to the cylindrical wake during time .
+Its mass is           . Its change in velocity relative to the body is        . The
+resulting change in momentum must be equal to the drag impulse applied by the body to
+the air. Then,
+                                                              , or
+
+
+                                                      where
+
+
+      Forebody drag coefficient (including base drag) based on maximum body cross
+section area,
+     Free stream velocity,
+       Cylindrical wake velocity relative to the body,
+         Body and cylindrical wake diameters, and
+     Wake profile half angle.
+
+       The second relationship is basically that due to Bernoulli, neglecting any
+entrainment of air from the body base until the cylindrical after wake is reached. Then
+assuming that the wake pressure has recovered to its free stream value by the time the
+wake has reached its cylindrical state,
+
+                                                    , or
+
+
+
+                                                                                           5
+                                                   where
+
+     Base pressure,
+     Free stream pressure,
+         Base pressure coefficient, and
+     Air mass density.
+
+These two equations may be solved for the cylindrical wake diameter:
+
+
+
+
+The remaining parameter to be established is the conical fore wake convergence angle.
+For the moment, lacking better insight, we take     0.1 radian.
+
+Karman-Tsien Compressibility Correction
+       The Munk theory described above applies to a slender body in incompressible
+flow. The next step is to adjust this incompressible pressure for the effects of
+compressibility. We note that such corrections only apply to subcritical Mach numbers.
+For any body, the critical Mach number is the lowest free stream Mach number for which
+the Mach number anywhere on the body surface is sonic. The Karman-Tsien
+compressibility correction is a semiempirical formula used to estimate the compressible
+Cp given an estimate of the incompressible Cp0. The Karman-Tsien formula is3:
+
+
+
+
+This correction factor can be used to find the pressure distribution in compressible flow at
+different free stream Mach numbers, M∞. According to Felkel3
+
+
+
+
+Here, Ratio of specific heats,
+  M∞ = Free stream Mach number, and
+   p* = Critical surface pressure.
+
+Axial Force
+        In the process of estimating detailed loads, or when developing a drag budget for
+an entire vehicle, it becomes necessary to find the axial force resulting from the nose
+pressure distribution. First, consider an infinitesimal slice of nose of radius rB. Now, if
+
+
+
+
+                                                                                              6
+           tan  = drB/dz                                            ds
+                                                                                    dfB
+                                                                 
+
+                                                                      dz
+the total axial force acting on element of body surface is
+
+                        d Total Axial Force = rB dθ ds p sin β .
+
+Integrating around the full 2π of the slice, and noting that
+
+                                       dz = ds cos β,
+
+so that                d Total Axial Force = 2 π rB p tan β dz
+
+Since                                  tan β = drB/dz,
+
+we have that        d Total Axial Force = 2 π p rB drB = π p drB2
+
+Next, recall that                     p = p∞ + q Cp,
+
+where                       q = Dynamic Pressure = ½  U∞2.
+
+Then,                 d Total Axial Force = π (p∞ + q Cp) drB2.
+
+There are two terms in the above equation. The first is Hydrostatic and the second is
+Hydrodynamic.
+
+         Hydrostatic Force = p∞ Base Area, and
+                                      L
+         Hydrodynamic Force = 2 π q    ∫ Cp rB (dr /dz)dz.
+                                                     B
+
+                                        0
+
+The hydrostatic force is commonly ignored when describing drag because it vanishes
+when integrated over the entire body. However, when estimating interior loads, it can be
+important. The latter eq. must be numerically integrated, including the Karman – Tsien
+compressibility corrections, to find the total axial force acting on the forebody.
+
+Numerical Approach
+        Now, suppose we have the body profile described in terms of radii rB at a number
+of evenly spaced axial locations z. The next step is to estimate the derivative, drB/dz.
+Suppose we have three body radii, r1, r2 and r3 at three body stations z1, z2, and z3.
+Fit a parabolic curve through these points and differentiate it. Then, if the middle point
+
+
+                                                                                          7
+corresponds to z2,
+
+                      rB(z2) drB/dz (z2) = r2 (r3 – r1) / (z3 – z1)
+
+        This model has been coded into an Excel spread sheet called MUNKSHIP2.xls.
+Trapezoidal integration was used with the nose broken into many pieces for integration.
+This gives reasonable results for body regions remote from a blunt afterbody. The code
+does not model any wake or rocket motor exhaust plume.
+        This is straightforward except for the first (nose tip) body element. For a pointed
+nose tip, Cp takes on its full isentropic stagnation value at the very point. Assume that
+upon leaving the point the flow immediately expands to its conical value. Then letting
+the tip be subscripted “1” and the base of the first body element be subscripted “2”. Then
+the Hydrodynamical Force on the first body element is:
+
+                                                       z2
+      Nose Tip Hydrodynamic Force = 2 π q Cp2 (drB/dz)2 rB dz. ∫
+                                               0
+
+After integration, we have that:
+    Nose Tip Hydrodynamic Force = π q Cp2 rB22.
+
+The interesting thing about subsonic Nose Tip Hydrodynamic Axial Force is that it can
+be negative, i.e., the net axial force can be negative as in thrust.
+       A typical conical nose 36” long with a 6” base diameter followed by a cylindrical
+afterbody was chosen as a sample problem. Figure 1 below shows its longitudinal
+pressure distribution. Note especially the relatively large adverse pressure gradient
+beginning at the base of the nose cone caused by airflow speeding up to get around the
+cone-cylinder corner.
+
+
+
+
+                                                                                          8
+                                   Body Pressure Distribution
+                                     Incompressible Flow
+                          0.04
+                          0.03
+  Pressure Coefficient
+
+
+
+
+                          0.02
+                          0.01
+                             0
+                         -0.01 0      20       40         60           80            100
+                         -0.02
+                         -0.03
+                         -0.04
+                         -0.05
+                         -0.06
+                                     Body Station, inches from Nose Tip
+                                               Figure 1
+
+         It was quickly discovered that for most nose shapes there was a large negative
+pressure coefficient bottoming out at nearly -0.06 around the base of the nose leading to a
+large adverse pressure gradient over the cylindrical afterbody. From the standpoint of
+lateral vortex separation this is not good. Manipulation of the individual body radii
+showed that while this region of negative pressure coefficient around the nose base could
+not be eliminated, it could be significantly mitigated. Figure 2 below shows the pressure
+distribution around one of the more promising nose profiles. The adverse pressure
+gradient over the cylindrical afterbody is still present, but is only half what it would have
+been without mitigation.
+
+
+
+
+                                                                                            9
+                                                 Body Pressure Distribution
+                                                   Incompressible Flow
+                                   0
+                                       0   10     20      30    40     50     60   70       80    90   100
+                             -0.005
+ Prsuure Coefficient
+
+
+
+
+                              -0.01
+
+                             -0.015
+
+                              -0.02
+
+                             -0.025
+
+                              -0.03
+                                                       Body Station, inches from Nose Tip
+
+                                                                Figure 2
+
+       The body profile giving this pressure distribution, labeled rB, is shown in Figure 3
+below. For purposes of comparison, a power law profile, labeled zn, is also shown for
+
+
+                                                             Nose Profiles
+
+                             3.5
+                               3
+       Body Radius, inches
+
+
+
+
+                             2.5
+                               2                                                                        zn
+                             1.5                                                                        rB
+
+                               1
+                             0.5
+                               0
+                                   0        6           12        18         24      30          36
+                                                Body Station, inches from Nose Tip
+
+                                                                Figure 3
+
+
+
+
+                                                                                                             10
+ n = 0.42. While the rB curve is wriggly due to numerical noise it seems that such a
+power law profile might be a satisfactory practical solution to the problem of mitigating
+lateral vortex separation. For reference purposes, a table of radial ordinates is shown
+below:
+
+                   Body Station, inches       Z0.42, inches    rB, inches
+                            0                        0              0
+                           3.6                    1.064          1.010
+                           7.2                    1.454          1.466
+                          10.8                    1.745          1.816
+                          14.4                    1.986          2.065
+                          18.0                    2.196          2.307
+                          21.6                    2.384          2.506
+                          25.2                    2.555          2.674
+                          28.8                    2.713          2.815
+                          32.4                    2.861          2.911
+                          36.0                    3.000          3.000
+
+Note that the column labeled Z0.42 has been scaled to provide body radii in inches.
+
+
+
+
+                                                                                        11
+

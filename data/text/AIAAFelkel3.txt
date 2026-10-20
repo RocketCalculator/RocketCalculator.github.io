@@ -1,0 +1,426 @@
+     Effect of Different Nose Profiles on Subsonic Pressure
+                          Coefficients
+
+                                                Ryan J. Felkel†
+                             Department of Mechanical and Aerospace Engineering
+                        California State University, Long Beach, Long Beach, CA, 90840
+
+
+
+In the past decade, small sounding rockets have become an important educational tool for college aerospace
+engineering programs. These sounding rockets typically reach high subsonic Mach numbers leading to
+apogees around 3 to 4 km. It is inevitable that air must speed up to travel around the body which leads to
+negative forebody pressure coefficients. This paper focuses on the comparison of different nose shapes having
+cylindrical afterbodies, and selecting the best with the least speed up. Two issues are considered: First, the
+adverse pressure gradient existing over all cylindrical afterbodies can lead to the separation of a vortex pair
+at angle of attack that induces rolling moments on the tailfins. Second, if the forebody local Mach number
+exceeds unity, the flow will decelerate via a shock wave that may also cause a vortex pair to separate at angle
+of attack. Shock waves are also associated with the onset of wave drag. The key metric used here is the
+minimum pressure coefficient at the base of the forebody because it drives both the cylinder pressure
+gradient and the critical Mach number. Three configurations were analyzed: cone-cylinders, ogive-cylinders,
+and specially shaped forebody-cylinders optimized for minimum pressure coefficient. The optimum forebody
+shape was found by a cut-and-try approach for a given fineness ratio. Incompressible pressure coefficients
+were calculated using Munk Airship Theory assuming zero angle of attack. The Karman-Tsien Correction
+Factor was used with the minimum pressure coefficient to find the critical Mach number. Results are shown
+as charts of both minimum pressure coefficient and critical Mach number as functions of fineness ratio.
+These charts reveal that the minimal pressure coefficient increases almost exponentially as fineness ratio
+increases. The cone-cylinder results show the greatest speed up compared to the other two nose profiles.
+Ogive-cylinders generate less speeding up and the optimum shape as the least speeding up.
+
+
+
+
+                                               Nomenclature
+
+α       angle of attack
+Cp      pressure coefficient
+ESRA    Experimental Sounding Rocket Association
+γ       specific heat ratio
+L/D     fineness ratio (lift-to-drag ratio)
+Λ       source strangth
+Mcr     critical Mach
+rB      body radius
+V∞      free stream velocity
+z       body station
+
+
+
+
+†Undergraduate Student, Experimental Sounding Rockets Association Member, AIAA Member
+
+                                                     1
+                            American Institute of Aeronautics and Astronautics
+                                                  I.    Introduction
+
+
+Many aerospace projects at a number of universities involve designing, building, and launching experimental
+sounding rockets, small rockets carrying payloads that perform scientific experiments in a sub-orbital trajectory that
+reach apogees up to 3 to 4 km. Throughout a trajectory within the atmosphere, it is inevitable that an adverse
+pressure gradient, that is, pressure increasing with increasing distance from the nose tip, will occur at some point
+along the forebody of the rocket. Next consider the effect of a small angle of attack that will reduce the pressure on
+the leeward side of the forebody even more. As the angle of attack is increased, the leeward side adverse pressure
+gradient becomes more severe eventually inducing boundary layer separation. At the start of leeward side boundary
+layer separation, a pair of vortices form, one on each side of the body. When the vortex pair moves aft they will
+induce rolling moments on the tail fins of sounding rockets which can lead to roll lock-in or a catastrophic yaw 3,4. In
+roll lock-in the roll rate follows the pitch natural frequency. This prolonged resonance engenders excessive drag and
+structural loading with extremely adverse consequences to the mission.
+
+There are two causes of an adverse body pressure gradient. First, if local supersonic flow occurs, returning to local
+subsonic conditions will be done by a normal shock wave. The onset of this phenomenon is when the local surface
+Mach number reaches unity. The free stream Mach number corresponding to this condition is called the critical
+Mach number. At higher speeds, the sudden jump to a lower Mach number across a normal shock will be
+accompanied by a jump in static pressure. Second, since local flow near the body must be faster than free stream, it
+must continuously return to free stream conditions. This happens at all Mach number. In both cases, the driving
+consideration is the static pressure at the base of the forebody. The lower this is, the lower the critical Mach number
+and the greater the negative pressure gradient of the cylindrical afterbody.
+
+The objective of this paper is to show that boundary layer separation can be postponed by the shape of the rocket
+nose cone. The idea here is to get the incompressible static pressure at the base of the forebody to be as large as
+possible. This will give the greatest critical Mach number and the least adverse pressure gradient over the cylindrical
+afterbody. Although vortices cannot be avoided, they can be mitigated by using the best nose cone shape. Shapes
+that can produce high critical Mach numbers give the greatest Cp with respect to ambient pressure. This is because
+the closer the Cp local minimum is to 0, the weaker the adverse pressure gradient becomes, which results in a small
+vortex strength.
+
+This paper’s key concept is that while the nose shape does not influence the cross flow pressure distribution 1 at all,
+that part of the adverse pressure gradient arising from longitudinal flow can be modified by changing the nose shape.
+
+                                                                             Figure 1 Pressure Gradients
+
+
+
+                                              / ∂Φ            ∂p/ ∂
+                                                                    z
+                                         R ∂p
+
+
+
+                               V∞
+                        α
+
+
+
+
+                                                       2
+                              American Institute of Aeronautics and Astronautics
+Figure 1 shows the two pressure gradient components. While nothing can be done about the radial adverse pressure
+gradient (R ∂p/ ∂Φ) the longitudinal pressure gradient (∂p/ ∂z) can be altered to halt adverse effects as much as one
+is inclined.
+
+
+                                                  II.     Analysis
+
+A system of procedures was used for analysis, as shown in Figure 1, where the dimensions of a nose profile (radius
+and body station) are inputted and the minimum Cp and critical Mach number are outputted. The nose dimensions
+are first sent through an incompressible Cp calculation using Munk Airship Theory. From the Munk Airship Theory,
+a distribution of incompressible pressure coefficients was formed. From this distribution, the minimum pressure
+coefficient was chosen to run through an incompressible to compressible transformation called the Karman-Tsien
+Correction, which is valid for subsonic Mach numbers. Then, the isentropic relation between pressure and Mach
+number was considered, and was integrated into the general equation for the pressure coefficient in order to find
+where pressure reaches sonic flow, that is, P*. This gives a critical pressure coefficient function in terms of free
+stream Mach number. This function and the Karman-Tsien Equation are graphed together, and the critical Mach
+number is where the two curves intersect.
+
+
+
+
+Figure 1 Analysis Process
+
+
+
+
+    A. Munk Airship2 Theory
+
+In order to reveal the effects of pressure along the nose cone, a process called Munk’s Airship Theory. Max Munk,
+the German aerospace engineer who created this theory, used this process to calculate pressure around an elongated
+airship with a circular cross section. His idea was to consider points along an airship’s axis to have source flow,
+which is depicted in Figure 2.
+
+
+
+
+                                                       3
+                              American Institute of Aeronautics and Astronautics
+                                          Figure 2 Depiction of Source Flow
+
+The equation for three-dimensional source strength must first be considered, which is given as
+
+
+                                                         or                                                       (1)
+
+Under the assumption that the body is continuous, the mold line is given by r which is in terms of z. The figure
+shown below shows the R vector and its components. The local source strength is the product of the displacement of
+the body station (dzi) and some constant σ(zi).
+
+
+
+                                                                                                              (2)
+
+
+
+
+                                         Figure 3 Theoretical Body Mold Line
+
+
+
+Under knowledge of the R vector and its components, trigonometry functions can be used to find the equations of
+radical velocity in terms of r and z.
+
+
+
+
+                                      Figure 4 Radial Vector and its Components
+
+
+
+
+                                                      4
+                             American Institute of Aeronautics and Astronautics
+                                                         and                                                         (3)
+
+Now the cylindrical radial and axial velocity components can be evaluated.
+
+
+
+                                                                                                                     (4)
+
+
+
+                                                                                                                     (5)
+
+If a finite chain of sources are visualized, then it is assumed that radial velocities from different sources will cancel
+each other out in the z direction, which results in radial flow which can be looked at as discs in finite terms. It is
+known that the product of the circumferential surface area and its radial velocity is equal to the source strength.
+
+
+
+
+                                                Figure 5 Radial Flow Disc
+
+
+                                                                    or                                               (6)
+
+At the point of source analyzed, the free stream velocity and Vr can be juxtaposed to drB/dz since they both have
+common unit vectors.
+
+
+                                                               or                                                     (7)
+
+
+
+Now consider Bernoulli’s incompressible flow equation.
+
+
+                                                                                                                     (8)
+
+Using this equation, it can be used to solve for Cp in terms of flow velocity.
+
+
+
+                                                                                                                     (9)
+
+V is the total magnitude at a given point, which is sum of the radial velocity and the free stream velocity.
+
+
+
+                                                        5
+                               American Institute of Aeronautics and Astronautics
+                                                                                                                  (10)
+
+Equation 10 applies as long as the angle of attack vanishes. For a small angle of attack there is an additional term in
+the Cp equation arising from circumferential cross flow. This additional term acts to depress the leeward side
+pressure even further, below its zero α value. It follows that the leeward side adverse pressure gradient is the most
+severe, and that, therefore, boundary layer separation and vortex pair formation starts on the leeward side.
+
+For slender bodies, second order terms would be much smaller than first order terms. Therefore, the second-order
+terms are neglected. Also,
+
+
+                                                                                                                  (11)
+
+The integral equation for Vz and σ(z₁) is then substituted,
+
+
+
+
+                                                                                                                  (12)
+
+
+
+    B. Karman-Tsien Compressibility Correction
+
+
+A pressure coefficient distribution has now been obtained for an incompressible flow. The next step is to figure out
+where a critical Mach number would occur. Again, it is important to know if sonic flow occurs because higher
+speeds would cause a normal shock along the body. Before we can find the critical Mach number, we must consider
+the body in compressible flow. The Karman-Tsien Compressibility Correction was used to find the compressible Cp.
+The Cp for incompressible flow, Cp₀, which is found from the output of Munk’s Theory, is plugged into Karman-
+Tsien. The empirically derived formula for Karman-Tsien’s equation is:
+
+
+
+                                                                                                                  (13)
+
+This correction factor can be used to find the pressure distribution in compressible flow at different free stream
+Mach numbers. For example, Figure 7 shows the effect of compressibility on the pressure distribution. Note that the
+minimum Cp occurs at the base of the nose (36”). This is true for all shapes studied.
+
+
+
+
+                                                       6
+                              American Institute of Aeronautics and Astronautics
+                                    Figure 6 Optimum Pressure Coefficients [L/D=6]
+
+    C. Critical Mach Number
+
+The compressible pressure distribution function in terms of Mach number is now known. Now the next step is to
+find where along this curve the critical Mach number occurs. The equation below shows the general formula for
+pressure coefficient, which can be rewritten showing a pressure ratio.
+
+
+
+                                                                                                               (14)
+
+The isentropic relation between pressure and Mach number is known as
+
+
+
+                                                                                                               (15)
+
+Since the interest is to know where the local Mach number reaches unity, a relation between pressure when Mach is
+1, and the free steam pressure is utilized. The isentropic relation is then simplified to
+
+
+
+                                                                                                               (16)
+
+The pressure ratio is a function of the free stream Mach number which is plugged into the definition of the pressure
+coefficient equation. Figure 8 shows what Cp should be at a certain free stream mach number for the critical Mach
+number to occur.
+
+
+
+
+                                                      7
+                             American Institute of Aeronautics and Astronautics
+                                                      Figure 7 Critical Pressure Coefficient
+
+
+
+                                                              III.      Results
+
+The analysis process was done for three nose shapes with cylindrical afterbodies: a cone, a tangent ogive, and an
+optimum nose shape developed using cut and try methods. For each shape, different fineness ratios (L/D) shapes
+were analyzed from 3 to 6, which means for a 36 inch long nose, base radii from 3 in to 6 inches were analyzed. The
+profiles and Cp distribution along the nose bodies are shown in Fig. 9 and 10 below:
+
+
+
+                                                          Nose Profiles
+                             3
+
+                            2.5
+Body Radius [inches]
+
+
+
+
+                             2
+
+                            1.5                                                                              Cone
+                                                                                                             Ogive
+                             1                                                                               Optimum
+
+                            0.5
+
+                             0
+                       -4         1   6          11           16          21          26           31   36
+                                            Body Station from Nose Tip [inches]
+
+
+                                               Figure 8 Nose Profiles with a Fineness Ratio of 6
+
+
+
+
+                                                                   8
+                                          American Institute of Aeronautics and Astronautics
+                      Figure 9 Incompressible Body Pressure Distribution with a Fineness Ratio of 6
+
+The outputs of the analytical process are the minimum pressure coefficient and the critical Mach number, which
+were plotted in two separate graphs in respect to L/D. The following results are obtained:
+
+
+
+                                                Table 1 Analysis Results
+
+                                                           Mcr                                               Cp min
+R, in    L/D      Mcr Cone-Cylinder       Mcr Ogive      Optimum       Cp min Cone          Cp min Ogive    Optimum
+ 6.0     3.00          0.873               0.895          0.915         -0.11706              -0.08616      -0.06278
+ 5.5     3.27          0.878               0.903          0.924         -0.10916              -0.07782      -0.05401
+ 5.0     3.60          0.885               0.910          0.930         -0.10097              -0.06940      -0.04667
+ 4.5     4.00          0.891               0.917          0.937         -0.09246              -0.06092      -0.04061
+ 4.0     4.50          0.897               0.925          0.943         -0.08359              -0.05243      -0.03551
+ 3.5     5.14          0.906               0.934          0.949         -0.07432              -0.04398      -0.02929
+ 3.0     6.00          0.914               0.943          0.953         -0.06454              -0.03566      -0.02656
+
+
+
+
+                                                       9
+                              American Institute of Aeronautics and Astronautics
+                          Figure 10 Minimum Pressure Coefficient Versus Nose Fineness Ratio
+
+
+
+
+                               Figure 11 Critical Mach Number Versus Nose Fitness Ratio
+
+
+
+                                                IV.      Summary
+
+The idea that was set here is to delay boundary layer separation by pushing the critical Mach number as far up as
+possible. This paper explained the process on how to observe the compressibility effects on a cylindrical nose of a
+rocket. A body profile was generated and was analyzed using Munk’s Airship Theory to get an incompressible
+
+                                                     10
+                             American Institute of Aeronautics and Astronautics
+pressure distribution profile. The worst case minimum pressure coefficient was chosen and plugged into the
+Karman-Tsien Correction Factor to find the compressible pressure coefficient that intersects with the critical
+pressure coefficient function to find the corresponding critical Mach number. This process was one for three
+different types of noses: a cone-cylinder, ogive-cylinder, and an optimum-shaped-cylinder. Of course, the process of
+finding the minimum pressure coefficient and critical Mach number is not limited to only these three shapes; this
+process can apply to any shape of a rocket nose. As long as the shape is continuous, a good estimate of the
+compressibility effects can be found. The author encourages other rocket teams, and possibly companies in the
+industry like ESTE’s Hobby Rockets and other companies who make subsonic ordinance, to use this paper as
+reference for rocket nose selection.
+
+                                              Acknowledgements
+
+The author would like to give his deepest thanks to Mr. Charles Hoult and Dr. Janet Cameron Hoult for their
+kindness, patience, and generosity towards the advising of this paper. The author would also like to thank all his
+peers in the Experimental Sounding Rocket Association (ESRA).
+
+
+
+                                                   References
+
+[1]: Anderson, J. D., Fundamentals of Aerodynamics, 4th ed., Mc Graw-Hill, Boston
+
+[2]: Munk, M. M., The Aerodynamic Forces on Airship Hulls, National Advisory Committee for Aeronautics,
+Report No. 184, 1924
+
+[3]: Nicolaides, J. D., Two Non-Linear Problems in the Flight Dynamics of Modern Ballistic Missiles, Bureau of
+Naval Weapons, Washington., D.C., 2004
+
+[4]: Nicolaides, J. D., On the Free Flight Motion of Missiles Having Slight Configurational Asymmetries, Army
+Ballistic Research Laboratories, Aberdeen Proving Ground, MD, 2004
+
+
+
+
+                                                     11
+                             American Institute of Aeronautics and Astronautics
+

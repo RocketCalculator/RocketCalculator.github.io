@@ -1,0 +1,479 @@
+SKYAERO v.7.6.1
+User’s Manual
+
+
+
+
+By: Armando Fuentes, Charles Hoult, Hien Tran and Michael Tong
+
+Mar 02, 2014
+Table of Contents
+1.     Getting Started...................................................................................................................................... 1
+2.     Input Tables........................................................................................................................................... 2
+     2.1.     Geophysics and Geodesy .............................................................................................................. 2
+     2.2.     Wind Model .................................................................................................................................. 3
+     2.3.     Initial and Final Conditions............................................................................................................ 5
+     2.4.     Events/Phases and Durations ....................................................................................................... 6
+     2.5.     Parachute and integration step sizes ............................................................................................ 8
+     2.6.     Stages ............................................................................................................................................ 9
+     2.7.     Miscellaneous ............................................................................................................................. 12
+3.     Running and Analyzing the Simulation ............................................................................................... 13
+     3.1.     Running SKYAERO ....................................................................................................................... 13
+     3.2.     Analyzing the Results .................................................................................................................. 13
+     3.3.     Using SKYAERO to Adjust Launcher Settings .............................................................................. 14
+     3.4.     Using SKYAERO for Other Applications ....................................................................................... 14
+4.     FAQ ...................................................................................................................................................... 16
+1. Getting Started
+          SKYAERO is a point mass time-event trajectory and rocket performance simulation.
+  SKYAERO is capable of simulating up to 3-stages, and both drogue and main chute phases.
+          To simplify operation of the program, SKYAERO has been color-coded. The color usage
+  and their meanings are defined in the following text and Figure 1. Green and Orange filled cells
+  represent the titles, headers and symbols. Magenta filled cells represent the inherent physics of
+  the problem (physical constants etc). Gray filled cells provide guidance to the users on how to
+  operate SKYAERO. Light blue filled cells represent the required user inputs. White filled cells
+  are calculated values by SKYAERO (based on user inputs and standard physics).
+
+
+
+
+                           Figure 1 - Color-coded scheme of SKYAERO.
+
+          Some may wonder why this type of program was created and developed in Microsoft
+  Excel VBA (Visual Basic for Applications) rather than C, Matlab, or other programming
+  language. With SKYAERO’s input and output Microsoft Excel interface, users can operate the
+  software with no programming background or knowledge. Further, this program readily and
+  easily accepts thrust curve data for motor and rocket's drag profile with input tables. This
+  program was generated for its simplicity, accessibility, ease-of-use and accuracy.
+          When running the simulation users may feel that the simulation is taking longer than
+  expected. This is normal! Visual Basic calculates slower than other programming languages. As
+  a "rule of thumb" (for this program), if the simulation lasts more than 10 minutes, it should be
+  aborted. Unfortunately, once the run begins, there is no way to stop it through the standard
+  (tabular) interface. However, the program can be stopped directly from the source code using,
+  standard computer operation techniques; alt + break or "Esc" key. The other alternative is to start
+  the task manager (ctrl+alt+delete) and shut down MS Excel. On average, simulations take less
+  than 5 minutes to compute (depending on step sizes, number of stages employed and the
+  computer's overall capable performance).
+          Before starting any work, the users must enable Macros (the default setting has Macros
+  disabled). If macros are disabled, follow the instructions provided with MS Excel and enable
+  them. To access Excel’s (Visual Basic) programming tools, you will need to enable and select
+  the Developer's tab.
+
+
+
+
+                                                                                                    1
+2. Input Tables
+        Prior to running SKYAERO, the users must input/fill in all tables that are applicable their
+problem. Failure to fill in the tables properly may result in a degradation in accuracy of the
+results or an error message. The number of tables required to be filled out depends on the
+number of stages required for the simulation. Note that SKYAERO uses English units
+exclusively.
+
+2.1.   Geophysics and Geodesy
+       The first table the users encounters is mostly completed and is shown below in Figure 2.
+The only required input is the launch site surface temperature in degrees Fahrenheit. The
+Farenheit temperature is converted to degrees Rankine when SkyAero begins its calculations.
+The input temperature is actually measured at 2 meters, or about 6 ft, above the ground level.
+
+
+
+
+                     Figure 2 - Physical and Atmospheric Constants Tables.
+                                                                                                  2
+        The atmosphere model is very similar to that used in the 1976 US Standard Atmosphere.
+Once a temperature profile has been established in an atmospheric region, e.g., the troposphere,
+then the perfect gas law and the condition of hydrostatic equilibrium are used to obtain the other
+state variables. The troposphere temperature profile uses the standard atmosphere lapse rate but
+passes through the measured launch temperature.
+        Tropopause altitude is found as a function of latitude from data in the Handbook of
+Geophysics1. The stratosphere temperature remains constant at its tropopause value.
+        The acceleration due to gravity at the geoid is modeled with a Potsdam equation1 using
+latitude as its independent variable. Corrections for higher altitudes are based on an inverse
+square law. The shape of the earth is considered to be an ellipsoid of revolution, again using
+latitude as the independent variable.
+
+2.2.    Wind Model
+        Unlike many trajectory simulations, SKYAERO has the capability to account for wind.
+The wind model is based on Lewis’ method2, which assumes the rocket instantly heads into the
+relative wind. Begin by clearing any old wind data from an earlier run. Then, if, a wind response
+is needed, press Generate Wind Profile. Values obtained by WIND CALCULATOR.xlsx can be
+input into SKYAERO. WIND CALCULATOR.xlsx can be found on Rocket Science and
+Engineering Technologies website 3. WIND CALCULATOR.xlsx generates two sets of data, one
+for the North-South (N-S) component of the wind vector, and one for the East-West (E-W)
+component as shown in Figure 3b. The user simply types those values into the cells of the table
+of Figure 3b. The program calculates and populates the table of Figure 3a. The user also needs to
+know that he/she will need to run the program twice, once for in-plane wind, and again for cross-
+wind for a complete simulation.
+
+
+
+
+1
+ Adolph S. Jursa, Scientific Editor, "Handbook of Geophysics and the Space Environment", 3rd
+Edition, United States Air Force, 1985.
+2
+ Lewis, J.V., “The Effect of Wind and Rotation of the Earth on Unguided Rockets”, Ballistic
+Research Laboratories Report No. 685, Aberdeen, March 1949.
+3
+    www.rsandt.com
+
+                                                                                                     3
+                    Figure 3a - Generate Wind Table and Wind Type Input.
+
+
+
+
+                               Figure 3b - Wind Table of Input.
+
+        WIND CALCULATOR.xlsx generates a vector wind profile using data from two
+sources. Low altitude (150 m ≈ 500 ft AGL) vector winds are measured as near to launch time as
+feasible using a tethered pilot balloon (TPB)3. The higher altitude synoptic winds are obtained
+from the online National Weather Service data base for a location near the launch site.
+SKYAERO re-resolves the N-S and E-W profiles into in-plane and cross-plane profiles. Both are
+developed from the tabular data using linear interpolation.
+
+
+
+
+                                                                                              4
+                              Figure 4 - Wind and Trajectory Azimuth.
+
+        Two data sets fed into WIND CALCULATOR.xlsx to obtain the N-S component wind
+and E-W component wind. For more information on this topic you can refer to the materials
+posted on C. Hoult’s website3.
+        Now that the wind data set of two components are obtained, SKYAERO will generate a
+wind profile as a function of altitudes linearly interpolating the wind data obtained. To use, all
+the user needs to do is type "true" (in-plane), "false" (cross-wind) or "none" (no wind). A linear
+interpolation curve is the straight line between two data points. Ideally the more data points we
+obtained in the field the better the accuracy of the wind profile is. To generate the table simply
+use the buttons in Figure 3.
+        Now that the user knows how to use the tables, it is important to briefly describe the use
+of the in-plane wind or cross-wind component. The wind model is used to predict the landing
+location of the rocket in the presence of winds.
+        SKYAERO has the ability to account for desired landing location by providing elevation
+and azimuth rocket launch angles. In order to achieve this, the wind vector is broken into two
+constituents, namely the in-plane wind and cross-wind directions with respect to the desired
+trajectory plane, and an impact point due to each wind component is calculated. A trigonometric
+calculation is carried out to determine the necessary launch angles to land at a desired location.
+
+2.3.    Initial and Final Conditions
+         The initial and final conditions table require the user to input values for initial conditions
+(including launch site data) and final goals. The launcher can be either static or mobile. An
+example of mobile launch would be a rocket being dropped-off from an airplane at some
+designated altitude. The inputs are the altitude at the launch site, velocity, geodetic latitude
+which will be defined later, initial range for whichever launch option is used, the initial launch
+elevation angle, and the initial yaw wave number, which will be defined later. In all cases, the
+initial position vector passes through the launch site.
+         You may be wondering what the geodetic latitude and yaw wave number are. There are
+two types of latitudes, geocentric and geodetic. Below is a definition of both:
+                                                                                                      5
+        Geocentric latitude: defined as the angle between the equatorial plane and a radius vector
+from the center of the Earth.
+        Geodetic latitude: defined as the angle between the equatorial plane and a vector normal
+to the Earth’s geoid.
+        The yaw wave number4 refers to a kind of spatial domain frequency that is a consequence
+of the rocket’s moment of inertia and aerodynamic stability. This number will usually be
+provided by the structures or mass properties team. Figure 5 shows a lay-out of this input table.
+Cartesian coordinate axes are used. Subscript x is for the horizontal direction, and z for the
+vertical.
+
+
+
+
+                                Figure 5 - Initial and Final Inputs.
+
+
+2.4.   Events/Phases and Durations
+        In a time-event simulation, events are when something important happens. Adaptive
+events depend on how the simulation evolves, such as time leaving the launcher rail, apogee and
+impact. Many events occur at a scheduled time. Examples are ignition and second stage
+separation from the first stage. Whenever the equations of motion change, such as when leaving
+the launcher rail or igniting an upper stage, an event must be inserted. Also, if the rocket's inert
+mass or drag curve changes, such as with parachute deployment, an event will be needed.
+
+
+4
+ Hoult, C.P., “The Pitch/Yaw Wave Number (rev.3)”, Rocket Science and Engineering
+Technologies. 2009. http://rsandt.com/media/The Pitch-Yaw Wave Number3.doc
+                                                                                                   6
+        A phase is just everything between two adjacent events. For example, first stage coasting
+could begin with first stage burnout and end with parachute deployment.
+        The phases/events input table defines the number of stages of the rocket, and whether or
+not parachutes are present. A simple true and false logic is employed to determine which stages
+will be activated. Make sure to select true for coasting and power phase for each stage selected.
+Note that not all events of the stage need to exist. However; there are some which are essential.
+One example would be the first stage powered flight is needed for a two stage rocket but the first
+stage coasting flight can be omitted if the rocket goes straight to second stage ignition from first
+stage burnout. For more information, user needs to look up the document "Events and
+Phase(rev.3)"5 on website3.
+        From the table in Figure 6, after inputting the launch logic, the user will input the
+duration times between two phases. The user can observe the start time and the end time of each
+event and check if the launch sequence is correct. Note that the final phase, which will be
+terminated by impact with the ground, should be given an input duration of 9999.0 seconds. The
+actual impact will occur much earlier, but this ensures that the simulation run does not stop itself
+prior to impact.
+
+
+
+
+5
+ Hoult, C.P., “Events and Phases(rev.3)”, Rocket Science and Engineering Technologies. 2013.
+http://rsandt.com/media/Events_and_Phases(rev3).doc
+
+                                                                                                   7
+                      Figure 6 - Events/Phases and Durations Input Table.
+
+
+2.5.   Parachute and integration step sizes
+         SKYAERO uses a fourth order Runge-Kutta numerical integrator. Below the events
+table, the user will encounter parachute inputs and time step inputs. The default delta t (dt or
+time step) for the flight is .05 seconds, which is pretty accurate except during parachute
+deployment. For this reason, the user is given the option of adjusting the times to ensure the
+simulation runs stably. Keep in mind that these shorter time intervals are only needed for a few
+seconds following parachute deployment. Large accelerations are encountered during parachute
+deployments, and if the step size is too large, the integration will be unstable. Input values are
+needed for the parachute diameters, deployment times, and, an inflation time constant. The time
+constant is the time required for the parachute to fully deploy. It is assumed that the parachute
+capture areas will follow an exponential behavior. One time constant is assumed for all
+
+                                                                                                 8
+parachutes. Users are free to experiment with the values, but it is recommended to use the default
+value.
+
+
+
+
+                                   Figure 7 - Integration Time Steps.
+        SKYAERO provides for three parachutes. The standard drogue and main are used for
+recovery. But, for aircraft and balloon launches, a separate drogue is initially used to ensure the
+launch aircraft is at a safe distance away and the rocket is pointing vertically prior to stage
+ignition.
+
+
+
+
+                                  Figure 8 - Parachute Parameters.
+
+2.6.      Stages
+        The next tables are those pertaining to thrust, drag, and weight data about each stage.
+There are 3 of these tables, one for each stage simulated. The first inputs required are the weight
+of the structure, payload, and propellant for each stage in Figure 9. The thrust table in Figure 10
+is composed of two input columns. One is for time from ignition and the other is for sea
+level/vacuum thrust. These values are obtained from the motor manufacturer, test or
+thrustcurve.org in Figure 11. An alternative source is the NAR data base at National Association
+of Rocketry website6 . It is important to realize that the motor manufacturer will always give
+thrust at sea level, not vacuum. It is the responsibility of the user to input the correct thrust. The
+other columns are calculated values and need not be modified. See figure below for reference.
+
+
+
+
+6
+    www.nar.org
+
+                                                                                                      9
+                                  Figure 9 - Weight Parameters.
+
+        The burn time, delay time and separation time are input in the duration column of
+Phases/Events and Durations Input Table. The motor burn time is obtained from the powered
+flight duration time. As an example, see Figure 11, for this motor the burn time is 7.08 second.
+The delay time for first stage exists when the rocket is air-launched. It is the duration time
+between the aircraft release or separation from a lower stage to the ignition of the motor. The
+separation time is the time from the lower stage motor burn out to the separation of the lower
+stage.
+
+
+
+
+                               Figure 10 - Thrust and Drag Inputs.
+
+
+
+                                                                                                   10
+        The drag tables are to the right in Figure 10 and require three inputs: Mach number,
+power-on drag coefficient, and base pressure coefficient. These inputs can be tabulated using
+Excel file, DRAG COEFFICIENT3.2.xls, from website3. DRAG COEFFICIENT3.2.xls contains
+codes used to estimate sounding rocket zero lift drag coefficients. Ideally, the aerodynamics
+group will provide them but more often than not they will only provide power-off drag as a
+function of Mach, and the base pressure. To obtain the power-on values simply work backwards
+using the equations in the Power of Cd column as shows below.
+                                                              A
+                                      Cd off  Cd on  Cpbase enozzle
+                                                               Sref on
+All this comes about due to the way thrust and drag are defined. The pressure area integral is
+book kept under thrust during burning but is considered part of drag while coasting. It’s just
+subtraction, addition, and some division.
+        Immediately below the thrust table there are three cells. These are the exit area of the
+engine nozzle, and total impulse and vacuum Isp. The user must provide the exit area.
+
+
+
+
+                            Figure 11 - Data from Thrustcurve.org.
+
+                                                                                              11
+2.7.   Miscellaneous
+        The table in Figure 12 summarizes the weight and mass for each stage and at each phase.
+This table is to help user to re-check their input values and settings before running the program.
+Figure 13 is the table for the simulation monitor. It helps users track the simulation progress.
+
+
+
+
+                             Figure 12 - Weight and Mass Summary.
+
+
+
+
+                                 Figure 13 - Simulation Monitor.
+
+
+
+
+                                                                                                12
+3. Running and Analyzing the Simulation
+
+3.1. Running SKYAERO
+        Running SKYAERO is very simple. After filling-out every blue-colored cell simply
+scroll all the way down until you see a rectangle containing two buttons. One is for running the
+simulation and the other for erasing the old values. Erasing any old values prior to running a new
+simulation is recommended.
+
+
+
+
+                                  Figure 14 - Simulation Controls.
+
+
+3.2. Analyzing the Results
+         The results obtained are stored in a sheet called “Solution”. Here the user will be able to
+see all the necessary output values at different times and to make sure that at each time the rocket
+is in the right phase. The values shown are the state vector elements as a function of time after
+liftoff (TALO): Vertical velocity, inertial horizontal velocity, relative horizontal velocity, range,
+mass, and altitude. Other results include the initial wind speed followed by a correction factor
+and then the actual simulated speed. In other words, the simulated speed is the true wind speed
+after applying a correction factors7,8. The user can also look at the flight path angle, acceleration,
+thrust, drag, Mach number, dynamic pressure, etc.
+         At the far right, values at critical events are presented. From these columns the user can
+choose to plot any variables and graphically analyze the results. Some important graphs have
+already been done and are shown in other sheets.
+
+
+
+7
+ Hoult, C.P., “Finite Inertia Corrections to the Lewis Method Wind Response”. Aerospace
+Corp. I.O.C. A79-5435-44, 1979
+8
+ Hoult, C.P., “Launcher Length for Sounding Rocket Point-Mass Trajectory Simulations”.
+Journal of Spacecraft and Rockets, Vol. 13, No. 12, Dec 1976, pp 760-761.
+                                                                                                   13
+3.3. Using SKYAERO to Adjust Launcher Settings
+        SKYAERO has a wind model that can be used to predict the impact point of the rocket.
+This is a very useful tool but incomplete. The user must next be able to use the code to adjust the
+launcher angles to achieve the desired impact point. This is done by using the sheet called
+“launcher angles”. Here the user will run a sequence of simulations and use those values as
+inputs. First, run SKYAERO at 90 degrees and obtain the impact point due to each wind
+component. Repeat the procedure, but with zero winds and by varying the elevation angle. Do as
+many as you like making sure to go between 82 and 90 degrees. The last two inputs are the
+desired impact locations. Fill those out and you will obtain the necessary elevation and azimuth
+angles needed to accomplish it. See Figure 15.
+
+
+
+
+                           Figure 15 – Launcher Settings Input Table.
+
+3.4. Using SKYAERO for Other Applications
+        This section will elaborate on SKYAERO’s ability to analyze rockets launched from
+other than a static launcher on the ground. This is depends on the creativity and the engineering
+judgment of the user. Some examples for mobile launching are dropping a rocket from an
+airplane or balloon and launching the rocket from a moving vehicle. SKYAERO can also be used
+for projectiles, such as dropping supplies from an airplane.
+        When dropping a rocket off an airplane, initially the rocket is suspended from a small
+pre-ignition chute to control launch angle and to safely separate rocket from airplane. The way to
+
+                                                                                                 14
+use this feature is very simple. Simply type true in first stage on coasting flight and false for the
+launcher, if appropriate, type true in first stage coasting on parachute. Also, input the altitude,
+Vx, and Vz of the rocket at it releases from airplane. Typically Vz will be zero since the airplane
+will likely be moving horizontally. Vx will be the speed of the airplane unless an initial boost is
+given to the rocket. The altitude must be the MSL value at which the rocket is dropped.
+        Singular perturbations are used at ignition. This is done by assuming a small launch rail
+length, 3 inches or so, and calculating a simulation launcher length based on the pitch/yaw wave
+number. This procedure will fix the flight angle of the rocket until it has enough vertical
+acceleration and speed to move upwards. If this is not done, the velocity in the vertical direction
+will be negative after launching and the new flight angle values will also be negative, meaning
+the rocket will head into the ground. This phenomenon is due to the point mass assumption, and
+which cannot simulate the rotational effects of the vehicle. To get accurate results, the user must
+use the correct pitch/yaw wave number, which will reflect the rocket deployment altitude (as a
+function of density).
+        Another use for this feature is that of a rocket being launched while suspended from a
+balloon. This has, in fact, been done many times starting with the Rockoon project in the early
+1960s. The simulation would simply use a very high launch altitude (think Mt. Everest) and a
+zero length (maybe 3 inches) physical launcher rail length. The singular perturbation additional
+rail length that's already in the code will keep things going ok, as when launching while
+descending from a parachute.
+        These are two examples of some options that SKYAERO can simulate. The analyst must
+keep in mind the limitations and advantages of the code and as such apply some sound
+engineering judgment to the results obtained.
+
+
+
+
+                                                                                                   15
+4.     FAQ
+Q: I do not have as many Thrust-Time points as the table allows.
+A: No problem! SKYAERO will run the simulation based on what the user can provide
+(similarly for the drag-mach table).
+Q: I do not know the temperature or altitude of the launch site?
+A: Search the values on the internet or simply assume a standard value of 85F and 4320 feet for
+Utah. Or, assume a Standard Atmosphere value of 59°F at sea level
+Q: How does the Standard Atmosphere pressure compare with that in SKYAERO?
+A: Except at sea level the pressure in SKYAERO at any given altitude will not be in agreement
+to pressure in Standard Atmosphere table so don’t panic.
+Q: I run SKYAERO and Excel stops working, what am I to do?
+A: Some people have encountered problems with SKYAERO and Excel. This was mainly due to
+the operating software, in this case Windows Vista. SKYAERO has run in Windows XP, Vista,
+and 7 satisfactorily, but as always, Windows Vista seems to conflict in some rare instances. If
+this occurs just do what you can and attempt to run the code directly from visual basic editor.
+Q: Can I modify the source code?
+A: Sure, simply access visual basic editor and add or delete any appropriate content.
+Q: Is the program susceptible to float point errors?
+A: It was discovered that sometimes Excel had trouble with the increments in time, which often
+resulted in numbers such as .0500009990000. These errors would make it difficult to locate
+certain time dependant events. The best solution is to round the values down to whatever
+accuracy the user wants. This was done for the time vector and it satisfactorily fixed the
+problem.
+Q: How do I compute the pitch/yaw wave number, and why does it matter?
+A: Go onto rsandt.com website, select reports and go to Pitch-Yaw Wave Number section or
+search for it (ctrl+f). It's important to an accurate simulation when the rocket is moving slowly
+right after ignition. The errors in the instantaneous head-into-the relative wind may be
+approximately corrected with singular perturbation solutions whose independent variable uses
+the Pitch-Yaw Wave Number.
+Q: How do I find the burn time?
+A: Go to the thrust-time table or graph in Figure 11, and lookup the time when thrust goes to
+zero.
+Q: What are the requirements to run SKYAERO?
+A: The requirements are the computer with minimum Excel 2003, the understanding of a
+rocket's flight, the creativity and the engineering judgment.
+Q: What are other tools need for SKYAERO? Can SKYAERO be used without them?
+A: The two tools are WIND CALCULATOR.xlsx and DRAG COEFFICIENT3.2.xls. The can be
+found on rsandt.com. SKYAERO can be run without the above tools with the user provide their
+own wind profile and drag profile.
+Q: How can I make sure the solutions are valid?
+A: First, the user needs to run a validation with a simple test case. This test case can be from a
+published data or a conducted flight test.
+
+
+                                                                                                16
+Q: I encountered an error. What does it mean? What do I do?
+A: Sometimes when an input value is incorrect Excel will display error message. Most of the
+time, it is an overflow error or division by zero error. It will most likely be a function evaluating
+a division by zero value or Excel not working fine. To fix this problem make sure your inputs are
+corrected and make sense, and then re-run Excel.
+
+
+
+
+                                                                                                   17
+

@@ -68,9 +68,7 @@
   "file": "references/original/Enhanced_Igniters.pdf",
   "sourceFile": "Enhanced_Igniters.pdf",
   "sourceUrl": "http://www.rsandt.com/media/Enhanced_Igniters.pdf",
-  "topics": [
-   "igniters"
-  ],
+  "topics": [],
   "sizeKB": 371,
   "pages": 3
  },
@@ -219,9 +217,7 @@
   "file": "references/original/WiringRules.pdf",
   "sourceFile": "WiringRules.pdf",
   "sourceUrl": "http://www.rsandt.com/media/WiringRules.pdf",
-  "topics": [
-   "wiring-requirements"
-  ],
+  "topics": [],
   "sizeKB": 58,
   "pages": 5
  },
@@ -506,9 +502,7 @@
   "file": "references/from-word/Final 2013 RocketSafetyReport.pdf",
   "sourceFile": "Final 2013 RocketSafetyReport.doc",
   "sourceUrl": "http://www.rsandt.com/media/Final%202013%20RocketSafetyReport.doc",
-  "topics": [
-   "safety"
-  ],
+  "topics": [],
   "sizeKB": 267,
   "pages": 16
  },

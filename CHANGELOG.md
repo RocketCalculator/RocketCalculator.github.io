@@ -4,6 +4,13 @@ Every commit adds an entry here, newest first. Live site: https://darasamii.gith
 
 ## 2026-10-20 (continued)
 
+### Removed guidelines-only topics: Igniters, Safety, Wiring Requirements
+- Removed: the topic cards, "coming soon" pages and search entries for these three topics, which have nothing to calculate.
+  Their old page URLs now redirect to the home page.
+- Added: `SKIP_TOPICS` in `scripts/seed_registry.py` (written to `removed` in the registry) so they are not regenerated.
+- The three PDFs (Enhanced Igniters, 2013 Safety Report, Wiring Rules) stay in the reference library.
+- Tests (120) and the smoke test pass.
+
 ### New calculator: Propellant Sloshing; layout fixes
 - Added: `calculators/propellant-slosh.html`, with the following:
   - the first three sloshing frequencies of liquid in an upright cylindrical tank under thrust;

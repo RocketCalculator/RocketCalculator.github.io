@@ -70,6 +70,21 @@ for (const t of reg.topics.filter((x) => x.status === 'available' && x.calculato
 </html>
 `); n++;
 }
+// guidelines-only topics that were removed: the old page URL redirects to the home page
+for (const slug of reg.removed || []) {
+  writeFileSync(new URL(`calculators/${slug}.html`, SITE), `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Rocket Calculator</title>
+<meta http-equiv="refresh" content="0; url=../index.html">
+<link rel="canonical" href="../index.html">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+</head>
+<body><p>This topic has moved: <a href="../index.html">Rocket Calculator home</a>.</p></body>
+</html>
+`); n++;
+}
 writeFileSync(new URL('index.html', SITE), `${head({ title: 'Rocket Calculator — sounding-rocket engineering calculators', description: 'Interactive rocket-engineering calculators with schematics, plots and theory: centre of pressure, drag, atmosphere, fin flutter, cant angle, ogive noses and more.', depth: 0 })}
 <body>
 <main id="main"><noscript><div class="wrap" style="padding:40px 0"><h1>Rocket Calculator</h1><p>This site needs JavaScript enabled.</p></div></noscript></main>

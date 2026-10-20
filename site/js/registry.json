@@ -29,7 +29,7 @@
   {
    "id": "prop",
    "title": "Propulsion & Vehicle Design",
-   "description": "Nozzles, igniters and staging."
+   "description": "Nozzles and staging."
   },
   {
    "id": "env",
@@ -39,7 +39,7 @@
   {
    "id": "safety",
    "title": "Safety & Reliability",
-   "description": "Safe practice, wiring and reliability growth."
+   "description": "Reliability growth."
   }
  ],
  "calculators": [
@@ -352,21 +352,6 @@
      "url": "http://www.rsandt.com/media/GEOPHYSICS.xls"
     }
    ]
-  },
-  {
-   "id": "Igni",
-   "slug": "igniters",
-   "title": "Igniters",
-   "area": "prop",
-   "summary": "Avoiding hang fires with thermite-enhanced igniters.",
-   "abstract": "Hang fires are a common problem with small sounding rockets. They can be catastrophic if they involve an upper stage. Even first stage hang fires can engender significant launch delays. The secret sauce is to embed the junction area of an ordinary igniter with a small amount of copper thermite/rubber to produce an enhanced thermal pulse. Enhanced_Igniters.pdf , by two CSULA seniors, Shahan Khalighi and Joseph David Wells, tells the story.",
-   "status": "soon",
-   "calculators": [],
-   "wasSoon": false,
-   "references": [
-    "enhanced-igniters-orig"
-   ],
-   "sourceFiles": []
   },
   {
    "id": "ModiNewtDrag",
@@ -683,21 +668,6 @@
    ]
   },
   {
-   "id": "Safety",
-   "slug": "safety",
-   "title": "Safety",
-   "area": "safety",
-   "summary": "Lessons from the 8th Intercollegiate Rocket Engineering Competition safety report.",
-   "abstract": "The most current perspective on safety is the Final 2013 RocketSafetyReport.doc written for the 8th IREC in Jun 2013.",
-   "status": "soon",
-   "calculators": [],
-   "wasSoon": false,
-   "references": [
-    "final-2013-rocketsafetyreport"
-   ],
-   "sourceFiles": []
-  },
-  {
    "id": "SingWeAf",
    "slug": "single-wedge-airfoil",
    "title": "Single Wedge Airfoil",
@@ -964,21 +934,6 @@
    ]
   },
   {
-   "id": "WireReq",
-   "slug": "wiring-requirements",
-   "title": "Wiring Requirements",
-   "area": "safety",
-   "summary": "Safety-critical wiring rules for competition rockets.",
-   "abstract": "The proliferation of ESRA-class sounding rocket failures in recent years has been followed by failure studies. One of the more common failure root causes is improper wiring design, assembly and testing. The remedy is to do it right. Mr. Douglas Sinclair, President of Sinclair Interplanetary, a Toronto-based manufacturer of spacecraft components, has written a how-to report, Wiring Rules.pdf . All are urged to read and apply this report to their rocket projects.",
-   "status": "soon",
-   "calculators": [],
-   "wasSoon": false,
-   "references": [
-    "wiringrules-orig"
-   ],
-   "sourceFiles": []
-  },
-  {
    "id": "YoYoDes",
    "slug": "yo-yo-despinner",
    "title": "Yo-Yo Despinner",
@@ -999,5 +954,10 @@
     }
    ]
   }
+ ],
+ "removed": [
+  "igniters",
+  "safety",
+  "wiring-requirements"
  ]
 }

@@ -93,9 +93,9 @@ AREAS = [
     ('dyn', 'Flight Dynamics & Mass Properties', 'Stability, roll, inertia and dispersion.'),
     ('traj', 'Trajectory, Wind & Launch', 'Trajectory simulation, wind and launcher design.'),
     ('recovery', 'Recovery', 'Parachutes and descent.'),
-    ('prop', 'Propulsion & Vehicle Design', 'Nozzles, igniters and staging.'),
+    ('prop', 'Propulsion & Vehicle Design', 'Nozzles and staging.'),
     ('env', 'Environment', 'Atmosphere, gravity and Earth model.'),
-    ('safety', 'Safety & Reliability', 'Safe practice, wiring and reliability growth.'),
+    ('safety', 'Safety & Reliability', 'Reliability growth.'),
 ]
 
 # topic id -> (slug, area, plain-language summary)
@@ -133,6 +133,10 @@ TOPICS = {
     'WireReq': ('wiring-requirements', 'safety', 'Safety-critical wiring rules for competition rockets.'),
     'YoYoDes': ('yo-yo-despinner', 'dyn', 'Despin weights for a yo-yo despin mechanism.'),
 }
+
+# Guidelines-only topics (nothing to calculate): no card, page or search entry; the old URL redirects home.
+# Their PDFs stay in the reference library.
+SKIP_TOPICS = {'Igni': 'igniters', 'Safety': 'safety', 'WireReq': 'wiring-requirements'}
 
 RELEASE1_TOPICS = {'BarrEqua', 'DragCoef', 'Geop', 'OgivNose', 'FinAero', 'BifiPend', 'FinSett'}
 
@@ -192,6 +196,7 @@ def main():
         calc_by_topic.setdefault(tid, []).append(slug)
     topics, downloads = [], []
     for t in cat['topics']:
+        if t['id'] in SKIP_TOPICS: continue
         slug, area, summary = TOPICS[t['id']]
         ref_ids, other = [], []
         for f in t['files']:
@@ -215,7 +220,7 @@ def main():
     reg = {
         'source': 'http://www.rsandt.com/reports.html',
         'areas': [{'id': a, 'title': ti, 'description': d} for a, ti, d in AREAS],
-        'calculators': calcs, 'topics': topics,
+        'calculators': calcs, 'topics': topics, 'removed': sorted(SKIP_TOPICS.values()),
     }
     json.dump(reg, open(f'{ROOT}/site/js/registry.json', 'w'), indent=1, ensure_ascii=False)
     json.dump(refs, open(f'{ROOT}/site/references/references.json', 'w'), indent=1, ensure_ascii=False)

@@ -73,7 +73,7 @@ export function buildForm(def, state, { onChange, onHighlight, infoFor }) {
   }
 
   function selectField(f) {
-    const sel = h('select', { id: `f-${f.id}` }, f.options.map((o) => h('option', { value: o.value }, o.label)));
+    const sel = h('select', { id: `f-${f.id}` }, f.options.map((o) => h('option', { value: String(o.value) }, o.label)));
     const lab = h('label', { for: `f-${f.id}` }, f.label, infoButton(() => infoFor(f), { label: f.label }));
     const el = h('div.field', { 'data-for': f.id }, lab, h('div.ctl', sel));
     sel.addEventListener('change', () => {

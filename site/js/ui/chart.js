@@ -53,7 +53,8 @@ export function createChart(host, opts = {}) {
     if (spec.includeZero && !spec.yDomain) yd = [Math.min(0, yd[0]), Math.max(0, yd[1])];
     if (!spec.xDomain) xd = spec.xTight ? xd : niceDomain(xd, 7);
     if (!spec.yDomain) yd = niceDomain(yd, 6);
-    const xt = niceTicks(xd[0], xd[1], W < 420 ? 4 : 7), yt = niceTicks(yd[0], yd[1], 6);
+    const xLabelW = Math.max(...[xd[0], xd[1]].map((v) => fmt(v, { digits: 4 }).length)) * 7 + 22;
+    const xt = niceTicks(xd[0], xd[1], Math.max(3, Math.min(8, Math.floor((W - m.l - m.r) / xLabelW)))), yt = niceTicks(yd[0], yd[1], 6);
     const X = (v) => m.l + ((v - xd[0]) / (xd[1] - xd[0] || 1)) * (W - m.l - m.r);
     const Y = (v) => H - m.b - ((v - yd[0]) / (yd[1] - yd[0] || 1)) * (H - m.t - m.b);
     geom = { X, Y, m, W, H, xd, yd, vis };

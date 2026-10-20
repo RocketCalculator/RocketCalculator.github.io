@@ -1,5 +1,5 @@
 // Home page: hero, walkthrough, topic grid with search/filter, navigation guide, units & colour code.
-import { h, s, url, loadRegistry, loadReferences, reveal, reducedMotion } from './util.js';
+import { h, s, url, loadRegistry, loadReferences, reveal, reducedMotion, storage } from './util.js';
 import { initShell, openPalette } from './app.js';
 
 function heroArt() {
@@ -59,8 +59,7 @@ export async function mountHome() {
   const main = initShell({ active: 'home' });
   const [reg, refs] = await Promise.all([loadRegistry(), loadReferences()]);
   const avail = reg.calculators.length;
-  // "coming soon" topics are hidden from the home page for now (their pages and search entries remain)
-  const topics = reg.topics.filter((t) => t.status === 'available');
+  const soon = reg.topics.filter((t) => t.status === 'soon').length;
 
   const hero = h('section.hero',
     h('div.wrap',
@@ -74,7 +73,7 @@ export async function mountHome() {
           h('a.btn.on-dark', { href: url('references/index.html') }, 'Reference library')),
         h('div.hero-stats',
           h('div', h('b', String(avail)), 'calculators live'),
-          h('div', h('b', String(topics.length)), 'engineering topics'),
+          h('div', h('b', String(reg.topics.length)), 'engineering topics'),
           h('div', h('b', String(refs.length)), 'reference documents'),
           h('div', h('b', 'SI · US'), 'switchable units'))),
       h('div.hero-art', heroArt())));
@@ -92,15 +91,20 @@ export async function mountHome() {
 
   // ---- topic grid ----
   const search = h('input', { type: 'search', placeholder: 'Filter topics…', 'aria-label': 'Filter topics' });
-    const areaSel = h('select.filter-chip', { 'aria-label': 'Filter by area' }, h('option', { value: '' }, 'All areas'), reg.areas.filter((a) => topics.some((t) => t.area === a.id)).map((a) => h('option', { value: a.id }, a.title)));
+  const statusChips = [['all', 'All'], ['available', `Available (${avail})`], ['soon', `Coming soon (${soon})`]].map(([v, l]) =>
+    h('button.filter-chip', { type: 'button', 'data-status': v, 'aria-pressed': String(v === 'all') }, l));
+  const areaSel = h('select.filter-chip', { 'aria-label': 'Filter by area' }, h('option', { value: '' }, 'All areas'), reg.areas.map((a) => h('option', { value: a.id }, a.title)));
   const gridHost = h('div');
+  let status = storage.get('rc-home-status', 'all');
   const renderGrid = () => {
     const q = search.value.trim().toLowerCase();
     const area = areaSel.value;
+    statusChips.forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.status === status)));
     const blocks = [];
     for (const a of reg.areas) {
       if (area && a.id !== area) continue;
-      const ts = topics.filter((t) => t.area === a.id)
+      const ts = reg.topics.filter((t) => t.area === a.id)
+        .filter((t) => status === 'all' || t.status === status)
         .filter((t) => !q || (t.title + ' ' + t.summary + ' ' + t.abstract + ' ' + t.calculators.join(' ')).toLowerCase().includes(q))
         .sort((x, y) => (x.status === y.status ? x.title.localeCompare(y.title) : x.status === 'available' ? -1 : 1));
       if (!ts.length) continue;
@@ -111,12 +115,13 @@ export async function mountHome() {
   };
   search.addEventListener('input', renderGrid);
   areaSel.addEventListener('change', renderGrid);
+  statusChips.forEach((c) => c.addEventListener('click', () => { status = c.dataset.status; storage.set('rc-home-status', status); renderGrid(); }));
 
   const calcs = h('section.section#calculators',
     h('div.wrap',
       h('div.section-head', h('div', h('p.eyebrow', 'What’s available'), h('h2', 'Calculators & topics')),
-        h('p', `${avail} calculators are live; more are on the way.`)),
-      h('div.filters', search, areaSel),
+        h('p', `${avail} calculators are live. The other ${soon} topics have their reference documents ready and are marked “coming soon”.`)),
+      h('div.filters', search, ...statusChips, areaSel),
       gridHost));
 
   const nav = h('section.section.reveal',

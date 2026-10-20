@@ -4,9 +4,8 @@ Every commit adds an entry here, newest first. Live site: https://darasamii.gith
 
 ## 2026-10-20 (continued)
 
-### Home page: hide "coming soon" topics for now
-- The home grid, area filter, stats and intro text show only topics with a live calculator; the Available/Coming soon chips are gone.
-- The coming-soon topic pages and their search entries are unchanged.
+### Home page: coming-soon topics shown again
+- Restored the Available / Coming soon grid and filters. The three removed guidelines-only topics stay out.
 
 ### Removed guidelines-only topics: Igniters, Safety, Wiring Requirements
 - Removed: the topic cards, "coming soon" pages and search entries for these three topics, which have nothing to calculate.

@@ -108,6 +108,12 @@
    "title": "Modified Newtonian Drag",
    "topic": "modified-newtonian-drag",
    "description": "Supersonic wave drag of nose caps, cones, flat faces and rounded fin leading edges (Lees)."
+  },
+  {
+   "slug": "two-stage-weights",
+   "title": "Two-Stage Weight Allocation",
+   "topic": "optimum-weight-allocation",
+   "description": "Lightest split of mass between two stages for a payload and a required ideal velocity (Vertregt)."
   }
  ],
  "topics": [
@@ -511,9 +517,11 @@
    "area": "prop",
    "summary": "Best split of weight between two stages for maximum burnout velocity.",
    "abstract": "One of the common problems encountered in multistage rocket design is the optimum, or best, allocation of weight between stages. There are several definitions of \"best\". For example, one could specify liftoff weight and payload weight and seek that weight allocation that maximized the burnout velocity, one could specify payload weight and burnout velocity and seek that allocation that minimized the liftoff weight. Often, but not always, these calculations are done using Tsiolkovskii's simplified dynamics model. Such a description is \"Optimum Allocation of Weight Between Two Stages\", by C. P. Holt, RST memo, 2013 found as Two StageWeights.doc . This uses the classical Vertregt Lagrangian multiplier technique. It is coded as OPT2STAGE.xls . Another optimization problem is the best thrust profile for a rocket of fixed total propellant weight ascending vertically under the influence of weight, thrust and aerodynamic drag. This calculus of variations problem was solved by George Leitmann, \"Optimum thrust Programing of High-Altitude Rockets\", Aeronautical Engineering Review, June 1957, pp. 63-66. He showed that the optimum thrust profile for a single stage rocket has an initially \"impulsive\" burn followed by an extended low thrust sustainer. This article can be found under Leitmann.doc .",
-   "status": "soon",
-   "calculators": [],
-   "wasSoon": false,
+   "status": "available",
+   "calculators": [
+    "two-stage-weights"
+   ],
+   "wasSoon": true,
    "references": [
     "two-stage-weights-rev1",
     "optimum-thrust-programing-for-high-altitude-rockets-orig"

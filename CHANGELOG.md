@@ -4,6 +4,19 @@ Every commit adds an entry here, newest first. Live site: https://darasamii.gith
 
 ## 2026-10-20 (continued)
 
+### New calculator: Two-Stage Weight Allocation
+- Added: `calculators/two-stage-weights.html`, which gives the lightest two-stage rocket for a payload and a required
+  ideal velocity, with the following:
+  - the optimum payload ratios from Vertregt's Lagrange condition, with each stage's own specific impulse;
+  - liftoff mass, loaded mass, propellant and structure of each stage, mass ratios and stage velocities;
+  - the single-stage case when a second stage does not pay (with a warning), and the velocity limit of the stages;
+  - the common average-impulse closed form for comparison;
+  - plots of ideal velocity against the stage split and of liftoff mass against required velocity;
+  - a drawing with areas proportional to mass, a report and a documentation page.
+- The old "coming soon" topic URL `optimum-weight-allocation.html` redirects to the calculator.
+- Tests: `tests/twostage.test.js` — the closed form against the tabulated example, the general solution against
+  it and against brute force, λ = dΔV/d ln M₀₁, and the single-stage boundary. Also added to the aggressive suite.
+
 ### Home page: coming-soon topics shown again
 - Restored the Available / Coming soon grid and filters. The three removed guidelines-only topics stay out.
 

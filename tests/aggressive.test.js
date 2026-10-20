@@ -90,6 +90,7 @@ const REPAIR = {
   'fin-cant-angle': (v, r) => { if (v.b <= v.R) v.b = v.R * (1.1 + 2 * r()); },
   'yo-yo-despin': (v, r) => { if (v.ff >= v.f0) v.ff = v.f0 * r(); v.mu = r() < 0.8 ? 0 : Math.min(v.mu, 1e-5 * r()); },
   'newtonian-drag': (v, r) => { if (v.r2 <= v.r1) v.r2 = v.r1 * (1.05 + 3 * r()) + 1e-3; },
+  'two-stage-weights': (v, r) => { const lim = 32.174 * (-v.Isp1 * Math.log(v.s1) - v.Isp2 * Math.log(v.s2)); if (v.dv >= lim) v.dv = lim * (0.02 + 0.93 * r()); },
 };
 
 /** Must hold for every accepted input set (warnings may be present). */
@@ -103,6 +104,7 @@ const INVARIANTS = {
   'single-wedge': (v, R, warned) => [R.K >= 1 - 1e-12, R.CDw >= 0, R.CDvehicle >= 0, R.MN > 0, R.thetaMax == null || (R.thetaMax > 0 && R.thetaMax < 46)],
   'yo-yo-despin': (v, R) => [R.weightEach > 0 || !Number.isFinite(R.weightEach), R.T1 >= 0, R.T2 >= 0, R.tRelease > 0, R.r >= 0 && R.r < 1],
   'propellant-slosh': (v, R) => [R.f1 > 0 && R.f2 > R.f1 && R.f3 > R.f2, R.m1frac > 0 && R.m1frac <= 100, R.fixedFrac >= -1e-9 && R.fixedFrac <= 100, R.L1 > 0],
+  'two-stage-weights': (v, R) => [R.M01 >= v.Mpl, R.m1 >= 0 && R.m2 >= 0, Math.abs(R.M01 - v.Mpl - R.m1 - R.m2) <= 1e-9 * R.M01, Math.abs(R.dv1 + R.dv2 - v.dv) <= 1e-6 * v.dv, R.payloadPct > 0 && R.payloadPct <= 100, R.lam > 0],
   'ogive-nose': (v, R) => [R.S > 0, R.xbar > 0 && R.xbar < v.L, R.fineness > 0, R.tipHalfAngle > 0 && R.tipHalfAngle <= 90],
   'subsonic-cp': (v, R, warned) => [R.CNa > 0 || warned, R.CNaFins >= 0, Number.isFinite(R.xcp), R.d > 0],
 };
@@ -259,4 +261,12 @@ test('Fin cant: steady cant angle is linear in roll rate and sign-symmetric', ()
   const n = run('fin-cant-angle', { mode: 'rate', f: -1 }).delta;
   assert.ok(Math.abs(n + a) < 1e-12);
   increasing([2, 4, 8].map((Mc) => run('fin-cant-angle', { mode: 'cycles', Mc }).delta), 'cant vs roll cycles');
+});
+
+test('Two-stage weights: a faster or heavier-structured rocket is heavier; better impulse makes it lighter', () => {
+  increasing([1000, 3000, 6000, 10000, 15000].map((dv) => run('two-stage-weights', { dv }).M01), 'M01 vs ΔV');
+  increasing([0.08, 0.12, 0.2, 0.3].map((s1) => run('two-stage-weights', { dv: 8000, s1 }).M01), 'M01 vs σ1');
+  increasing([300, 260, 220, 180].map((Isp2) => run('two-stage-weights', { dv: 8000, Isp2 }).M01), 'M01 vs falling Isp2');
+  const a = run('two-stage-weights', { Mpl: 1 }), b = run('two-stage-weights', { Mpl: 7 });
+  assert.ok(Math.abs(b.M01 / a.M01 - 7) < 1e-9, 'masses scale with the payload');
 });

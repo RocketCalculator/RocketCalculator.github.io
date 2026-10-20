@@ -2,6 +2,7 @@
 import { h, url, download, toast } from '../util.js';
 import { ICONS } from '../app.js';
 import { svgToPDF, svgToEPS } from './vector.js';
+import { toDelimited, toXLSX } from './tabular.js';
 
 let fontCss;
 /** @font-face rules with Inter embedded as data URLs, so rasterised SVG keeps its typography. */
@@ -71,10 +72,20 @@ async function rasterise(svgStr, w, h, scale = 2, bg = '#ffffff') {
 }
 const canvasBlob = (c, type, q) => new Promise((res) => c.toBlob(res, type, q));
 
-/** Export an SVG element in the given format. getCsv is optional. */
-export async function exportFigure(svgEl, format, name, getCsv) {
+export const DATA_FORMATS = ['csv', 'tsv', 'xlsx', 'json'];
+
+/** Download tabular data: data = { sheets: () => [{ name, rows }], json: () => object }. */
+export function exportData(format, name, data) {
+  if (format === 'csv') download(`${name}.csv`, toDelimited(data.sheets(), ','), 'text/csv');
+  else if (format === 'tsv') download(`${name}.tsv`, toDelimited(data.sheets(), '\t'), 'text/tab-separated-values');
+  else if (format === 'xlsx') download(`${name}.xlsx`, toXLSX(data.sheets()), 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+  else if (format === 'json') download(`${name}.json`, JSON.stringify(data.json(), null, 2), 'application/json');
+}
+
+/** Export an SVG element in the given format; data ({ sheets, json }) is needed for the data formats. */
+export async function exportFigure(svgEl, format, name, data) {
   try {
-    if (format === 'csv') { download(`${name}.csv`, getCsv(), 'text/csv'); return; }
+    if (DATA_FORMATS.includes(format)) { exportData(format, name, data); return; }
     if (format === 'pdf') { download(`${name}.pdf`, svgToPDF(svgEl)); return; }
     if (format === 'eps') { download(`${name}.eps`, svgToEPS(svgEl)); return; }
     const { svg, width, height } = standaloneSVG(svgEl);
@@ -89,11 +100,21 @@ export async function exportFigure(svgEl, format, name, getCsv) {
   }
 }
 
-/** "Export ▾" pill menu. options: {formats, onExport(format)} */
-export function exportMenu({ formats = ['csv', 'svg', 'pdf', 'eps', 'png', 'jpeg'], onExport, label = 'Export' }) {
-  const LABELS = { csv: ['CSV', 'data'], svg: ['SVG', 'vector'], pdf: ['PDF', 'vector'], eps: ['EPS', 'vector'], png: ['PNG', 'image'], jpeg: ['JPEG', 'image'] };
+const LABELS = {
+  csv: ['CSV', 'comma-separated'], tsv: ['TXT / TSV', 'tab-separated'], xlsx: ['XLSX', 'Excel workbook'], json: ['JSON', 'for scripts'],
+  svg: ['SVG', 'vector'], pdf: ['PDF', 'vector'], eps: ['EPS', 'vector'], png: ['PNG', 'image'], jpeg: ['JPEG', 'image'],
+};
+const GROUP = (f) => (DATA_FORMATS.includes(f) ? 'data' : ['svg', 'pdf', 'eps'].includes(f) ? 'vector' : 'image');
+
+/** "Export ▾" pill menu, grouped data | vector | image with separator lines. options: {formats, onExport(format)} */
+export function exportMenu({ formats = [...DATA_FORMATS, 'svg', 'pdf', 'eps', 'png', 'jpeg'], onExport, label = 'Export' }) {
   const btn = h('button.btn.small', { type: 'button', 'aria-haspopup': 'menu', 'aria-expanded': 'false' }, ICONS.download(), label);
-  const pop = h('div.menu-pop', { role: 'menu' }, formats.map((f) => h('button', { type: 'button', role: 'menuitem', 'data-f': f }, LABELS[f][0], h('small', LABELS[f][1]))));
+  const items = [];
+  formats.forEach((f, i) => {
+    if (i && GROUP(f) !== GROUP(formats[i - 1])) items.push(h('div.menu-sep', { role: 'separator' }));
+    items.push(h('button', { type: 'button', role: 'menuitem', 'data-f': f }, LABELS[f][0], h('small', LABELS[f][1])));
+  });
+  const pop = h('div.menu-pop', { role: 'menu' }, items);
   const wrap = h('div.menu', btn, pop);
   const close = () => { wrap.classList.remove('open'); btn.setAttribute('aria-expanded', 'false'); };
   btn.addEventListener('click', (e) => {

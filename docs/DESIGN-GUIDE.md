@@ -74,7 +74,7 @@ Single accent, ink and greys — no second accent colour.
    and a visible **joint line where the nose cone meets the body tube**.
    Card header: title, ⓘ (how to use the drawing), pause/play (if animated), Export.
 7. Plots (each with ⓘ and Export).
-8. All results table (copy / CSV).
+8. All results table (Copy · Export: CSV, TXT/TSV, XLSX, JSON).
 9. Theory & references (reference titles only — no file names).
 10. **Export report** box.
 11. Previous / next calculator.
@@ -108,8 +108,9 @@ Order of contents:
 
 - Custom SVG chart (`js/ui/chart.js`): grid, ticks sized to width, TeX axis labels, hover read-out, legend toggles,
   current operating point as a marker.
-- **One Export button** per plot and drawing with: CSV (plots), **SVG, PDF, EPS (vector)**, PNG, JPEG (raster).
-  PDF/EPS are true vector (`js/ui/vector.js`), include the legend and title.
+- **One Export button** per plot and drawing, grouped with separator lines: **data** — CSV, TXT/TSV, XLSX, JSON
+  (plots and the results table; `js/ui/tabular.js`, no library) | **vector** — SVG, PDF, EPS | **image** — PNG, JPEG.
+  Drawings have no data group. PDF/EPS are true vector (`js/ui/vector.js`), include the legend and title.
 - Animations (e.g. spinning rear view, yaw motion): slow enough to read (≤ 0.5 rev/s on screen, state “shown N×
   slower”), a **Pause/Play** button that is remembered, and respect `prefers-reduced-motion`.
 
@@ -151,12 +152,12 @@ Purpose: students paste it into PDR/FDR documents.
 | Concern | File |
 |---|---|
 | Tokens, components | `site/css/site.css` |
-| Shell (header, footer, search, theme, units) | `site/js/app.js` |
+| Shell (header, footer, search, theme, units, GitHub link) | `site/js/app.js` |
 | Maths rendering | `site/js/math.js` |
 | Units & unit TeX | `site/js/units.js` |
 | Form fields | `site/js/ui/form.js` |
 | Drawer | `site/js/ui/drawer.js` |
-| Charts / export menu / vector export | `site/js/ui/chart.js`, `export.js`, `vector.js` |
+| Charts / export menu / vector export / CSV-TSV-XLSX | `site/js/ui/chart.js`, `export.js`, `vector.js`, `tabular.js` |
 | Drawing helpers (dimensions, handles, rear fin view) | `site/js/ui/svg.js` |
 | Report | `site/js/ui/report.js` |
 | Calculator page renderer | `site/js/calculator-page.js` |

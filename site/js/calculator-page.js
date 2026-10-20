@@ -8,7 +8,7 @@ import { infoButton, openInfo } from './ui/drawer.js';
 import { chartCard } from './ui/chart.js';
 import { frame } from './ui/svg.js';
 import { renderAll, loadKatex, texHTML, rich, texToPlain } from './math.js';
-import { exportMenu, exportFigure } from './ui/export.js';
+import { exportMenu, exportFigure, exportData, DATA_FORMATS } from './ui/export.js';
 import { reportCard, symbolsIn } from './ui/report.js';
 
 const clone = (v) => JSON.parse(JSON.stringify(v));
@@ -99,7 +99,7 @@ export async function mountCalculator(def) {
   const tableBody = h('tbody');
   const resultsCard = h('section.card', h('div.card-head', h('h3', 'All results'), h('span.spacer'),
     h('button.btn.ghost.small', { type: 'button', onclick: () => copyResults() }, ICONS.copy(), 'Copy'),
-    h('button.btn.ghost.small', { type: 'button', onclick: () => exportCSV() }, ICONS.download(), 'CSV')),
+    exportMenu({ formats: DATA_FORMATS, onExport: (f) => exportData(f, def.slug, { sheets: () => [{ name: def.title, rows: rowsForExport() }], json: resultsJSON }) })),
     h('div', { style: 'overflow-x:auto' }, h('table.results-table', tableBody)));
 
   const refList = (def.references || []).map((id) => refs.find((r) => r.id === id)).filter(Boolean);
@@ -315,9 +315,9 @@ export async function mountCalculator(def) {
     }
     return lines;
   }
-  function exportCSV() {
-    const csv = rowsForExport().map((r) => r.map((c) => (/[",\n]/.test(c) ? `"${c.replace(/"/g, '""')}"` : c)).join(',')).join('\n');
-    download(`${def.slug}.csv`, csv, 'text/csv');
+  function resultsJSON() {
+    const rows = rowsForExport().slice(1), pick = (sec) => rows.filter((r) => r[0] === sec).map(([, quantity, value, unit]) => ({ quantity, value: Number.isFinite(Number(value)) && value !== '' ? Number(value) : value, unit }));
+    return { calculator: def.title, slug: def.slug, unitSystem: getSystem().toUpperCase(), inputs: pick('input'), results: pick('result') };
   }
   async function copyResults() {
     const txt = rowsForExport().filter((r) => r[0] === 'result').map((r) => `${r[1]}: ${r[2]} ${r[3]}`.trim()).join('\n');

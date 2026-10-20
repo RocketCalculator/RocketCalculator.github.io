@@ -165,16 +165,16 @@ export function createChart(host, opts = {}) {
   return {
     el: wrap,
     update(next) { spec = next; render(); },
-    toCSV() {
-      if (!spec) return '';
-      const lines = [];
-      for (const se of spec.series) {
-        const P = texToPlain;
-        lines.push(`# ${P(se.name)}`, `${P(spec.x?.label || 'x')}${spec.x?.unit ? ' (' + P(spec.x.unit) + ')' : ''},${P(spec.y?.label || 'y')}${spec.y?.unit ? ' (' + P(spec.y.unit) + ')' : ''}`);
-        for (const [x, y] of se.points) lines.push(`${num(x)},${num(y)}`);
-        lines.push('');
-      }
-      return lines.join('\n');
+    /** One sheet per series: header row then [x, y] rows (plain-text labels with units). */
+    toSheets() {
+      if (!spec) return [];
+      const P = texToPlain, col = (ax, d) => `${P(ax?.label || d)}${ax?.unit ? ' (' + P(ax.unit) + ')' : ''}`;
+      return spec.series.map((se) => ({ name: P(se.name), rows: [[col(spec.x, 'x'), col(spec.y, 'y')], ...se.points.map(([x, y]) => [num(x), num(y)])] }));
+    },
+    toJSON(title) {
+      if (!spec) return {};
+      const P = texToPlain, ax = (a) => ({ label: P(a?.label || ''), unit: P(a?.unit || '') });
+      return { title: P(title || ''), x: ax(spec.x), y: ax(spec.y), series: spec.series.map((se) => ({ name: P(se.name), points: se.points.filter((p) => p.every(Number.isFinite)) })) };
     },
     svgEl: () => svg,
     /** Temporarily draw title + legend into the SVG while fn(svg) runs synchronously (used for image export). */
@@ -217,12 +217,12 @@ function interp(points, v, byY) {
   return best;
 }
 
-/** Card wrapper with title, ⓘ slot and one Export menu (CSV, SVG, PNG, JPEG, PDF). Returns { card, chart }. */
+/** Card wrapper with title, ⓘ slot and one Export menu (data, vector and image formats). Returns { card, chart }. */
 export function chartCard({ title, info, height, exportName = 'chart' }) {
   const body = h('div');
   const head = h('div.card-head', h('h3', { html: title.includes('$') ? title.replace(/\$([^$]+)\$/g, (_, x) => texHTML(x)) : title }), info || null, h('span.spacer'));
   const card = h('section.card', head, body);
   const chart = createChart(body, { height, title });
-  head.append(exportMenu({ onExport: (f) => chart.withLegend((el) => el && exportFigure(el, f, exportName, () => chart.toCSV()), title) }));
+  head.append(exportMenu({ onExport: (f) => chart.withLegend((el) => el && exportFigure(el, f, exportName, { sheets: () => chart.toSheets(), json: () => chart.toJSON(title) }), title) }));
   return { card, chart };
 }

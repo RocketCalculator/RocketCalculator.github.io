@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bifilar Pendulum Inertia — Theory & documentation — Rocket Calculator</title>
+<meta name="description" content="Measuring a rocket's pitch/yaw moment of inertia with a bifilar pendulum: the two modes, derivation of I = m x1 x2 PY²/PG², and experiment design.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../css/site.css">
+<script>try{var t=JSON.parse(localStorage.getItem('rc-theme'));if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<main id="main">
+<div class="wrap">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Home</a><span class="sep">/</span><a href="../index.html#area-dyn">Flight Dynamics &amp; Mass Properties</a><span class="sep">/</span><a href="../calculators/bifilar-pendulum.html">Bifilar Pendulum Inertia</a><span class="sep">/</span><span>Documentation</span></nav>
+  <div class="calc-title"><h1>Bifilar Pendulum — theory</h1></div>
+  <p class="calc-sub">Experimental measurement of pitch/yaw moment of inertia. Based on C. P. Hoult, <em>Moment of Inertia Measurement with a Bifilar Pendulum</em>, RS&amp;T memo, 11 June 2009. There is no spreadsheet for this topic; the calculator implements the memo’s formulae directly.</p>
+  <div class="calc-badges"><a class="btn small primary" href="../calculators/bifilar-pendulum.html">Open the calculator</a><a class="btn small" href="../references/index.html#bifilar-pendulum">Original memo (PDF)</a></div>
+  <div class="doc-layout">
+    <nav class="doc-toc" aria-label="Contents"></nav>
+    <article class="doc">
+
+      <section id="overview">
+        <h2>Overview</h2>
+        <p>The pitch/yaw moment of inertia strongly affects a rocket’s short-period dynamics. It can be estimated by summing every component’s contribution — like estimating mass from drawings — but the <strong>bifilar pendulum</strong> measures the as-built value directly, much as weighing measures mass. The technique dates from the earliest days of aviation.</p>
+        <p>The rocket is hung level from two vertical wires of equal length, with its centre of gravity between them and a plumb bob at the CG. Crew at the nose and tail twist it about the vertical axis without displacing the plumb bob, release it, and time the yaw oscillation. Timing many cycles averages out the error in judging when the nose crosses the reference line on the floor.</p>
+      </section>
+
+      <section id="two-modes">
+        <h2>The two modes — and the trap</h2>
+        <p>A rocket hung this way can oscillate in two distinct modes, and the equations of motion couple them:</p>
+        <ul>
+          <li><strong>Galilean (swing) mode:</strong> the whole rocket swings sideways like a simple pendulum; nose and tail are on the <em>same</em> side of the floor line at the same time. Its period says nothing about the moment of inertia.</li>
+          <li><strong>Yaw mode:</strong> the rocket twists about the vertical through the CG; nose and tail are always on <em>opposite</em> sides of the line. This is the one we want.</li>
+        </ul>
+        <div class="callout warn"><p>If the two periods are close, it is hard to excite one mode without the other, and easy to time the wrong one. The memo’s author notes he fell into this trap the first time he used the technique. Good experiment design keeps the periods well apart (see <a href="#design">Experiment design</a>).</p></div>
+      </section>
+
+      <section id="analysis">
+        <h2>Analysis</h2>
+        <h3>Galilean pendulum</h3>
+        <p>A mass <span class="tex">m</span> on a wire of length <span class="tex">l</span> carries tension <span class="tex">mg</span> to first order. The restoring torque about the pivot for a small angle <span class="tex">\theta</span> is <span class="tex">-mg\theta l</span>, so</p>
+        <div class="eq"><div class="tex-display">m l^2\ddot\theta=-m g\,\theta\,l\quad\Longrightarrow\quad \omega_G^2=\frac{g}{l},\qquad P_G=2\pi\sqrt{l/g}.</div></div>
+        <p>The swing frequency depends only on wire length, not on mass.</p>
+        <h3>Yaw mode</h3>
+        <p>With the wires at <span class="tex">x_1</span> (forward) and <span class="tex">x_2</span> (aft) of the CG, static equilibrium gives the wire tensions</p>
+        <div class="eq"><div class="tex-display">T_1=\frac{m g\,x_2}{x_1+x_2},\qquad T_2=\frac{m g\,x_1}{x_1+x_2}.</div></div>
+        <p>For a small yaw angle <span class="tex">\psi</span> the forward attachment moves sideways by <span class="tex">x_1\psi=l\theta_1</span>, and similarly aft, so <span class="tex">\theta_1=x_1\psi/l</span> and <span class="tex">\theta_2=x_2\psi/l</span>. Each tension’s horizontal component <span class="tex">T_i\theta_i</span> acts at arm <span class="tex">x_i</span>, giving a restoring yaw torque</p>
+        <div class="eq"><div class="tex-display">T_1x_1\theta_1+T_2x_2\theta_2=\frac{m g\,\psi\,x_1x_2}{l}.</div></div>
+        <p>With yaw moment of inertia <span class="tex">I</span> about the CG the natural frequency is therefore</p>
+        <div class="eq"><div class="tex-display">\omega_Y^2=\frac{m g\,x_1x_2}{I\,l}.</div></div>
+        <h3>Moment of inertia</h3>
+        <p>With the measured yaw period <span class="tex">P_Y=2\pi/\omega_Y</span>, eliminating <span class="tex">g/l</span> with the measured swing period gives the memo’s result, which needs neither the wire length nor <span class="tex">g</span>:</p>
+        <div class="eq"><div class="tex-display">I=m\,x_1x_2\,\frac{P_Y^2}{P_G^2}.</div></div>
+        <p>Equivalently, using the wire length directly (the calculator’s cross-check),</p>
+        <div class="eq"><div class="tex-display">I=\frac{m g\,x_1x_2\,P_Y^2}{4\pi^2 l}.</div></div>
+        <p>The two agree exactly when the measured swing period equals <span class="tex">2\pi\sqrt{l/g}</span>; the calculator reports how far apart they are as a check on the rig and the timing.</p>
+      </section>
+
+      <section id="design">
+        <h2>Experiment design</h2>
+        <p>With the radius of gyration defined by <span class="tex">I=mk^2</span>, the period ratio is</p>
+        <div class="eq"><div class="tex-display">\frac{P_Y^2}{P_G^2}=\frac{k^2}{x_1x_2}.</div></div>
+        <p>For a uniform rod of length <span class="tex">L</span>, <span class="tex">k^2=L^2/12</span>, so <span class="tex">P_Y^2/P_G^2=L^2/(12x_1x_2)</span>:</p>
+        <ul>
+          <li>wires at the ends (<span class="tex">x_1=x_2=L/2</span>): <span class="tex">P_Y/P_G=\sqrt{1/3}=0.577</span>;</li>
+          <li>wires half-way between the centroid and the ends (<span class="tex">x_1=x_2=L/4</span>): <span class="tex">P_Y/P_G=1.155</span>.</li>
+        </ul>
+        <p>Between these lies <span class="tex">P_Y/P_G=1</span> — resonance. Good design puts the wires <strong>close to the CG</strong>, which makes the yaw period much longer than the swing period. The calculator’s “Mode separation” plot shows the ratio against wire spacing for your rocket.</p>
+        <p class="muted">The calculator flags ratios between 0.8 and 1.25 as “close to 1”. That band is this site’s guidance; the memo only says the ratio should not be too close to unity.</p>
+        <p>Because <span class="tex">I\propto P_Y^2</span>, a 1 % timing error produces a 2 % inertia error — another reason to time many cycles.</p>
+      </section>
+
+      <section id="assumptions">
+        <h2>Assumptions and limits</h2>
+        <ul>
+          <li>Small angles; equal, inextensible, vertical wires; the rocket hangs level with the CG between the wires.</li>
+          <li>The coupled two-mode analysis is not presented in the memo; the formulas treat the modes as separate, which is accurate when their periods are well apart.</li>
+          <li>The result is the inertia about a vertical axis through the CG, i.e. the pitch/yaw inertia of an axisymmetric rocket.</li>
+          <li>Air damping and the inertia of attachment fittings are neglected.</li>
+        </ul>
+      </section>
+
+      <section id="worked-example">
+        <h2>Worked example</h2>
+        <p>The calculator’s illustrative case: <span class="tex">m=20</span> kg, <span class="tex">x_1=x_2=0.30</span> m, <span class="tex">l=2.0</span> m, measured <span class="tex">P_Y=5.87</span> s and <span class="tex">P_G=2.84</span> s.</p>
+        <ol>
+          <li><span class="tex">I=20(0.3)(0.3)(5.87^2/2.84^2)=7.69</span> kg·m².</li>
+          <li><span class="tex">k=\sqrt{7.69/20}=0.620</span> m, 25.8 % of a 2.4 m body.</li>
+          <li><span class="tex">P_Y/P_G=2.07</span>: the modes are well separated.</li>
+          <li>Predicted <span class="tex">P_G=2\pi\sqrt{2.0/9.80665}=2.838</span> s, within 0.1 % of the measured value, so the wire-length cross-check (7.70 kg·m²) agrees.</li>
+        </ol>
+      </section>
+
+      <section id="code-map">
+        <h2>Equations ↔ code</h2>
+        <table class="sym-table">
+          <thead><tr><th>Quantity</th><th>Eq.</th><th>Code (<code>js/calc/bifilar.js</code>)</th></tr></thead>
+          <tbody>
+            <tr><td>Swing period</td><td>(1)</td><td class="mono">bifilar().PG_theory</td></tr>
+            <tr><td>Wire tensions</td><td>(2)</td><td class="mono">bifilar().T1, .T2</td></tr>
+            <tr><td>Inertia from periods</td><td>(5)</td><td class="mono">bifilar().I_periods</td></tr>
+            <tr><td>Inertia from wire length</td><td>(6)</td><td class="mono">bifilar().I_length</td></tr>
+            <tr><td>Period ratio</td><td>(7)</td><td class="mono">periodRatio(), bifilar().ratio</td></tr>
+          </tbody>
+        </table>
+        <p><strong>Verification:</strong> <code>tests/bifilar.test.js</code> checks the memo’s two uniform-rod ratios (0.577 and 1.155), recovers the rod inertia exactly with both formulas, and checks the statics.</p>
+      </section>
+
+      <section id="known-differences">
+        <h2>Known differences</h2>
+        <ul class="diff-list">
+          <li><strong>No spreadsheet.</strong> This topic has only the memo, so there is no workbook to compare with. The wire-length cross-check, tension readout, uniform-rod comparison and resonance warning band are additions built from the memo’s equations.</li>
+        </ul>
+      </section>
+
+      <section id="references">
+        <h2>References</h2>
+        <ol class="refs">
+          <li>C. P. Hoult, “Moment of Inertia Measurement with a Bifilar Pendulum,” RS&amp;T memo, 11 June 2009. <a href="../references/index.html#bifilar-pendulum">View in library</a></li>
+        </ol>
+      </section>
+    </article>
+  </div>
+</div>
+</main>
+<script type="module">
+import { mountDocs } from '../js/docs.js';
+mountDocs();
+</script>
+</body>
+</html>

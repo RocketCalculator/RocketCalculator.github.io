@@ -68,10 +68,11 @@ export function dim(fr, x1, y1, x2, y2, label, opts = {}) {
     const mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2;
     const to = opts.textOff ?? (Math.abs(dx) >= Math.abs(dy) ? -6 : 0);
     const vertical = Math.abs(dy) > Math.abs(dx);
-    const t = s('text', {
-      class: 'sc-dim-text', x: vertical ? mx + (opts.textSide ?? 8) : mx, y: vertical ? my + 4 : my + to,
-      'text-anchor': vertical ? (opts.textSide < 0 ? 'end' : 'start') : 'middle',
-    }, label);
+    let tx = vertical ? mx + (opts.textSide ?? 8) : mx, ty = vertical ? my + 4 : my + to;
+    let anchor = vertical ? (opts.textSide < 0 ? 'end' : 'start') : 'middle';
+    if (opts.labelPos === 'before') { const p = dx >= 0 ? a : b; tx = p[0] - 6; ty = p[1] + 4; anchor = 'end'; }
+    if (opts.labelPos === 'after') { const p = dx >= 0 ? b : a; tx = p[0] + 6; ty = p[1] + 4; anchor = 'start'; }
+    const t = s('text', { class: 'sc-dim-text', x: tx, y: ty, 'text-anchor': anchor }, label);
     g.append(t);
   }
   // wide invisible hit target so the dimension is easy to hover/tap

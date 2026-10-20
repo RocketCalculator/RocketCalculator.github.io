@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reliability Growth — Theory & documentation — Rocket Calculator</title>
+<meta name="description" content="How flight reliability grows as test flights reveal latent lethal defects and they are fixed, with the number of flight tests needed to reach a target reliability.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../css/site.css">
+<script>try{var t=JSON.parse(localStorage.getItem('rc-theme'));if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<main id="main">
+<div class="wrap">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Home</a><span class="sep">/</span><a href="../index.html#area-safety">Safety &amp; Reliability</a><span class="sep">/</span><a href="../calculators/reliability-growth.html">Reliability Growth</a><span class="sep">/</span><span>Documentation</span></nav>
+  <div class="calc-title"><h1>Reliability Growth — theory</h1></div>
+  <p class="calc-sub">Finding and fixing defects during flight test. Based on C. P. Hoult, <em>Reliability Growth During Flight Test</em>, 2013, which reprises W. Schaechter and C. P. Hoult, <em>Economic Considerations in Sounding Rocket Utilization</em>, 1967.</p>
+  <div class="calc-badges"><a class="btn small primary" href="../calculators/reliability-growth.html">Open the calculator</a><a class="btn small" href="../references/index.html#reliability-growth">Original memo (PDF)</a></div>
+  <div class="doc-layout">
+    <nav class="doc-toc" aria-label="Contents"></nav>
+    <article class="doc">
+
+      <section id="overview">
+        <h2>Overview</h2>
+        <p>A new rocket carries defects in its design and workmanship that no analysis or ground test has caught. Some of them are lethal: if one shows up in flight, the flight fails. Each test flight gives these defects a chance to show up, and a defect that shows up can be found and fixed before the next flight. Reliability therefore grows from one flight to the next.</p>
+        <p>The model is deliberately simple. It supports management decisions: how much development analysis and testing to do, how much quality assurance, and how deep the failure-mode analysis and the flight instrumentation should go. More detailed models exist, but they need more parameters estimated in advance, so in the end they are no more useful.</p>
+      </section>
+
+      <section id="model">
+        <h2>The model</h2>
+        <p>Defects occur independently of one another with binomial statistics, and the analysis is done on an expectation basis. Let</p>
+        <ul>
+          <li><span class="tex">D_n</span> be the expected number of lethal latent defects left after <span class="tex">n</span> flight tests (<span class="tex">D_0</span> at the first flight);</li>
+          <li><span class="tex">p</span> the probability that any one latent defect shows up in a given flight;</li>
+          <li><span class="tex">d</span> the probability that a defect which shows up in a test flight is detected, characterised and corrected before the next flight;</li>
+          <li><span class="tex">T</span> the number of flight tests and <span class="tex">R</span> the reliability.</li>
+        </ul>
+        <p>Reliability is the probability that no defect shows up in a flight. For the first flight</p>
+        <div class="eq"><div class="tex-display">R_0=(1-p)^{D_0}</div></div>
+        <p>In the <span class="tex">n</span>th flight, <span class="tex">D_{n-1}p</span> defects are expected to show up, and <span class="tex">D_{n-1}p\,d</span> of them are fixed. So</p>
+        <div class="eq"><div class="tex-display">D_n=D_{n-1}-D_{n-1}p\,d=D_{n-1}(1-p\,d),\qquad D_n=D_0(1-p\,d)^n</div></div>
+        <p>and the reliability of the flight that follows <span class="tex">T</span> flight tests is</p>
+        <div class="eq"><div class="tex-display">R_T=(1-p)^{D_T}=(1-p)^{D_0(1-p\,d)^T}</div></div>
+        <p>Each test removes on average the fraction <span class="tex">p\,d</span> of the defects still present. The product shows the two levers: <span class="tex">p</span> is set by the vehicle and its flights, while <span class="tex">d</span> is set by how well each flight is instrumented, recovered and investigated.</p>
+        <p>Schaechter and Hoult studied a set of sounding-rocket development histories and found <span class="tex">D_0\approx4</span>, <span class="tex">p\approx0.6</span> and <span class="tex">d\approx0.8</span> to be representative. With these values the first flight succeeds with probability 0.026; after five tests the next flight succeeds with probability 0.87, and after ten with 0.995.</p>
+      </section>
+
+      <section id="target">
+        <h2>Tests needed for a target reliability</h2>
+        <p>The flight after the tests meets a target reliability <span class="tex">R^*</span> when no more than</p>
+        <div class="eq"><div class="tex-display">D^*=\frac{\ln R^*}{\ln(1-p)}</div></div>
+        <p>latent defects remain. Solving <span class="tex">D_0(1-p\,d)^T=D^*</span> for <span class="tex">T</span> and rounding up to whole flights gives</p>
+        <div class="eq"><div class="tex-display">T^*=\left\lceil\frac{\ln(D^*/D_0)}{\ln(1-p\,d)}\right\rceil</div></div>
+        <p>If the first flight already meets the target (<span class="tex">D_0\le D^*</span>) no test is needed. If nothing that shows up is ever fixed (<span class="tex">d=0</span>), the reliability never grows and no number of tests is enough. The plot of <span class="tex">T^*</span> against <span class="tex">d</span> shows how strongly instrumentation and failure investigation shorten a campaign.</p>
+      </section>
+
+      <section id="campaign">
+        <h2>Expected failures during the campaign</h2>
+        <p>Flight <span class="tex">n+1</span> fails with probability <span class="tex">1-R_n</span>. The expected number of failed flights among the first <span class="tex">T</span> is the sum of these chances:</p>
+        <div class="eq"><div class="tex-display">F_T=\sum_{n=0}^{T-1}\left[1-(1-p)^{D_n}\right]</div></div>
+        <p>It is a useful figure for budgeting vehicles and schedule. It levels off once most defects are fixed, while the reliability of each further flight keeps approaching one.</p>
+      </section>
+
+      <section id="verification">
+        <h2>Verification</h2>
+        <p><code>tests/relgrowth.test.js</code> checks the following:</p>
+        <ul>
+          <li>the reliability for 0 to 25 flight tests against the reference table for <span class="tex">D_0=4</span>, <span class="tex">p=0.6</span>, <span class="tex">d=0.8</span>;</li>
+          <li>the closed form <span class="tex">D_n=D_0(1-p\,d)^n</span> against the flight-by-flight recursion;</li>
+          <li>that <span class="tex">T^*</span> is the smallest whole number of tests that meets the target;</li>
+          <li>the expected-failure sum and its limit with no fixing.</li>
+        </ul>
+      </section>
+
+      <section id="known-differences">
+        <h2>Notes on the method</h2>
+        <ul class="diff-list">
+          <li><strong>Representative values.</strong> The memo’s text quotes <span class="tex">D_0=6</span> for its typical results, but its plot and table start at <span class="tex">R_0=0.4^4=0.0256</span>, i.e. <span class="tex">D_0=4</span>. The calculator’s default follows the plot and table.</li>
+          <li><strong>Expectation basis.</strong> All numbers are expected values; the actual number of defects and of failures in a campaign scatters about them. No confidence bounds are given.</li>
+          <li><strong>Added results.</strong> The target inversion <span class="tex">T^*</span> and the expected failures <span class="tex">F_T</span> follow directly from the model’s equations.</li>
+          <li><strong>Not modelled.</strong> Defects introduced by fixes or design changes, defects that are not lethal, and different values of <span class="tex">p</span> for different defects.</li>
+        </ul>
+      </section>
+
+      <section id="references">
+        <h2>References</h2>
+        <ol class="refs">
+          <li>C. P. Hoult, “Reliability Growth During Flight Test,” RS&amp;T, 20 July 2013. <a href="../references/index.html#reliability-growth">View in library</a></li>
+          <li>W. Schaechter and C. P. Hoult, “Economic Considerations in Sounding Rocket Utilization,” Proceedings of the Sounding Rocket Vehicle Technology Specialist Conference, Williamsburg, VA, February 1967.</li>
+        </ol>
+      </section>
+    </article>
+  </div>
+</div>
+</main>
+<script type="module">
+import { mountDocs } from '../js/docs.js';
+mountDocs();
+</script>
+</body>
+</html>

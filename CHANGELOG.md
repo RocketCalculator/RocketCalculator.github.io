@@ -4,6 +4,18 @@ Every commit adds an entry here, newest first. Live site: https://darasamii.gith
 
 ## 2026-10-20 (continued)
 
+### New calculator: Reliability Growth
+- Added: `calculators/reliability-growth.html`, with the following:
+  - the expected lethal latent defects left and the reliability of the next flight after a number of flight tests;
+  - the number of flight tests that reaches a target reliability, and the failures to expect during the tests;
+  - plots of reliability flight by flight (with the every-defect-fixed best case), of defects left and failures,
+    and of the tests needed against the chance of fixing a defect;
+  - a flight-by-flight reliability ladder in which dragging sets the target and the number of tests;
+  - a report and a documentation page.
+- The default design ($D_0=4$, $p=0.6$, $d=0.8$) follows the memo's plot and table; its text quotes $D_0=6$.
+- The old Reliability topic page now redirects to the calculator.
+- Tests: `tests/relgrowth.test.js` — reference table for 0–25 tests, the defect recursion, the target inversion
+  and the expected-failure sum. Also added to the aggressive suite.
 ### New calculator: Nozzle Thrust Coefficient
 - Added: `calculators/nozzle-thrust.html`, with the following for a conical de Laval nozzle:
   - exit Mach number and exit pressure from one-dimensional isentropic flow (NACA Report 1135);

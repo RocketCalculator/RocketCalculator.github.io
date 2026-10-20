@@ -86,6 +86,12 @@
    "description": "Strip-theory roll derivatives and the cant angle for a target roll rate."
   },
   {
+   "slug": "single-wedge",
+   "title": "Single Wedge Airfoil",
+   "topic": "single-wedge-airfoil",
+   "description": "Supersonic normal-force multiplier and wave drag of single-wedge fins, with the shock-detachment limit."
+  },
+  {
    "slug": "newtonian-drag",
    "title": "Modified Newtonian Drag",
    "topic": "modified-newtonian-drag",
@@ -684,9 +690,11 @@
    "area": "aero",
    "summary": "Supersonic normal force of single-wedge fins.",
    "abstract": "The use of a single wedge airfoil for high supersonic fins has been known for decades. Such fins, with their flat surfaces, are easy to build, and provide good torsional stiffness. Their normal is developed as a multiplier to be applied to the flat plate result. See Single Wedge Airfoil.doc for a description of the theory. A spreadsheet evaluation of this model is filed as Normal Force Multiplier.xls . Finally, any airfoil wave drag is reported in SUPERSONIC BARROWMAN EQUATIONS3.5.xls while the base drag on a single wedge airfoil is reported in DRAG COEFFICIENT3.4.xls .",
-   "status": "soon",
-   "calculators": [],
-   "wasSoon": false,
+   "status": "available",
+   "calculators": [
+    "single-wedge"
+   ],
+   "wasSoon": true,
    "references": [
     "single-wedge-airfoil"
    ],

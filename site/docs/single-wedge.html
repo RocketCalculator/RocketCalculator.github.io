@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Single Wedge Airfoil — Theory & documentation — Rocket Calculator</title>
+<meta name="description" content="Supersonic single-wedge fin sections: Busemann expansion of the oblique-shock pressure, normal-force multiplier over a flat plate, wave-drag increment and the shock-detachment limit.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../css/site.css">
+<script>try{var t=JSON.parse(localStorage.getItem('rc-theme'));if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<main id="main">
+<div class="wrap">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Home</a><span class="sep">/</span><a href="../index.html#area-aero">Aerodynamics</a><span class="sep">/</span><a href="../calculators/single-wedge.html">Single Wedge Airfoil</a><span class="sep">/</span><span>Documentation</span></nav>
+  <div class="calc-title"><h1>Single Wedge Airfoil — theory</h1></div>
+  <p class="calc-sub">Supersonic normal force and wave drag of single-wedge fins. Based on C. P. Hoult, <em>Supersonic Single Wedge Airfoil</em>, RS&amp;T memo, 20 March 2013.</p>
+  <div class="calc-badges"><a class="btn small primary" href="../calculators/single-wedge.html">Open the calculator</a><a class="btn small" href="../references/index.html#single-wedge-airfoil">Original memo (PDF)</a></div>
+  <div class="doc-layout">
+    <nav class="doc-toc" aria-label="Contents"></nav>
+    <article class="doc">
+
+      <section id="overview">
+        <h2>Overview</h2>
+        <p>On a high-performance sounding rocket the centre of gravity moves forward as propellant burns. The centre of pressure moves forward even faster: forebody normal force grows with supersonic Mach number while fin normal force falls. Replacing the flat-plate fin section by a <strong>single wedge</strong> — sharp edge forward, blunt trailing edge — recovers fin lift at high Mach number. The flat faces are also easy to build, stiff in torsion, give room for structure, and make cant adjustment simple.</p>
+        <p>The cost is wave drag at supersonic speed and base drag at all speeds. Subsonic data (NACA TN 2074, RM A50J09) show no significant loss of normal force with a blunt trailing edge: the Kutta condition is robust.</p>
+      </section>
+
+      <section id="busemann">
+        <h2>Busemann expansion and the multiplier</h2>
+        <p>The oblique-shock relations give the pressure coefficient on a surface that turns the flow by a small angle <span class="tex">\theta</span> (NACA Report 1135, eq. 152):</p>
+        <div class="eq"><div class="tex-display">C_P=C_1\theta+C_2\theta^2+C_3\theta^3,\qquad C_1=\frac{2}{\sqrt{\beta}},\quad C_2=\frac{(\gamma+1)M_N^4-4\beta}{2\beta^2},\quad \beta=M_N^2-1</div></div>
+        <div class="eq"><div class="tex-display">C_3=\frac{1}{\beta^{7/2}}\left[\frac{(\gamma+1)^2M_N^8}{16}-\frac{(7+12\gamma-3\gamma^2)M_N^6}{12}+\frac{3(\gamma+1)M_N^4}{2}-2M_N^2+\frac43\right]</div></div>
+        <p>The first term is Ackeret’s linear theory. For a swept leading edge both the angle and the Mach number are taken in the plane normal to the edge, <span class="tex">M_N=M_\infty\cos\Lambda</span>.</p>
+        <p>At angle of attack <span class="tex">\alpha</span> the lower face of a single wedge of half-angle <span class="tex">\delta</span> turns the flow by <span class="tex">\delta+\alpha</span> and the upper face by <span class="tex">\delta-\alpha</span>. The pressure difference is <span class="tex">2\alpha\,C_P'(\delta)</span>. For a flat plate it is <span class="tex">2\alpha C_1</span>, so the normal-force slope of the wedge is the flat-plate value times</p>
+        <div class="eq"><div class="tex-display">K_W=1+2\frac{C_2}{C_1}\delta+3\frac{C_3}{C_1}\delta^2=1+\frac{H\delta}{2\beta^{3/2}}+\frac{3I\delta^2}{2\beta^3}</div></div>
+        <p>where <span class="tex">H=(\gamma+1)M_N^4-4\beta</span> and <span class="tex">I</span> is the bracket in <span class="tex">C_3</span>. The multiplier applies to the flat-plate fin normal-force slope from a supersonic Barrowman method. Truncating after the <span class="tex">\delta</span> term (second order, Busemann’s original suggestion) is shown for comparison.</p>
+        <p>Both linear and higher-order theories are singular at <span class="tex">M_N=1</span>, which produces a sharp upturn at low supersonic Mach numbers. Use the multiplier for <span class="tex">M_N\gtrsim1.7</span> and fair it smoothly to 1 at <span class="tex">M_N=1</span> below that.</p>
+      </section>
+
+      <section id="limit">
+        <h2>Shock-detachment limit</h2>
+        <p>For each Mach number there is a largest deflection that keeps the shock attached to the leading edge. The calculator finds it, and the shock angle <span class="tex">\beta_s</span>, from the exact relation</p>
+        <div class="eq"><div class="tex-display">\tan\theta=2\cot\beta_s\,\frac{M_N^2\sin^2\beta_s-1}{M_N^2(\gamma+\cos2\beta_s)+2}</div></div>
+        <p>by maximising over <span class="tex">\beta_s</span>. For <span class="tex">\gamma=1.4</span> the limit is 12.1° at Mach 1.5, 23.0° at Mach 2 and 34.1° at Mach 3. A 5° wedge keeps an attached shock above <span class="tex">M_N\approx1.24</span> (the memo’s approximate limit curve gives about 1.32), so the lower bound of 1.7 for the expansion is the tighter one.</p>
+        <p>The same exact relations give the face pressure <span class="tex">C_P=4(M_N^2\sin^2\beta_s-1)/[(\gamma+1)M_N^2]</span>. Differentiating it gives an exact multiplier, plotted beside the expansion. The two agree closely for thin wedges.</p>
+      </section>
+
+      <section id="drag">
+        <h2>Wave-drag increment</h2>
+        <p>At zero incidence each face carries <span class="tex">C_P(\delta)</span>, and its stream-wise projection is <span class="tex">\delta</span> per unit chord. Both faces together add, over a flat plate,</p>
+        <div class="eq"><div class="tex-display">\Delta C_{DW,N}=2\delta\,C_P(\delta)</div></div>
+        <p>on the planform area, normal to the edge. By simple sweep theory the force scales with <span class="tex">q\cos^2\Lambda</span> and its stream-wise component with a further <span class="tex">\cos\Lambda</span>, so <span class="tex">\Delta C_{DW}=2\delta C_P(\delta)\cos^3\Lambda</span> on free-stream dynamic pressure. Multiplying by <span class="tex">NS/S_{ref}</span> refers it to the rocket’s cross-section, ready to add to the fin wave-drag input of the drag build-up.</p>
+        <p>The base drag of the blunt trailing edge is not included. The drag build-up computes it from its wedge-angle input.</p>
+        <p>There is a design trade: a larger <span class="tex">\delta</span> raises tail normal force and stability but costs wave drag.</p>
+      </section>
+
+      <section id="sweep">
+        <h2>Sweep</h2>
+        <p>The analysis is two-dimensional in the plane normal to the leading edge. A swept edge lowers <span class="tex">M_N</span>. When <span class="tex">M_N\le1</span> the edge is subsonic, the multiplier is 1 (flat-plate lift) and there is no attached shock or supersonic wave-drag increment.</p>
+      </section>
+
+      <section id="verification">
+        <h2>Verification</h2>
+        <p><code>tests/wedge.test.js</code> checks the following:</p>
+        <ul>
+          <li>the shock functions <span class="tex">\beta</span>, <span class="tex">H</span>, <span class="tex">I</span> against the memo’s tabulated example (Mach 1.2–5);</li>
+          <li>the multiplier against a numerical derivative of the series;</li>
+          <li>that the exact oblique-shock pressure reproduces <span class="tex">C_3</span> as <span class="tex">\theta\to0</span>;</li>
+          <li>the detachment limits against NACA 1135;</li>
+          <li>that the cubic multiplier is within 0.5 % of the exact one for a 3° wedge at <span class="tex">M_N</span> = 2–6.</li>
+        </ul>
+      </section>
+
+      <section id="known-differences">
+        <h2>Notes on the method</h2>
+        <ul class="diff-list">
+          <li><strong>Linear term of the multiplier.</strong> It is <span class="tex">H\delta/(2\beta^{3/2})</span>, which follows from <span class="tex">2C_2\delta/C_1</span>. The tabulated example writes <span class="tex">\beta^{1/2}</span>, which roughly triples the second-order gain at Mach 2. The memo’s figures follow the <span class="tex">\beta^{3/2}</span> form.</li>
+          <li><strong>Exact comparison.</strong> The exact multiplier and the detachment limit are solved from the oblique-shock relations of the memo’s reference 1.</li>
+          <li><strong>Sweep.</strong> The free-stream wave drag uses simple sweep theory (<span class="tex">\cos^3\Lambda</span>).</li>
+        </ul>
+      </section>
+
+      <section id="references">
+        <h2>References</h2>
+        <ol class="refs">
+          <li>C. P. Hoult, “Supersonic Single Wedge Airfoil,” RS&amp;T memo, 20 March 2013. <a href="../references/index.html#single-wedge-airfoil">View in library</a></li>
+          <li>Ames Research Staff, “Equations, Tables and Charts for Compressible Flow,” NACA Report 1135, 1953.</li>
+          <li>H. A. Smith and R. F. Schaefer, “Aerodynamic Characteristics … of Three Airfoil Sections Formed by Cutting Off Various Amounts from the Rear Portion of the NACA 0012 Airfoil Section,” NACA TN 2074, 1950.</li>
+          <li>J. L. Summers and W. A. Page, “Lift and Moment Characteristics at Subsonic Mach Numbers of Four 10-Percent Thick Airfoil Sections of Varying Trailing-Edge Thickness,” NACA RM A50J09, 1950.</li>
+        </ol>
+      </section>
+    </article>
+  </div>
+</div>
+</main>
+<script type="module">
+import { mountDocs } from '../js/docs.js';
+mountDocs();
+</script>
+</body>
+</html>

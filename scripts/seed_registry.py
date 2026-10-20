@@ -145,6 +145,7 @@ CALCULATORS = [
     ('fin-flutter', 'Fin Flutter Margin', 'FinAero', 'NACA TN-4197 bending-torsion flutter Mach number and margin of safety.'),
     ('bifilar-pendulum', 'Bifilar Pendulum Inertia', 'BifiPend', 'Pitch/yaw moment of inertia from measured pendulum periods.'),
     ('fin-cant-angle', 'Fin Cant Angle & Roll Rate', 'FinSett', 'Strip-theory roll derivatives and the cant angle for a target roll rate.'),
+    ('single-wedge', 'Single Wedge Airfoil', 'SingWeAf', 'Supersonic normal-force multiplier and wave drag of single-wedge fins, with the shock-detachment limit.'),
     ('newtonian-drag', 'Modified Newtonian Drag', 'ModiNewtDrag', 'Supersonic wave drag of nose caps, cones, flat faces and rounded fin leading edges (Lees).'),
 ]
 

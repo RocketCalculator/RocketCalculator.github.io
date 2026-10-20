@@ -4,6 +4,19 @@ Every commit adds an entry here, newest first. Live site: https://darasamii.gith
 
 ## 2026-10-20 (continued)
 
+### New calculator: Single Wedge Airfoil
+- Added: `calculators/single-wedge.html`, with the following:
+  - the supersonic normal-force multiplier of a single-wedge fin section over a flat plate (cubic Busemann
+    expansion), with the second-order and exact oblique-shock values alongside;
+  - the wave-drag increment, on the fin area and on the rocket reference area;
+  - the shock-detachment limit and the shock angle, with sweep handled through the normal Mach number;
+  - three plots, a section drawing with the shocks, a report and a documentation page.
+- The linear term of the multiplier uses β^(3/2), as the series derivative requires. The memo's tabulated example
+  has β^(1/2).
+- Fixed: redirect pages lacked an icon link (404 for favicon.ico).
+- Tests: `tests/wedge.test.js` — reference columns, numerical derivative, C3 recovered from the exact shock, and
+  NACA 1135 detachment limits. Also added to the aggressive suite.
+
 ### New calculator: Modified Newtonian Drag
 - Added: `calculators/newtonian-drag.html`, with the following:
   - supersonic pressure (wave) drag of a hemispherical nose cap, a conical segment (pointed or frustum), a flat

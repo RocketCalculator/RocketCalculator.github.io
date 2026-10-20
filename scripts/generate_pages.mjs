@@ -64,6 +64,7 @@ for (const t of reg.topics.filter((x) => x.status === 'available' && x.calculato
 <title>${esc(t.title)} — Rocket Calculator</title>
 <meta http-equiv="refresh" content="0; url=${to}">
 <link rel="canonical" href="${to}">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
 </head>
 <body><p>This topic is now a calculator: <a href="${to}">${esc(t.title)}</a>.</p></body>
 </html>

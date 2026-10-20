@@ -99,6 +99,7 @@ const INVARIANTS = {
   'fin-flutter': (v, R) => [R.Mf > 0, R.pr > 0 && R.pr <= 1, R.tMin > 0, R.AR > 0],
   geophysics: (v, R) => [R.p > 0, R.rho > 0, R.gh > 0, R.T > 0, R.a > 0],
   'newtonian-drag': (v, R) => [R.CD >= 0, R.CDnose >= 0, R.CDfins >= 0, R.cpt > 0 && R.cpt < 2, !v.cap || (R.capXcp >= 0 && R.capXcp <= v.capR), !v.cone || (R.coneXcp >= 0 && R.coneXcp <= v.coneL)],
+  'single-wedge': (v, R, warned) => [R.K >= 1 - 1e-12, R.CDw >= 0, R.CDvehicle >= 0, R.MN > 0, R.thetaMax == null || (R.thetaMax > 0 && R.thetaMax < 46)],
   'ogive-nose': (v, R) => [R.S > 0, R.xbar > 0 && R.xbar < v.L, R.fineness > 0, R.tipHalfAngle > 0 && R.tipHalfAngle <= 90],
   'subsonic-cp': (v, R, warned) => [R.CNa > 0 || warned, R.CNaFins >= 0, Number.isFinite(R.xcp), R.d > 0],
 };

@@ -108,6 +108,12 @@
    "title": "Modified Newtonian Drag",
    "topic": "modified-newtonian-drag",
    "description": "Supersonic wave drag of nose caps, cones, flat faces and rounded fin leading edges (Lees)."
+  },
+  {
+   "slug": "nozzle-thrust",
+   "title": "Nozzle Thrust Coefficient",
+   "topic": "nozzles",
+   "description": "Exit Mach number, exit pressure, thrust coefficient and thrust of a conical de Laval nozzle, with the Malina divergence correction."
   }
  ],
  "topics": [
@@ -442,9 +448,11 @@
    "area": "prop",
    "summary": "De Laval nozzle thrust coefficient with the Malina 3-D correction.",
    "abstract": "Rocket motor nozzles use a deLaval converging-diverging configuration to generate thrust. Performance of such nozzles can be estimated using the one dimensional isentropic flow equations found in NACA Report 1135, \"Equations, Tables and Charts for Compressible Flow\". The one dimensional thrust coefficient is modified by the Malina correction for 3D source flow. The result is the thrust/chamber pressure* throat area = Cf, the thrust coefficient. This result is found in ThrustCf.xls",
-   "status": "soon",
-   "calculators": [],
-   "wasSoon": false,
+   "status": "available",
+   "calculators": [
+    "nozzle-thrust"
+   ],
+   "wasSoon": true,
    "references": [],
    "sourceFiles": [
     {

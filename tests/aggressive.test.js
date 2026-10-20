@@ -90,6 +90,7 @@ const REPAIR = {
   'fin-cant-angle': (v, r) => { if (v.b <= v.R) v.b = v.R * (1.1 + 2 * r()); },
   'yo-yo-despin': (v, r) => { if (v.ff >= v.f0) v.ff = v.f0 * r(); v.mu = r() < 0.8 ? 0 : Math.min(v.mu, 1e-5 * r()); },
   'newtonian-drag': (v, r) => { if (v.r2 <= v.r1) v.r2 = v.r1 * (1.05 + 3 * r()) + 1e-3; },
+  'nozzle-thrust': (v, r) => { if (r() < 0.8) v.pa = Math.min(v.pa, 0.45 * r() * v.pc); },
 };
 
 /** Must hold for every accepted input set (warnings may be present). */
@@ -102,6 +103,7 @@ const INVARIANTS = {
   'newtonian-drag': (v, R) => [R.CD >= 0, R.CDnose >= 0, R.CDfins >= 0, R.cpt > 0 && R.cpt < 2, !v.cap || (R.capXcp >= 0 && R.capXcp <= v.capR), !v.cone || (R.coneXcp >= 0 && R.coneXcp <= v.coneL)],
   'single-wedge': (v, R, warned) => [R.K >= 1 - 1e-12, R.CDw >= 0, R.CDvehicle >= 0, R.MN > 0, R.thetaMax == null || (R.thetaMax > 0 && R.thetaMax < 46)],
   'yo-yo-despin': (v, R) => [R.weightEach > 0 || !Number.isFinite(R.weightEach), R.T1 >= 0, R.T2 >= 0, R.tRelease > 0, R.r >= 0 && R.r < 1],
+  'nozzle-thrust': (v, R) => [R.Me >= 1, R.pe > 0 && R.pe <= R.pStar * (1 + 1e-12), R.lambda >= 0.5 && R.lambda <= 1, R.cf <= R.cf1D + 1e-12, R.cfVac >= R.cf - 1e-12, R.thrust < R.thrustVac * (1 + 1e-12) || v.pa === 0],
   'propellant-slosh': (v, R) => [R.f1 > 0 && R.f2 > R.f1 && R.f3 > R.f2, R.m1frac > 0 && R.m1frac <= 100, R.fixedFrac >= -1e-9 && R.fixedFrac <= 100, R.L1 > 0],
   'ogive-nose': (v, R) => [R.S > 0, R.xbar > 0 && R.xbar < v.L, R.fineness > 0, R.tipHalfAngle > 0 && R.tipHalfAngle <= 90],
   'subsonic-cp': (v, R, warned) => [R.CNa > 0 || warned, R.CNaFins >= 0, Number.isFinite(R.xcp), R.d > 0],
@@ -251,6 +253,14 @@ test('Newtonian drag: wave drag rises past Mach 1, more sweep means less leading
   increasing(sw, 'LE drag vs decreasing sweep');
   const h = run('newtonian-drag', { M: 10, bodyR: 2, cap: true, capR: 2, thetaM: 90, cone: false, flat: false, fins: false });
   assert.ok(Math.abs(h.CD - 0.92) < 0.01, `hemisphere CD ${h.CD}`);
+});
+
+test('Nozzle: thrust falls with ambient pressure, a wider cone loses thrust, the 1-D C_F peaks at p_e = p_a', () => {
+  increasing([200, 100, 50, 14.7, 0].map((pa) => run('nozzle-thrust', { pa }).thrust), 'T vs falling p_a');
+  increasing([40, 30, 20, 10, 2].map((alpha) => run('nozzle-thrust', { alpha }).cf), 'C_F vs narrowing cone');
+  increasing([1, 2, 4, 8, 16].map((eps) => run('nozzle-thrust', { pa: 0, eps }).cf), 'vacuum C_F vs ε');
+  const opt = run('nozzle-thrust', {}).epsOpt;
+  for (const f of [0.7, 1.4]) assert.ok(run('nozzle-thrust', { eps: opt * f }).cf1D < run('nozzle-thrust', { eps: opt }).cf1D, `C_F off-optimum ×${f}`);
 });
 
 test('Fin cant: steady cant angle is linear in roll rate and sign-symmetric', () => {

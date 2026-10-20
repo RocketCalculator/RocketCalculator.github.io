@@ -4,6 +4,19 @@ Every commit adds an entry here, newest first. Live site: https://darasamii.gith
 
 ## 2026-10-20 (continued)
 
+### New calculator: Nozzle Thrust Coefficient
+- Added: `calculators/nozzle-thrust.html`, with the following for a conical de Laval nozzle:
+  - exit Mach number and exit pressure from one-dimensional isentropic flow (NACA Report 1135);
+  - one-dimensional thrust coefficient and the Malina-corrected value $C_F=\lambda C_{F,m}+(p_e-p_a)\varepsilon/p_c$;
+  - thrust, vacuum values, the expansion ratio for $p_e=p_a$ and the separation limit $p_e<0.4\,p_a$;
+  - plots against expansion ratio, ambient pressure and half angle;
+  - a to-scale drawing of the cone in which dragging the exit lip changes the expansion ratio and half angle;
+  - a report and a documentation page. The old Nozzles topic page now redirects to the calculator.
+- The exit Mach number is solved exactly; the original 50-step iteration is 6 × 10⁻¹⁰ high, which changes $C_F$ by
+  under 10⁻¹¹.
+- Tests: `tests/nozzle.test.js` — the original example, NACA 1135 values, sonic and infinite-expansion limits,
+  ideal expansion and the Malina factor. Also added to the aggressive suite.
+
 ### Home page: coming-soon topics shown again
 - Restored the Available / Coming soon grid and filters. The three removed guidelines-only topics stay out.
 

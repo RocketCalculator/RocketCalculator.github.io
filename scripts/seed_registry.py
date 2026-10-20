@@ -153,6 +153,7 @@ CALCULATORS = [
     ('yo-yo-despin', 'Yo-Yo Despinner', 'YoYoDes', 'Despin weights, wire loads and timing for a two-mass yo-yo with radial release.'),
     ('propellant-slosh', 'Propellant Sloshing', 'ProSlosh', 'Slosh frequencies, slosh masses and equivalent pendulum for liquid in a cylindrical tank under thrust.'),
     ('newtonian-drag', 'Modified Newtonian Drag', 'ModiNewtDrag', 'Supersonic wave drag of nose caps, cones, flat faces and rounded fin leading edges (Lees).'),
+    ('nozzle-thrust', 'Nozzle Thrust Coefficient', 'Nozzles', 'Exit Mach number, exit pressure, thrust coefficient and thrust of a conical de Laval nozzle, with the Malina divergence correction.'),
 ]
 
 

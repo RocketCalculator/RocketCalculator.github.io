@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Two-Stage Weight Allocation — Theory & documentation — Rocket Calculator</title>
+<meta name="description" content="Optimum split of mass between two rocket stages for a required ideal velocity: Vertregt's Lagrange-multiplier method with each stage's own specific impulse, the common-impulse closed form, and when a second stage pays.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../css/site.css">
+<script>try{var t=JSON.parse(localStorage.getItem('rc-theme'));if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<main id="main">
+<div class="wrap">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Home</a><span class="sep">/</span><a href="../index.html#area-prop">Propulsion &amp; Vehicle Design</a><span class="sep">/</span><a href="../calculators/two-stage-weights.html">Two-Stage Weight Allocation</a><span class="sep">/</span><span>Documentation</span></nav>
+  <div class="calc-title"><h1>Two-Stage Weight Allocation — theory</h1></div>
+  <p class="calc-sub">The lightest two-stage rocket for a payload and a required ideal velocity. Based on C. P. Hoult, <em>Optimum Allocation of Weight Between Two Stages (rev. 1)</em>, 2015, after M. Vertregt’s Lagrange-multiplier method.</p>
+  <div class="calc-badges"><a class="btn small primary" href="../calculators/two-stage-weights.html">Open the calculator</a><a class="btn small" href="../references/index.html#two-stage-weights-rev1">Original memo (PDF)</a></div>
+  <div class="doc-layout">
+    <nav class="doc-toc" aria-label="Contents"></nav>
+    <article class="doc">
+
+      <section id="overview">
+        <h2>Overview</h2>
+        <p>A frequent question in multistage design is how to split the mass between the stages. With cost taken as proportional to mass, two statements of the problem are equivalent:</p>
+        <ul>
+          <li>for a fixed liftoff mass and payload, find the split that gives the greatest ideal velocity;</li>
+          <li>for a fixed ideal velocity and payload, find the split that gives the least liftoff mass.</li>
+        </ul>
+        <p>The calculator solves the second. The <em>ideal velocity</em> is the velocity the stages would add with no drag or gravity losses. Tsiolkovskii’s rocket equation gives it for each stage, and the stage velocities add:</p>
+        <div class="eq"><div class="tex-display">\Delta V_{ID}=\sum_i c_i\ln\mu_i,\qquad c_i=g_0I_{SPi}</div></div>
+        <p>where <span class="tex">\mu_i</span> is the mass ratio of stage <span class="tex">i</span> (mass at its ignition over mass at its burnout) and <span class="tex">c_i</span> its exhaust velocity. To size a real rocket, add an allowance for drag and gravity losses to the burnout velocity you need.</p>
+      </section>
+
+      <section id="optimum">
+        <h2>Optimum payload ratios</h2>
+        <p>Stage 1 is at the bottom. For stage <span class="tex">i</span> define</p>
+        <ul>
+          <li>the payload ratio <span class="tex">\eta_i=M_{0,i+1}/M_{0i}</span>: the mass above the stage over the mass at its ignition (<span class="tex">M_{03}=M_{PL}</span>);</li>
+          <li>the structural fraction (structural efficiency) <span class="tex">\sigma_i=M_{STi}/(M_{STi}+M_{PRi})</span>: inert mass over loaded stage mass.</li>
+        </ul>
+        <p>Then the mass ratio and the ideal velocity of the stage are</p>
+        <div class="eq"><div class="tex-display">\mu_i=\frac{1}{\eta_i+\sigma_i(1-\eta_i)},\qquad \Delta V_i=-c_i\ln[\eta_i+\sigma_i(1-\eta_i)]</div></div>
+        <p>and the total payload ratio is the product <span class="tex">\eta_{TOT}=M_{PL}/M_{01}=\eta_1\eta_2</span>. The ideal velocity is maximised subject to <span class="tex">\ln\eta_1+\ln\eta_2=\ln\eta_{TOT}</span>, with a Lagrange multiplier <span class="tex">\lambda</span>. Setting the derivative of the augmented function with respect to each <span class="tex">\eta_i</span> to zero gives</p>
+        <div class="eq"><div class="tex-display">\frac{c_i(1-\sigma_i)}{\eta_i+\sigma_i(1-\eta_i)}=\frac{\lambda}{\eta_i}\quad\Longrightarrow\quad \eta_i=\frac{\lambda\sigma_i}{(c_i-\lambda)(1-\sigma_i)}</div></div>
+        <p>Each stage’s optimum payload ratio depends on <span class="tex">\lambda</span> alone. The memo then finds <span class="tex">\lambda</span> from the total payload ratio. Here the ideal velocity is given instead, so <span class="tex">\lambda</span> is the value for which</p>
+        <div class="eq"><div class="tex-display">-c_1\ln[\eta_1+\sigma_1(1-\eta_1)]-c_2\ln[\eta_2+\sigma_2(1-\eta_2)]=\Delta V_{ID}</div></div>
+        <p>Both payload ratios rise with <span class="tex">\lambda</span>, so the left side falls steadily and there is a single root. It is found by bisection, to machine precision. Each stage may have its own specific impulse.</p>
+        <p>As <span class="tex">\lambda\to0</span> the liftoff mass grows without bound and the ideal velocity tends to the limit of the two stages:</p>
+        <div class="eq"><div class="tex-display">\Delta V_{lim}=-c_1\ln\sigma_1-c_2\ln\sigma_2</div></div>
+        <p>A required velocity at or above this limit is refused.</p>
+        <p>The multiplier has a useful meaning. At the optimum, <span class="tex">\lambda=d\Delta V_{ID}/d\ln M_{01}</span>: adding 1 % to the liftoff mass, with the best split, adds about <span class="tex">0.01\lambda</span> to the ideal velocity.</p>
+      </section>
+
+      <section id="masses">
+        <h2>Stage masses</h2>
+        <p>The payload ratios give the masses directly:</p>
+        <div class="eq"><div class="tex-display">M_{02}=\frac{M_{PL}}{\eta_2},\qquad M_{01}=\frac{M_{02}}{\eta_1}=\frac{M_{PL}}{\eta_{TOT}}</div></div>
+        <div class="eq"><div class="tex-display">M_1=M_{01}-M_{02},\qquad M_2=M_{02}-M_{PL},\qquad M_{STi}=\sigma_iM_i,\qquad M_{PRi}=(1-\sigma_i)M_i</div></div>
+        <p>Every mass is proportional to the payload mass, so the payload only scales the answer.</p>
+      </section>
+
+      <section id="single">
+        <h2>When a second stage pays</h2>
+        <p>At a fixed total payload ratio the ideal velocity is a concave function of <span class="tex">\ln\eta_1</span>, so the stationary point is the maximum. A payload ratio cannot exceed 1, however (a stage cannot have negative mass). At low ideal velocities the stationary point can need <span class="tex">\eta_i&gt;1</span> for the stage with the smaller value of <span class="tex">c_i(1-\sigma_i)</span>. The best design then leaves that stage out, and the other stage alone gives the velocity:</p>
+        <div class="eq"><div class="tex-display">\eta=\frac{e^{-\Delta V_{ID}/c}-\sigma}{1-\sigma}</div></div>
+        <p>The calculator shows this case with a warning, and gives the ideal velocity above which both stages carry mass. That threshold is the ideal velocity at <span class="tex">\lambda=\min_i c_i(1-\sigma_i)</span>.</p>
+        <p>The liftoff-mass plot shows the effect. Below the threshold the optimum curve follows the better single stage; above it, staging saves more and more mass as the velocity rises. With equal specific impulses the threshold is low. A weaker upper-stage motor can push it well up: for the memo’s example stages (220 s and 200 s, structural fractions 0.15 and 0.14) a second stage only pays above about 2650 ft/s.</p>
+      </section>
+
+      <section id="common">
+        <h2>Common specific impulse</h2>
+        <p>If both stages share an exhaust velocity <span class="tex">c</span>, the optimum has a closed form. With <span class="tex">U=\Delta V_{ID}/c</span>, for two stages</p>
+        <div class="eq"><div class="tex-display">\eta_{TOT}=\frac{\left[e^{-U/2}-\sqrt{\sigma_1\sigma_2}\right]^2}{(1-\sigma_1)(1-\sigma_2)},\qquad \eta_i=\frac{\sigma_i}{1-\sigma_i}\left[\eta_{TOT}\frac{(1-\sigma_1)(1-\sigma_2)}{\sigma_1\sigma_2}\right]^{1/2}</div></div>
+        <p>and, inversely, <span class="tex">\Delta V_{ID}=-2c\ln\left[\sqrt{\sigma_1\sigma_2}+\sqrt{\eta_{TOT}(1-\sigma_1)(1-\sigma_2)}\right]</span>. The multiplier is <span class="tex">\lambda=cR/(1+R)</span>, where <span class="tex">R=\sqrt{\eta_{TOT}(1-\sigma_1)(1-\sigma_2)/(\sigma_1\sigma_2)}</span>.</p>
+        <p>The memo applies this closed form with the average <span class="tex">(I_{SP1}+I_{SP2})/2</span> when the impulses differ. The calculator shows that result in the full results table, with the ideal velocity its split really gives when each stage has its own impulse. When the impulses are equal, the general solution and the closed form agree to <span class="tex">10^{-11}</span>.</p>
+      </section>
+
+      <section id="verification">
+        <h2>Verification</h2>
+        <p><code>tests/twostage.test.js</code> checks the following:</p>
+        <ul>
+          <li>the closed form against the memo’s tabulated example (2000 ft/s, 10 lb payload): total and stage payload ratios, propellant, structure and loaded masses, and liftoff mass, to <span class="tex">10^{-12}</span>;</li>
+          <li>that the general solution reproduces the closed form when the impulses are equal;</li>
+          <li>that with unequal impulses no other split of the same liftoff mass gives more ideal velocity (brute-force search);</li>
+          <li>that <span class="tex">\lambda=d\Delta V_{ID}/d\ln M_{01}</span>;</li>
+          <li>the single-stage case below the threshold, and continuity at the threshold.</li>
+        </ul>
+      </section>
+
+      <section id="known-differences">
+        <h2>Notes on the method</h2>
+        <ul class="diff-list">
+          <li><strong>Each stage’s own specific impulse.</strong> The optimum uses the general Lagrange condition with each stage’s exhaust velocity, rather than the average impulse. With the memo’s example stages at 2000 ft/s the true optimum is a single stage of 14.08 lb. The average-impulse split (14.20 lb) gives only about 1977 ft/s with the real impulses.</li>
+          <li><strong>Two-stage forms.</strong> The two-stage expressions above follow from the memo’s <span class="tex">N</span>-stage equations with <span class="tex">N=2</span>. In the printed two-stage versions the square on <span class="tex">\eta_{TOT}</span> and the factor <span class="tex">g_0I_{SP}</span> on <span class="tex">\Delta V_{ID}</span> are missing.</li>
+          <li><strong>Multiplier.</strong> <span class="tex">\lambda</span> comes from the stationary condition. The tabulated example’s value (5446 ft/s) uses <span class="tex">\eta_{TOT}</span> in place of its square root; the value consistent with its payload ratios is 5621 ft/s. The multiplier does not affect the masses.</li>
+          <li><strong>Model.</strong> Ideal velocity only: no drag, no gravity loss, no coast. Unburnt or trapped propellant counts as structure.</li>
+        </ul>
+      </section>
+
+      <section id="references">
+        <h2>References</h2>
+        <ol class="refs">
+          <li>C. P. Hoult, “Optimum Allocation of Weight Between Two Stages (rev. 1),” RS&amp;T memo, 20 March 2015. <a href="../references/index.html#two-stage-weights-rev1">View in library</a></li>
+          <li>M. Vertregt, “Calculation of Step-Rockets,” <em>J. Brit. Interplanetary Soc.</em>, Vol. 14, 1955, pp. 20–25.</li>
+          <li>M. Vertregt, “A Method for Calculating the Mass Ratios of Step-Rockets,” <em>J. Brit. Interplanetary Soc.</em>, Vol. 15, 1956, pp. 95–97.</li>
+          <li>J. J. Coleman, “Optimum Stage-Weight Distribution of Multistage Rockets,” Space Technology Laboratories, STL/TN-60-0000-9036, 1960.</li>
+        </ol>
+      </section>
+    </article>
+  </div>
+</div>
+</main>
+<script type="module">
+import { mountDocs } from '../js/docs.js';
+mountDocs();
+</script>
+</body>
+</html>

@@ -16,7 +16,7 @@ plus interactive calculators that replace the Excel workbooks.
 | `data/spreadsheets/*.json` | Every cell of every workbook: cached value `v` and formula `f` — the spec for each calculator |
 | `data/vba/*.bas` | VBA macros from the 13 workbooks that use them (needed to port those calculators) |
 | `scripts/` | Reproducible pipeline (`build_catalog.py`, `extract_spreadsheets.py`, `extract_text.sh`) |
-| `site/` | Deploy root for GitHub Pages (placeholder `index.html`); `.github/workflows/pages.yml` publishes it on push to `main` |
+| `site/` | GitHub Pages deploy root: placeholder `index.html`, `references/` (all 69 PDFs + `references.json`); workflow `.github/workflows/pages.yml` publishes it on push to `main` |
 
 ## Notes for the build
 - Spreadsheet colour code (from the source page): light blue = user input, magenta = natural constant, clear = output, bright yellow = key result, dark yellow = column header, grey = advisory notes. Most sheets use **English units** — offer SI toggle.

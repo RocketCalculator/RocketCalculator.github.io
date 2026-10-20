@@ -1,0 +1,632 @@
+[
+ {
+  "file": "references/original/A New Wind Sensor for Rockets.pdf",
+  "kind": "original PDF",
+  "sourceFile": "A New Wind Sensor for Rockets.pdf",
+  "topics": [
+   "Wind Measurement"
+  ],
+  "sizeKB": 370
+ },
+ {
+  "file": "references/original/Aerobee-Hi AJ11-6 Fin Airloads.pdf",
+  "kind": "original PDF",
+  "sourceFile": "Aerobee-Hi AJ11-6 Fin Airloads.pdf",
+  "topics": [
+   "Barrowman Equations"
+  ],
+  "sizeKB": 849
+ },
+ {
+  "file": "references/original/Analysis of the Motion of Liquids in A Partially-Filled Enclosure.pdf",
+  "kind": "original PDF",
+  "sourceFile": "Analysis of the Motion of Liquids in A Partially-Filled Enclosure.pdf",
+  "topics": [
+   "Propellant Sloshing"
+  ],
+  "sizeKB": 581
+ },
+ {
+  "file": "references/original/BarrowmanThesis.pdf",
+  "kind": "original PDF",
+  "sourceFile": "BarrowmanThesis.pdf",
+  "topics": [
+   "Barrowman Equations"
+  ],
+  "sizeKB": 4151
+ },
+ {
+  "file": "references/original/Enhanced_Igniters.pdf",
+  "kind": "original PDF",
+  "sourceFile": "Enhanced_Igniters.pdf",
+  "topics": [
+   "Igniters"
+  ],
+  "sizeKB": 371
+ },
+ {
+  "file": "references/original/Finite Inertia Corrections.pdf",
+  "kind": "original PDF",
+  "sourceFile": "Finite Inertia Corrections.pdf",
+  "topics": [
+   "Trajectory Simulation"
+  ],
+  "sizeKB": 3356
+ },
+ {
+  "file": "references/original/Launcher Length for Sounding-Rocket Point-Mass Traj. Sim.pdf",
+  "kind": "original PDF",
+  "sourceFile": "Launcher Length for Sounding-Rocket Point-Mass Traj. Sim.pdf",
+  "topics": [
+   "Trajectory Simulation"
+  ],
+  "sizeKB": 409
+ },
+ {
+  "file": "references/original/Optimum Thrust Programing for High-Altitude Rockets.pdf",
+  "kind": "original PDF",
+  "sourceFile": "Optimum Thrust Programing for High-Altitude Rockets.pdf",
+  "topics": [
+   "Optimum Weight Allocation"
+  ],
+  "sizeKB": 915
+ },
+ {
+  "file": "references/original/SKYAEROmanual_ver3.pdf",
+  "kind": "original PDF",
+  "sourceFile": "SKYAEROmanual_ver3.pdf",
+  "topics": [
+   "Trajectory Simulation"
+  ],
+  "sizeKB": 1948
+ },
+ {
+  "file": "references/original/Sounding Rocket Fin Design to Mitigate Roll Lock-In.pdf",
+  "kind": "original PDF",
+  "sourceFile": "Sounding Rocket Fin Design to Mitigate Roll Lock-In.pdf",
+  "topics": [
+   "Roll Lock-In"
+  ],
+  "sizeKB": 848
+ },
+ {
+  "file": "references/original/Standardized Perturbation Values.pdf",
+  "kind": "original PDF",
+  "sourceFile": "Standardized Perturbation Values.pdf",
+  "topics": [
+   "Dispersion",
+   "Structural Loads"
+  ],
+  "sizeKB": 1956
+ },
+ {
+  "file": "references/original/The Effect of Wind and Rotation of the Earth on Unguided Rockets.pdf",
+  "kind": "original PDF",
+  "sourceFile": "The Effect of Wind and Rotation of the Earth on Unguided Rockets.pdf",
+  "topics": [
+   "Trajectory Simulation"
+  ],
+  "sizeKB": 2300
+ },
+ {
+  "file": "references/original/Thrust Misalignments of Fixed-Nozzle Solid Rocket Motors.pdf",
+  "kind": "original PDF",
+  "sourceFile": "Thrust Misalignments of Fixed-Nozzle Solid Rocket Motors.pdf",
+  "topics": [
+   "Structural Loads"
+  ],
+  "sizeKB": 429
+ },
+ {
+  "file": "references/original/Van der Hoven.pdf",
+  "kind": "original PDF",
+  "sourceFile": "Van der Hoven.pdf",
+  "topics": [
+   "Wind Compensation"
+  ],
+  "sizeKB": 417
+ },
+ {
+  "file": "references/original/WiringRules.pdf",
+  "kind": "original PDF",
+  "sourceFile": "WiringRules.pdf",
+  "topics": [
+   "Wiring Requirements"
+  ],
+  "sizeKB": 58
+ },
+ {
+  "file": "references/from-word/1307 Supplement rev2.pdf",
+  "kind": "converted from Word",
+  "sourceFile": "1307 Supplement rev2.doc",
+  "topics": [
+   "Barrowman Equations"
+  ],
+  "sizeKB": 644
+ },
+ {
+  "file": "references/from-word/A New Launcher.pdf",
+  "kind": "converted from Word",
+  "sourceFile": "A New Launcher.doc",
+  "topics": [
+   "New Launcher"
+  ],
+  "sizeKB": 588
+ },
+ {
+  "file": "references/from-word/AIAAFelkel3.pdf",
+  "kind": "converted from Word",
+  "sourceFile": "AIAAFelkel3.doc",
+  "topics": [
+   "Nose Pressure Coefficient",
+   "Optimum Nose Shape"
+  ],
+  "sizeKB": 413
+ },
+ {
+  "file": "references/from-word/Air Launched Rocketrev1.pdf",
+  "kind": "converted from Word",
+  "sourceFile": "Air Launched Rocketrev1.doc",
+  "topics": [
+   "Trajectory Simulation"
+  ],
+  "sizeKB": 229
+ },
+ {
+  "file": "references/from-word/Airport_Communications_Lucerne_Valley.pdf",
+  "kind": "converted from Word",
+  "sourceFile": "Airport_Communications_Lucerne_Valley.doc",
+  "topics": [
+   "Wind Measurement"
+  ],
+  "sizeKB": 44
+ },
+ {
+  "file": "references/from-word/AllowableDiffPressure.pdf",
+  "kind": "converted from Word",
+  "sourceFile": "AllowableDiffPressure.doc",
+  "topics": [
+   "Venting"
+  ],
+  "sizeKB": 242
+ },
+ {
+  "file": "references/from-word/Apogee Roll Rate.pdf",
+  "kind": "converted from Word",
+  "sourceFile": "Apogee Roll Rate.doc",
+  "topics": [
+   "Roll Rate"
+  ],
+  "sizeKB": 199
+ },
+ {
+  "file": "references/from-word/Balloon_Inflating_Deployment_and_Disassembly.pdf",
+  "kind": "converted from Word",
+  "sourceFile": "Balloon_Inflating_Deployment_and_Disassembly.doc",
+  "topics": [
+   "Wind Measurement"
+  ],
+  "sizeKB": 47
+ },
+ {
+  "file": "references/from-word/Barrowman Equations.pdf",
+  "kind": "converted from Word",
+  "sourceFile": "Barrowman Equations.doc",
+  "topics": [
+   "Barrowman Equations",
+   "Structural Loads"
+  ],
+  "sizeKB": 46
+ },
+ {
+  "file": "references/from-word/Bifilar Pendulum.pdf",
+  "kind": "converted from Word",
+  "sourceFile": "Bifilar Pendulum.doc",
+  "topics": [
+   "Bifilar Pendulum"
+  ],
+  "sizeKB": 90
+ },
+ {
+  "file": "references/from-word/Boost Phase Roll Rate2.pdf",
+  "kind": "converted from Word",
+  "sourceFile": "Boost Phase Roll Rate2.doc",
+  "topics": [
+   "Roll Rate"
+  ],
+  "sizeKB": 322
+ },
+ {
+  "file": "references/from-word/CSULBWindSensor.pdf",
+  "kind": "converted from Word",
+  "sourceFile": "CSULBWindSensor.doc",
+  "topics": [
+   "Wind Measurement"
+  ],
+  "sizeKB": 1316
+ },
+ {
+  "file": "references/from-word/DPParachuterev2.pdf",
+  "kind": "converted from Word",
+  "sourceFile": "DPParachuterev2.doc",
+  "topics": [
+   "Recovery"
+  ],
+  "sizeKB": 271
+ },
+ {
+  "file": "references/from-word/Door Failure.pdf",
+  "kind": "converted from Word",
+  "sourceFile": "Door Failure.doc",
+  "topics": [
+   "Venting"
+  ],
+  "sizeKB": 83
+ },
+ {
+  "file": "references/from-word/Drag Coefficient3.4.pdf",
+  "kind": "converted from Word",
+  "sourceFile": "Drag Coefficient3.4.docx",
+  "topics": [
+   "Drag Coefficient"
+  ],
+  "sizeKB": 218
+ },
+ {
+  "file": "references/from-word/Events_and_Phases(rev3).pdf",
+  "kind": "converted from Word",
+  "sourceFile": "Events_and_Phases(rev3).doc",
+  "topics": [
+   "Trajectory Simulation"
+  ],
+  "sizeKB": 193
+ },
+ {
+  "file": "references/from-word/Fin Aeroelasticity.pdf",
+  "kind": "converted from Word",
+  "sourceFile": "Fin Aeroelasticity.doc",
+  "topics": [
+   "Fin Aeroelasticity"
+  ],
+  "sizeKB": 444
+ },
+ {
+  "file": "references/from-word/Fin Setting Theory[3].pdf",
+  "kind": "converted from Word",
+  "sourceFile": "Fin Setting Theory[3].doc",
+  "topics": [
+   "Fin Setting"
+  ],
+  "sizeKB": 436
+ },
+ {
+  "file": "references/from-word/Final 2013 RocketSafetyReport.pdf",
+  "kind": "converted from Word",
+  "sourceFile": "Final 2013 RocketSafetyReport.doc",
+  "topics": [
+   "Safety"
+  ],
+  "sizeKB": 267
+ },
+ {
+  "file": "references/from-word/Flt Path Angl Dispersions.pdf",
+  "kind": "converted from Word",
+  "sourceFile": "Flt Path Angl Dispersions.doc",
+  "topics": [
+   "Dispersion"
+  ],
+  "sizeKB": 360
+ },
+ {
+  "file": "references/from-word/Geophysics.pdf",
+  "kind": "converted from Word",
+  "sourceFile": "Geophysics.doc",
+  "topics": [
+   "Geophysics",
+   "Trajectory Simulation"
+  ],
+  "sizeKB": 103
+ },
+ {
+  "file": "references/from-word/Ground Handling Loads.pdf",
+  "kind": "converted from Word",
+  "sourceFile": "Ground Handling Loads.doc",
+  "topics": [
+   "Structural Loads"
+  ],
+  "sizeKB": 216
+ },
+ {
+  "file": "references/from-word/Hemisphere.pdf",
+  "kind": "converted from Word",
+  "sourceFile": "Hemisphere.doc",
+  "topics": [
+   "Barrowman Equations"
+  ],
+  "sizeKB": 115
+ },
+ {
+  "file": "references/from-word/Hi Alfa Body Aero.pdf",
+  "kind": "converted from Word",
+  "sourceFile": "Hi Alfa Body Aero.doc",
+  "topics": [
+   "Recovery"
+  ],
+  "sizeKB": 619
+ },
+ {
+  "file": "references/from-word/Launcher Tipoff Deflection.pdf",
+  "kind": "converted from Word",
+  "sourceFile": "Launcher Tipoff Deflection.doc",
+  "topics": [
+   "New Launcher"
+  ],
+  "sizeKB": 90
+ },
+ {
+  "file": "references/from-word/Launcher Tipoff Errors.pdf",
+  "kind": "converted from Word",
+  "sourceFile": "Launcher Tipoff Errors.doc",
+  "topics": [
+   "Dispersion"
+  ],
+  "sizeKB": 68
+ },
+ {
+  "file": "references/from-word/Local Sonic Flow.pdf",
+  "kind": "converted from Word",
+  "sourceFile": "Local Sonic Flow.doc",
+  "topics": [
+   "Optimum Nose Shape"
+  ],
+  "sizeKB": 70
+ },
+ {
+  "file": "references/from-word/Longeron Bending.pdf",
+  "kind": "converted from Word",
+  "sourceFile": "Longeron Bending.doc",
+  "topics": [
+   "Structural Loads"
+  ],
+  "sizeKB": 151
+ },
+ {
+  "file": "references/from-word/Longitudinal Body Bending Dynamics.pdf",
+  "kind": "converted from Word",
+  "sourceFile": "Longitudinal Body Bending Dynamics.doc",
+  "topics": [
+   "Body Bending Dynamics"
+  ],
+  "sizeKB": 650
+ },
+ {
+  "file": "references/from-word/Modified Newtonian Aero4.pdf",
+  "kind": "converted from Word",
+  "sourceFile": "Modified Newtonian Aero4.docx",
+  "topics": [
+   "Drag Coefficient",
+   "Modified Newtonian Drag"
+  ],
+  "sizeKB": 216
+ },
+ {
+  "file": "references/from-word/Mojave Winds.pdf",
+  "kind": "converted from Word",
+  "sourceFile": "Mojave Winds.doc",
+  "topics": [
+   "Wind Measurement"
+  ],
+  "sizeKB": 43
+ },
+ {
+  "file": "references/from-word/Non-Vertical Launch Effects.pdf",
+  "kind": "converted from Word",
+  "sourceFile": "Non-Vertical Launch Effects.doc",
+  "topics": [
+   "Trajectory Simulation"
+  ],
+  "sizeKB": 133
+ },
+ {
+  "file": "references/from-word/Nose Pressure Distro4.pdf",
+  "kind": "converted from Word",
+  "sourceFile": "Nose Pressure Distro4.doc",
+  "topics": [
+   "Nose Pressure Coefficient",
+   "Structural Loads"
+  ],
+  "sizeKB": 281
+ },
+ {
+  "file": "references/from-word/Ogive Nose.pdf",
+  "kind": "converted from Word",
+  "sourceFile": "Ogive Nose.doc",
+  "topics": [
+   "Ogive Nose"
+  ],
+  "sizeKB": 157
+ },
+ {
+  "file": "references/from-word/Parachute Reefing.pdf",
+  "kind": "converted from Word",
+  "sourceFile": "Parachute Reefing.doc",
+  "topics": [
+   "Recovery"
+  ],
+  "sizeKB": 105
+ },
+ {
+  "file": "references/from-word/Payload Venting2.pdf",
+  "kind": "converted from Word",
+  "sourceFile": "Payload Venting2.doc",
+  "topics": [
+   "Structural Loads",
+   "Venting"
+  ],
+  "sizeKB": 331
+ },
+ {
+  "file": "references/from-word/Reliability Growth.pdf",
+  "kind": "converted from Word",
+  "sourceFile": "Reliability Growth.doc",
+  "topics": [
+   "Reliability"
+  ],
+  "sizeKB": 86
+ },
+ {
+  "file": "references/from-word/Rocket Engine Ignition Structural Shock.pdf",
+  "kind": "converted from Word",
+  "sourceFile": "Rocket Engine Ignition Structural Shock.doc",
+  "topics": [
+   "Structural Loads"
+  ],
+  "sizeKB": 630
+ },
+ {
+  "file": "references/from-word/SOSX Breakdwn.pdf",
+  "kind": "converted from Word",
+  "sourceFile": "SOSX Breakdwn.doc",
+  "topics": [
+   "Barrowman Equations"
+  ],
+  "sizeKB": 149
+ },
+ {
+  "file": "references/from-word/Single Wedge Airfoil.pdf",
+  "kind": "converted from Word",
+  "sourceFile": "Single Wedge Airfoil.doc",
+  "topics": [
+   "Single Wedge Airfoil"
+  ],
+  "sizeKB": 160
+ },
+ {
+  "file": "references/from-word/Single Wedge.pdf",
+  "kind": "converted from Word",
+  "sourceFile": "Single Wedge.doc",
+  "topics": [
+   "Barrowman Equations"
+  ],
+  "sizeKB": 261
+ },
+ {
+  "file": "references/from-word/Sloshing Errata.pdf",
+  "kind": "converted from Word",
+  "sourceFile": "Sloshing Errata.doc",
+  "topics": [
+   "Propellant Sloshing"
+  ],
+  "sizeKB": 90
+ },
+ {
+  "file": "references/from-word/Sounding Rocket Structural Design Loads10.pdf",
+  "kind": "converted from Word",
+  "sourceFile": "Sounding Rocket Structural Design Loads10.doc",
+  "topics": [
+   "Structural Loads"
+  ],
+  "sizeKB": 2275
+ },
+ {
+  "file": "references/from-word/Spin Wedges.pdf",
+  "kind": "converted from Word",
+  "sourceFile": "Spin Wedges.doc",
+  "topics": [
+   "Fin Setting"
+  ],
+  "sizeKB": 302
+ },
+ {
+  "file": "references/from-word/Supersonic LE Fins.pdf",
+  "kind": "converted from Word",
+  "sourceFile": "Supersonic LE Fins.doc",
+  "topics": [
+   "Barrowman Equations"
+  ],
+  "sizeKB": 404
+ },
+ {
+  "file": "references/from-word/TPB Bias Errors.pdf",
+  "kind": "converted from Word",
+  "sourceFile": "TPB Bias Errors.doc",
+  "topics": [
+   "Wind Measurement"
+  ],
+  "sizeKB": 304
+ },
+ {
+  "file": "references/from-word/Tether Catenary.pdf",
+  "kind": "converted from Word",
+  "sourceFile": "Tether Catenary.doc",
+  "topics": [
+   "Wind Measurement"
+  ],
+  "sizeKB": 122
+ },
+ {
+  "file": "references/from-word/The Pitch-Yaw Wave Number3.pdf",
+  "kind": "converted from Word",
+  "sourceFile": "The Pitch-Yaw Wave Number3.doc",
+  "topics": [
+   "Pitch-Yaw Wavenumber",
+   "Trajectory Simulation"
+  ],
+  "sizeKB": 124
+ },
+ {
+  "file": "references/from-word/Theory Behind DISPERSION.pdf",
+  "kind": "converted from Word",
+  "sourceFile": "Theory Behind DISPERSION.doc",
+  "topics": [
+   "Dispersion"
+  ],
+  "sizeKB": 117
+ },
+ {
+  "file": "references/from-word/Thrust Misalignment.pdf",
+  "kind": "converted from Word",
+  "sourceFile": "Thrust Misalignment.doc",
+  "topics": [
+   "Structural Loads"
+  ],
+  "sizeKB": 172
+ },
+ {
+  "file": "references/from-word/Trajectory Contraints.pdf",
+  "kind": "converted from Word",
+  "sourceFile": "Trajectory Contraints.doc",
+  "topics": [
+   "Trajectory Simulation"
+  ],
+  "sizeKB": 215
+ },
+ {
+  "file": "references/from-word/Two Stage Weights rev1.pdf",
+  "kind": "converted from Word",
+  "sourceFile": "Two Stage Weights rev1.doc",
+  "topics": [
+   "Optimum Weight Allocation"
+  ],
+  "sizeKB": 496
+ },
+ {
+  "file": "references/from-word/Upper Stage Bending Influence on Static Stability3.pdf",
+  "kind": "converted from Word",
+  "sourceFile": "Upper Stage Bending Influence on Static Stability3.doc",
+  "topics": [
+   "Body Aerolasticity",
+   "Structural Loads"
+  ],
+  "sizeKB": 122
+ },
+ {
+  "file": "references/from-word/Winch Equations.pdf",
+  "kind": "converted from Word",
+  "sourceFile": "Winch Equations.doc",
+  "topics": [
+   "Wind Measurement"
+  ],
+  "sizeKB": 72
+ }
+]

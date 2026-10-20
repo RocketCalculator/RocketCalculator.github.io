@@ -70,7 +70,7 @@ and asserts every comparable output cell within a relative tolerance (1e-9 unles
 | Calculator | Source | Notes from porting |
 |---|---|---|
 | Subsonic CP | SUBSONIC BARROWMAN 2.4 | single fin set (two-stage vortex path is `#VALUE!` in workbook) |
-| Supersonic fins | Supersonic LE Fins memo, SUPERDELTA | body SOSX path deferred — see PROGRESS |
+| ~~Supersonic fins~~ | Supersonic LE Fins memo, SUPERDELTA | **not built in release 1** (owner asked to wrap up) — topic shows as part of Barrowman |
 | Drag | DRAG_COEFFICIENT 3.4 | 4 workbook/memo differences → fidelity switch |
 | Geophysics | GEOPHYSICS | pressure datum difference → fidelity switch |
 | Ogive | Ogive Profile | label "from base" is actually from nose tip |

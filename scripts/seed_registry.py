@@ -137,7 +137,6 @@ TOPICS = {
 # Pilot calculators: slug -> (title, topic id, one-line description)
 CALCULATORS = [
     ('subsonic-cp', 'Subsonic Centre of Pressure', 'BarrEqua', 'Barrowman/NACA 1307 normal-force slope and centre of pressure below the critical Mach number.'),
-    ('supersonic-cp', 'Supersonic Fin Normal Force', 'BarrEqua', 'Normal-force slope and centre of pressure of supersonic clipped-delta fins.'),
     ('drag-coefficient', 'Zero-Lift Drag Coefficient', 'DragCoef', 'Skin friction, base, nose and lug drag for a single-stage rocket.'),
     ('geophysics', 'Atmosphere & Gravity', 'Geop', 'Temperature, pressure, density, sound speed and gravity at any altitude and latitude.'),
     ('ogive-nose', 'Ogive Nose Profile', 'OgivNose', 'Tangent-ogive profile, wetted area and area centroid.'),

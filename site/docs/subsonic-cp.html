@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Subsonic Centre of Pressure — Theory & documentation — Rocket Calculator</title>
+<meta name="description" content="Subsonic normal-force slope and centre of pressure: slender-body theory, hemispherical nose cap, Diederich fin lift, NACA Report 1307 interference factors and static margin, with workbook mapping.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../css/site.css">
+<script>try{var t=JSON.parse(localStorage.getItem('rc-theme'));if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<main id="main">
+<div class="wrap">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Home</a><span class="sep">/</span><a href="../index.html#area-aero">Aerodynamics</a><span class="sep">/</span><a href="../calculators/subsonic-cp.html">Subsonic Centre of Pressure</a><span class="sep">/</span><span>Documentation</span></nav>
+  <div class="calc-title"><h1>Subsonic Centre of Pressure — theory</h1></div>
+  <p class="calc-sub">Barrowman’s method with full NACA Report 1307 interference and a hemispherical nose cap. Based on C. P. Hoult, <em>Barrowman Equations</em> (2010) and <em>Normal Force Acting on a Hemispherical Nose Tip</em> (2010), RS&amp;T memos, and the workbook <code>SUBSONIC BARROWMAN EQUATIONS2.4.xls</code>.</p>
+  <div class="calc-badges"><a class="btn small primary" href="../calculators/subsonic-cp.html">Open the calculator</a><a class="btn small" href="../references/index.html#barrowman-equations">Barrowman memo (PDF)</a><a class="btn small" href="../references/index.html#barrowmanthesis-orig">Barrowman thesis (PDF)</a></div>
+  <div class="doc-layout">
+    <nav class="doc-toc" aria-label="Contents"></nav>
+    <article class="doc">
+
+      <section id="overview">
+        <h2>Overview</h2>
+        <p>Static pitch stability depends on where the aerodynamic normal force acts — the <strong>centre of pressure</strong> (CP) — relative to the centre of gravity. The memo is blunt about folklore alternatives such as balancing a cardboard cut-out or whirling the rocket on a string. For years the amateur community has treated the <strong>Barrowman equations</strong> — slender-body loading for the body plus Diederich’s approximate lifting-surface theory for the fins — as the standard for subsonic CP estimation.</p>
+        <p>The workbook keeps Barrowman’s body and fin models and improves three things:</p>
+        <ul>
+          <li>a tangent <strong>hemispherical nose cap</strong> with its own normal-force model when the profile does not start at zero radius;</li>
+          <li><strong>full Prandtl–Glauert compressibility</strong> in Diederich’s fin formula;</li>
+          <li>the full slender-body <strong>wing–body and body–wing interference</strong> of NACA Report 1307.</li>
+        </ul>
+        <p>Everything is linear in angle of attack: each part contributes a normal-force coefficient slope <span class="tex">C_{N\alpha}</span> (per radian, on <span class="tex">S_{ref}=\pi d^2/4</span>) acting at its own station.</p>
+      </section>
+
+      <section id="body">
+        <h2>Body of revolution — slender-body theory</h2>
+        <p>Munk’s slender-body theory gives the normal force per unit length as proportional to the rate of change of cross-section area, <span class="tex">dC_N/dx=(2/S_{ref})\,dA/dx\cdot\alpha</span>. For a segment between profile points <span class="tex">i-1</span> and <span class="tex">i</span>:</p>
+        <div class="eq"><div class="tex-display">C_{N\alpha,i}=\frac{2\,(A_i-A_{i-1})}{S_{ref}},\qquad A_i=\pi r_i^2 .</div></div>
+        <p>Its centre of pressure follows from the moment of <span class="tex">dA/dx</span>; with the frustum volume <span class="tex">V_i</span>,</p>
+        <div class="eq"><div class="tex-display">V_i=\frac{A_i(x_i-x_{i-1})}{3}\left(\frac{A_{i-1}}{A_i}+\frac{r_{i-1}}{r_i}+1\right),\qquad x_{cp,i}=\frac{x_iA_i-x_{i-1}A_{i-1}-V_i}{A_i-A_{i-1}} .</div></div>
+        <p>Cylinders (<span class="tex">A_i=A_{i-1}</span>) carry no normal force; a boat-tail (decreasing area) carries negative normal force. The body totals are</p>
+        <div class="eq"><div class="tex-display">C_{N\alpha,body}=\sum_i C_{N\alpha,i},\qquad M_{body}=\sum_i C_{N\alpha,i}\,x_{cp,i}.</div></div>
+        <p>For a pointed nose this sums to the classic slender-body result <span class="tex">C_{N\alpha}=2A_{base}/S_{ref}=2</span>.</p>
+      </section>
+
+      <section id="hemisphere">
+        <h2>Hemispherical nose cap</h2>
+        <p>If the first profile radius <span class="tex">r_0</span> is not zero, a hemisphere is fitted tangent to the first segment. Its tangency angle and radius are</p>
+        <div class="eq"><div class="tex-display">\theta_T=\frac\pi2-\tan^{-1}\frac{r_1-r_0}{x_1-x_0},\qquad R_h=\frac{r_0}{\sin\theta_T}.</div></div>
+        <p>The memo starts from the incompressible pressure distribution on a sphere, <span class="tex">C_p=1-\tfrac94\sin^2\theta</span>, measures <span class="tex">\theta</span> from the displaced stagnation point (<span class="tex">\theta'=\theta-\alpha\cos\varphi</span>), keeps first-order terms in <span class="tex">\alpha</span> and integrates over the cap up to <span class="tex">\theta_T</span>:</p>
+        <div class="eq"><div class="tex-display">C_{N\alpha,cap}=\frac{9\pi}{8}\,\frac{R_h^2\sin^4\theta_T}{S_{ref}}.</div></div>
+        <p>A full hemisphere on a body of the same radius gives <span class="tex">C_{N\alpha}=9/8</span>, well below the slender-body value of 2. The cap CP behind its own tip is</p>
+        <div class="eq"><div class="tex-display">\frac{x_{cp}}{R_h}=\frac{\sin^4\theta_T-4\left[\tfrac15\cos\theta_T\sin^4\theta_T-\tfrac1{15}\cos\theta_T(\sin^2\theta_T+2)+\tfrac2{15}\right]}{\sin^4\theta_T},</div></div>
+        <p>and, remarkably, the same result follows from modified Newtonian flow — the cap CP is independent of Mach number. In body stations (station 0 at the tangency point) the workbook places it at <span class="tex">R_h(\cos\theta_T-1)+x_{cp}</span>. A sphere’s critical Mach number is about 0.41, so below that a hemispherical tip has no wave-drag penalty.</p>
+        <p>If the tip is a <strong>flat face</strong> instead, the cap’s normal force is zero and the workbook adds a small flat-face pitching-moment term (see <a href="#known-differences">Known differences</a>).</p>
+      </section>
+
+      <section id="fins">
+        <h2>Isolated fins — Diederich with compressibility</h2>
+        <p>Opposite panels form a wing. For one panel with root chord <span class="tex">c_R</span>, tip chord <span class="tex">c_T</span>, exposed semispan <span class="tex">b</span>, root and tip leading-edge stations <span class="tex">x_R</span>, <span class="tex">x_T</span> (and a boat-tail half-angle <span class="tex">\beta</span> under the root, usually zero):</p>
+        <div class="eq"><div class="tex-display">S=\frac{c_R^2\tan\beta}{2}+\frac{(c_R+c_T)(b-c_R\tan\beta)}{2},\qquad l=b-\tfrac34c_R\tan\beta,\qquad A\!R=\frac{2l^2}{S},</div></div>
+        <div class="eq"><div class="tex-display">\Lambda_c=\tan^{-1}\frac{x_T+c_T/4-x_R-c_R/4}{b}\quad\text{(quarter-chord sweep)}.</div></div>
+        <p>With the Prandtl–Glauert factor <span class="tex">\beta_\Lambda=\sqrt{1-M^2\cos^2\Lambda_c}</span>, Diederich’s compressible plan-form parameter and lift slope (on the area of the panel pair) are</p>
+        <div class="eq"><div class="tex-display">F=\frac{A\!R\,\beta_\Lambda}{\cos\Lambda_c},\qquad C_{N\alpha,W}=\frac{2\pi F\cos\Lambda_c}{\beta_\Lambda\left(F\sqrt{1+4/F^2}+2\right)} .</div></div>
+        <p>For <span class="tex">N</span> panels on the body reference area,</p>
+        <div class="eq"><div class="tex-display">C_{N\alpha,F}=\frac N2\,\frac{S}{S_{ref}}\,C_{N\alpha,W}.</div></div>
+        <p>The fin CP is a quarter of the mean aerodynamic chord behind its leading edge:</p>
+        <div class="eq"><div class="tex-display">\bar c=\tfrac23\left(c_R+c_T-\frac{c_Rc_T}{c_R+c_T}\right),\qquad x_F=x_R+\frac{\bar c}4+\frac{(c_R+2c_T)(x_T-x_R)}{3(c_R+c_T)} .</div></div>
+      </section>
+
+      <section id="interference">
+        <h2>Fin–body interference (NACA Report 1307)</h2>
+        <p>The body increases the lift on the fins, and the fins induce lift on the body. With <span class="tex">r</span> the body radius at the quarter root chord, <span class="tex">s=r+b</span> the fin tip radius and <span class="tex">\tau=r/s</span>, the slender-body factors are</p>
+        <div class="eq"><div class="tex-display">K_{W(B)}=\frac{2}{\pi(1-\tau)^2}\left[(1+\tau^4)\left(\tfrac12\tan^{-1}\tfrac12\big(\tfrac1\tau-\tau\big)+\tfrac\pi4\right)-\tau^2\left(\tfrac1\tau-\tau+2\tan^{-1}\tau\right)\right],</div></div>
+        <div class="eq"><div class="tex-display">K_{B(W)}=\frac{(1-\tau^2)^2-\tfrac2\pi\left[(1+\tau^4)\left(\tfrac12\tan^{-1}\tfrac12\big(\tfrac1\tau-\tau\big)+\tfrac\pi4\right)-\tau^2\left(\tfrac1\tau-\tau+2\tan^{-1}\tau\right)\right]}{(1-\tau)^2},</div></div>
+        <p>which satisfy <span class="tex">K_{W(B)}+K_{B(W)}=(1+\tau)^2</span>, tending to 1 and 0 with no body and to 2 and 2 for vanishing fins. The tail-assembly normal force and moment are</p>
+        <div class="eq"><div class="tex-display">C_{N\alpha,tail}=C_{N\alpha,F}\left(K_{W(B)}+K_{B(W)}\right),\qquad M_{tail}=x_F\,C_{N\alpha,F}K_{W(B)}+\bar x_{B(W)}\,C_{N\alpha,F}K_{B(W)},</div></div>
+        <p>where the body carry-over lift acts at (NACA 1307 eq. D6, as coded in the workbook)</p>
+        <div class="eq"><div class="tex-display">\bar x_{B(W)}=x_R+\frac{c_R}4+(s-r)\tan\Lambda_c\left[\frac{r}{r-s}+\frac{\sqrt{s(s-2r)}\cosh^{-1}\frac{s-r}{r}-s+r+\frac{\pi r}{2}}{\frac{(s-r)\,r}{\sqrt{s(s-2r)}}\cosh^{-1}\frac{s-r}{r}+\frac{(s-r)^2}{r}-\frac{\pi(s-r)}{2}}\right].</div></div>
+        <p>For short fins (<span class="tex">s&lt;2r</span>) the square root and the inverse hyperbolic cosine are both imaginary but their products are real: <span class="tex">\sqrt{s(s-2r)}\cosh^{-1}y\to-\sqrt{s(2r-s)}\cos^{-1}y</span> and <span class="tex">\cosh^{-1}y/\sqrt{s(s-2r)}\to\cos^{-1}y/\sqrt{s(2r-s)}</span>. The calculator uses this analytic continuation, which is continuous at <span class="tex">s=2r</span>; the workbook formula is undefined there.</p>
+        <p>The workbook also reports the single-panel normal force per radian of fin deflection, <span class="tex">C_{N\delta}=(k_{W(B)}+k_{B(W)})\,C_{N\alpha,W}\,S/S_{ref}</span>, with <span class="tex">k_{W(B)}</span> from NACA 1307 eq. (19) and <span class="tex">k_{B(W)}=K_{W(B)}-k_{W(B)}</span>, eq. (33).</p>
+      </section>
+
+      <section id="stability">
+        <h2>Vehicle CP and static margin</h2>
+        <div class="eq"><div class="tex-display">C_{N\alpha}=C_{N\alpha,body}+C_{N\alpha,tail},\qquad X_{CP}=\frac{C_{m\alpha,flat}+M_{body}+M_{tail}}{C_{N\alpha}},</div></div>
+        <p>measured aft of the nose tip (station 0). With the CG at <span class="tex">X_{CG}</span>, the static margin in calibres is</p>
+        <div class="eq"><div class="tex-display">SM=\frac{X_{CP}-X_{CG}}{d}.</div></div>
+        <p>Positive means the CP is behind the CG and the rocket is statically stable. The static margin and its 1–2 calibre guideline are additions by this site (common amateur practice, not from the workbook).</p>
+      </section>
+
+      <section id="assumptions">
+        <h2>Assumptions and limits</h2>
+        <ul>
+          <li>Subsonic flow below the critical Mach number; small angles of attack; linear aerodynamics.</li>
+          <li>One fin set. The two-stage vortex-interference model of the workbook (and the 1307 Supplement memo) is not ported — see below.</li>
+          <li>Slender-body theory for the body: no viscous cross-flow lift, which grows at larger angles of attack.</li>
+          <li>Fins are flat, trapezoidal and planar, mounted on the body radius at their quarter root chord.</li>
+        </ul>
+      </section>
+
+      <section id="worked-example">
+        <h2>Worked example (Gold Rush III, ignition)</h2>
+        <p>Mach 0.05; 4.12 in diameter, 93.16 in long, blunt flat tip of 0.05 in radius; six fins with <span class="tex">c_R=10</span>, <span class="tex">c_T=3</span>, <span class="tex">b=4</span> in, root LE at 83.16 in and tip LE at 90.16 in. Profile exactly as the workbook evaluates it (the 17.5 in point is skipped):</p>
+        <ol>
+          <li>Body: <span class="tex">C_{N\alpha,body}=1.9994</span>, moment 18.883 in.</li>
+          <li>Fins: <span class="tex">A\!R=1.2308</span>, <span class="tex">\Lambda_c=52.7°</span>, <span class="tex">F=2.0299</span>, <span class="tex">C_{N\alpha,W}=1.5946</span>, <span class="tex">C_{N\alpha,F}=9.3295</span>; <span class="tex">x_F=87.814</span> in.</li>
+          <li>Interference with <span class="tex">\tau=2.06/6.06</span>: <span class="tex">K_{W(B)}=1.2907</span>, <span class="tex">K_{B(W)}=0.5047</span>; carry-over CP 87.134 in.</li>
+          <li>Tail: <span class="tex">C_{N\alpha,tail}=16.750</span> at 87.623 in.</li>
+          <li>Vehicle: <span class="tex">C_{N\alpha}=18.750</span> /rad, <strong><span class="tex">X_{CP}=79.286</span> in</strong> from the tip.</li>
+        </ol>
+      </section>
+
+      <section id="code-map">
+        <h2>Equations ↔ code ↔ workbook</h2>
+        <table class="sym-table">
+          <thead><tr><th>Quantity</th><th>Code (<code>js/calc/barrowmanSub.js</code>)</th><th>Workbook cells</th></tr></thead>
+          <tbody>
+            <tr><td><span class="tex">S_{ref},\ d,\ \beta</span></td><td class="mono">subsonicCP()</td><td class="mono">E6, F6, C9</td></tr>
+            <tr><td>Hemisphere <span class="tex">\theta_T,\ R_h</span>, CNα, CP</td><td class="mono">bodySlender().cap</td><td class="mono">I19, I21, L6, N6</td></tr>
+            <tr><td>Flat-face moment</td><td class="mono">Cma_flat</td><td class="mono">P6</td></tr>
+            <tr><td>Segments: area, CNα, volume, CP</td><td class="mono">bodySlender().segs</td><td class="mono">K, L, M, N (rows 7–16)</td></tr>
+            <tr><td>Body totals</td><td class="mono">body.CNa, body.mom</td><td class="mono">L17, O17</td></tr>
+            <tr><td>Fin planform, sweep, F, CNα</td><td class="mono">finSet()</td><td class="mono">K26–U26</td></tr>
+            <tr><td>Fin CP</td><td class="mono">xcpFin</td><td class="mono">V26</td></tr>
+            <tr><td>Interference factors</td><td class="mono">interference()</td><td class="mono">W26, Y26, AR26, AS26</td></tr>
+            <tr><td>Carry-over CP</td><td class="mono">carryoverCP()</td><td class="mono">Z26</td></tr>
+            <tr><td>Tail totals, CNδ</td><td class="mono">fin.CNa, fin.mom, fin.xcp, fin.CNd</td><td class="mono">AA26, AB26, AC26, AT26</td></tr>
+            <tr><td>Vehicle CNα, moment, CP</td><td class="mono">subsonicCP()</td><td class="mono">Q6, R6, S6</td></tr>
+          </tbody>
+        </table>
+        <p><strong>Verification:</strong> <code>tests/subsonic-cp.test.js</code> reproduces 64 workbook cells (every body-segment cell, every fin and interference cell and the vehicle totals) to 10⁻¹², checks the interference factors against the limit and the identity <span class="tex">K_{W(B)}+K_{B(W)}=(1+\tau)^2</span>, and checks that the carry-over CP is continuous through <span class="tex">s=2r</span>.</p>
+      </section>
+
+      <section id="known-differences">
+        <h2>Known differences from the workbook</h2>
+        <ul class="diff-list">
+          <li><strong>Skipped profile row.</strong> Row 13 of the workbook (station 17.5 in, radius 2.028 in) has no formulas, so the workbook treats 15 → 20 in as a single frustum. The calculator uses every point you enter; the “exactly as the workbook” example omits that point to reproduce the published result.</li>
+          <li><strong>Two-stage configuration not ported.</strong> The second-stage fin row and the fin–fin vortex-interference cells (AF26–AQ26) evaluate to <code>#VALUE!</code> for the published inputs (a logarithm of a negative number), and the vehicle totals use them only when “Number of Fin Sets” is 2. Only the single-fin-set path is implemented.</li>
+          <li><strong>Short fins.</strong> For <span class="tex">s&lt;2r</span> the workbook’s carry-over CP formula fails; the calculator uses its analytic continuation (see <a href="#interference">Interference</a>).</li>
+          <li><strong>Body radius at the fins and boat-tail angle.</strong> The workbook takes the radius at the quarter root chord as a typed input (Q26) and the boat-tail angle from fixed rows 14–15 (D6). The calculator interpolates the radius from the profile and asks for the boat-tail angle under the fins directly.</li>
+          <li><strong>Station-0 area.</strong> The workbook sets the cross-section at station 0 to half the tip disc, <code>K6 = πr₀²/2</code>, so the first segment’s normal force is <span class="tex">2(A_1-A_0/2)/S_{ref}</span>. Neither memo explains this; it is reproduced as published.</li>
+          <li><strong>Flat-face moment term.</strong> For a flat tip the workbook adds <code>P6 = −0.0054·0.85·(1+(M²+M⁴)/4)·(2r₀/d)</code> to the moment sum (in inches); it is dimensionally inconsistent but negligible (−1×10⁻⁴ in for Gold Rush III). Reproduced as published.</li>
+          <li><strong>Additions.</strong> CG input and static margin; the Mach sweeps and build-up plot.</li>
+        </ul>
+      </section>
+
+      <section id="references">
+        <h2>References</h2>
+        <ol class="refs">
+          <li>C. P. Hoult, “Barrowman Equations,” RS&amp;T memo, 21 March 2010. <a href="../references/index.html#barrowman-equations">View in library</a></li>
+          <li>J. S. Barrowman, “The Practical Calculation of the Aerodynamic Characteristics of Slender Finned Vehicles,” M.S. thesis, Catholic University of America, 1967. <a href="../references/index.html#barrowmanthesis-orig">View in library</a></li>
+          <li>C. P. Hoult, “Normal Force Acting on a Hemispherical Nose Tip,” RS&amp;T memo, 19 March 2010. <a href="../references/index.html#hemisphere">View in library</a></li>
+          <li>F. W. Diederich, “A Plan-Form Parameter for Correlating Certain Aerodynamic Characteristics of Swept Wings,” NACA TN-2335, 1951.</li>
+          <li>W. C. Pitts, J. N. Nielsen and G. E. Kaattari, “Lift and Center of Pressure of Wing-Body-Tail Combinations at Subsonic, Transonic, and Supersonic Speeds,” NACA Report 1307, 1953.</li>
+          <li>M. M. Munk, “The Aerodynamic Forces on Airship Hulls,” NACA Report 184, 1924.</li>
+          <li>C. P. Hoult, “N.A.C.A. Report 1307 Supplement for Downwash-Dependent Fin-Fin Interference,” RS&amp;T memo, 2014. <a href="../references/index.html#1307-supplement-rev2">View in library</a></li>
+          <li>Original workbook: <a href="http://www.rsandt.com/media/SUBSONIC%20BARROWMAN%20EQUATIONS2.4.xls" rel="noopener">SUBSONIC BARROWMAN EQUATIONS2.4.xls</a> (rsandt.com).</li>
+        </ol>
+      </section>
+    </article>
+  </div>
+</div>
+</main>
+<script type="module">
+import { mountDocs } from '../js/docs.js';
+mountDocs();
+</script>
+</body>
+</html>

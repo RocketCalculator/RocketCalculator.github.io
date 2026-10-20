@@ -17,7 +17,7 @@ export async function mountTopic(slug) {
     h('div.calc-title', h('h1', t.title)),
     h('p.calc-sub', t.summary),
     h('div.calc-badges', h('span.chip.soon', 'Calculator coming soon'), h('span.chip', area.title), h('span.chip', `${myRefs.length} reference document${myRefs.length === 1 ? '' : 's'}`)),
-    h('div.calc-layout', { style: 'grid-template-columns:minmax(0,1.4fr) minmax(280px,1fr)' },
+    h('div.calc-layout.topic',
       h('div.calc-outputs',
         h('section.card.card-pad',
           h('h2', 'About this topic'),

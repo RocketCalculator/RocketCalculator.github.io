@@ -570,3 +570,7 @@ table.ptable button:hover { color: var(--red); }
 .drawer dl.where::before { content: "where"; grid-column: 1 / -1; font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-3); }
 .drawer dl.where dt { text-align: right; }
 .drawer dl.where dd { margin: 0; color: var(--text-2); }
+/* KaTeX's hidden MathML copy is position:absolute; without a positioned ancestor inside a scrolling box it escapes the
+   box and stretches the page (seen as a tall grey band below the footer once the report rendered). */
+.katex { position: relative; }
+.report-preview, .drawer .drawer-body, .eq, .drawer .formula, .ptable-wrap, .calc-inputs .form-scroll, .results-table, .chart { position: relative; }

@@ -1,4 +1,21 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Rocket Calculator</title></head>
-<body><h1>Rocket Calculator</h1><p>Coming soon. See <code>docs/BRIEF.md</code> in the repository.</p></body></html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rocket Calculator — sounding-rocket engineering calculators</title>
+<meta name="description" content="Interactive rocket-engineering calculators with schematics, plots and theory: centre of pressure, drag, atmosphere, fin flutter, cant angle, ogive noses and more.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="vendor/fonts/ibm-plex-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="css/site.css">
+<script>try{var t=JSON.parse(localStorage.getItem('rc-theme'));if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<main id="main"><noscript><div class="wrap" style="padding:40px 0"><h1>Rocket Calculator</h1><p>This site needs JavaScript enabled.</p></div></noscript></main>
+<script type="module">
+import { mountHome } from './js/home.js';
+mountHome();
+</script>
+</body>
+</html>

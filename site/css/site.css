@@ -578,3 +578,29 @@ table.ptable button:hover { color: var(--red); }
    box and stretches the page (seen as a tall grey band below the footer once the report rendered). */
 .katex { position: relative; }
 .report-preview, .drawer .drawer-body, .eq, .drawer .formula, .ptable-wrap, .calc-inputs .form-scroll, .results-table, .chart { position: relative; }
+
+/* ---------- design bar: shared rocket, design files, baseline ---------- */
+.design-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin: 0 0 18px; padding: 10px 16px; background: var(--surface); border-radius: var(--radius); }
+.design-bar .spacer { flex: 1 1 0; }
+.db-rocket { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.db-eyebrow { font: 800 0.72rem/1 var(--font-sans); letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-3); }
+.rocket-name { font: 700 1rem var(--font-sans); color: var(--text); background: transparent; border: 1px solid transparent; border-radius: 6px; padding: 5px 8px; width: 15ch; min-width: 8ch; }
+.rocket-name:hover { border-color: var(--border-strong); }
+.rocket-name:focus { border-color: var(--text); background: var(--surface-2); outline: none; }
+.db-share { display: inline-flex; align-items: center; gap: 10px; font-size: 0.9rem; color: var(--text-2); cursor: pointer; }
+.compare-box { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.base-chip { background: var(--surface-2); border: 1px solid var(--border); font-weight: 600; }
+.base-swatch { display: inline-block; width: 16px; height: 0; border-top: 2px dashed var(--text-3); }
+.shared-mark { display: none; color: var(--text-3); margin-left: 2px; vertical-align: middle; }
+.shared-mark svg { width: 13px; height: 13px; display: block; }
+body.rocket-linked .shared-mark { display: inline-flex; }
+.kr .kr-base { font-size: 0.8rem; color: var(--text-3); margin-top: 6px; padding-top: 6px; border-top: 1px dashed var(--border); font-variant-numeric: tabular-nums; }
+.kr .kr-base .up, .kr .kr-base .down { color: var(--text-2); font-weight: 600; }
+.results-table thead th { font: 800 0.72rem/1.2 var(--font-sans); letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-3); padding-top: 12px; padding-bottom: 8px; }
+.results-table td.base { color: var(--text-3); }
+.results-table td.delta { color: var(--text-2); font-variant-numeric: tabular-nums; white-space: nowrap; font-size: 0.88rem; }
+.results-table td.delta.same { color: var(--text-3); }
+@media (max-width: 600px) { .design-bar { padding: 10px 12px; } .design-bar .spacer { display: none; } .rocket-name { width: 100%; } .db-rocket { flex: 1 1 100%; } }
+.db-share-wrap { display: inline-flex; align-items: center; gap: 8px; }
+.compare-box { flex-wrap: nowrap; }
+@media (max-width: 600px) { .db-share-wrap { flex: 1 1 100%; } .compare-box { flex: 1 1 100%; } }

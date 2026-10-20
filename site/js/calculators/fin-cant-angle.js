@@ -35,13 +35,13 @@ export default {
     {
       id: 'fins', title: 'Fin set',
       fields: [
-        { id: 'R', label: 'Body radius', sym: 'R', ...LEN, default: 3.125, min: 0, minExclusive: true,
+        { id: 'R', shared: 'bodyR', label: 'Body radius', sym: 'R', ...LEN, default: 3.125, min: 0, minExclusive: true,
           info: { text: 'Radius of the body at the fins. The reference area is πR² and the reference length 2R.', doc: 'derivatives' } },
-        { id: 'b', label: 'Fin tip radius (from centre line)', sym: 'b', ...LEN, default: 5.5, min: 0, minExclusive: true,
+        { id: 'b', shared: { key: 'finSpan', get: (v) => v.b - v.R, set: (v, s) => { v.b = v.R + s; } }, label: 'Fin tip radius (from centre line)', sym: 'b', ...LEN, default: 5.5, min: 0, minExclusive: true,
           info: { text: 'Distance from the body centre line to the fin tip — body radius plus the exposed span.', doc: 'strip-theory' } },
-        { id: 'cR', label: 'Root chord', sym: 'c_R', ...LEN, default: 10, min: 0, minExclusive: true, info: { text: 'Fin chord at the body.', doc: 'strip-theory' } },
-        { id: 'cT', label: 'Tip chord', sym: 'c_T', ...LEN, default: 2, min: 0, info: { text: 'Fin chord at the tip.', doc: 'strip-theory' } },
-        { id: 'N', label: 'Number of fins', sym: 'N', dim: 'none', default: 4, min: 1, max: 12,
+        { id: 'cR', shared: 'finCr', label: 'Root chord', sym: 'c_R', ...LEN, default: 10, min: 0, minExclusive: true, info: { text: 'Fin chord at the body.', doc: 'strip-theory' } },
+        { id: 'cT', shared: 'finCt', label: 'Tip chord', sym: 'c_T', ...LEN, default: 2, min: 0, info: { text: 'Fin chord at the tip.', doc: 'strip-theory' } },
+        { id: 'N', shared: 'finN', label: 'Number of fins', sym: 'N', dim: 'none', default: 4, min: 1, max: 12,
           info: { text: 'Number of identical panels. Three or more set to a common cant give zero net pitch/yaw moment.', doc: 'fin-adjustment' } },
         { id: 'cNa', label: 'Airfoil normal-force slope', sym: 'c_{N\\alpha}', dim: 'perAngle', internal: 'perrad', default: 3.5, min: 0, minExclusive: true,
           info: { text: 'Section lift-curve slope of a strip, per radian. Thin-airfoil theory gives 2π subsonic and 4/√(M²−1) supersonic; a panel average lower than 2π accounts for root and tip losses.', doc: 'strip-theory' } },

@@ -1,9 +1,10 @@
 // Lightweight, theme-aware SVG line chart: nice ticks, hover read-out, legend toggles, SVG/CSV export.
 // Colours come from CSS custom properties (--series-N), so charts follow light/dark mode automatically.
 import { h, s, fmt, num, reducedMotion } from '../util.js';
-import { svgRich, texHTML, texToPlain, hasTeX } from '../math.js';
+import { svgRich, texHTML, texToPlain, hasTeX, rich } from '../math.js';
 import { exportMenu, exportFigure } from './export.js';
-const nameHTML = (n) => (hasTeX(n) ? texHTML(n) : String(n).replace(/[&<]/g, (c) => (c === '&' ? '&amp;' : '&lt;')));
+// series names are bare TeX ('X_{CP}'), plain text, or text with $…$ maths ('Flutter Mach $M_f$')
+const nameHTML = (n) => (String(n).includes('$') ? rich(n) : hasTeX(n) ? texHTML(n) : String(n).replace(/[&<]/g, (c) => (c === '&' ? '&amp;' : '&lt;')));
 
 export function niceTicks(min, max, count = 6) {
   if (!(Number.isFinite(min) && Number.isFinite(max))) return [];

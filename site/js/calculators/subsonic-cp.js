@@ -62,17 +62,17 @@ export default {
     {
       id: 'body', title: 'Body profile',
       fields: [
-        { id: 'noseType', label: 'Nose shape', kind: 'select', default: 'ogive', options: NOSE_TYPES,
+        { id: 'noseType', shared: 'noseType', label: 'Nose shape', kind: 'select', default: 'ogive', options: NOSE_TYPES,
           info: { text: 'Choose the nose-cone shape; its profile is generated from the length and radius. Pick <b>Custom profile</b> to enter measured points instead.', doc: 'body' } },
-        { id: 'noseL', label: 'Nose length', sym: 'L_n', ...LEN, default: 20, min: 0, minExclusive: true, when: notCustom, slider: { min: 2, max: 60 },
+        { id: 'noseL', shared: 'noseL', label: 'Nose length', sym: 'L_n', ...LEN, default: 20, min: 0, minExclusive: true, when: notCustom, slider: { min: 2, max: 60 },
           info: { text: 'Length of the nose cone from the tip to the shoulder.', range: 'Fineness $L_n/d$ of 3–7 is common.', doc: 'body' } },
-        { id: 'R', label: 'Body radius', sym: 'R', ...LEN, default: 2.06, min: 0, minExclusive: true, when: notCustom,
+        { id: 'R', shared: 'bodyR', label: 'Body radius', sym: 'R', ...LEN, default: 2.06, min: 0, minExclusive: true, when: notCustom,
           info: { text: 'Radius of the body tube (half its outside diameter); the nose base matches it.', doc: 'body' } },
         { id: 'k', label: 'Parabolic parameter', sym: "K'", dim: 'none', default: 0.75, min: 0, max: 1, when: (v) => v.noseType === 'parabolic',
           info: { text: "0 gives a cone, 0.5 a half parabola, 0.75 the three-quarter parabola, 1 a full parabola.", tex: "r=R\\,\\frac{2(x/L_n)-K'(x/L_n)^2}{2-K'}", doc: 'body' } },
         { id: 'pow', label: 'Power-series exponent', sym: 'n', dim: 'none', default: 0.5, min: 0, minExclusive: true, max: 1, when: (v) => v.noseType === 'power',
           info: { text: '1 gives a cone, 0.75 a three-quarter power, 0.5 a half power (parabola).', tex: 'r=R\\,(x/L_n)^n', doc: 'body' } },
-        { id: 'bodyLen', label: 'Overall length', sym: 'L', ...LEN, default: 93.16, min: 0, minExclusive: true, when: notCustom,
+        { id: 'bodyLen', shared: 'length', label: 'Overall length', sym: 'L', ...LEN, default: 93.16, min: 0, minExclusive: true, when: notCustom,
           info: { text: 'Length from the nose tip to the base of the rocket.', doc: 'body' } },
         { id: 'btLen', label: 'Boat-tail length', sym: 'L_{bt}', ...LEN, default: 0, min: 0, when: notCustom,
           info: { text: 'Length of a conical boat-tail at the base. Leave 0 for a plain cylinder.', doc: 'body' } },
@@ -97,12 +97,12 @@ export default {
     {
       id: 'fins', title: 'Fin set',
       fields: [
-        { id: 'N', label: 'Number of fin panels', sym: 'N', dim: 'none', default: 6, min: 1, max: 8, info: { text: 'Number of identical panels. The model treats each opposite pair as a wing.', doc: 'fins' } },
+        { id: 'N', shared: 'finN', label: 'Number of fin panels', sym: 'N', dim: 'none', default: 6, min: 1, max: 8, info: { text: 'Number of identical panels. The model treats each opposite pair as a wing.', doc: 'fins' } },
         { id: 'xLE', label: 'Root leading-edge station', sym: 'x_R', ...LEN, default: 83.16, min: 0, info: { text: 'Station of the root chord leading edge, from the nose tip.', doc: 'fins' } },
-        { id: 'cR', label: 'Root chord', sym: 'c_R', ...LEN, default: 10, min: 0, minExclusive: true, info: { text: 'Fin chord at the body.', doc: 'fins' } },
+        { id: 'cR', shared: 'finCr', label: 'Root chord', sym: 'c_R', ...LEN, default: 10, min: 0, minExclusive: true, info: { text: 'Fin chord at the body.', doc: 'fins' } },
         { id: 'xTipLE', label: 'Tip leading-edge station', sym: 'x_T', ...LEN, default: 90.16, min: 0, info: { text: 'Station of the tip chord leading edge. Its difference from the root LE station sets the sweep.', doc: 'fins' } },
-        { id: 'cT', label: 'Tip chord', sym: 'c_T', ...LEN, default: 3, min: 0, info: { text: 'Fin chord at the tip.', doc: 'fins' } },
-        { id: 'b', label: 'Exposed semispan', sym: 'b', ...LEN, default: 4, min: 0, minExclusive: true, info: { text: 'Fin height from the body surface to the tip.', doc: 'fins' } },
+        { id: 'cT', shared: 'finCt', label: 'Tip chord', sym: 'c_T', ...LEN, default: 3, min: 0, info: { text: 'Fin chord at the tip.', doc: 'fins' } },
+        { id: 'b', shared: 'finSpan', label: 'Exposed semispan', sym: 'b', ...LEN, default: 4, min: 0, minExclusive: true, info: { text: 'Fin height from the body surface to the tip.', doc: 'fins' } },
         { id: 'bt', label: 'Boat-tail half-angle under fins', sym: '\\beta', dim: 'angle', default: 0, min: 0, max: 20, info: { text: 'If the fins sit on a conical boat-tail, its half-angle (adds root area). Zero for a cylinder.', doc: 'fins' } },
       ],
     },
@@ -190,6 +190,12 @@ export default {
       },
     },
   ],
+  /** After shared-rocket values arrive: keep the fin root on the body (slide fins forward, sweep unchanged). */
+  sharedAdjust(v) {
+    if (v.noseType === 'custom') return;
+    const over = v.xLE + v.cR - v.bodyLen;
+    if (over > 1e-9) { v.xLE = Math.max(0, v.xLE - over); v.xTipLE = Math.max(0, v.xTipLE - over); }
+  },
   schematicTitle: 'Side view with CP and CG (radius exaggerated)',
   schematicHint: 'Drag the nose shoulder to change nose length and radius, or the fin tip to change span and sweep; the rear view shows the fin count',
   schematic(ctx, v, out) {

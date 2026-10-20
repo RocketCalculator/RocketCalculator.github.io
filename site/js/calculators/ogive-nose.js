@@ -35,9 +35,9 @@ export default {
     {
       id: 'geom', title: 'Geometry',
       fields: [
-        { id: 'R', label: 'Base radius', sym: 'R', ...L_IN, default: 3, min: 0, minExclusive: true, slider: { min: 0.5, max: 12 },
+        { id: 'R', shared: 'bodyR', label: 'Base radius', sym: 'R', ...L_IN, default: 3, min: 0, minExclusive: true, slider: { min: 0.5, max: 12 },
           info: { text: 'Radius of the body tube where the nose meets it (half the outside diameter).', range: '1–6 in (25–150 mm) for university sounding rockets.', doc: 'geometry' } },
-        { id: 'L', label: 'Nose length', sym: 'L', ...L_IN, default: 30, min: 0, minExclusive: true, slider: { min: 2, max: 120 },
+        { id: 'L', shared: 'noseL', label: 'Nose length', sym: 'L', ...L_IN, default: 30, min: 0, minExclusive: true, slider: { min: 2, max: 120 },
           info: { text: 'Axial length from the tip to the base (shoulder excluded).', range: 'Fineness <i>L/D</i> of 3–7 is common; 5 is a good subsonic/supersonic compromise.', doc: 'geometry' } },
         { id: 'dx', label: 'Profile increment', sym: '\\Delta x', ...L_IN, default: 2.5, min: 0, minExclusive: true,
           info: { text: 'Spacing of the points in the profile table. Use it to make a cutting template or CNC points; it does not change the area or centroid, which are exact.', doc: 'profile' } },

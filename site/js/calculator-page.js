@@ -7,9 +7,14 @@ import { buildForm } from './ui/form.js';
 import { infoButton, openInfo } from './ui/drawer.js';
 import { chartCard } from './ui/chart.js';
 import { frame } from './ui/svg.js';
-import { renderAll, loadKatex, texHTML, rich, texToPlain } from './math.js';
+import { renderAll, loadKatex, texHTML, rich, texToPlain, hasTeX } from './math.js';
 import { exportMenu, exportFigure, exportData, DATA_FORMATS } from './ui/export.js';
 import { reportCard, symbolsIn } from './ui/report.js';
+import { pullShared, pushShared, designFile, parseDesignFile, fileSlug, delta } from './design.js';
+
+const ROCKET_KEY = 'rc-rocket', FLASH_KEY = 'rc-flash';
+const getRocket = () => ({ name: 'My rocket', values: {}, linked: true, ...(storage.get(ROCKET_KEY) || {}) });
+const setRocket = (r) => storage.set(ROCKET_KEY, r);
 
 const clone = (v) => JSON.parse(JSON.stringify(v));
 
@@ -35,8 +40,14 @@ export async function mountCalculator(def) {
     if (!m) return null;
     try { return JSON.parse(decodeURIComponent(m[1])); } catch { return null; }
   };
-  Object.assign(state.values, storage.get(storeKey) || {}, fromHash() || {});
+  const hashState = fromHash();
+  Object.assign(state.values, storage.get(storeKey) || {}, hashState || {});
   state.values.__compat = false;
+  // the shared rocket fills its dimensions in, unless a share link asks for exact inputs
+  const pulledOnLoad = !hashState && getRocket().linked ? pullShared(def, state.values, getRocket().values) : [];
+  const pendingShared = new Set();
+  const baseKey = `rc-base-${def.slug}`;
+  let base = storage.get(baseKey), baseOut = null, baseSig = '';
 
   // ---------- info helpers ----------
   const infoFor = (f) => {
@@ -63,11 +74,88 @@ export async function mountCalculator(def) {
   const exampleSel = def.examples?.length > 1 ? h('select.btn.small', { 'aria-label': 'Load example' }, h('option', { value: '' }, 'Load example…'), def.examples.map((e, i) => h('option', { value: i }, e.name))) : null;
   const exampleBtn = def.examples?.length === 1 ? h('button.btn.small', { type: 'button' }, 'Load example') : null;
   const linkBtn = h('button.btn.small.ghost', { type: 'button', title: 'Copy a link that reproduces these inputs' }, ICONS.link(), 'Share');
-  const form = buildForm(def, state, { onChange: (id, o) => (o?.fast ? recompute() : recomputeSoon()), onHighlight: highlight, infoFor });
+  const form = buildForm(def, state, { onChange: (id, o) => { pendingShared.add(id); o?.fast ? recompute() : recomputeSoon(); }, onHighlight: highlight, infoFor });
   const compatBox = null;
   const inputsCard = h('aside.card.calc-inputs', { 'aria-label': 'Inputs' },
     h('div.card-head', h('h2', 'Inputs'), h('span.spacer'), h('div.form-actions', exampleSel, exampleBtn, resetBtn, linkBtn)),
     h('div.form-scroll', form.el));
+
+  // ---------- design bar: shared rocket, design files, baseline comparison ----------
+  const nameInput = h('input.rocket-name', { type: 'text', value: getRocket().name, maxlength: 80, 'aria-label': 'Rocket name', title: 'Rocket name (saved with the design file)' });
+  nameInput.addEventListener('change', () => { const r = getRocket(); r.name = nameInput.value.trim() || 'My rocket'; nameInput.value = r.name; setRocket(r); });
+  const linkToggle = h('input', { type: 'checkbox', checked: getRocket().linked, 'aria-label': 'Share dimensions across calculators' });
+  const syncLinked = () => document.body.classList.toggle('rocket-linked', getRocket().linked);
+  linkToggle.addEventListener('change', () => {
+    const r = getRocket(); r.linked = linkToggle.checked;
+    if (r.linked) {
+      // an existing rocket wins; otherwise this page's dimensions start it
+      if (Object.keys(r.values).length) { const n = pullShared(def, state.values, r.values).length; setRocket(r); recompute(); toast(n ? `Filled ${n} shared dimension${n === 1 ? '' : 's'} from “${r.name}”` : 'Sharing on'); }
+      else { pushShared(def, state.values, r.values); setRocket(r); toast('Sharing on — these dimensions now fill the other calculators'); }
+    } else { setRocket(r); toast('Sharing off — this page keeps its own values'); }
+    syncLinked();
+  });
+  const fileInput = h('input', { type: 'file', accept: '.json,application/json', hidden: true });
+  const saveBtn = h('button.btn.small.ghost', { type: 'button', title: 'Download every calculator’s inputs and the shared rocket as one file' }, ICONS.download(), 'Save design');
+  const openBtn = h('button.btn.small.ghost', { type: 'button', title: 'Load a design file saved from this site' }, ICONS.upload(), 'Open design');
+  const compareBox = h('div.compare-box');
+  const designInfo = infoButton(() => ({
+    eyebrow: 'Your rocket', title: 'Shared rocket, design files and comparison',
+    text: ['<b>Shared rocket.</b> With sharing on, the dimensions marked with a chain (body radius, nose, length, fins) are the same in every calculator: change them once and the other pages follow. Flight conditions stay per page.',
+      '<b>Save design / Open design.</b> One <code>.rocket.json</code> file holds the shared rocket and the inputs of every calculator you have used — keep it with your team’s documents or in version control and open it on any computer.',
+      '<b>Pin as baseline.</b> Keeps the current results; while you change inputs, key results show the change against it, the results table gains Baseline and Δ columns and plots draw the baseline dashed in grey.'],
+  }), { label: 'shared rocket' });
+  const designBar = h('div.design-bar', { role: 'region', 'aria-label': 'Rocket design' },
+    h('div.db-rocket', h('span.db-eyebrow', 'Rocket'), nameInput),
+    h('div.db-share-wrap', h('label.db-share', h('span.switch', linkToggle, h('span')), h('span', 'Share dimensions across calculators')), designInfo),
+    h('span.spacer'), compareBox, saveBtn, openBtn, fileInput);
+
+  function renderCompare() {
+    if (!base) {
+      compareBox.replaceChildren(h('button.btn.small', { type: 'button', title: 'Keep these results to compare against while you change inputs', onclick: () => {
+        base = { values: clone(state.values), at: new Date().toISOString() }; storage.set(baseKey, base); renderCompare(); recompute(); toast('Baseline pinned — change inputs to compare');
+      } }, ICONS.pin(), 'Pin as baseline'));
+      return;
+    }
+    const at = new Date(base.at);
+    compareBox.replaceChildren(
+      h('span.chip.base-chip', { title: `Pinned ${at.toLocaleString()}` }, h('i.base-swatch'), `Baseline · ${at.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`),
+      h('button.btn.small.ghost', { type: 'button', title: 'Put the baseline inputs back', onclick: () => { Object.assign(state.values, clone(base.values)); pendingShared.clear(); def.groups.forEach((g) => g.fields.forEach((f) => f.shared && pendingShared.add(f.id))); form.refresh(); recompute(); toast('Baseline inputs restored'); } }, 'Restore'),
+      h('button.btn.small.ghost', { type: 'button', title: 'Stop comparing', onclick: () => { base = null; storage.del(baseKey); renderCompare(); recompute(); } }, 'Clear'));
+  }
+  function baseline() {
+    if (!base) return null;
+    const sig = JSON.stringify(base.values);
+    if (sig !== baseSig) {
+      baseSig = sig;
+      try { baseOut = { values: { ...defaults(), ...clone(base.values) } }; baseOut.out = def.compute(baseOut.values, {}); } catch { baseOut = null; }
+    }
+    return baseOut;
+  }
+
+  saveBtn.addEventListener('click', () => {
+    const r = getRocket(), calcs = {}, baselines = {};
+    for (const c of reg.calculators) {
+      const v = storage.get(`rc-calc-${c.slug}`); if (v) calcs[c.slug] = v;
+      const b = storage.get(`rc-base-${c.slug}`); if (b) baselines[c.slug] = b;
+    }
+    download(`${fileSlug(r.name)}.rocket.json`, JSON.stringify(designFile({ name: r.name, shared: r.values, calcs, baselines }), null, 2), 'application/json');
+    toast(`Saved “${r.name}” (${Object.keys(calcs).length} calculator${Object.keys(calcs).length === 1 ? '' : 's'})`);
+  });
+  openBtn.addEventListener('click', () => fileInput.click());
+  fileInput.addEventListener('change', async () => {
+    const file = fileInput.files?.[0]; fileInput.value = '';
+    if (!file) return;
+    try {
+      const d = parseDesignFile(await file.text(), reg.calculators.map((c) => c.slug));
+      setRocket({ name: d.name, values: d.shared, linked: true });
+      for (const c of reg.calculators) {
+        if (d.calcs[c.slug]) storage.set(`rc-calc-${c.slug}`, d.calcs[c.slug]); else storage.del(`rc-calc-${c.slug}`);
+        if (d.baselines[c.slug]) storage.set(`rc-base-${c.slug}`, d.baselines[c.slug]); else storage.del(`rc-base-${c.slug}`);
+      }
+      storage.set(FLASH_KEY, `Opened “${d.name}”`);
+      location.replace(location.pathname + location.search);
+    } catch (err) { toast(err.message); }
+  });
 
   const warnBox = h('div.warnings', { 'aria-live': 'polite' });
   const keyBox = h('div.key-results', { 'aria-live': 'polite' });
@@ -96,11 +184,11 @@ export async function mountCalculator(def) {
     if (p.wide) c.card.style.gridColumn = '1 / -1';
     return { def: p, ...c };
   });
-  const tableBody = h('tbody');
+  const tableBody = h('tbody'), tableHead = h('thead');
   const resultsCard = h('section.card', h('div.card-head', h('h3', 'All results'), h('span.spacer'),
     h('button.btn.ghost.small', { type: 'button', onclick: () => copyResults() }, ICONS.copy(), 'Copy'),
     exportMenu({ formats: DATA_FORMATS, onExport: (f) => exportData(f, def.slug, { sheets: () => [{ name: def.title, rows: rowsForExport() }], json: resultsJSON }) })),
-    h('div', { style: 'overflow-x:auto' }, h('table.results-table', tableBody)));
+    h('div', { style: 'overflow-x:auto' }, h('table.results-table', tableHead, tableBody)));
 
   const refList = (def.references || []).map((id) => refs.find((r) => r.id === id)).filter(Boolean);
   const theory = h('section.card.card-pad', { id: 'theory' },
@@ -128,6 +216,7 @@ export async function mountCalculator(def) {
       h('a.btn.small.ghost', { href: '#theory' }, 'References')),
     h('p.calc-sub', { html: rich(def.subtitle || '', { html: true }) }),
     intro,
+    designBar,
     h('div.calc-layout', inputsCard,
       h('div.calc-outputs', warnBox, keyBox, schemCard, plotGrid, resultsCard)),
     h('div', { style: 'margin-top:20px' }, theory),
@@ -152,7 +241,7 @@ export async function mountCalculator(def) {
       const f = def.groups.flatMap((g) => g.fields).find((x) => x.id === id);
       if (f) { if (f.min != null) v = Math.max(f.min + (f.minExclusive ? 1e-9 : 0), v); if (f.max != null) v = Math.min(f.max, v); }
       if (round) v = Math.round(v / round) * round;
-      state.values[id] = v; form.refresh(); recompute();
+      state.values[id] = v; pendingShared.add(id); form.refresh(); recompute();
     },
     setCell(id, row, col, v, { round } = {}) {
       if (!Number.isFinite(v)) return;
@@ -240,8 +329,17 @@ export async function mountCalculator(def) {
   function recompute() {
     form.refresh();
     const ok = form.validateAll();
-    storage.set(storeKey, state.values);
     warnBox.replaceChildren();
+    if (ok && pendingShared.size) {
+      // user edits of shared dimensions go to the rocket; re-pull so derived inputs stay consistent (tip radius = R + span)
+      const r = getRocket();
+      if (r.linked && pushShared(def, state.values, r.values, [...pendingShared]).length) {
+        setRocket(r);
+        if (pullShared(def, state.values, r.values).length) form.refresh();
+      }
+      pendingShared.clear();
+    }
+    storage.set(storeKey, state.values);
     if (!ok) {
       warnBox.append(h('div.notice.err', 'Some inputs need attention — see the highlighted fields.'));
       keyBox.style.opacity = 0.45;
@@ -264,16 +362,34 @@ export async function mountCalculator(def) {
       try { def.schematic(ctx, state.values, out); } catch (err) { console.error(err); }
       syncAnim();
     }
+    const bl = baseline();
     for (const c of charts) {
-      try { const sp = c.def.build(state.values, out, ctx); c.card.hidden = !sp; if (sp) c.chart.update(sp); } catch (err) { console.error(err); }
+      try {
+        let sp = c.def.build(state.values, out, ctx);
+        c.card.hidden = !sp;
+        if (sp && bl) {
+          const bs = c.def.build(bl.values, bl.out, ctx);
+          const named = (n) => `${hasTeX(n) && !n.includes('$') ? `$${n}$` : n} (baseline)`;
+          if (bs) sp = { ...sp, legend: true, series: [...sp.series, ...bs.series.filter((se) => se.points?.length).map((se) => ({ ...se, name: named(se.name), color: 'var(--text-3)', dashed: true, area: false, width: 1.6 }))] };
+        }
+        if (sp) c.chart.update(sp);
+      } catch (err) { console.error(err); }
     }
     report.markDirty();
   }
   const recomputeSoon = debounce(recompute, 110);
 
   function renderResults(out) {
-    const R = out.results || {};
+    const R = out.results || {}, B = baseline()?.out?.results;
     const cards = [], rows = [];
+    const show = (r, x) => (typeof x === 'number' ? fmt(toDisplay(x, r), { digits: r.digits || 5 }) : x == null ? '—' : String(x));
+    const change = (r, v, bv) => {
+      const d = delta(v, bv);
+      if (!d) return null;
+      if (d.abs === 0) return { txt: 'no change', cls: 'same' };
+      const dd = toDisplay(v, r) - toDisplay(bv, r);
+      return { txt: `${dd > 0 ? '+' : '−'}${fmt(Math.abs(dd), { digits: 3 })}${d.rel != null ? ` (${d.rel > 0 ? '+' : '−'}${fmt(Math.abs(d.rel * 100), { digits: 2 })} %)` : ''}`, cls: dd > 0 ? 'up' : 'down' };
+    };
     for (const r of def.results) {
       if (r.when && !r.when(state.values, out)) continue;
       const v = R[r.id];
@@ -287,16 +403,20 @@ export async function mountCalculator(def) {
         const card = h('div.kr', { class: st ? `status-${st}` : null, 'data-result': r.id },
           h('div.kr-label', h('span', { html: rich(r.label) }), r.sym ? h('span', { html: texHTML(r.sym) }) : null, infoButton(info, { label: r.label })),
           h('div', h('span.kr-value', txt), u ? h('span.kr-unit', { html: u }) : null),
-          note ? h('div.kr-note', { html: rich(note, { html: true }) }) : null);
+          note ? h('div.kr-note', { html: rich(note, { html: true }) }) : null,
+          B && r.id in B ? (() => { const c = change(r, v, B[r.id]); return h('div.kr-base', `Baseline ${show(r, B[r.id])}`, c ? h(`span.${c.cls}`, ` · ${c.txt}`) : null); })() : null);
         if (lastKey[r.id] !== undefined && lastKey[r.id] !== txt) card.classList.add('flash');
         lastKey[r.id] = txt;
         cards.push(card);
       }
       rows.push(h('tr', { class: r.key ? 'key' : null },
         h('th', h('span.lbl', h('span', { html: rich(r.label) }), r.sym ? h('span.muted', { html: texHTML(r.sym) }) : null, infoButton(info, { label: r.label }))),
-        h('td.v', txt), h('td.u', { html: u })));
+        h('td.v', txt), h('td.u', { html: u }),
+        B ? h('td.v.base', show(r, B[r.id])) : null,
+        B ? (() => { const c = change(r, v, B[r.id]); return h(`td.delta${c ? '.' + c.cls : ''}`, c?.txt || ''); })() : null));
     }
     keyBox.replaceChildren(...cards);
+    tableHead.replaceChildren(...(B ? [h('tr', h('th', ''), h('th.v', 'Current'), h('th', ''), h('th.v', 'Baseline'), h('th', 'Change'))] : []));
     tableBody.replaceChildren(...rows);
   }
 
@@ -338,7 +458,12 @@ export async function mountCalculator(def) {
   window.addEventListener('themechange', () => recompute());
 
   form.refresh();
+  syncLinked();
+  renderCompare();
   recompute();
+  const flash = storage.get(FLASH_KEY);
+  if (flash) { storage.del(FLASH_KEY); toast(flash); }
+  else if (pulledOnLoad.length) toast(`${pulledOnLoad.length} dimension${pulledOnLoad.length === 1 ? '' : 's'} from your rocket “${getRocket().name}”`);
   if (location.hash === '#info') openInfo(pageInfo());
   return { state, recompute };
 }

@@ -4,6 +4,18 @@ Every commit adds an entry here, newest first. Live site: https://darasamii.gith
 
 ## 2026-10-20 (continued)
 
+### Shared rocket, design files, A/B comparison
+- Added: **shared rocket**. Body radius, nose length and shape, overall length, fin count, chords, exposed semispan
+  and thickness are entered once and fill every calculator that uses them. A chain mark shows the shared fields,
+  and a switch turns sharing off. Fin Cant Angle converts its tip radius (R + span) automatically, and Subsonic CP
+  keeps the fins on a shortened body.
+- Added: **Save design / Open design**. One `.rocket.json` file holds the rocket name, the shared dimensions, and
+  every calculator's inputs and baselines.
+- Added: **Pin as baseline**. Key results and the results table show the change against the baseline, and plots
+  overlay the baseline curves dashed in grey.
+- Fixed: legend names that mix text and maths (e.g. "Flutter Mach $M_f$") rendered as one italic formula.
+- Tests: `tests/design.test.js` (shared-key consistency, push/pull, limits, design-file validation).
+
 ### Export formats
 - Data exports for every plot and the results table: CSV, TXT/TSV, XLSX (native writer, no library) and JSON.
 - The Export menu is grouped as data | vector | image, with separator lines between the groups.

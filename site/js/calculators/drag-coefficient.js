@@ -57,11 +57,11 @@ export default {
     {
       id: 'body', title: 'Body',
       fields: [
-        { id: 'ogive', label: 'Nose shape', kind: 'select', default: true, options: [{ value: true, label: 'Tangent ogive' }, { value: false, label: 'Cone' }],
+        { id: 'ogive', shared: { key: 'noseType', get: (v) => (v.ogive ? 'ogive' : 'cone'), set: (v, s) => { if (s === 'ogive' || s === 'cone') v.ogive = s === 'ogive'; } }, label: 'Nose shape', kind: 'select', default: true, options: [{ value: true, label: 'Tangent ogive' }, { value: false, label: 'Cone' }],
           info: { text: 'Sets the nose wetted area (exact closed form for the ogive; see the Ogive calculator).', doc: 'skin-friction' } },
-        { id: 'noseLength', label: 'Nose length', sym: 'L_n', ...LEN, default: 36, min: 0, minExclusive: true, info: { text: 'Nose cone length from tip to shoulder.', doc: 'skin-friction' } },
-        { id: 'bodyRadius', label: 'Body radius', sym: 'R', ...LEN, default: 3.07, min: 0, minExclusive: true, info: { text: 'Radius of the cylindrical body; d = 2R sets the reference area.', doc: 'overview' } },
-        { id: 'bodyLength', label: 'Overall length', sym: 'L', ...LEN, default: 148, min: 0, minExclusive: true, info: { text: 'Tip-to-base length. The cylinder runs from the nose to the base (no boat-tail).', doc: 'skin-friction' } },
+        { id: 'noseLength', shared: 'noseL', label: 'Nose length', sym: 'L_n', ...LEN, default: 36, min: 0, minExclusive: true, info: { text: 'Nose cone length from tip to shoulder.', doc: 'skin-friction' } },
+        { id: 'bodyRadius', shared: 'bodyR', label: 'Body radius', sym: 'R', ...LEN, default: 3.07, min: 0, minExclusive: true, info: { text: 'Radius of the cylindrical body; d = 2R sets the reference area.', doc: 'overview' } },
+        { id: 'bodyLength', shared: 'length', label: 'Overall length', sym: 'L', ...LEN, default: 148, min: 0, minExclusive: true, info: { text: 'Tip-to-base length. The cylinder runs from the nose to the base (no boat-tail).', doc: 'skin-friction' } },
         { id: 'ReTbody', label: 'Body transition Reynolds no.', sym: 'Re_T', dim: 'none', default: 200000, min: 1000,
           info: { text: 'Reynolds number at which the body boundary layer turns turbulent naturally. About 400,000 is typical for bodies of revolution; the example uses 200,000.', doc: 'skin-friction' } },
         { id: 'trip', label: 'Trip location (from tip)', sym: 'x_{trip}', dim: 'distance', internal: 'ft', default: 2.5, min: 0,
@@ -73,11 +73,11 @@ export default {
     {
       id: 'fins', title: 'Fins',
       fields: [
-        { id: 'N', label: 'Number of fins', sym: 'N', dim: 'none', default: 4, min: 1, max: 12, info: { text: 'Number of fin panels.', doc: 'skin-friction' } },
-        { id: 'cR', label: 'Root chord', sym: 'c_R', ...LEN, default: 11.8, min: 0, minExclusive: true, info: { text: 'Fin chord at the body.', doc: 'skin-friction' } },
-        { id: 'cT', label: 'Tip chord', sym: 'c_T', ...LEN, default: 4.5, min: 0, info: { text: 'Fin chord at the tip.', doc: 'skin-friction' } },
-        { id: 'b', label: 'Exposed semispan', sym: 'b', ...LEN, default: 5.84, min: 0, minExclusive: true, info: { text: 'Fin height from the body surface to the tip.', doc: 'skin-friction' } },
-        { id: 't', label: 'Fin thickness', sym: 't', ...LEN, default: 0.125, min: 0, info: { text: 'Plate thickness — sets leading-edge and base areas.', doc: 'fin-pressure' } },
+        { id: 'N', shared: 'finN', label: 'Number of fins', sym: 'N', dim: 'none', default: 4, min: 1, max: 12, info: { text: 'Number of fin panels.', doc: 'skin-friction' } },
+        { id: 'cR', shared: 'finCr', label: 'Root chord', sym: 'c_R', ...LEN, default: 11.8, min: 0, minExclusive: true, info: { text: 'Fin chord at the body.', doc: 'skin-friction' } },
+        { id: 'cT', shared: 'finCt', label: 'Tip chord', sym: 'c_T', ...LEN, default: 4.5, min: 0, info: { text: 'Fin chord at the tip.', doc: 'skin-friction' } },
+        { id: 'b', shared: 'finSpan', label: 'Exposed semispan', sym: 'b', ...LEN, default: 5.84, min: 0, minExclusive: true, info: { text: 'Fin height from the body surface to the tip.', doc: 'skin-friction' } },
+        { id: 't', shared: 'finT', label: 'Fin thickness', sym: 't', ...LEN, default: 0.125, min: 0, info: { text: 'Plate thickness — sets leading-edge and base areas.', doc: 'fin-pressure' } },
         { id: 'bluntLE', label: 'Blunt (rounded) leading edge', kind: 'bool', default: true, info: { text: 'Rounded (hemicylindrical) leading edge, as opposed to a sharp bevel. Blunt edges carry Newtonian pressure drag when the flow normal to the edge is supersonic, or always if the trailing edge is also blunt.', doc: 'fin-pressure' } },
         { id: 'bluntTE', label: 'Blunt (square) trailing edge', kind: 'bool', default: true, info: { text: 'A square trailing edge has base drag; a sharp (bevelled) one does not, unless the fin is a wedge.', doc: 'fin-pressure' } },
         { id: 'wedge', label: 'Wedge half-angle', sym: '\\delta_w', dim: 'angle', default: 0, min: 0, max: 20, info: { text: 'Half-angle of a single-wedge airfoil, in the plane normal to the leading edge. Zero for a flat plate. Adds base area at the trailing edge.', doc: 'fin-pressure' } },

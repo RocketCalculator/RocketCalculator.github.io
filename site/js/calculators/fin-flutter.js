@@ -37,13 +37,13 @@ export default {
     {
       id: 'fin', title: 'Fin panel',
       fields: [
-        { id: 'cR', label: 'Root chord', sym: 'c_R', ...LEN, default: 10, min: 0, minExclusive: true,
+        { id: 'cR', shared: 'finCr', label: 'Root chord', sym: 'c_R', ...LEN, default: 10, min: 0, minExclusive: true,
           info: { text: 'Chord of the fin where it meets the body.', doc: 'geometry' } },
-        { id: 'cT', label: 'Tip chord', sym: 'c_T', ...LEN, default: 2, min: 0,
+        { id: 'cT', shared: 'finCt', label: 'Tip chord', sym: 'c_T', ...LEN, default: 2, min: 0,
           info: { text: 'Chord at the fin tip. Zero gives a pointed (delta) fin.', doc: 'geometry' } },
-        { id: 'b', label: 'Exposed semispan', sym: 'b', ...LEN, default: 5.5, min: 0, minExclusive: true,
+        { id: 'b', shared: 'finSpan', label: 'Exposed semispan', sym: 'b', ...LEN, default: 5.5, min: 0, minExclusive: true,
           info: { text: 'Height of the exposed fin from the body surface to the tip.', doc: 'geometry' } },
-        { id: 't', label: 'Thickness', sym: 't', ...LEN, default: 0.125, min: 0, minExclusive: true, slider: { min: 0.02, max: 0.5 },
+        { id: 't', shared: 'finT', label: 'Thickness', sym: 't', ...LEN, default: 0.125, min: 0, minExclusive: true, slider: { min: 0.02, max: 0.5 },
           info: { text: 'Fin thickness (assumed uniform). The flutter Mach number rises with (t/c)^1.5, so thickness is the most effective fix.', range: '1/16–1/4 in (1.5–6 mm) plates are common on university rockets.', doc: 'geometry' } },
         { id: 'G', label: 'Shear modulus', sym: 'G', ...MOD, default: 3.8e6, min: 0, minExclusive: true,
           info: { text: 'Shear modulus of the fin material (torsional stiffness). For composites use the in-plane shear modulus of the laminate, which can be far below the tensile modulus.', range: 'Aluminium 6061: 3.8×10⁶ psi (26 GPa). Check your material’s datasheet for others.', doc: 'correlation' } },
@@ -94,7 +94,7 @@ export default {
         const hmax = Math.max(60000, v.h * 1.6);
         const pts = Array.from({ length: 101 }, (_, i) => { const h = (hmax * i) / 100; return [uh.v(h), flutter({ ...v, h }).Mf]; });
         return { x: { label: 'Altitude', unit: uh.label }, y: { label: 'Mach number' }, includeZero: true,
-          series: [{ name: 'Flutter Mach M_f', points: pts, area: true }],
+          series: [{ name: 'Flutter Mach $M_f$', points: pts, area: true }],
           hlines: [{ y: v.M, label: `flight M = ${fmt(v.M, { digits: 3 })}`, color: 'var(--accent)' }],
           markers: [{ x: uh.v(v.h), y: out.o.Mf, label: `M_f = ${fmt(out.o.Mf, { digits: 3 })}` }] };
       },

@@ -63,21 +63,37 @@ Single accent, ink and greys — no second accent colour.
 2. One-line subtitle.
 3. Three intro cards: **What it does · Why it matters · When to use it**. No “typical output” card, no source or
    verification badges.
-4. **Inputs** card: grouped fields (group legend uppercase), each field = label + symbol (KaTeX) + ⓘ + input + unit.
+4. **Design bar** (one slim `--surface` strip): rocket name · “Share dimensions across calculators” switch · ⓘ ·
+   Pin as baseline (or Baseline chip · Restore · Clear) · Save design · Open design. See §5a.
+5. **Inputs** card: grouped fields (group legend uppercase), each field = label + symbol (KaTeX) + ⓘ + input + unit.
    “Load example…”, Reset, Share. No footnotes. Prefer **choices over raw data**: e.g. nose shape is a dropdown
    (tangent ogive, cone, Von Kármán, LV-Haack, elliptical, parabolic K′, power n) with length/radius; a “Custom
    profile” option reveals the point table only for users who need it.
-5. **Key results**: 3–4 cards, **light** (`--surface-2`, dark surface in dark mode) with a 1 px border and a 4 px
+6. **Key results**: 3–4 cards, **light** (`--surface-2`, dark surface in dark mode) with a 1 px border and a 4 px
    coloured **left edge** (red; green/amber when status applies). Never solid black blocks.
-6. **Drawing** (schematic) card, to scale, linked to inputs (hover/focus highlights both ways, drag handles edit
+7. **Drawing** (schematic) card, to scale, linked to inputs (hover/focus highlights both ways, drag handles edit
    inputs). Must show every input that changes the geometry — e.g. a **rear view with the actual number of fins**,
    and a visible **joint line where the nose cone meets the body tube**.
    Card header: title, ⓘ (how to use the drawing), pause/play (if animated), Export.
-7. Plots (each with ⓘ and Export).
-8. All results table (Copy · Export: CSV, TXT/TSV, XLSX, JSON).
-9. Theory & references (reference titles only — no file names).
-10. **Export report** box.
-11. Previous / next calculator.
+8. Plots (each with ⓘ and Export).
+9. All results table (Copy · Export: CSV, TXT/TSV, XLSX, JSON).
+10. Theory & references (reference titles only — no file names).
+11. **Export report** box.
+12. Previous / next calculator.
+
+## 5a. Shared rocket, design files, comparison
+
+- **Shared rocket** (`js/design.js`, stored as `rc-rocket`): geometry common to several calculators — body radius,
+  nose length and shape, overall length, fin count, chords, exposed semispan, thickness. A field joins with
+  `shared: 'key'` (same internal unit everywhere — a test enforces it) or `shared: { key, get, set }` when the page
+  describes it differently (cant angle: tip radius = R + span). Flight conditions are never shared.
+  Only user edits push to the rocket; a page pulls on load (not when opened from a share link). Shared fields show a
+  small chain mark while sharing is on. A calculator may define `sharedAdjust(v)` to keep its own geometry valid.
+- **Design file** `<name>.rocket.json` (`format: "rocket-calculator-design"`): rocket name, shared values, every
+  calculator’s inputs and baselines, all in internal units. Opening one replaces them and reloads.
+- **Baseline** (per calculator, `rc-base-<slug>`): key results show “Baseline … · ±Δ (±%)”, the results table gains
+  Baseline and Change columns, plots draw the baseline curves dashed in `--text-3` with “(baseline)” in the legend.
+  Neutral colours only — a change is not judged good or bad.
 
 ## 6. The ⓘ drawer (where the detail lives)
 

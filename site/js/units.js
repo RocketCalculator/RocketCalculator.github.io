@@ -14,7 +14,7 @@ export const UNITS = {
   // area / volume
   m2: { label: 'm²', ...lin(1) }, cm2: { label: 'cm²', ...lin(1e-4) }, mm2: { label: 'mm²', ...lin(1e-6) },
   in2: { label: 'in²', ...lin(IN * IN) }, ft2: { label: 'ft²', ...lin(FT * FT) },
-  m3: { label: 'm³', ...lin(1) }, cm3: { label: 'cm³', ...lin(1e-6) }, in3: { label: 'in³', ...lin(IN ** 3) }, ft3: { label: 'ft³', ...lin(FT ** 3) },
+  m3: { label: 'm³', ...lin(1) }, mm3: { label: 'mm³', ...lin(1e-9) }, cm3: { label: 'cm³', ...lin(1e-6) }, in3: { label: 'in³', ...lin(IN ** 3) }, ft3: { label: 'ft³', ...lin(FT ** 3) },
   // pressure / stress
   Pa: { label: 'Pa', ...lin(1) }, kPa: { label: 'kPa', ...lin(1e3) }, MPa: { label: 'MPa', ...lin(1e6) }, GPa: { label: 'GPa', ...lin(1e9) },
   psf: { label: 'lbf/ft²', ...lin(LBF / (FT * FT)) }, psi: { label: 'psi', ...lin(LBF / (IN * IN)) }, Mpsi: { label: 'Mpsi', ...lin(1e6 * LBF / (IN * IN)) },
@@ -106,7 +106,7 @@ export const fromDisplay = (v, spec, sys) => convert(v, displayUnit(spec, sys), 
 export const UNIT_TEX = {
   m: '\\mathrm{m}', mm: '\\mathrm{mm}', cm: '\\mathrm{cm}', km: '\\mathrm{km}', in: '\\mathrm{in}', ft: '\\mathrm{ft}',
   m2: '\\mathrm{m^{2}}', cm2: '\\mathrm{cm^{2}}', mm2: '\\mathrm{mm^{2}}', in2: '\\mathrm{in^{2}}', ft2: '\\mathrm{ft^{2}}',
-  m3: '\\mathrm{m^{3}}', cm3: '\\mathrm{cm^{3}}', in3: '\\mathrm{in^{3}}', ft3: '\\mathrm{ft^{3}}',
+  m3: '\\mathrm{m^{3}}', mm3: '\\mathrm{mm^{3}}', cm3: '\\mathrm{cm^{3}}', in3: '\\mathrm{in^{3}}', ft3: '\\mathrm{ft^{3}}',
   Pa: '\\mathrm{Pa}', kPa: '\\mathrm{kPa}', MPa: '\\mathrm{MPa}', GPa: '\\mathrm{GPa}', psf: '\\mathrm{lbf\\,ft^{-2}}', psi: '\\mathrm{psi}', Mpsi: '\\mathrm{Mpsi}',
   kgm3: '\\mathrm{kg\\,m^{-3}}', slugft3: '\\mathrm{slug\\,ft^{-3}}', gcm3: '\\mathrm{g\\,cm^{-3}}', lbin3: '\\mathrm{lb\\,in^{-3}}', lbft3: '\\mathrm{lb\\,ft^{-3}}',
   ms: '\\mathrm{m\\,s^{-1}}', fts: '\\mathrm{ft\\,s^{-1}}', kmh: '\\mathrm{km\\,h^{-1}}', ms2: '\\mathrm{m\\,s^{-2}}', fts2: '\\mathrm{ft\\,s^{-2}}',

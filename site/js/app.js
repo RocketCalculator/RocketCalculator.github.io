@@ -78,9 +78,8 @@ function header(active) {
   const menuBtn = h('button.icon-btn.menu-btn', { type: 'button', 'aria-label': 'Menu', 'aria-expanded': 'false', 'aria-controls': 'site-nav' }, ICONS.menu());
   menuBtn.addEventListener('click', () => { const o = nav.classList.toggle('open'); menuBtn.setAttribute('aria-expanded', String(o)); });
 
-  const isMac = /Mac|iPhone|iPad/.test(navigator.platform);
   const searchBtn = h('button.search-btn', { type: 'button', 'aria-label': 'Search calculators and references' },
-    ICONS.search(), h('span.label', 'Search…'), h('kbd', isMac ? '⌘K' : 'Ctrl K'));
+    ICONS.search(), h('span.label', 'Search…'));
   searchBtn.addEventListener('click', () => openPalette());
 
   return h('header.site-header',

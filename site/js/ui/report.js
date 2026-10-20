@@ -20,11 +20,46 @@ export function texNum(x, digits = 5) {
   return trim(x.toFixed(Math.min(dec, 10)));
 }
 const trim = (s) => (s.includes('.') ? s.replace(/0+$/, '').replace(/\.$/, '') : s);
-/** Helpers: R.n(number), R.q(value, internalUnitKey) — quantity in the native unit of the equation. */
-export const R = {
-  n: texNum,
-  q: (x, unit, digits = 5) => `${texNum(x, digits)}${unit && unit !== 'none' ? `\\,${unitTex(unit)}` : ''}`,
-};
+/**
+ * Report helpers handed to each calculator's report(v, out, R):
+ *   R.n(x)            plain number
+ *   R.v(x, spec)      number converted from the calculator's internal unit to the reader's unit system
+ *   R.u(spec)         that unit, as TeX
+ *   R.Q(x, spec)      number + unit in the reader's system
+ *   R.sys / R.us      'si' | 'us'
+ * spec = { dim, internal, units? } exactly as in the field definitions.
+ */
+export function makeR(sys) {
+  const disp = (spec) => displayUnit(spec, sys);
+  const v = (x, spec) => toDisplay(x, spec, sys);
+  return {
+    sys, us: sys === 'us', n: texNum,
+    v: (x, spec, d = 5) => texNum(v(x, spec), d),
+    raw: (x, spec) => v(x, spec),
+    u: (spec) => unitTex(disp(spec)),
+    Q: (x, spec, d = 5) => { const u = unitTex(disp(spec)); return `${texNum(v(x, spec), d)}${u ? `\\,${u}` : ''}`; },
+    pick: (si, us) => (sys === 'us' ? us : si),
+  };
+}
+
+/** Which entries of a symbol dictionary {TeX: description} appear in a TeX string (in order of appearance). */
+export function symbolsIn(tex, dict) {
+  if (!tex || !dict) return [];
+  const src = Array.isArray(tex) ? tex.join(' ') : String(tex);
+  const found = [];
+  for (const [key, desc] of Object.entries(dict)) {
+    let i = src.indexOf(key), first = -1;
+    while (i >= 0) {
+      const b = src[i - 1], a = src[i + key.length];
+      const okB = !b || !/[A-Za-z\\]/.test(b);
+      const okA = !a || (!/[A-Za-z0-9]/.test(a) && !(a === '_' && !/_/.test(key)) && !(a === '{' && /\\[a-z]+$/.test(key)));
+      if (okB && okA) { first = i; break; }
+      i = src.indexOf(key, i + 1);
+    }
+    if (first >= 0) found.push({ sym: key, desc: typeof desc === 'string' ? desc : desc.d, at: first });
+  }
+  return found.sort((x, y) => x.at - y.at);
+}
 
 /* ---------- model ---------- */
 function buildModel({ def, state, refList, getSystem }) {
@@ -53,12 +88,18 @@ function buildModel({ def, state, refList, getSystem }) {
     results.push({ label: r.label, sym: r.sym || '', key: !!r.key, value: typeof x === 'number' ? texNum(toDisplay(x, r, sys), r.digits || 5) : `\\text{${x}}`, unit: r.dim && r.dim !== 'none' ? unitTex(displayUnit(r, sys)) : '' });
   }
   let sections = [];
-  try { sections = def.report ? def.report(v, out, R) : []; } catch (err) { console.error(err); sections = [{ title: 'Calculation', text: `The step-by-step derivation could not be generated: ${err.message}` }]; }
-  const notes = [...(def.reportNotes || [])];
-  if (def.compat) notes.push(v.__compat ? `Computed in “Match original spreadsheet” mode (${def.source}).` : `Computed with the memo equations (the “Match original spreadsheet” switch was off).`);
+  try { sections = def.report ? def.report(v, out, makeR(sys)) : []; } catch (err) { console.error(err); sections = [{ title: 'Calculation', text: `The step-by-step derivation could not be generated: ${err.message}` }]; }
+  const notes = [...(typeof def.reportNotes === 'function' ? def.reportNotes(sys) : def.reportNotes || [])];
+  // nomenclature: inputs and results with symbols, then every dictionary symbol used in the equations
+  const nom = [], seen = new Set();
+  for (const i of inputs) if (i.sym && !seen.has(i.sym)) { seen.add(i.sym); nom.push({ sym: i.sym, desc: i.label, kind: 'input', value: i.value, unit: i.unit }); }
+  const allEq = sections.flatMap((s) => (s.steps || []).flatMap((st) => [st.lhs, st.eq].filter(Boolean)));
+  for (const s of symbolsIn(allEq, def.symbols)) if (!seen.has(s.sym)) { seen.add(s.sym); nom.push({ sym: s.sym, desc: s.desc.charAt(0).toUpperCase() + s.desc.slice(1), kind: 'derived' }); }
+  for (const r of results) if (r.sym && !seen.has(r.sym)) { seen.add(r.sym); nom.push({ sym: r.sym, desc: r.label, kind: 'result' }); }
+  for (const c of def.constants || []) nom.push({ sym: c.sym, desc: c.desc, kind: 'constant', value: texNum(sys === 'us' ? c.us[0] : c.si[0], 7), unit: sys === 'us' ? c.us[1] : c.si[1] });
   for (const w of out?.warnings || []) notes.push(`Warning: ${w.text.replace(/<[^>]+>/g, '')}`);
   return {
-    title: def.title, source: def.source, date: new Date().toISOString().slice(0, 10), units: sys === 'si' ? 'SI' : 'US customary',
+    nom, title: def.title, source: refList[0] ? refList[0].title + (refList[0].authors ? ` (${refList[0].authors})` : '') : def.title, date: new Date().toISOString().slice(0, 10), units: sys === 'si' ? 'SI' : 'US customary',
     summary: (def.subtitle || '').replace(/<[^>]+>/g, ''), inputs, tables, results, sections, notes,
     refs: refList.map((r) => `${r.authors ? r.authors + ', ' : ''}“${r.title}”${r.venue ? ', ' + r.venue : ''}.`),
     site: location.href.split('#')[0],
@@ -75,9 +116,10 @@ const stepTex = (st) => {
 function toMarkdown(M) {
   const md = [];
   const cell = (s) => String(s).replace(/\|/g, '\\|');
-  md.push(`# ${M.title}`, '', `*${M.summary}*`, '', `Method: ${M.source}. Units: ${M.units}. Generated ${M.date} with Rocket Calculator (${M.site}).`, '');
-  md.push('## Inputs', '', '| Quantity | Symbol | Value | Unit |', '|---|---|---:|---|');
-  for (const i of M.inputs) md.push(`| ${cell(i.label)} | ${i.sym ? `$${i.sym}$` : ''} | $${i.value}$ | ${i.unit ? `$${i.unit}$` : ''} |`);
+  md.push(`# ${M.title}`, '', `*${M.summary}*`, '', `Based on: ${M.source}. Units: ${M.units}. Generated ${M.date} with Rocket Calculator (${M.site}).`, '');
+  md.push('## Symbols and inputs', '', 'Inputs are given with their values; derived quantities and results are evaluated below.', '', '| Symbol | Meaning | Value | Unit |', '|---|---|---:|---|');
+  for (const s of M.nom) md.push(`| $${s.sym}$ | ${cell(s.desc)}${s.kind === 'constant' ? ' (constant)' : s.kind === 'result' ? ' (result)' : s.kind === 'derived' ? ' (derived)' : ''} | ${s.value ? `$${s.value}$` : ''} | ${s.unit ? `$${s.unit}$` : ''} |`);
+  for (const i of M.inputs.filter((x) => !x.sym)) md.push(`| | ${cell(i.label)} | $${i.value}$ | ${i.unit ? `$${i.unit}$` : ''} |`);
   for (const t of M.tables) {
     md.push('', `**${t.label}**`, '', `| # | ${t.columns.map((c) => `${c.label} ($${c.unit}$)`).join(' | ')} |`, `|---|${t.columns.map(() => '---:').join('|')}|`);
     t.rows.forEach((r, k) => md.push(`| ${k} | ${r.map((x) => `$${x}$`).join(' | ')} |`));
@@ -107,9 +149,10 @@ function toLaTeX(M) {
   const L = [];
   L.push('\\documentclass[11pt]{article}', '\\usepackage[margin=2.2cm]{geometry}', '\\usepackage{amsmath,amssymb,booktabs,longtable}', '\\usepackage[T1]{fontenc}', '\\usepackage{textcomp}', '',
     `\\title{${latexText(M.title)}}`, `\\date{${M.date}}`, '\\author{}', '\\begin{document}', '\\maketitle', '',
-    `\\noindent\\emph{${latexText(M.summary)}}\\\\`, `Method: ${latexText(M.source)}. Units: ${M.units}. Generated with Rocket Calculator (\\texttt{${latexText(M.site)}}).`, '');
-  L.push('\\section*{Inputs}', '\\begin{longtable}{llrl}', '\\toprule Quantity & Symbol & Value & Unit\\\\ \\midrule');
-  for (const i of M.inputs) L.push(`${latexText(i.label)} & ${i.sym ? `$${i.sym}$` : ''} & $${i.value}$ & ${i.unit ? `$${i.unit}$` : ''}\\\\`);
+    `\\noindent\\emph{${latexText(M.summary)}}\\\\`, `Based on: ${latexText(M.source)}. Units: ${M.units}. Generated with Rocket Calculator (\\texttt{${latexText(M.site)}}).`, '');
+  L.push('\\section*{Symbols and inputs}', 'Inputs are given with their values; derived quantities and results are evaluated below.', '\\begin{longtable}{llrl}', '\\toprule Symbol & Meaning & Value & Unit\\\\ \\midrule');
+  for (const s of M.nom) L.push(`$${s.sym}$ & ${latexText(s.desc)}${s.kind === 'constant' ? ' (constant)' : s.kind === 'result' ? ' (result)' : s.kind === 'derived' ? ' (derived)' : ''} & ${s.value ? `$${s.value}$` : ''} & ${s.unit ? `$${s.unit}$` : ''}\\\\`);
+  for (const i of M.inputs.filter((x) => !x.sym)) L.push(` & ${latexText(i.label)} & $${i.value}$ & ${i.unit ? `$${i.unit}$` : ''}\\\\`);
   L.push('\\bottomrule', '\\end{longtable}');
   for (const t of M.tables) {
     L.push(`\\paragraph{${latexText(t.label)}}`, `\\begin{longtable}{r${'r'.repeat(t.columns.length)}}`, `\\toprule \\# & ${t.columns.map((c) => `${latexText(c.label)} ($${c.unit}$)`).join(' & ')}\\\\ \\midrule`);
@@ -140,9 +183,10 @@ function toHTML(M, mode = 'katex') {
   const txt = (s) => rich(s);
   const inline = (s) => (mode === 'mathml' ? String(s).split(/(\$[^$]+\$)/g).map((p) => (p.startsWith('$') && p.length > 2 ? m(p.slice(1, -1)) : esc(p))).join('') : txt(s));
   const P = [];
-  P.push(`<h1>${esc(M.title)}</h1>`, `<p><em>${esc(M.summary)}</em></p>`, `<p>Method: ${esc(M.source)}. Units: ${M.units}. Generated ${M.date} with Rocket Calculator.</p>`);
-  P.push('<h2>Inputs</h2><table><thead><tr><th>Quantity</th><th>Symbol</th><th>Value</th><th>Unit</th></tr></thead><tbody>');
-  for (const i of M.inputs) P.push(`<tr><td>${inline(i.label)}</td><td>${i.sym ? m(i.sym) : ''}</td><td>${m(i.value)}</td><td>${i.unit ? m(i.unit) : ''}</td></tr>`);
+  P.push(`<h1>${esc(M.title)}</h1>`, `<p><em>${esc(M.summary)}</em></p>`, `<p>Based on: ${esc(M.source)}. Units: ${M.units}. Generated ${M.date} with Rocket Calculator.</p>`);
+  P.push('<h2>Symbols and inputs</h2><p>Inputs are given with their values; derived quantities and results are evaluated below.</p><table><thead><tr><th>Symbol</th><th>Meaning</th><th>Value</th><th>Unit</th></tr></thead><tbody>');
+  for (const s of M.nom) P.push(`<tr><td>${m(s.sym)}</td><td>${inline(s.desc)}${s.kind === 'constant' ? ' (constant)' : s.kind === 'result' ? ' (result)' : s.kind === 'derived' ? ' (derived)' : ''}</td><td>${s.value ? m(s.value) : ''}</td><td>${s.unit ? m(s.unit) : ''}</td></tr>`);
+  for (const i of M.inputs.filter((x) => !x.sym)) P.push(`<tr><td></td><td>${inline(i.label)}</td><td>${m(i.value)}</td><td>${i.unit ? m(i.unit) : ''}</td></tr>`);
   P.push('</tbody></table>');
   for (const t of M.tables) {
     P.push(`<p><b>${inline(t.label)}</b></p><table><thead><tr><th>#</th>${t.columns.map((c) => `<th>${esc(c.label)} (${m(c.unit)})</th>`).join('')}</tr></thead><tbody>`);
@@ -166,17 +210,10 @@ function toHTML(M, mode = 'katex') {
   return P.join('\n');
 }
 const WORD_CSS = 'body{font-family:Calibri,Arial,sans-serif;font-size:11pt}table{border-collapse:collapse;margin:6pt 0}th,td{border:1px solid #999;padding:3pt 6pt;text-align:left}h1{font-size:18pt}h2{font-size:14pt;margin-top:14pt}h3{font-size:11pt}';
-function toWordDoc(M) {
-  return `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns:m="http://schemas.microsoft.com/office/2004/12/omml" xmlns="http://www.w3.org/TR/REC-html40">
-<head><meta charset="utf-8"><title>${esc(M.title)}</title><style>${WORD_CSS}</style></head><body>
-${toHTML(M, 'mathml')}
-</body></html>`;
-}
-
 /* ---------- card ---------- */
 export function reportCard({ def, state, refList, getSystem }) {
   const FORMATS = [
-    ['preview', 'Preview'], ['md', 'README (Markdown)'], ['tex', 'LaTeX'], ['word', 'Word'],
+    ['preview', 'Preview'], ['md', 'Markdown'], ['tex', 'LaTeX'],
   ];
   let fmtSel = 'preview', model = null, dirty = true;
   const tabs = h('div.report-tabs', { role: 'group', 'aria-label': 'Report format' },
@@ -190,18 +227,17 @@ export function reportCard({ def, state, refList, getSystem }) {
   const printBtn = h('button.btn.small.ghost', { type: 'button', title: 'Open a printable page — choose “Save as PDF” in the print dialog' }, 'Print / save as PDF');
   const body = h('div.report-body', preview, area, h('div.report-actions', copyBtn, dlBtn, wordBtn, printBtn), note);
   const card = h('section.card.report-card', { id: 'report' },
-    h('div.card-head', h('h2', 'Export report'), h('span.muted', { style: 'font-size:.85rem' }, 'for your PDR / FDR'), h('span.spacer'), tabs), body);
+    h('div.card-head', h('h2', 'Export report'), h('span.spacer'), tabs), body);
 
   const ensure = () => { if (dirty || !model) { model = buildModel({ def, state, refList, getSystem }); dirty = false; } return model; };
   const source = () => {
     const M = ensure();
-    return fmtSel === 'md' ? toMarkdown(M) : fmtSel === 'tex' ? toLaTeX(M) : fmtSel === 'word' ? toWordDoc(M) : toMarkdown(M);
+    return fmtSel === 'tex' ? toLaTeX(M) : toMarkdown(M);
   };
   const NOTES = {
-    preview: 'The full calculation with your current inputs: inputs, theory, every equation with your numbers substituted, results and references. Pick a format to copy or download.',
+    preview: 'Your inputs, the symbols used, the theory, every equation with your numbers substituted, the results and references — in the unit system selected at the top. Use “Copy for Word / Google Docs” to paste it with real equations.',
     md: 'Markdown with $…$ / $$…$$ maths — renders on GitHub, GitLab, Notion, Obsidian and most README viewers.',
     tex: 'A complete LaTeX article (amsmath, booktabs). Paste into Overleaf, or copy the sections you need into your report.',
-    word: 'Word / Google Docs: use “Copy for Word / Google Docs” and paste — equations arrive as native equations (MathML). The downloaded .doc opens in Word; if your Word version shows equations as text, use the copy button instead or the LaTeX version.',
   };
   function render() {
     if (!card.isConnected) return;
@@ -210,13 +246,14 @@ export function reportCard({ def, state, refList, getSystem }) {
     if (fmtSel === 'preview') { preview.hidden = false; area.hidden = true; preview.innerHTML = toHTML(M, 'katex'); }
     else { preview.hidden = true; area.hidden = false; area.value = source(); }
     note.textContent = NOTES[fmtSel];
-    dlBtn.lastChild.textContent = fmtSel === 'tex' ? 'Download .tex' : fmtSel === 'word' ? 'Download .doc' : 'Download .md';
+    dlBtn.lastChild.textContent = fmtSel === 'tex' ? 'Download .tex' : 'Download .md';
+    copyBtn.lastChild.textContent = fmtSel === 'tex' ? 'Copy LaTeX' : 'Copy Markdown';
   }
   tabs.addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) { fmtSel = b.dataset.k; render(); } });
-  copyBtn.addEventListener('click', async () => toast((await copyText(source())) ? `Copied ${fmtSel === 'tex' ? 'LaTeX' : fmtSel === 'word' ? 'Word HTML' : 'Markdown'}` : 'Copy failed'));
+  copyBtn.addEventListener('click', async () => toast((await copyText(source())) ? `Copied ${fmtSel === 'tex' ? 'LaTeX' : 'Markdown'}` : 'Copy failed'));
   dlBtn.addEventListener('click', () => {
-    const ext = fmtSel === 'tex' ? 'tex' : fmtSel === 'word' ? 'doc' : 'md';
-    const type = ext === 'doc' ? 'application/msword' : ext === 'tex' ? 'application/x-tex' : 'text/markdown';
+    const ext = fmtSel === 'tex' ? 'tex' : 'md';
+    const type = ext === 'tex' ? 'application/x-tex' : 'text/markdown';
     download(`${def.slug}-report.${ext}`, source(), type);
   });
   wordBtn.addEventListener('click', async () => {

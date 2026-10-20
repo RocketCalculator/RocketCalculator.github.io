@@ -1,6 +1,7 @@
 // Exporting figures: SVG string → SVG / PNG / JPEG / PDF files, plus a reusable "Export" pill menu.
 import { h, url, download, toast } from '../util.js';
 import { ICONS } from '../app.js';
+import { svgToPDF, svgToEPS } from './vector.js';
 
 let fontCss;
 /** @font-face rules with Inter embedded as data URLs, so rasterised SVG keeps its typography. */
@@ -70,42 +71,18 @@ async function rasterise(svgStr, w, h, scale = 2, bg = '#ffffff') {
 }
 const canvasBlob = (c, type, q) => new Promise((res) => c.toBlob(res, type, q));
 
-/** A one-page PDF containing a JPEG image (hand-written PDF, no library). */
-async function pdfFromJpeg(jpegBlob, pxW, pxH, imgW, imgH) {
-  const jpg = new Uint8Array(await jpegBlob.arrayBuffer());
-  const W = (pxW * 0.75).toFixed(2), H = (pxH * 0.75).toFixed(2);   // CSS px → points
-  const enc = new TextEncoder();
-  const parts = []; const offsets = []; let len = 0;
-  const push = (x) => { const b = typeof x === 'string' ? enc.encode(x) : x; parts.push(b); len += b.length; };
-  const obj = (n, body) => { offsets[n] = len; push(`${n} 0 obj\n${body}\nendobj\n`); };
-  push('%PDF-1.4\n%\xE2\xE3\xCF\xD3\n');
-  obj(1, '<< /Type /Catalog /Pages 2 0 R >>');
-  obj(2, '<< /Type /Pages /Kids [3 0 R] /Count 1 >>');
-  obj(3, `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${W} ${H}] /Resources << /XObject << /Im0 4 0 R >> >> /Contents 5 0 R >>`);
-  offsets[4] = len;
-  push(`4 0 obj\n<< /Type /XObject /Subtype /Image /Width ${imgW} /Height ${imgH} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${jpg.length} >>\nstream\n`);
-  push(jpg); push('\nendstream\nendobj\n');
-  const content = `q ${W} 0 0 ${H} 0 0 cm /Im0 Do Q`;
-  obj(5, `<< /Length ${content.length} >>\nstream\n${content}\nendstream`);
-  const xref = len;
-  let x = 'xref\n0 6\n0000000000 65535 f \n';
-  for (let i = 1; i <= 5; i++) x += `${String(offsets[i]).padStart(10, '0')} 00000 n \n`;
-  push(`${x}trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF`);
-  return new Blob(parts, { type: 'application/pdf' });
-}
-
 /** Export an SVG element in the given format. getCsv is optional. */
 export async function exportFigure(svgEl, format, name, getCsv) {
   try {
     if (format === 'csv') { download(`${name}.csv`, getCsv(), 'text/csv'); return; }
+    if (format === 'pdf') { download(`${name}.pdf`, svgToPDF(svgEl)); return; }
+    if (format === 'eps') { download(`${name}.eps`, svgToEPS(svgEl)); return; }
     const { svg, width, height } = standaloneSVG(svgEl);
     if (format === 'svg') { download(`${name}.svg`, svg, 'image/svg+xml'); return; }
     const bg = getComputedStyle(document.documentElement).getPropertyValue('--surface').trim() || '#ffffff';
-    const canvas = await rasterise(svg, width, height, format === 'pdf' ? 3 : 2, bg);
+    const canvas = await rasterise(svg, width, height, 2, bg);
     if (format === 'png') { download(`${name}.png`, await canvasBlob(canvas, 'image/png')); return; }
-    const jpeg = await canvasBlob(canvas, 'image/jpeg', 0.95);
-    if (format === 'jpeg') { download(`${name}.jpg`, jpeg); return; }
-    if (format === 'pdf') download(`${name}.pdf`, await pdfFromJpeg(jpeg, width, height, canvas.width, canvas.height));
+    if (format === 'jpeg') download(`${name}.jpg`, await canvasBlob(canvas, 'image/jpeg', 0.95));
   } catch (err) {
     console.error(err);
     toast(`Export failed: ${err.message}`);
@@ -113,8 +90,8 @@ export async function exportFigure(svgEl, format, name, getCsv) {
 }
 
 /** "Export ▾" pill menu. options: {formats, onExport(format)} */
-export function exportMenu({ formats = ['csv', 'svg', 'png', 'jpeg', 'pdf'], onExport, label = 'Export' }) {
-  const LABELS = { csv: ['CSV', 'data'], svg: ['SVG', 'vector'], png: ['PNG', 'image'], jpeg: ['JPEG', 'image'], pdf: ['PDF', 'document'] };
+export function exportMenu({ formats = ['csv', 'svg', 'pdf', 'eps', 'png', 'jpeg'], onExport, label = 'Export' }) {
+  const LABELS = { csv: ['CSV', 'data'], svg: ['SVG', 'vector'], pdf: ['PDF', 'vector'], eps: ['EPS', 'vector'], png: ['PNG', 'image'], jpeg: ['JPEG', 'image'] };
   const btn = h('button.btn.small', { type: 'button', 'aria-haspopup': 'menu', 'aria-expanded': 'false' }, ICONS.download(), label);
   const pop = h('div.menu-pop', { role: 'menu' }, formats.map((f) => h('button', { type: 'button', role: 'menuitem', 'data-f': f }, LABELS[f][0], h('small', LABELS[f][1]))));
   const wrap = h('div.menu', btn, pop);

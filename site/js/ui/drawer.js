@@ -1,7 +1,7 @@
 // Right-side ⓘ drawer: short theory, key formula, walkthrough, typical range, link to full docs.
 import { h } from '../util.js';
 import { ICONS } from '../app.js';
-import { tex, renderAll, rich, texToPlain } from '../math.js';
+import { tex, renderAll, rich, texToPlain, texHTML } from '../math.js';
 
 let drawer, overlay, body, titleEl, eyebrowEl, footerEl, lastFocus;
 
@@ -46,6 +46,7 @@ export function openInfo(info) {
     const f = h('div.formula');
     parts.push(h('h3', 'Key formula'), f);
     tex(f, info.tex, true);
+    if (info.where?.length) parts.push(h('dl.where', info.where.map((w) => [h('dt', { html: texHTML(w.sym) }), h('dd', { html: rich(w.desc, { html: true }) })])));
     if (info.texNote) parts.push(h('p.muted', { style: 'font-size:.84rem;margin-top:8px', html: rich(info.texNote, { html: true }) }));
   }
   const dg = typeof info.diagram === 'function' ? info.diagram() : info.diagram;

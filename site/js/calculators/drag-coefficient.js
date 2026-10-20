@@ -21,13 +21,10 @@ export default {
   topic: 'drag-coefficient',
   title: 'Zero-Lift Drag Coefficient',
   subtitle: 'A component <b>drag build-up</b> for a single-stage rocket: laminar/turbulent skin friction, base drag (power off and on), fin leading edges, a flat nose face and launch lugs.',
-  source: 'DRAG_COEFFICIENT3.4.xls · Drag Coefficient memo (rev. 3.4)',
-  verified: { label: 'Matches workbook (38 cells)', title: 'In spreadsheet mode every computed cell of DRAG_COEFFICIENT3.4.xls, including the VBA CPT function results, is reproduced to 1e-12.' },
   intro: {
     what: 'Adds up each source of drag at one flight condition and plots the build-up across Mach number.',
     why: 'Drag coefficient is the biggest aerodynamic driver of apogee for small rockets — and skin friction, the part you can most easily reduce, is usually the largest.',
     when: 'Feeding a trajectory simulation, comparing nose or fin choices, or checking what a boundary-layer trip or rounded fin edges buy you.',
-    typical: 'Workbook rocket (6.1 in × 148 in, four fins, flat nose tip) at Mach 0.9: $C_{D}$ ≈ 0.48 power-off with the memo equations, 0.67 as the spreadsheet computes it.',
   },
   info: {
     text: [
@@ -66,7 +63,7 @@ export default {
         { id: 'bodyRadius', label: 'Body radius', sym: 'R', ...LEN, default: 3.07, min: 0, minExclusive: true, info: { text: 'Radius of the cylindrical body; d = 2R sets the reference area.', doc: 'overview' } },
         { id: 'bodyLength', label: 'Overall length', sym: 'L', ...LEN, default: 148, min: 0, minExclusive: true, info: { text: 'Tip-to-base length. The cylinder runs from the nose to the base (no boat-tail).', doc: 'skin-friction' } },
         { id: 'ReTbody', label: 'Body transition Reynolds no.', sym: 'Re_T', dim: 'none', default: 200000, min: 1000,
-          info: { text: 'Reynolds number at which the body boundary layer turns turbulent naturally. The memo recommends 400,000 for bodies of revolution; the workbook example uses 200,000.', doc: 'skin-friction' } },
+          info: { text: 'Reynolds number at which the body boundary layer turns turbulent naturally. About 400,000 is typical for bodies of revolution; the example uses 200,000.', doc: 'skin-friction' } },
         { id: 'trip', label: 'Trip location (from tip)', sym: 'x_{trip}', dim: 'distance', internal: 'ft', default: 2.5, min: 0,
           info: { text: 'Station of a boundary-layer trip (roughness band). Transition happens at the trip or naturally, whichever is nearer the tip.', doc: 'skin-friction' } },
         { id: 'flatNose', label: 'Flat-faced nose tip', kind: 'bool', default: true, info: { text: 'Is the nose tip cut off flat? Adds stagnation-pressure drag on the face.', doc: 'flat-face' } },
@@ -85,7 +82,7 @@ export default {
         { id: 'bluntTE', label: 'Blunt (square) trailing edge', kind: 'bool', default: true, info: { text: 'A square trailing edge has base drag; a sharp (bevelled) one does not, unless the fin is a wedge.', doc: 'fin-pressure' } },
         { id: 'wedge', label: 'Wedge half-angle', sym: '\\delta_w', dim: 'angle', default: 0, min: 0, max: 20, info: { text: 'Half-angle of a single-wedge airfoil, in the plane normal to the leading edge. Zero for a flat plate. Adds base area at the trailing edge.', doc: 'fin-pressure' } },
         { id: 'ReTfin', label: 'Fin transition Reynolds no.', sym: 'Re_{T,fin}', dim: 'none', default: 25000, min: 1000,
-          info: { text: 'Fins whose leading edges are not smoothly rounded can trip at a low Reynolds number. The memo recommends 25,000.', doc: 'skin-friction' } },
+          info: { text: 'Fins whose leading edges are not smoothly rounded can trip at a low Reynolds number. About 25,000 is typical.', doc: 'skin-friction' } },
       ],
     },
     {
@@ -93,18 +90,13 @@ export default {
       fields: [
         { id: 'nozzleD', label: 'Nozzle exit diameter', sym: 'd_{ex}', ...LEN, default: 0.4, min: 0, info: { text: 'Used for power-on base drag: the jet fills the nozzle exit and only the annulus outside it sees base pressure.', doc: 'base-drag' } },
         { id: 'lugArea', label: 'Lug frontal area (each)', sym: '2Rh', dim: 'area', internal: 'in2', default: 0.36, min: 0, info: { text: 'Projected frontal area of one launch lug (diameter × height).', doc: 'lugs' } },
-        { id: 'nLugs', label: 'Number of lugs', dim: 'none', default: 2, min: 0, max: 6, info: { text: 'Riding lugs on the rail. The workbook always counts two.', doc: 'lugs' } },
+        { id: 'nLugs', label: 'Number of lugs', dim: 'none', default: 2, min: 0, max: 6, info: { text: 'Riding lugs on the rail.', doc: 'lugs' } },
         { id: 'noseWave', label: 'Nose wave drag $C_D$ (input)', dim: 'none', default: 0, min: 0, info: { text: 'Supersonic body wave drag from the supersonic Barrowman tool (0 below Mach ≈ 1).', doc: 'wave-drag' } },
         { id: 'finWave', label: 'Fin wave drag $C_D$ (input)', dim: 'none', default: 0, min: 0, info: { text: 'Supersonic fin airfoil wave drag from the supersonic tool (0 below Mach ≈ 1).', doc: 'wave-drag' } },
-        { id: 'parasite', label: 'Parasite allowance', dim: 'percent', internal: 'pct', default: 5, min: 0, max: 50, info: { text: 'Extra percentage for joints, roughness, antennas and other small items. The memo suggests about 5 %.', doc: 'parasite' } },
+        { id: 'parasite', label: 'Parasite allowance', dim: 'percent', internal: 'pct', default: 5, min: 0, max: 50, info: { text: 'Extra percentage for joints, roughness, antennas and other small items. About 5 % is customary.', doc: 'parasite' } },
       ],
     },
   ],
-  compat: {
-    label: 'Match original spreadsheet',
-    note: 'Off: memo equations. On: DRAG_COEFFICIENT3.4.xls exactly (4 differences — see ⓘ).',
-    info: 'Differences between the workbook and its memo: (1) the flat-face nose drag is added twice to the totals; (2) its subsonic formula uses 0.85(1 + ¼M² + M⁴) instead of eq. (22) 0.85(1 + ¼(M² + M⁴)), which is not continuous with the supersonic value; (3) the fin laminar skin-friction term is not weighted by the laminar fraction; (4) power-on base drag omits the factor 1.5 of eq. (14). The memo forms are the default.',
-  },
   results: [
     { id: 'CDoff', label: '$C_D$ power-off (coasting)', dim: 'none', key: true, digits: 4, note: (v, o) => `with parasite: ${fmt(o.r.CDoffPar, { digits: 4 })}`,
       info: { text: 'Total zero-lift drag coefficient with the motor off (full base drag). Referenced to the body cross-section.', doc: 'totals' } },
@@ -142,7 +134,7 @@ export default {
   plots: [
     {
       id: 'mach', title: 'Drag build-up vs Mach number', wide: true,
-      info: { text: 'Each component across Mach number at the same air temperature and pressure. The wave-drag inputs are not included in the sweep (they apply to one Mach number). The memo notes the build-up is not smooth through the transonic range — fair through it with judgement.', doc: 'totals' },
+      info: { text: 'Each component across Mach number at the same air temperature and pressure. The wave-drag inputs are not included in the sweep (they apply to one Mach number). The build-up is not smooth through the transonic range — fair through it with judgement.', doc: 'totals' },
       build(v, out, { U }) {
         const mmax = Math.min(3.2, Math.max(2, v.M * 1.4));
         const keys = [['CDoff', 'Total, power-off'], ['CDon', 'Total, power-on'], ['CDf', 'Skin friction'], ['CDbOff', 'Body base (off)'], ['press', 'Fin LE + flat face'], ['CDlugs', 'Lugs']];
@@ -160,7 +152,7 @@ export default {
     },
     {
       id: 'wetted', title: 'Body wetted area and transition',
-      info: { text: 'Wetted area ahead of each station (memo Fig. 1). The laminar wetted area is read from this curve at the transition station.', doc: 'skin-friction' },
+      info: { text: 'Wetted area ahead of each station. The laminar wetted area is read from this curve at the transition station.', doc: 'skin-friction' },
       build(v, out, { U }) {
         const ul = U(LEN), ua = U({ dim: 'area', internal: 'in2' });
         const xt = Math.min(12 * out.r.xTr, v.bodyLength);
@@ -220,7 +212,7 @@ export default {
     g.append(dim(fr, X(0), Y(R), X(Ln), Y(R), `L_n = ${L(Ln)}`, { off: -30, field: 'noseLength' }));
     // ---- breakdown bar
     const parts = PARTS.map(([key, label, color]) => ({ key, label, color, v: key === 'wave' ? v.noseWave + v.finWave : key === 'CDlugs' ? r.CDlugs : r[key] }))
-      .map((p) => (p.key === 'CDflat' && v.__compat ? { ...p, v: 2 * p.v, label: 'Flat nose face (×2 in workbook)' } : p)).filter((p) => p.v > 1e-9);
+      .filter((p) => p.v > 1e-9);
     const tot = parts.reduce((a2, p) => a2 + p.v, 0);
     const bx = 40, bw = W - 80, by = 222;
     g.append(text(bx, by - 8, `POWER-OFF C_D = ${fmt(r.CDoff, { digits: 4 })}`, { cls: 'sc-dim-text', size: 11 }));
@@ -247,37 +239,51 @@ export default {
       onDrag: (px) => ctx.setValue('noseLength', Math.max(0.5 * R, Math.min(Lb - v.cR, Ln - (px - X(xs0)) / k)), { round: 0.5 }),
       onKey: (dx) => ctx.setValue('noseLength', Ln * (1 - 0.02 * dx)) });
   },
-  reportNotes: ['Equations are evaluated in the memo’s units (inches for geometry, feet in Reynolds numbers, °R, lbf/ft²); coefficients are referenced to $S_{ref}=\\pi d^2/4$. The inputs and results tables use your selected unit system.', 'Supersonic body and fin wave drag are inputs taken from the supersonic tools, not computed here.'],
+  reportNotes: ['Coefficients are referenced to the body cross-section $S_{ref}=\\pi d^2/4$. Supersonic body and fin wave drag are inputs, not computed here.'],
+  symbols: {
+    M: 'flight Mach number', T: 'static air temperature', 'p_\\infty': 'static air pressure', '\\frac{\\rho a}{\\mu}': 'Reynolds number per unit length per unit Mach number', 'K_{Re}': 'constant of the Reynolds-number relation',
+    Re_T: 'transition Reynolds number', l_T: 'laminar run length from the tip', 'x_{trip}': 'boundary-layer trip station', 'S_{wet}': 'body wetted area', 'S_{nose}': 'nose wetted area', 'lamS_{wet}': 'body wetted area ahead of transition',
+    R: 'body radius', L: 'overall length', L_n: 'nose length', Re_L: 'Reynolds number on the overall length', C_f: 'area-averaged body skin-friction coefficient', 'S_{ref}': 'reference area, $\\pi d^2/4$',
+    'C_{D_f,body}': 'body skin-friction drag coefficient', '\\bar c': 'average fin chord', 'Re_{\\bar c}': 'fin chord Reynolds number', 'C_{f,fin}': 'fin skin-friction coefficient', N: 'number of fins', 'S_{fin}': 'area of one side of one fin',
+    'C_{D_f,fins}': 'fin skin-friction drag coefficient', 'C_{PB}': 'subsonic base-pressure coefficient', 'M_{lim}': 'Mach number where the transonic base drag meets the quasi-vacuum law', '\\gamma': 'ratio of specific heats (1.4)',
+    'C_{D_B}': 'body base drag coefficient (power-off)', 'C_{D_B,on}': 'body base drag coefficient (power-on)', 'S_{ex}': 'nozzle exit area', 'C_{DB,fins}': 'fin trailing-edge base drag coefficient', t: 'fin thickness', b: 'fin exposed semispan',
+    'C_{PT}': 'stagnation-pressure coefficient', 'C_{D,LE}': 'fin leading-edge pressure drag coefficient', '\\Lambda': 'fin leading-edge sweep', 'C_{D,lugs}': 'launch-lug drag coefficient', 'n_{lug}': 'number of lugs', '2Rh': 'frontal area of one lug',
+    'C_{D,flat}': 'flat nose-face drag coefficient', d_f: 'flat-face diameter', 'C_{D,wave}': 'supersonic wave drag (input)', 'C_{D,off}': 'total drag coefficient, power-off', 'C_{D,on}': 'total drag coefficient, power-on',
+  },
   report(v, out, R) {
-    const r = out.r, n = R.n, q = R.q, M = v.M, cp = v.__compat;
+    const r = out.r, n = R.n, M = v.M;
+    const Dl = { dim: 'distance', internal: 'in' }, Df = { dim: 'distance', internal: 'ft' }, A2 = { dim: 'area', internal: 'in2', units: { si: 'm2', us: 'ft2' } }, Af = { dim: 'area', internal: 'ft2', units: { si: 'm2', us: 'ft2' } };
+    const P = { dim: 'pressure', internal: 'psf' }, Tk = { dim: 'temperature', internal: 'R', units: { si: 'K', us: 'R' } }, E = { dim: 'wavenumber', internal: 'perft' };
+    const K = R.pick(n(8816603 / (0.3048 * 47.880258980) * 1.8 ** -1.26, 7), '8\\,816\\,603');
+    const Ku = R.pick('\\mathrm{m^{-1}\\,Pa^{-1}\\,K^{1.26}}', '\\mathrm{ft^{-1}\\,(lbf\\,ft^{-2})^{-1}\\,{}^{\\circ}R^{1.26}}');
     const fric = [
-      { label: 'Reynolds number per foot', lhs: '\\frac{\\rho a}{\\mu}', eq: '8\\,816\\,603\\;p_\\infty T^{-1.26}', sub: `8\\,816\\,603\\times${n(v.p)}\\times${n(v.T)}^{-1.26}`, res: `${n(r.E)}\\ \\mathrm{ft^{-1}}` },
-      { label: 'Laminar run (natural transition or trip, whichever is first)', lhs: 'l_T', eq: '\\min\\left(\\frac{Re_T}{(\\rho a/\\mu)M},\\ x_{trip}\\right)', sub: `\\min\\left(\\frac{${n(v.ReTbody)}}{${n(r.E)}\\times${n(M)}},\\ ${n(v.trip)}\\right)`, res: q(r.xTr, 'ft') },
-      { label: 'Body wetted area and its laminar part', lhs: 'S_{wet}', eq: 'S_{nose}+2\\pi R(L-L_n)', sub: `${n(r.Snose)}+2\\pi(${n(v.bodyRadius)})(${n(v.bodyLength)}-${n(v.noseLength)})`, res: `${q(r.Swet, 'in2')},\\quad lamS_{wet}=${q(r.Slam, 'in2')}` },
-      { label: 'Body friction coefficient (Blasius laminar + compressible turbulent, eq. 7 and 9)', lhs: 'C_f', eq: '\\frac{1.328\\,(lamS/S)}{\\sqrt{Re_T}}+\\frac{0.427\\,(1-lamS/S)\\,(1+0.15M^2)^{-0.58}}{(\\log_{10}Re_L-0.407)^{2.64}}', sub: `\\frac{1.328\\times${n(r.lamFrac)}}{\\sqrt{${n(r.E * M * r.xTr)}}}+\\frac{0.427\\times${n(1 - r.lamFrac)}\\times${n((1 + 0.15 * M * M) ** -0.58)}}{(\\log_{10}${n(r.ReBody)}-0.407)^{2.64}}`, res: n(r.CfBody) },
-      { label: 'Body skin-friction drag', lhs: 'C_{D_f,body}', eq: 'C_f\\frac{S_{wet}}{S_{ref}}(1-0.09M^2)', sub: `${n(r.CfBody)}\\times\\frac{${n(r.Swet / 144)}}{${n(r.Sref)}}\\times${n(1 - 0.09 * M * M)}`, res: n(r.CDfBody) },
-      { label: 'Fin chord Reynolds number and friction coefficient', lhs: 'Re_{\\bar c}', eq: '\\frac{\\rho a}{\\mu}\\,\\bar c\\,M', sub: `${n(r.E)}\\times${n(r.cAvg)}\\times${n(M)}`, res: `${n(r.ReC)},\\quad C_{f,fin}=${n(r.CfFin)}${cp ? '\\ (\\text{workbook form})' : ''}` },
-      { label: 'Fin skin-friction drag (both sides of every panel)', lhs: 'C_{D_f,fins}', eq: 'C_{f,fin}\\frac{2NS_{fin}}{S_{ref}}(1-0.09M^2)', sub: `${n(r.CfFin)}\\times\\frac{${n(v.N)}\\times${n(r.finWet / 144)}}{${n(r.Sref)}}\\times${n(1 - 0.09 * M * M)}`, res: n(r.CDfFin) },
+      { label: 'Reynolds number per unit length (per unit Mach number)', lhs: '\\frac{\\rho a}{\\mu}', eq: 'K_{Re}\\,p_\\infty T^{-1.26}', sub: `${K}\\times${R.v(v.p, P)}\\times${R.v(v.T, Tk)}^{-1.26}`, res: R.Q(r.E, E), note: `Here $K_{Re}=${K}\\,${Ku}$.` },
+      { label: 'Laminar run: natural transition or the trip, whichever is nearer the tip', lhs: 'l_T', eq: '\\min\\left(\\frac{Re_T}{(\\rho a/\\mu)\\,M},\\ x_{trip}\\right)', sub: `\\min\\left(\\frac{${n(v.ReTbody)}}{${R.v(r.E, E)}\\times${n(M)}},\\ ${R.v(v.trip, Df)}\\right)`, res: R.Q(r.xTr, Df) },
+      { label: 'Body wetted area and its laminar part', lhs: 'S_{wet}', eq: 'S_{nose}+2\\pi R(L-L_n)', sub: `${R.v(r.Snose, A2)}+2\\pi(${R.v(v.bodyRadius, Dl)})(${R.v(v.bodyLength, Dl)}-${R.v(v.noseLength, Dl)})`, res: `${R.Q(r.Swet, A2)},\\qquad lamS_{wet}=${R.Q(r.Slam, A2)}` },
+      { label: 'Body skin-friction coefficient: Blasius laminar part plus compressible turbulent part', lhs: 'C_f', eq: '\\frac{1.328\\,(lamS_{wet}/S_{wet})}{\\sqrt{Re_T}}+\\frac{0.427\\,(1-lamS_{wet}/S_{wet})\\,(1+0.15M^2)^{-0.58}}{(\\log_{10}Re_L-0.407)^{2.64}}', sub: `\\frac{1.328\\times${n(r.lamFrac)}}{\\sqrt{${n(r.E * M * r.xTr)}}}+\\frac{0.427\\times${n(1 - r.lamFrac)}\\times${n((1 + 0.15 * M * M) ** -0.58)}}{(\\log_{10}${n(r.ReBody)}-0.407)^{2.64}}`, res: n(r.CfBody) },
+      { label: 'Body skin-friction drag', lhs: 'C_{D_f,body}', eq: 'C_f\\,\\frac{S_{wet}}{S_{ref}}\\,(1-0.09M^2)', sub: `${n(r.CfBody)}\\times\\frac{${R.v(r.Swet, A2)}}{${R.v(r.Sref, Af)}}\\times${n(1 - 0.09 * M * M)}`, res: n(r.CDfBody) },
+      { label: 'Fin chord Reynolds number', lhs: 'Re_{\\bar c}', eq: '\\frac{\\rho a}{\\mu}\\,\\bar c\\,M', sub: `${R.v(r.E, E)}\\times${R.v(r.cAvg, Df)}\\times${n(M)}`, res: `${n(r.ReC)},\\qquad C_{f,fin}=${n(r.CfFin)}` },
+      { label: 'Fin skin-friction drag (both sides of every panel)', lhs: 'C_{D_f,fins}', eq: 'C_{f,fin}\\,\\frac{2N S_{fin}}{S_{ref}}\\,(1-0.09M^2)', sub: `${n(r.CfFin)}\\times\\frac{${n(v.N)}\\times${R.v(r.finWet, A2)}}{${R.v(r.Sref, Af)}}\\times${n(1 - 0.09 * M * M)}`, res: n(r.CDfFin) },
     ];
     const base = [
-      { label: 'Subsonic base-pressure coefficient (Hoerner)', lhs: 'C_{PB}', eq: '\\frac{0.029}{\\sqrt{C_f S_{wet}/S_{base}}}', sub: `\\frac{0.029}{\\sqrt{${n(r.CfBody)}\\times${n(r.Swet / 144)}/${n(r.Sref)}}}`, res: `${n(r.CPBsub)},\\quad M_{lim}=\\sqrt{\\frac{1.3}{\\gamma(C_{PB}+0.055)}}=${n(r.Mlim)}` },
-      { label: `Body base drag at M = ${n(M)} (power-off)`, lhs: 'C_{D_B}', eq: M < 1 ? 'C_{PB}' : M < r.Mlim ? 'C_{PB}+0.055' : '\\frac{1.3}{\\gamma M^2}', res: n(r.CDbOff) },
-      { label: 'Power-on base drag (jet fills the nozzle exit)', lhs: 'C_{D_B,on}', eq: cp ? 'C_{D_B}\\left(1-\\frac{S_{ex}}{S_{ref}}\\right)' : '1.5\\,C_{D_B}\\left(1-\\frac{S_{ex}}{S_{ref}}\\right)', sub: `${cp ? '' : '1.5\\times'}${n(r.CDbOff)}\\times\\left(1-\\frac{${n(r.Sex)}}{${n(r.Sref)}}\\right)`, res: n(r.CDbOn) },
-      { label: 'Fin trailing-edge base drag', lhs: 'C_{DB,fins}', eq: '\\frac{0.135\\,N\\,(t\\,b+S_{wedge})}{S_{ref}C_f^{1/3}}', res: n(r.CDbFin) },
+      { label: 'Subsonic base-pressure coefficient', lhs: 'C_{PB}', eq: '\\frac{0.029}{\\sqrt{C_f\\,S_{wet}/S_{base}}}', sub: `\\frac{0.029}{\\sqrt{${n(r.CfBody)}\\times${R.v(r.Swet, A2)}/${R.v(r.Sref, Af)}}}`, res: `${n(r.CPBsub)},\\qquad M_{lim}=\\sqrt{\\frac{1.3}{\\gamma(C_{PB}+0.055)}}=${n(r.Mlim)}` },
+      { label: `Body base drag at $M=${n(M)}$, motor off`, lhs: 'C_{D_B}', eq: M < 1 ? 'C_{PB}' : M < r.Mlim ? 'C_{PB}+0.055' : '\\frac{1.3}{\\gamma M^2}', res: n(r.CDbOff) },
+      { label: 'Body base drag, motor burning (the jet fills the nozzle exit)', lhs: 'C_{D_B,on}', eq: '1.5\\,C_{D_B}\\left(1-\\frac{S_{ex}}{S_{ref}}\\right)', sub: `1.5\\times${n(r.CDbOff)}\\times\\left(1-\\frac{${R.v(r.Sex, Af)}}{${R.v(r.Sref, Af)}}\\right)`, res: n(r.CDbOn) },
+      { label: 'Fin trailing-edge base drag', lhs: 'C_{DB,fins}', eq: '\\frac{0.135\\,N\\,t\\,b}{S_{ref}\\,C_{f,fin}^{1/3}}', res: n(r.CDbFin) },
     ];
     const press = [
-      { label: 'Stagnation-pressure coefficient (isentropic below Mach 1, Rayleigh pitot above)', lhs: 'C_{PT}(M)', eq: M <= 1 ? '\\frac{2}{\\gamma M^2}\\left[\\left(1+\\frac{\\gamma-1}{2}M^2\\right)^{\\frac{\\gamma}{\\gamma-1}}-1\\right]' : '\\frac{2}{\\gamma M^2}\\left[\\left(\\frac{\\gamma+1}{2}M^2\\right)^{\\frac{\\gamma}{\\gamma-1}}\\left(\\frac{\\gamma+1}{2\\gamma M^2-\\gamma+1}\\right)^{\\frac1{\\gamma-1}}-1\\right]', res: n(r.Cpt0) },
-      { label: 'Fin leading-edge (Newtonian) pressure drag', lhs: 'C_{D,LE}', eq: '\\frac{2N\\,t\\,b\\,C_{PT}(M\\cos\\Lambda)\\cos^2\\Lambda}{3S_{ref}}', res: `${n(r.CDle)}\\quad(\\Lambda=${n((r.sweep * 180) / Math.PI)}^{\\circ})` },
-      { label: 'Launch lugs', lhs: 'C_{D,lugs}', eq: 'n_{lug}\\,\\frac{0.8\\,(2Rh)\\,C_{PT}}{S_{ref}}', sub: `${cp ? 2 : n(v.nLugs)}\\times\\frac{0.8\\times${n(v.lugArea / 144)}\\times${n(r.Cpt0)}}{${n(r.Sref)}}`, res: n(r.CDlugs) },
+      { label: 'Stagnation-pressure coefficient (isentropic below Mach 1, Rayleigh pitot above)', lhs: 'C_{PT}', eq: M <= 1 ? '\\frac{2}{\\gamma M^2}\\left[\\left(1+\\frac{\\gamma-1}{2}M^2\\right)^{\\frac{\\gamma}{\\gamma-1}}-1\\right]' : '\\frac{2}{\\gamma M^2}\\left[\\left(\\frac{\\gamma+1}{2}M^2\\right)^{\\frac{\\gamma}{\\gamma-1}}\\left(\\frac{\\gamma+1}{2\\gamma M^2-\\gamma+1}\\right)^{\\frac1{\\gamma-1}}-1\\right]', res: n(r.Cpt0) },
+      { label: 'Fin leading-edge (Newtonian) pressure drag', lhs: 'C_{D,LE}', eq: '\\frac{2N\\,t\\,b\\,C_{PT}(M\\cos\\Lambda)\\cos^2\\Lambda}{3S_{ref}}', res: `${n(r.CDle)}\\qquad(\\Lambda=${n((r.sweep * 180) / Math.PI)}^{\\circ})` },
+      { label: 'Launch lugs', lhs: 'C_{D,lugs}', eq: 'n_{lug}\\,\\frac{0.8\\,(2Rh)\\,C_{PT}}{S_{ref}}', sub: `${n(v.nLugs)}\\times\\frac{0.8\\times${R.v(v.lugArea / 144, Af)}\\times${n(r.Cpt0)}}{${R.v(r.Sref, Af)}}`, res: n(r.CDlugs) },
     ];
-    if (v.flatNose) press.push({ label: 'Flat nose face', lhs: 'C_{D,flat}', eq: M > 1 ? 'C_{PT}\\frac{\\pi d_f^2/4}{S_{ref}}' : cp ? '0.85\\left(1+0.25M^2+M^4\\right)\\frac{\\pi d_f^2/4}{S_{ref}}' : '0.85\\left(1+\\tfrac14(M^2+M^4)\\right)\\frac{\\pi d_f^2/4}{S_{ref}}', res: n(r.CDflat) + (cp ? '\\ (\\text{counted twice in the workbook total})' : '') });
+    if (v.flatNose) press.push({ label: 'Flat nose face', lhs: 'C_{D,flat}', eq: M > 1 ? 'C_{PT}\\,\\frac{\\pi d_f^2/4}{S_{ref}}' : '0.85\\left(1+\\tfrac14(M^2+M^4)\\right)\\frac{\\pi d_f^2/4}{S_{ref}}', res: n(r.CDflat) });
     const totals = [
-      { label: 'Power-off total', lhs: 'C_{D,off}', eq: 'C_{D_f}+C_{D_B}+C_{DB,fins}+C_{D,wave}+C_{D,LE}+C_{D,flat}+C_{D,lugs}', sub: `${n(r.CDf)}+${n(r.CDbOff)}+${n(r.CDbFin)}+${n(v.noseWave + v.finWave)}+${n(r.CDle)}+${n(r.CDflat)}+${n(r.CDlugs)}${cp ? `+${n(r.CDflat)}` : ''}`, res: n(r.CDoff, 4) },
-      { label: 'Power-on total', lhs: 'C_{D,on}', eq: 'C_{D,off}-C_{D_B}+C_{D_B,on}', res: n(r.CDon, 4) },
-      { label: `With a ${n(v.parasite)} % parasite allowance`, lhs: 'C_{D,off}^{\\,par}', eq: `C_{D,off}\\times${n(1 + v.parasite / 100)}`, res: `${n(r.CDoffPar, 4)},\\quad C_{D,on}^{\\,par}=${n(r.CDonPar, 4)}` },
+      { label: 'Total, motor off', lhs: 'C_{D,off}', eq: 'C_{D_f,body}+C_{D_f,fins}+C_{D_B}+C_{DB,fins}+C_{D,wave}+C_{D,LE}+C_{D,flat}+C_{D,lugs}', sub: `${n(r.CDfBody)}+${n(r.CDfFin)}+${n(r.CDbOff)}+${n(r.CDbFin)}+${n(v.noseWave + v.finWave)}+${n(r.CDle)}+${n(r.CDflat)}+${n(r.CDlugs)}`, res: n(r.CDoff, 4) },
+      { label: 'Total, motor burning', lhs: 'C_{D,on}', eq: 'C_{D,off}-C_{D_B}+C_{D_B,on}', res: n(r.CDon, 4) },
+      { label: `With a ${n(v.parasite)} % parasite allowance`, lhs: 'C_{D,off}\\times' + n(1 + v.parasite / 100), eq: n(r.CDoffPar, 4), res: `C_{D,on}\\times${n(1 + v.parasite / 100)}=${n(r.CDonPar, 4)}` },
     ];
     return [
-      { title: 'Theory', text: 'Zero-lift drag is built up from skin friction (viscous shear, laminar ahead of transition and turbulent behind it), base drag (low pressure behind the body base and blunt fin trailing edges), pressure drag of blunt fin leading edges, a flat nose face and launch lugs (Newtonian stagnation pressure), wave drag (inputs) and a parasite allowance. All coefficients are referenced to the body cross-section (C. P. Hoult, Drag Coefficient rev. 3.4, 2016; S. F. Hoerner).' },
+      { title: 'Theory', text: 'Zero-lift drag is built up from its physical sources. Skin friction is viscous shear in the boundary layer, laminar from the tip to transition and turbulent behind it; transition happens at a fixed Reynolds number or at a trip. Base drag is the low pressure behind the body base and behind blunt fin trailing edges; the motor jet partly fills the base when burning. Blunt fin leading edges, a flat nose face and the launch lugs carry Newtonian stagnation pressure. Supersonic wave drag comes from other tools, and a small parasite allowance covers joints and roughness. Every coefficient is referred to the body cross-section, so the parts add.' },
       { title: 'Skin friction', steps: fric },
       { title: 'Base drag', steps: base },
       { title: 'Pressure drag of edges, nose face and lugs', steps: press },
@@ -286,7 +292,7 @@ export default {
   },
   references: ['drag-coefficient3-4', 'modified-newtonian-aero4', 'ogive-nose'],
   examples: [
-    { name: 'Workbook rocket at Mach 0.9 (sea level, 39 °F)', values: { M: 0.9, T: 499.17, p: 2124, ogive: true, noseLength: 36, bodyRadius: 3.07, bodyLength: 148, ReTbody: 200000, trip: 2.5, flatNose: true, flatD: 1.5, N: 4, cR: 11.8, cT: 4.5, b: 5.84, t: 0.125, bluntLE: true, bluntTE: true, wedge: 0, ReTfin: 25000, nozzleD: 0.4, lugArea: 0.36, nLugs: 2, noseWave: 0, finWave: 0, parasite: 5 } },
+    { name: 'Example rocket at Mach 0.9 (sea level, 39 °F)', values: { M: 0.9, T: 499.17, p: 2124, ogive: true, noseLength: 36, bodyRadius: 3.07, bodyLength: 148, ReTbody: 200000, trip: 2.5, flatNose: true, flatD: 1.5, N: 4, cR: 11.8, cT: 4.5, b: 5.84, t: 0.125, bluntLE: true, bluntTE: true, wedge: 0, ReTfin: 25000, nozzleD: 0.4, lugArea: 0.36, nLugs: 2, noseWave: 0, finWave: 0, parasite: 5 } },
     { name: 'Same rocket, sharp nose, bevelled fins', values: { M: 0.9, T: 499.17, p: 2124, ogive: true, noseLength: 36, bodyRadius: 3.07, bodyLength: 148, ReTbody: 400000, trip: 2.5, flatNose: false, flatD: 1.5, N: 4, cR: 11.8, cT: 4.5, b: 5.84, t: 0.125, bluntLE: false, bluntTE: false, wedge: 0, ReTfin: 25000, nozzleD: 0.4, lugArea: 0.36, nLugs: 2, noseWave: 0, finWave: 0, parasite: 5 } },
   ],
 };

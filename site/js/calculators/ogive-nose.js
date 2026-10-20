@@ -10,13 +10,10 @@ export default {
   topic: 'ogive-nose',
   title: 'Ogive Nose Profile',
   subtitle: 'Shape, surface area and centroid of a <b>tangent-ogive</b> nose cone — the circular-arc nose used on most sounding rockets.',
-  source: 'Ogive Profile.xls · Ogive Nose memo (2011)',
-  verified: { label: 'Matches workbook (56 cells)', title: 'Every profile point, area, moment and centroid reproduces Ogive Profile.xls to 1e-9.' },
   intro: {
     what: 'Builds the nose profile from just two numbers — base radius and length — and returns its wetted area and area centroid.',
     why: 'Wetted area drives skin-friction drag and the nose shell’s weight; the centroid locates that weight for CG estimates.',
     when: 'Early sizing of a nose cone, drag build-ups, and mass-properties estimates of a fibreglass or metal shell.',
-    typical: 'A 6-inch, 5-calibre ogive (R = 3 in, L = 30 in) has 379 in² of surface with its centroid 18.7 in aft of the tip.',
   },
   info: {
     text: [
@@ -52,7 +49,7 @@ export default {
         { id: 't', label: 'Wall thickness', sym: 't', ...L_IN, default: 0, min: 0,
           info: { text: 'Thickness of the nose shell. Leave at 0 to skip the mass estimate.', range: 'Fibreglass layup: 0.06–0.12 in (1.5–3 mm).', doc: 'shell-mass' } },
         { id: 'rho', label: 'Material density', sym: '\\rho', dim: 'matDensity', internal: 'lbin3', default: 1.8 / 27.679904710203, min: 0,
-          info: { text: 'Density of the shell material. Mass = wetted area × wall thickness × density (thin-shell approximation from the memo).', range: 'Fibreglass ≈ 1.8 g/cm³ (0.065 lb/in³); aluminium 2.7 g/cm³ (0.098 lb/in³).', doc: 'shell-mass' } },
+          info: { text: 'Density of the shell material. Mass = wetted area × wall thickness × density (thin-shell approximation).', range: 'Fibreglass ≈ 1.8 g/cm³ (0.065 lb/in³); aluminium 2.7 g/cm³ (0.098 lb/in³).', doc: 'shell-mass' } },
       ],
     },
   ],
@@ -71,7 +68,7 @@ export default {
     { id: 'fineness', label: 'Fineness ratio', sym: 'L/D', dim: 'none', digits: 4,
       info: { text: 'Nose length divided by base diameter. Higher fineness lowers supersonic wave drag but adds length, mass and skin friction.', doc: 'geometry' } },
     { id: 'tipHalfAngle', label: 'Tip half-angle', sym: '\\theta_{tip}', dim: 'angle', digits: 4,
-      info: { text: 'Angle between the surface and the axis at the tip (derived geometry — not output by the workbook). Equals sin⁻¹(L/a).', tex: '\\theta_{tip}=\\sin^{-1}\\frac{L}{a}', doc: 'geometry' } },
+      info: { text: 'Angle between the surface and the axis at the tip Equals $\\sin^{-1}(L/a)$.', tex: '\\theta_{tip}=\\sin^{-1}\\frac{L}{a}', doc: 'geometry' } },
   ],
   compute(v) {
     const o = ogive({ R: v.R, L: v.L, dx: v.dx, t: v.t, rho: v.rho });
@@ -160,26 +157,37 @@ export default {
       onKey: (dx, dy) => ctx.setValue('R', R * (1 + 0.01 * dy)),
     });
   },
-  reportNotes: ['Equations are evaluated in inches, the unit of the source workbook; the inputs and results tables use your selected unit system.'],
+  symbols: {
+    R: 'base radius of the nose (body-tube radius)', L: 'nose length, tip to base', a: 'radius of the circular arc that generates the ogive',
+    x: 'axial distance measured forward from the base', r: 'local body radius', S: 'wetted (lateral) surface area of the nose',
+    M: 'first moment of the wetted area about the base', '\\bar{x}': 'centroid of the wetted area, measured aft of the nose tip',
+    '\\theta_{tip}': 'angle between the surface and the axis at the tip', D: 'base diameter, $2R$', t: 'shell wall thickness', '\\rho': 'shell material density', m: 'shell mass',
+  },
   report(v, out, R) {
-    const o = out.o, q = (x, u = 'in') => R.q(x, u), n = R.n;
-    const s = [{
+    const o = out.o;
+    const Ls = { dim: 'length', internal: 'in' }, As = { dim: 'area', internal: 'in2', units: { si: 'mm2', us: 'in2' } }, Vs = { dim: 'volume', internal: 'in3', units: { si: 'mm3', us: 'in3' } };
+    const l = (x) => R.v(x, Ls), Lq = (x) => R.Q(x, Ls);
+    const steps = [
+      { label: 'Defining-circle radius', lhs: 'a', eq: '\\frac{L^2+R^2}{2R}', sub: `\\frac{(${l(v.L)})^2+(${l(v.R)})^2}{2\\times${l(v.R)}}`, res: Lq(o.a) },
+      { label: 'Wetted (lateral) area', lhs: 'S', eq: '2\\pi a\\left[(R-a)\\sin^{-1}\\frac{L}{a}+L\\right]', sub: `2\\pi(${l(o.a)})\\left[(${l(v.R - o.a)})\\sin^{-1}\\frac{${l(v.L)}}{${l(o.a)}}+${l(v.L)}\\right]`, res: R.Q(o.S, As) },
+      { label: 'First moment of the wetted area about the base', lhs: 'M', eq: '2\\pi a\\left[\\tfrac12L^2+(R-a)\\left(a-\\sqrt{a^2-L^2}\\right)\\right]', sub: `2\\pi(${l(o.a)})\\left[\\tfrac12(${l(v.L)})^2+(${l(v.R - o.a)})\\left(${l(o.a)}-\\sqrt{${l(o.a)}^2-${l(v.L)}^2}\\right)\\right]`, res: R.Q(o.M, Vs) },
+      { label: 'Area centroid, aft of the nose tip', lhs: '\\bar{x}', eq: 'L-\\frac{M}{S}', sub: `${l(v.L)}-\\frac{${R.v(o.M, Vs)}}{${R.v(o.S, As)}}`, res: `${Lq(o.xbar)}\\quad(${R.n((100 * o.xbar) / v.L, 3)}\\%\\ \\text{of } L)` },
+      { label: 'Tip half-angle', lhs: '\\theta_{tip}', eq: '\\sin^{-1}\\frac{L}{a}', sub: `\\sin^{-1}\\frac{${l(v.L)}}{${l(o.a)}}`, res: `${R.n(o.tipHalfAngle)}^{\\circ}` },
+      { label: 'Fineness ratio', lhs: 'L/D', eq: '\\frac{L}{2R}', sub: `\\frac{${l(v.L)}}{2\\times${l(v.R)}}`, res: R.n(o.fineness) },
+    ];
+    if (o.shellMass) {
+      const S2 = { dim: 'area', internal: 'in2', units: { si: 'm2', us: 'in2' } }, T2 = { dim: 'length', internal: 'in', units: { si: 'm', us: 'in' } }, D2 = { dim: 'matDensity', internal: 'lbin3', units: { si: 'kgm3', us: 'lbin3' } }, M2 = { dim: 'mass', internal: 'lbm', units: { si: 'kg', us: 'lbm' } };
+      steps.push({ label: 'Thin-shell mass', lhs: 'm', eq: 'S\\,t\\,\\rho', sub: `(${R.Q(o.S, S2)})(${R.Q(v.t, T2)})(${R.Q(v.rho, D2)})`, res: R.Q(o.shellMass, M2) });
+    }
+    return [{
       title: 'Theory',
-      text: 'A tangent ogive is generated by rotating a circular arc of radius $a$ about the rocket axis. The arc is tangent to the body tube at the base and closes to a point at the tip, so the base radius $R$ and length $L$ fix the whole shape. With $x$ measured forward from the base, the local radius is $r(x)=R-a+\\sqrt{a^2-x^2}$. Surface area and its first moment follow from exact integrals of $dS=2\\pi a\\left(1+\\frac{R-a}{\\sqrt{a^2-x^2}}\\right)dx$ (C. P. Hoult, Ogive Nose memo, 2011).',
-      steps: [
-        { label: 'Defining-circle radius', lhs: 'a', eq: '\\frac{L^2+R^2}{2R}', sub: `\\frac{(${n(v.L)})^2+(${n(v.R)})^2}{2\\times${n(v.R)}}`, res: q(o.a) },
-        { label: 'Wetted (lateral) area', lhs: 'S', eq: '2\\pi a\\left[(R-a)\\sin^{-1}\\frac{L}{a}+L\\right]', sub: `2\\pi(${n(o.a)})\\left[(${n(v.R)}-${n(o.a)})\\sin^{-1}\\frac{${n(v.L)}}{${n(o.a)}}+${n(v.L)}\\right]`, res: q(o.S, 'in2') },
-        { label: 'First moment of area about the base', lhs: 'M', eq: '2\\pi a\\left[\\tfrac12L^2+(R-a)\\left(a-\\sqrt{a^2-L^2}\\right)\\right]', sub: `2\\pi(${n(o.a)})\\left[\\tfrac12(${n(v.L)})^2+(${n(v.R - o.a)})\\left(${n(o.a)}-\\sqrt{${n(o.a)}^2-${n(v.L)}^2}\\right)\\right]`, res: q(o.M, 'in3') },
-        { label: 'Area centroid, measured aft of the nose tip', lhs: '\\bar{x}', eq: 'L-\\frac{M}{S}', sub: `${n(v.L)}-\\frac{${n(o.M)}}{${n(o.S)}}`, res: q(o.xbar) },
-        { label: 'Tip half-angle and fineness', lhs: '\\theta_{tip}', eq: '\\sin^{-1}\\frac{L}{a}', sub: `\\sin^{-1}\\frac{${n(v.L)}}{${n(o.a)}}`, res: `${n(o.tipHalfAngle)}^{\\circ},\\qquad L/D=${n(o.fineness)}` },
-      ],
+      text: 'A tangent ogive is generated by rotating a circular arc of radius $a$ about the rocket axis. The arc is tangent to the body tube at the base and closes to a point at the tip, so the base radius $R$ and length $L$ fix the whole shape. With $x$ measured forward from the base, the local radius is $r(x)=R-a+\\sqrt{a^2-x^2}$. A surface strip of width $dx$ has area $dS=2\\pi a\\left(1+\\frac{R-a}{\\sqrt{a^2-x^2}}\\right)dx$; integrating it, and its moment $x\\,dS$, from base to tip gives the wetted area and its centroid in closed form.',
+      steps,
     }];
-    if (o.shellMass) s[0].steps.push({ label: 'Thin-shell mass (wall thickness × density × wetted area)', lhs: 'm', eq: 'S\\,t\\,\\rho', sub: `(${n(o.S)})(${n(v.t)})(${n(v.rho)})`, res: q(o.shellMass, 'lbm') });
-    return s;
   },
   references: ['ogive-nose', 'drag-coefficient3-4'],
   examples: [
-    { name: '6 in, 5-calibre ogive (memo example)', values: { R: 3, L: 30, dx: 2.5, t: 0, rho: 1.8 / 27.679904710203 } },
+    { name: '6 in, 5-calibre ogive', values: { R: 3, L: 30, dx: 2.5, t: 0, rho: 1.8 / 27.679904710203 } },
     { name: '4 in fibreglass nose, 4.5 calibre', values: { R: 2, L: 18, dx: 1, t: 0.08, rho: 1.8 / 27.679904710203 } },
     { name: '8 in aluminium nose, 6 calibre', values: { R: 4, L: 48, dx: 4, t: 0.063, rho: 2.7 / 27.679904710203 } },
   ],

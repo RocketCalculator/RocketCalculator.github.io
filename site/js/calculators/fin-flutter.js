@@ -12,13 +12,10 @@ export default {
   topic: 'fin-aeroelasticity',
   title: 'Fin Flutter Margin',
   subtitle: 'Will your fins flutter? A quick <b>bending-torsion flutter</b> check from planform, thickness, material stiffness and flight condition (NACA TN-4197).',
-  source: 'FLUTTER MARGIN1.xls · NACA TN-4197',
-  verified: { label: 'Matches workbook (8 cells)', title: 'All outputs of FLUTTER MARGIN1.xls (Gold Rush III case) reproduced to 1e-12.' },
   intro: {
     what: 'Estimates the Mach number at which a fin panel would flutter, and the margin of safety against the flight Mach number.',
     why: 'Flutter destroys fins in a fraction of a second — the Prospector P-8 was lost this way. Thin, soft, high-aspect-ratio fins are most at risk.',
     when: 'Choosing fin thickness and material, and checking the worst point of the trajectory (high speed at low altitude).',
-    typical: 'Gold Rush III: 1/8-inch aluminium fins, Mach 0.915 at 7,686 ft → flutter Mach 4.93, margin of safety 4.4.',
   },
   info: {
     text: [
@@ -49,7 +46,7 @@ export default {
         { id: 't', label: 'Thickness', sym: 't', ...LEN, default: 0.125, min: 0, minExclusive: true, slider: { min: 0.02, max: 0.5 },
           info: { text: 'Fin thickness (assumed uniform). The flutter Mach number rises with (t/c)^1.5, so thickness is the most effective fix.', range: '1/16–1/4 in (1.5–6 mm) plates are common on university rockets.', doc: 'geometry' } },
         { id: 'G', label: 'Shear modulus', sym: 'G', ...MOD, default: 3.8e6, min: 0, minExclusive: true,
-          info: { text: 'Shear modulus of the fin material (torsional stiffness). For composites use the in-plane shear modulus of the laminate, which can be far below the tensile modulus.', range: 'Aluminium 6061: 3.8×10⁶ psi (26 GPa), the workbook value. Check your material’s datasheet for others.', doc: 'correlation' } },
+          info: { text: 'Shear modulus of the fin material (torsional stiffness). For composites use the in-plane shear modulus of the laminate, which can be far below the tensile modulus.', range: 'Aluminium 6061: 3.8×10⁶ psi (26 GPa). Check your material’s datasheet for others.', doc: 'correlation' } },
       ],
     },
     {
@@ -60,7 +57,7 @@ export default {
         { id: 'h', label: 'Altitude (MSL)', sym: 'h', ...ALT, default: 7686, min: 0, max: 150000,
           info: { text: 'Altitude above sea level at that condition. Higher altitude means lower pressure and a higher flutter Mach number.', doc: 'correlation' } },
         { id: 'Tsl', label: 'Sea-level temperature (pressure ratio)', sym: 'T_{SL}', dim: 'temperature', internal: 'R', units: { si: 'K', us: 'R' }, default: 551.8, min: 350, max: 650,
-          info: { text: 'Sea-level temperature used in the workbook’s pressure-ratio formula. The workbook uses 551.8 °R (a hot 92 °F day); the standard day is 518.67 °R.', tex: '\\frac{p}{p_0}=\\Big(1-\\frac{0.0035662\\,h}{T_{SL}}\\Big)^{5.2575}', doc: 'correlation' } },
+          info: { text: 'Sea-level temperature used in the pressure ratio. The default 551.8 °R (92 °F) is a hot day; a standard day is 518.67 °R (15 °C).', tex: '\\frac{p}{p_0}=\\Big(1-\\frac{0.0035662\\,h}{T_{SL}}\\Big)^{5.2575}', doc: 'correlation' } },
       ],
     },
   ],
@@ -68,7 +65,7 @@ export default {
     { id: 'MS', label: 'Margin of safety', sym: '\\mathrm{MS}', dim: 'none', key: true, digits: 4,
       status: (v) => (v < 0 ? 'err' : v < 0.5 ? 'warn' : 'ok'),
       note: (v) => (v < 0 ? 'Flutter predicted below the flight Mach number' : v < 0.5 ? 'Positive but thin — consider thicker or stiffer fins' : 'Comfortable margin'),
-      info: { text: 'How far the flutter Mach number is above the flight Mach number, as a fraction. Negative means flutter is predicted. (The 0.5 “thin margin” highlight is this site’s guidance, not a value from the source.)', tex: 'MS=\\frac{M_f-M}{M}', doc: 'margin' } },
+      info: { text: 'How far the flutter Mach number is above the flight Mach number, as a fraction. Negative means flutter is predicted.', tex: 'MS=\\frac{M_f-M}{M}', doc: 'margin' } },
     { id: 'Mf', label: 'Flutter Mach number', sym: 'M_f', dim: 'none', key: true, digits: 4,
       info: { text: 'Mach number at which the correlation predicts bending-torsion flutter at this altitude.', tex: 'M_f=\\sqrt{G\\big/\\big(X\\tfrac{\\lambda+1}{2}\\tfrac{p}{p_0}\\big)}', doc: 'correlation' } },
     { id: 'tMin', label: 'Thickness for zero margin', sym: 't_{min}', ...LEN, key: true,
@@ -162,28 +159,41 @@ export default {
       onKey: (dx) => ctx.setValue('cR', v.cR * (1 - 0.02 * dx)),
     });
   },
-  reportNotes: ['Equations are evaluated in the workbook’s units (inches, psi, feet); the inputs and results tables use your selected unit system.', 'The NACA TN-4197 correlation is an approximate design guide; confirm critical designs by analysis or test.'],
+  reportNotes: ['The NACA TN-4197 correlation is an approximate design guide; confirm critical designs by analysis or test.'],
+  symbols: {
+    c_R: 'root chord of the fin panel', c_T: 'tip chord', b: 'exposed semispan (body surface to tip)', t: 'fin thickness', G: 'shear modulus of the fin material',
+    M: 'flight Mach number', h: 'altitude above sea level', 'T_{SL}': 'sea-level temperature used in the pressure ratio', '\\lambda': 'taper ratio', S: 'area of one exposed panel',
+    '\\mathit{AR}': 'panel aspect ratio', 'c_{0.75}': 'chord at 75 % of the semispan', 't/c': 'thickness ratio', X: 'geometric flutter parameter', 'p/p_0': 'ratio of static pressure to sea-level pressure',
+    M_f: 'flutter Mach number', '\\mathrm{MS}': 'margin of safety against flutter', 't_{min}': 'thickness giving zero margin', 'X_{crit}': 'value of $X$ at which $M_f=M$', K_X: 'correlation constant (39.3 psi)', k_p: 'lapse constant of the pressure-ratio law',
+  },
+  constants: [
+    { sym: 'K_X', desc: 'flutter correlation constant', si: [39.3 * 6894.757293, '\\mathrm{Pa}'], us: [39.3, '\\mathrm{psi}'] },
+    { sym: 'k_p', desc: 'lapse constant in the pressure ratio', si: [0.0035662 * (5 / 9) / 0.3048, '\\mathrm{K\\,m^{-1}}'], us: [0.0035662, '{}^{\\circ}\\mathrm{R\\,ft^{-1}}'] },
+  ],
   report(v, out, R) {
-    const o = out.o, n = R.n, q = R.q;
+    const o = out.o, n = R.n;
+    const Ls = { dim: 'length', internal: 'in' }, As = { dim: 'area', internal: 'in2', units: { si: 'mm2', us: 'in2' } }, H = { dim: 'altitude', internal: 'ft' }, Gs = { dim: 'modulus', internal: 'psi', units: { si: 'Pa', us: 'psi' } }, Ts = { dim: 'temperature', internal: 'R', units: { si: 'K', us: 'R' } };
+    const l = (x) => R.v(x, Ls), KX = R.pick(n(39.3 * 6894.757293, 6), '39.3'), kp = R.pick(n(0.0035662 * (5 / 9) / 0.3048, 5), '0.0035662');
+    const Xs = R.pick(o.X * 6894.757293, o.X);
     return [{
       title: 'Theory',
-      text: 'Bending–torsion flutter is a self-excited vibration in which the fin’s bending and twisting modes couple with the airflow. The NACA TN-4197 correlation (D. J. Martin, 1958), as implemented in FLUTTER MARGIN1.xls, predicts the flutter Mach number of a cantilevered fin panel from its aspect ratio, taper, thickness ratio at 75 % span, material shear modulus $G$ and the air pressure ratio; the margin of safety compares it with the flight Mach number.',
+      text: 'Bending–torsion flutter is a self-excited vibration in which the bending and twisting modes of a fin couple with the airflow and draw energy from it. The NACA TN-4197 correlation (D. J. Martin, 1958) summarises flight and wind-tunnel experience: the flutter Mach number $M_f$ of a cantilevered panel rises with the square root of the shear modulus $G$ and with $(t/c)^{3/2}$, and falls with aspect ratio and with air pressure. The thickness ratio is taken at 75 % of the semispan. The margin of safety compares $M_f$ with the flight Mach number $M$.',
       steps: [
-        { label: 'Panel geometry', lhs: '\\lambda', eq: '\\frac{c_T}{c_R}', sub: `\\frac{${n(v.cT)}}{${n(v.cR)}}`, res: n(o.lambda) },
-        { lhs: 'S', eq: '\\frac{(c_R+c_T)\\,b}{2}', sub: `\\frac{(${n(v.cR)}+${n(v.cT)})\\times${n(v.b)}}{2}`, res: q(o.S, 'in2') },
-        { lhs: '\\mathit{AR}', eq: '\\frac{b^2}{S}', sub: `\\frac{${n(v.b)}^2}{${n(o.S)}}`, res: n(o.AR) },
-        { label: 'Effective chord and thickness ratio', lhs: 'c_{0.75}', eq: '\\tfrac14 c_R+\\tfrac34 c_T', sub: `\\tfrac14(${n(v.cR)})+\\tfrac34(${n(v.cT)})`, res: `${q(o.c75, 'in')},\\qquad t/c=${n(o.tc)}` },
-        { label: 'Geometric parameter', lhs: 'X', eq: '\\frac{39.3\\,\\mathit{AR}^3}{(t/c)^3(\\mathit{AR}+2)}', sub: `\\frac{39.3\\times${n(o.AR)}^3}{${n(o.tc)}^3\\times(${n(o.AR)}+2)}`, res: n(o.X) },
-        { label: 'Pressure ratio at the flight altitude', lhs: '\\frac{p}{p_0}', eq: '\\left(1-\\frac{0.0035662\\,h}{T_{SL}}\\right)^{5.2575}', sub: `\\left(1-\\frac{0.0035662\\times${n(v.h)}}{${n(v.Tsl)}}\\right)^{5.2575}`, res: n(o.pr) },
-        { label: 'Flutter Mach number', lhs: 'M_f', eq: '\\sqrt{\\frac{G}{X\\,\\frac{\\lambda+1}{2}\\,\\frac{p}{p_0}}}', sub: `\\sqrt{\\frac{${n(v.G)}}{${n(o.X)}\\times\\frac{${n(o.lambda)}+1}{2}\\times${n(o.pr)}}}`, res: n(o.Mf, 4) },
-        { label: 'Margin of safety', lhs: '\\mathrm{MS}', eq: '\\frac{M_f-M}{M}', sub: `\\frac{${n(o.Mf)}-${n(v.M)}}{${n(v.M)}}`, res: n(o.MS, 4), note: o.MS < 0 ? 'Negative margin: flutter is predicted below the flight Mach number.' : 'Positive margin: no flutter predicted at this condition.' },
-        { label: 'Thickness that would give zero margin', lhs: 't_{min}', eq: 'c_{0.75}\\left[\\frac{39.3\\,\\mathit{AR}^3}{X_{crit}(\\mathit{AR}+2)}\\right]^{1/3},\\ X_{crit}=\\frac{G}{M^2\\frac{\\lambda+1}{2}\\frac{p}{p_0}}', res: q(o.tMin, 'in') },
+        { label: 'Taper ratio', lhs: '\\lambda', eq: '\\frac{c_T}{c_R}', sub: `\\frac{${l(v.cT)}}{${l(v.cR)}}`, res: n(o.lambda) },
+        { label: 'Panel area', lhs: 'S', eq: '\\frac{(c_R+c_T)\\,b}{2}', sub: `\\frac{(${l(v.cR)}+${l(v.cT)})\\times${l(v.b)}}{2}`, res: R.Q(o.S, As) },
+        { label: 'Panel aspect ratio', lhs: '\\mathit{AR}', eq: '\\frac{b^2}{S}', sub: `\\frac{(${l(v.b)})^2}{${R.v(o.S, As)}}`, res: n(o.AR) },
+        { label: 'Chord at 75 % semispan and thickness ratio', lhs: 'c_{0.75}', eq: '\\tfrac14 c_R+\\tfrac34 c_T', sub: `\\tfrac14(${l(v.cR)})+\\tfrac34(${l(v.cT)})`, res: `${R.Q(o.c75, Ls)},\\qquad t/c=\\frac{${l(v.t)}}{${l(o.c75)}}=${n(o.tc)}` },
+        { label: 'Geometric flutter parameter', lhs: 'X', eq: '\\frac{K_X\\,\\mathit{AR}^3}{(t/c)^3(\\mathit{AR}+2)}', sub: `\\frac{${KX}\\times${n(o.AR)}^3}{${n(o.tc)}^3\\times(${n(o.AR)}+2)}`, res: `${n(Xs)}\\,${R.pick('\\mathrm{Pa}', '\\mathrm{psi}')}` },
+        { label: 'Pressure ratio at the flight altitude', lhs: '\\frac{p}{p_0}', eq: '\\left(1-\\frac{k_p\\,h}{T_{SL}}\\right)^{5.2575}', sub: `\\left(1-\\frac{${kp}\\times${R.v(v.h, H)}}{${R.v(v.Tsl, Ts)}}\\right)^{5.2575}`, res: n(o.pr) },
+        { label: 'Flutter Mach number', lhs: 'M_f', eq: '\\sqrt{\\frac{G}{X\\,\\frac{\\lambda+1}{2}\\,\\frac{p}{p_0}}}', sub: `\\sqrt{\\frac{${R.v(v.G, Gs)}}{${n(Xs)}\\times\\frac{${n(o.lambda)}+1}{2}\\times${n(o.pr)}}}`, res: n(o.Mf, 4) },
+        { label: 'Margin of safety', lhs: '\\mathrm{MS}', eq: '\\frac{M_f-M}{M}', sub: `\\frac{${n(o.Mf)}-${n(v.M)}}{${n(v.M)}}`, res: n(o.MS, 4), note: o.MS < 0 ? 'The margin is negative: flutter is predicted below the flight Mach number.' : 'The margin is positive: no flutter is predicted at this condition.' },
+        { label: 'Thickness that would give zero margin ($M_f=M$)', lhs: 't_{min}', eq: 'c_{0.75}\\left[\\frac{K_X\\,\\mathit{AR}^3}{X_{crit}(\\mathit{AR}+2)}\\right]^{1/3},\\qquad X_{crit}=\\frac{G}{M^2\\frac{\\lambda+1}{2}\\frac{p}{p_0}}', res: R.Q(o.tMin, Ls) },
       ],
     }];
   },
   references: ['fin-aeroelasticity'],
   examples: [
-    { name: 'Gold Rush III, 1/8 in aluminium (workbook)', values: { cR: 10, cT: 2, b: 5.5, t: 0.125, G: 3.8e6, M: 0.915, h: 7686, Tsl: 551.8 } },
+    { name: 'Gold Rush III, 1/8 in aluminium', values: { cR: 10, cT: 2, b: 5.5, t: 0.125, G: 3.8e6, M: 0.915, h: 7686, Tsl: 551.8 } },
     { name: 'Thin high-aspect fin at Mach 2 (illustrative)', values: { cR: 8, cT: 4, b: 8, t: 0.0625, G: 3.8e6, M: 2.0, h: 3000, Tsl: 518.67 } },
   ],
 };

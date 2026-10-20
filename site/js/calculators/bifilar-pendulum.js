@@ -13,13 +13,10 @@ export default {
   topic: 'bifilar-pendulum',
   title: 'Bifilar Pendulum Inertia',
   subtitle: 'Measure a rocket’s <b>pitch/yaw moment of inertia</b> by hanging it level from two wires and timing two kinds of swing.',
-  source: 'Bifilar Pendulum memo (2009)',
-  verified: { label: 'Checked against memo cases', title: 'Reproduces the memo’s uniform-rod period ratios (0.577 and 1.155) and recovers the rod inertia exactly by both formulas.' },
   intro: {
     what: 'Turns two stopwatch periods — the yaw (twisting) swing and the side-to-side swing — into the as-built moment of inertia.',
     why: 'Pitch/yaw inertia sets the rocket’s short-period dynamics, roll lock-in margins and the response to thrust misalignment.',
     when: 'After assembly, to measure flight hardware the way you weigh it — instead of trusting a component-by-component estimate.',
-    typical: 'For a 2.4 m, 20 kg rocket the uniform-rod estimate is mL²/12 = 9.6 kg·m² (k = 0.69 m); the measurement shows how far the real mass distribution departs from it.',
   },
   info: {
     text: [
@@ -72,17 +69,17 @@ export default {
   ],
   results: [
     { id: 'I_periods', label: 'Moment of inertia', sym: 'I', ...INERTIA, key: true,
-      info: { text: 'Pitch/yaw moment of inertia about the CG, from the ratio of the two measured periods (memo result).', tex: 'I=m\\,x_1x_2\\,P_Y^2/P_G^2', doc: 'analysis' } },
+      info: { text: 'Pitch/yaw moment of inertia about the CG, from the ratio of the two measured periods.', tex: 'I=m\\,x_1x_2\\,P_Y^2/P_G^2', doc: 'analysis' } },
     { id: 'k', label: 'Radius of gyration', sym: 'k', ...D, key: true,
       note: (v, o, val) => (val.Lrod > 0 ? `${fmt((100 * v) / val.Lrod, { digits: 3 })} % of length` : ''),
       info: { text: 'Distance at which all the mass could be concentrated to give the same inertia: I = m k².', tex: 'k=\\sqrt{I/m}', doc: 'design' } },
     { id: 'ratio', label: 'Period ratio', sym: 'P_Y/P_G', dim: 'none', key: true, digits: 4,
       status: (r) => (r > 0.8 && r < 1.25 ? 'warn' : 'ok'),
       note: (r) => (r > 0.8 && r < 1.25 ? 'Close to 1 — modes hard to separate' : 'Modes well separated'),
-      info: { text: 'Square root of k²/(x₁x₂). Near 1 the yaw and swing modes resonate and are easily confused. (The 0.8–1.25 warning band is this site’s guidance, not a value from the memo.)', tex: '\\frac{P_Y}{P_G}=\\frac{k}{\\sqrt{x_1x_2}}', doc: 'design' } },
+      info: { text: 'Square root of k²/(x₁x₂). Near 1 the yaw and swing modes resonate and are easily confused.', tex: '\\frac{P_Y}{P_G}=\\frac{k}{\\sqrt{x_1x_2}}', doc: 'design' } },
     { id: 'I_length', label: 'Inertia from wire length (cross-check)', sym: 'I_l', ...INERTIA,
       info: { text: 'Same yaw dynamics, but using the wire length and g instead of the swing period. Should agree with the main result if the rig is good.', tex: 'I=\\frac{m g x_1x_2P_Y^2}{4\\pi^2 l}', doc: 'analysis' } },
-    { id: 'PG_theory', label: 'Predicted swing period', sym: '2\\pi\\sqrt{l/g}', ...T,
+    { id: 'PG_theory', label: 'Predicted swing period', sym: 'P_{G,pred}', ...T,
       info: { text: 'Galilean pendulum period for the given wire length. Compare with your measured $P_{G}$.', tex: 'P_G=2\\pi\\sqrt{l/g}', doc: 'analysis' } },
     { id: 'PG_error', label: 'Measured vs predicted swing period', dim: 'percent', internal: 'pct',
       info: { text: 'Percentage difference between measured and predicted swing period — a quick check on wire length and timing.', doc: 'analysis' } },
@@ -102,7 +99,7 @@ export default {
   plots: [
     {
       id: 'separation', title: 'Mode separation vs wire spacing',
-      info: { text: 'Period ratio for symmetric wires ($x_1$ = $x_2$ = d) with your rocket’s radius of gyration. Ratios near 1 risk timing the wrong mode; the memo recommends wires close to the CG.', doc: 'design' },
+      info: { text: 'Period ratio for symmetric wires ($x_1$ = $x_2$ = d) with your rocket’s radius of gyration. Ratios near 1 risk timing the wrong mode; keep the wires close to the CG.', doc: 'design' },
       build(v, out, { U }) {
         const ud = U(D), k = out.o.k;
         const dmax = Math.max(2.2 * k, 1.3 * Math.max(v.x1, v.x2));
@@ -130,7 +127,7 @@ export default {
   schematicTitle: 'Test rig (side view, wires not to scale) and yaw motion (top view)',
   schematicHint: 'Drag the wire attachments',
   schematic(ctx, v, out) {
-    const W = 760, H = 345;
+    const W = 760, H = 400;
     const fr = ctx.frame({ width: W, height: H, label: 'Bifilar pendulum rig' });
     const g = fr.layer('main'); g.replaceChildren();
     const ud = ctx.U(D), L = v.Lrod > 0 ? v.Lrod : 2.5 * (v.x1 + v.x2);
@@ -190,20 +187,30 @@ export default {
     g.append(text(tx + 10, 280, `P_Y = ${fmt(v.PY, { digits: 3 })} s (animated)`, { cls: 'sc-dim-text', size: 10, field: 'PY' }));
     g.append(text(tx + 10, 294, `I = ${fmt(ctx.U(INERTIA).v(out.o.I_periods), { digits: 4 })} ${ctx.U(INERTIA).label}`, { cls: 'sc-dim-text', size: 10 }));
   },
-  reportNotes: ['Equations are evaluated in SI units (kg, m, s); the inputs and results tables use your selected unit system.'],
+  symbols: {
+    m: 'mass of the suspended hardware', x_1: 'horizontal distance from the CG to the forward wire', x_2: 'horizontal distance from the CG to the aft wire',
+    l: 'length of each suspension wire', g: 'local acceleration of gravity', P_Y: 'measured period of the yaw (twisting) oscillation', P_G: 'measured period of the sideways (Galilean) swing',
+    I: 'pitch/yaw moment of inertia about the CG', I_l: 'moment of inertia from the wire-length formula (cross-check)', T_1: 'tension in the forward wire', T_2: 'tension in the aft wire',
+    k: 'radius of gyration, $\\sqrt{I/m}$', '\\omega_Y': 'yaw natural frequency', '\\omega_G': 'swing natural frequency', '\\psi': 'small yaw angle', L: 'overall length of the rocket',
+  },
   report(v, out, R) {
-    const o = out.o, n = R.n, q = R.q;
+    const o = out.o, n = R.n;
+    const M = { dim: 'mass', internal: 'kg', units: { si: 'kg', us: 'slug' } }, D = { dim: 'distance', internal: 'm' }, T = { dim: 'time', internal: 's' }, G = { dim: 'accel', internal: 'ms2' }, I = { dim: 'inertia', internal: 'kgm2' }, F = { dim: 'force', internal: 'N' };
+    const m = R.v(v.m, M), x1 = R.v(v.x1, D), x2 = R.v(v.x2, D), l = R.v(v.l, D), g = R.v(v.g, G), PY = n(v.PY), PG = n(v.PG);
+    const steps = [
+      ...(R.us ? [{ label: 'Mass in slugs (so that inertia comes out in slug·ft²)', lhs: 'm', eq: `\\frac{${R.v(v.m, { dim: 'mass', internal: 'kg' })}\\,\\mathrm{lb}}{32.174}`, res: R.Q(v.m, M) }] : []),
+      { label: 'Wire tensions from statics', lhs: 'T_1', eq: '\\frac{m g\\,x_2}{x_1+x_2}', sub: `\\frac{${m}\\times${g}\\times${x2}}{${x1}+${x2}}`, res: `${R.Q(o.T1, F)},\\qquad T_2=\\frac{m g\\,x_1}{x_1+x_2}=${R.Q(o.T2, F)}` },
+      { label: 'Yaw and swing natural frequencies', lhs: '\\omega_Y^2', eq: '\\frac{m g\\,x_1x_2}{I\\,l},\\qquad \\omega_G^2=\\frac{g}{l}' },
+      { label: 'Moment of inertia from the two measured periods ($\\omega=2\\pi/P$, $g/l$ eliminated)', lhs: 'I', eq: 'm\\,x_1x_2\\,\\frac{P_Y^2}{P_G^2}', sub: `${m}\\times${x1}\\times${x2}\\times\\frac{${PY}^2}{${PG}^2}`, res: R.Q(o.I_periods, I) },
+      { label: 'Cross-check using the wire length', lhs: 'I_l', eq: '\\frac{m g\\,x_1x_2\\,P_Y^2}{4\\pi^2 l}', sub: `\\frac{${m}\\times${g}\\times${x1}\\times${x2}\\times${PY}^2}{4\\pi^2\\times${l}}`, res: R.Q(o.I_length, I) },
+      { label: 'Predicted swing period (check on wire length and timing)', lhs: 'P_G', eq: '2\\pi\\sqrt{l/g}', sub: `2\\pi\\sqrt{${l}/${g}}`, res: `${R.Q(o.PG_theory, T)}\\quad(\\text{measured } ${PG}\\,\\mathrm{s},\\ ${n(100 * o.PG_error, 3)}\\%)` },
+      { label: 'Radius of gyration', lhs: 'k', eq: '\\sqrt{I/m}', sub: `\\sqrt{${R.v(o.I_periods, I)}/${m}}`, res: R.Q(o.k, D) },
+      { label: 'Mode separation (must not be close to 1)', lhs: '\\frac{P_Y}{P_G}', eq: '\\frac{k}{\\sqrt{x_1x_2}}', sub: `\\frac{${R.v(o.k, D)}}{\\sqrt{${x1}\\times${x2}}}`, res: n(o.ratio, 4) },
+    ];
     return [{
       title: 'Theory',
-      text: 'The rocket hangs level from two equal vertical wires at distances $x_1$ and $x_2$ either side of its centre of gravity. Static equilibrium gives the wire tensions; for a small yaw angle $\\psi$ the horizontal components of the tensions produce a restoring torque $mg\\psi x_1x_2/l$, so the yaw natural frequency is $\\omega_Y^2=mgx_1x_2/(Il)$. The same rig swung sideways is a simple pendulum with $\\omega_G^2=g/l$. Dividing the two eliminates $g/l$ (C. P. Hoult, Moment of Inertia Measurement with a Bifilar Pendulum, 2009).',
-      steps: [
-        { label: 'Wire tensions (statics)', lhs: 'T_1', eq: '\\frac{m g\\,x_2}{x_1+x_2}', sub: `\\frac{${n(v.m)}\\times${n(v.g)}\\times${n(v.x2)}}{${n(v.x1)}+${n(v.x2)}}`, res: `${q(o.T1, 'N')},\\quad T_2=${q(o.T2, 'N')}` },
-        { label: 'Moment of inertia from the two measured periods', lhs: 'I', eq: 'm\\,x_1x_2\\,\\frac{P_Y^2}{P_G^2}', sub: `${n(v.m)}\\times${n(v.x1)}\\times${n(v.x2)}\\times\\frac{${n(v.PY)}^2}{${n(v.PG)}^2}`, res: q(o.I_periods, 'kgm2') },
-        { label: 'Cross-check using the wire length', lhs: 'I_l', eq: '\\frac{m g\\,x_1x_2\\,P_Y^2}{4\\pi^2 l}', sub: `\\frac{${n(v.m)}\\times${n(v.g)}\\times${n(v.x1)}\\times${n(v.x2)}\\times${n(v.PY)}^2}{4\\pi^2\\times${n(v.l)}}`, res: q(o.I_length, 'kgm2') },
-        { label: 'Predicted swing period (check on wire length and timing)', lhs: 'P_G', eq: '2\\pi\\sqrt{l/g}', sub: `2\\pi\\sqrt{${n(v.l)}/${n(v.g)}}`, res: `${q(o.PG_theory, 's')}\\quad(\\text{measured } ${q(v.PG, 's')},\\ ${n(100 * o.PG_error, 3)}\\%)` },
-        { label: 'Radius of gyration', lhs: 'k', eq: '\\sqrt{I/m}', sub: `\\sqrt{${n(o.I_periods)}/${n(v.m)}}`, res: q(o.k, 'm') },
-        { label: 'Mode separation (should not be close to 1)', lhs: '\\frac{P_Y}{P_G}', eq: '\\frac{k}{\\sqrt{x_1x_2}}', sub: `\\frac{${n(o.k)}}{\\sqrt{${n(v.x1)}\\times${n(v.x2)}}}`, res: n(o.ratio, 4) },
-      ],
+      text: 'The rocket hangs level from two equal vertical wires of length $l$, attached at distances $x_1$ and $x_2$ either side of its centre of gravity. Statics gives the wire tensions. For a small yaw angle $\\psi$ each wire leans by $x_i\\psi/l$, so the horizontal components of the tensions produce a restoring torque $mg\\psi x_1x_2/l$ and the yaw natural frequency is $\\omega_Y^2=mgx_1x_2/(Il)$. The same rig swung sideways is a simple pendulum with $\\omega_G^2=g/l$. Dividing one by the other eliminates $g/l$, so the inertia follows from the two measured periods. The two modes are coupled; if their periods are close the wrong one is easily timed.',
+      steps,
     }];
   },
   references: ['bifilar-pendulum'],

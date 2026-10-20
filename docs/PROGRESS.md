@@ -23,3 +23,9 @@
   Export report box on every calculator (`js/ui/report.js` + `report()` in each definition): inputs, theory, each equation
   symbolic → substituted → result, results, notes, references; Markdown, LaTeX (all 7 compile with pdflatex),
   Word (.doc / rich copy with MathML) and print-to-PDF.
+- 2026-10-20 — Decluttered calculator pages (no source/verification chips, no "typical output" card, no fidelity switch,
+  no workbook remarks; drawing hints moved into ⓘ). Vector PDF and EPS export (`js/ui/vector.js`, no library).
+  ⓘ formulas list their symbols ("where"); ⓘ diagrams zoom onto the selected dimension and fade the rest.
+  Reports: combined "Symbols and inputs" table, constants listed, every substitution in the selected SI or US units
+  (constants converted); Word .doc download removed (rich "Copy for Word / Google Docs" kept). All 14 LaTeX reports
+  (7 calculators × SI/US) compile with pdflatex. Ctrl K hint and PDR band removed; footer gap fixed.

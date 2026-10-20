@@ -79,9 +79,9 @@ export async function mountHome() {
       h('div.hero-art', heroArt())));
 
   const steps = [
-    ['Pick a calculator', 'Choose from the grid below or press <kbd>Ctrl K</kbd> / <kbd>/</kbd> to search by name, topic or reference.'],
+    ['Pick a calculator', 'Choose one from the grid below, or use Search in the top bar to find a calculator, topic or reference.'],
     ['Enter your rocket', 'Every page opens with a worked example. Change the outlined inputs — results update as you type.'],
-    ['Read results & plots', 'Key results sit on top; the to-scale schematic and plots react to every change. Export plots as CSV, SVG, PNG, JPEG or PDF, and the whole calculation as a report.'],
+    ['Read results & plots', 'Key results sit on top; the to-scale drawing and plots react to every change. Export any plot, and the whole calculation as a report.'],
     ['Press ⓘ for theory', 'Every input and result has an ⓘ: a short explanation, the formula and a walk-through, with a link to the full documentation.'],
   ];
   const guide = h('section.section.reveal#guide',
@@ -128,7 +128,7 @@ export async function mountHome() {
     h('div.wrap',
       h('div.section-head', h('div', h('p.eyebrow', 'Getting around'), h('h2', 'Moving between calculators'))),
       h('div.nav-guide',
-        h('div.card', h('h3', 'Search anywhere'), h('p', { html: 'Press <kbd>Ctrl K</kbd> (<kbd>⌘K</kbd> on Mac) or <kbd>/</kbd> on any page to jump to a calculator, a theory page or a reference document.' })),
+        h('div.card', h('h3', 'Search anywhere'), h('p', 'Use Search in the top bar on any page to jump to a calculator, a theory page or a reference document.')),
         h('div.card', h('h3', 'Breadcrumbs & next/previous'), h('p', 'Each calculator shows where it sits (Home / area / calculator) and links to the previous and next calculator at the bottom of the page.')),
         h('div.card', h('h3', 'Theory in a side panel'), h('p', 'The ⓘ buttons open a side panel without leaving the calculator. “Open full documentation” opens the complete derivation in a new tab, at the right section.'))),
       h('div.card.card-pad', { style: 'margin-top:14px' },
@@ -145,12 +145,7 @@ export async function mountHome() {
           h('a', { href: 'http://www.rsandt.com/reports.html', rel: 'noopener' }, 'rsandt.com/reports'),
           ' by C. P. Hoult and his students at CSULB and CSULA. Where a spreadsheet and its memo disagree, the calculator uses the memo and offers a “Match original spreadsheet” switch; every such difference is listed on the documentation page.'))));
 
-  const band = h('section.hero-band-red',
-    h('div.wrap',
-      h('h2', 'Writing your PDR or FDR?'),
-      h('p', 'Every calculator ends with an Export report box: your inputs, the theory, each equation with your numbers substituted, results and references — ready to paste as Markdown, LaTeX or Word, or print to PDF. Every plot exports as CSV, SVG, PNG, JPEG or PDF.'),
-      h('a.btn', { href: url('calculators/subsonic-cp.html#report') }, 'See an example report')));
-  main.append(hero, guide, band, calcs, nav);
+  main.append(hero, guide, calcs, nav);
   renderGrid();
   reveal(main);
   if (location.hash) document.querySelector(location.hash)?.scrollIntoView();

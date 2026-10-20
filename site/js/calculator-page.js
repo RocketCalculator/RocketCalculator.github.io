@@ -9,7 +9,7 @@ import { chartCard } from './ui/chart.js';
 import { frame } from './ui/svg.js';
 import { renderAll, loadKatex, texHTML, rich, texToPlain } from './math.js';
 import { exportMenu, exportFigure } from './ui/export.js';
-import { reportCard } from './ui/report.js';
+import { reportCard, symbolsIn } from './ui/report.js';
 
 const clone = (v) => JSON.parse(JSON.stringify(v));
 
@@ -36,6 +36,7 @@ export async function mountCalculator(def) {
     try { return JSON.parse(decodeURIComponent(m[1])); } catch { return null; }
   };
   Object.assign(state.values, storage.get(storeKey) || {}, fromHash() || {});
+  state.values.__compat = false;
 
   // ---------- info helpers ----------
   const infoFor = (f) => {
@@ -46,38 +47,27 @@ export async function mountCalculator(def) {
       title: f.label + (f.sym ? ` $${f.sym}$` : '') + (u ? ` ($${u}$)` : ''),
       diagram: () => schematicDiagram([f.id, ...(i.fields || [])], f),
       text: i.text || f.help,
-      tex: i.tex, texNote: i.texNote, steps: i.steps,
+      tex: i.tex, texNote: i.texNote, steps: i.steps, where: whereList(i.tex),
       range: typeof i.range === 'function' ? i.range(getSystem()) : i.range,
       doc: docHref(i.doc || def.docAnchor || ''),
     };
   };
-  const pageInfo = () => ({ eyebrow: 'Calculator', title: def.title, ...def.info, diagram: () => schematicDiagram([]), doc: docHref(def.info?.doc || '') });
+  const pageInfo = () => ({ eyebrow: 'Calculator', title: def.title, ...def.info, where: whereList(def.info?.tex), diagram: () => schematicDiagram([]), doc: docHref(def.info?.doc || '') });
+  const whereList = (tex) => symbolsIn(tex, def.symbols || {});
 
   // ---------- layout ----------
-  const badges = h('div.calc-badges',
-    h('span.chip.ok', h('span.dot'), 'Available'),
-    def.source ? h('span.chip', { title: 'Original spreadsheet / memo this calculator was ported from' }, 'Source: ', def.source) : null,
-    def.verified ? h('span.chip.accent', { title: def.verified.title || '' }, '✓ ', def.verified.label) : null);
   const intro = h('div.intro-grid',
-    ['what', 'why', 'when', 'typical'].map((k) => def.intro?.[k] ? h('div.card', h('h3', { what: 'What it does', why: 'Why it matters', when: 'When to use it', typical: 'Typical output' }[k]), h('p', { html: rich(def.intro[k], { html: true }) })) : null));
+    ['what', 'why', 'when'].map((k) => def.intro?.[k] ? h('div.card', h('h3', { what: 'What it does', why: 'Why it matters', when: 'When to use it' }[k]), h('p', { html: rich(def.intro[k], { html: true }) })) : null));
 
   const resetBtn = h('button.btn.small', { type: 'button', title: 'Restore default inputs' }, ICONS.reset(), 'Reset');
   const exampleSel = def.examples?.length > 1 ? h('select.btn.small', { 'aria-label': 'Load example' }, h('option', { value: '' }, 'Load example…'), def.examples.map((e, i) => h('option', { value: i }, e.name))) : null;
   const exampleBtn = def.examples?.length === 1 ? h('button.btn.small', { type: 'button' }, 'Load example') : null;
   const linkBtn = h('button.btn.small.ghost', { type: 'button', title: 'Copy a link that reproduces these inputs' }, ICONS.link(), 'Share');
   const form = buildForm(def, state, { onChange: (id, o) => (o?.fast ? recompute() : recomputeSoon()), onHighlight: highlight, infoFor });
-  const compatBox = def.compat ? (() => {
-    const cb = h('input', { type: 'checkbox', id: 'f-__compat', role: 'switch' });
-    cb.checked = !!state.values.__compat;
-    cb.addEventListener('change', () => { state.values.__compat = cb.checked; recompute(); });
-    return h('div.compat', h('div.field.bool', h('label', { for: 'f-__compat' }, def.compat.label || 'Match original spreadsheet',
-      infoButton({ eyebrow: 'Fidelity', title: def.compat.label || 'Match original spreadsheet', text: def.compat.info, doc: docHref('known-differences') }, { label: 'fidelity switch' })),
-      h('span.switch', cb, h('span'))), h('p', { html: rich(def.compat.note, { html: true }) }));
-  })() : null;
+  const compatBox = null;
   const inputsCard = h('aside.card.calc-inputs', { 'aria-label': 'Inputs' },
     h('div.card-head', h('h2', 'Inputs'), h('span.spacer'), h('div.form-actions', exampleSel, exampleBtn, resetBtn, linkBtn)),
-    h('div.form-scroll', form.el, compatBox, h('p.muted', { style: 'font-size:.78rem;margin:14px 0 0' },
-      'Outlined fields are inputs; dark cards are key results. Values update live and are remembered on this device.')));
+    h('div.form-scroll', form.el));
 
   const warnBox = h('div.warnings', { 'aria-live': 'polite' });
   const keyBox = h('div.key-results', { 'aria-live': 'polite' });
@@ -94,12 +84,13 @@ export async function mountCalculator(def) {
   };
   animBtn.addEventListener('click', () => { storage.set(ANIM_KEY, !storage.get(ANIM_KEY, false)); syncAnim(); });
   const schemCard = def.schematic ? h('section.card',
-    h('div.card-head', h('h3', def.schematicTitle || 'Schematic'), def.schematicInfo ? infoButton(def.schematicInfo, { label: 'schematic' }) : null, h('span.spacer'),
-      h('span.muted', { style: 'font-size:.8rem' }, def.schematicHint || 'Hover a dimension to find its input'), animBtn,
-      exportMenu({ formats: ['svg', 'png', 'jpeg', 'pdf'], onExport: (f) => { const el = schemHost.querySelector('svg.schem'); if (el) exportFigure(el, f, `${def.slug}-schematic`); } })), schemHost) : null;
+    h('div.card-head', h('h3', def.schematicTitle || 'Schematic'),
+      infoButton(() => ({ eyebrow: 'Drawing', title: def.schematicTitle || 'Schematic', text: [def.schematicHint ? def.schematicHint + '.' : '', 'Hover a dimension to find its input; click it to jump there. The drawing updates with every change.', ...(def.schematicInfo?.text ? [def.schematicInfo.text] : [])].filter(Boolean), doc: docHref(def.info?.doc || '') }), { label: 'drawing' }),
+      h('span.spacer'), animBtn,
+      exportMenu({ formats: ['svg', 'pdf', 'eps', 'png', 'jpeg'], onExport: (f) => { const el = schemHost.querySelector('svg.schem'); if (el) exportFigure(el, f, `${def.slug}-schematic`); } })), schemHost) : null;
   const plotGrid = h('div.plot-grid');
   const charts = (def.plots || []).map((p) => {
-    const info = p.info ? infoButton({ eyebrow: 'Plot', title: p.title, ...p.info, doc: docHref(p.info.doc || '') }, { label: p.title }) : null;
+    const info = p.info ? infoButton(() => ({ eyebrow: 'Plot', title: p.title, ...p.info, where: whereList(p.info.tex), doc: docHref(p.info.doc || '') }), { label: p.title }) : null;
     const c = chartCard({ title: p.title, info, height: p.height, exportName: `${def.slug}-${p.id}` });
     (p.wide ? plotGrid : plotGrid).append(c.card);
     if (p.wide) c.card.style.gridColumn = '1 / -1';
@@ -114,13 +105,12 @@ export async function mountCalculator(def) {
   const refList = (def.references || []).map((id) => refs.find((r) => r.id === id)).filter(Boolean);
   const theory = h('section.card.card-pad', { id: 'theory' },
     h('h2', 'Theory & references'),
-    h('p', 'The full derivation, every equation, symbol definitions, assumptions and known differences from the original workbook are on the ',
+    h('p', 'The full derivation, every equation, symbol definitions and assumptions are on the ',
       h('a', { href: docHref(), target: '_blank', rel: 'noopener' }, 'documentation page ↗'), '.'),
     refList.length ? h('ul.refs-list', refList.map((r) => h('li', h('div', h('div.t', r.title), h('div.a', [r.authors, r.venue].filter(Boolean).join(' · '))),
       h('div.go', h('a.btn.small', { href: url(`references/index.html#${r.id}`) }, 'Go to reference'),
         h('a.btn.small.ghost', { href: url(r.file), target: '_blank', rel: 'noopener', title: 'Open PDF in a new tab' }, 'PDF', ICONS.external()))))) : null,
-    topic?.sourceFiles?.length ? h('p.muted', { style: 'margin-top:12px;font-size:.84rem' }, 'Original files on rsandt.com: ',
-      topic.sourceFiles.map((f, i) => [i ? ', ' : '', h('a', { href: f.url, rel: 'noopener' }, f.name)])) : null);
+    null);
 
   const report = reportCard({ def, state, refList, docHref, getSystem });
   const idx = reg.calculators.findIndex((c) => c.slug === def.slug);
@@ -134,9 +124,10 @@ export async function mountCalculator(def) {
     h('nav.breadcrumb', { 'aria-label': 'Breadcrumb' }, h('a', { href: url('index.html') }, 'Home'), h('span.sep', '/'),
       h('a', { href: url(`index.html#area-${area?.id || ''}`) }, area?.title || 'Calculators'), h('span.sep', '/'), h('span', def.title)),
     h('div.calc-title', h('h1', def.title), infoButton(pageInfo, { label: def.title, large: true }),
-      h('a.btn.small.ghost', { href: docHref(), target: '_blank', rel: 'noopener' }, ICONS.book(), 'Full documentation', ICONS.external())),
+      h('a.btn.small.ghost', { href: docHref(), target: '_blank', rel: 'noopener' }, ICONS.book(), 'Full documentation', ICONS.external()),
+      h('a.btn.small.ghost', { href: '#theory' }, 'References')),
     h('p.calc-sub', { html: rich(def.subtitle || '', { html: true }) }),
-    badges, intro,
+    intro,
     h('div.calc-layout', inputsCard,
       h('div.calc-outputs', warnBox, keyBox, schemCard, plotGrid, resultsCard)),
     h('div', { style: 'margin-top:20px' }, theory),
@@ -184,24 +175,37 @@ export async function mountCalculator(def) {
     },
   };
 
-  /** Copy of the live schematic with the elements tied to `ids` highlighted — shown in the ⓘ drawer. */
+  /** Focused copy of the live schematic: zoomed onto the elements tied to `ids`, which are drawn in red;
+   *  everything else is faded. Shown in the ⓘ drawer. */
   function schematicDiagram(ids, f) {
     const src = schemHost.querySelector('svg.schem');
     if (!src) return null;
+    const sel = (root) => ids.flatMap((id) => [...root.querySelectorAll(`[data-field~="${CSS.escape(id)}"]`)]);
+    const live = sel(src);
     const el = src.cloneNode(true);
     el.querySelectorAll('.sc-handle, animate, animateTransform, animateMotion').forEach((n) => n.remove());
     el.querySelectorAll('.hl').forEach((n) => n.classList.remove('hl'));
-    let hits = 0;
-    for (const id of ids) {
-      el.querySelectorAll(`[data-field~="${CSS.escape(id)}"]`).forEach((g) => {
-        hits++; g.classList.add('hl');
-        g.querySelectorAll('line,path,text,rect,circle,polygon,ellipse').forEach((c) => c.classList.add('hl'));
-      });
-    }
     el.removeAttribute('data-id');
     if (!ids.length) return { el, caption: 'The current drawing, to scale with your inputs.' };
-    if (!hits) return f?.diagramAlways ? { el, caption: 'Current drawing.' } : null;
-    return { el, caption: `<b>${rich(f?.label || '')}</b> is highlighted in red on the current drawing.` };
+    if (!live.length) return null;
+    const hits = new Set(sel(el));
+    for (const g of hits) { g.classList.add('hl'); g.querySelectorAll('line,path,text,rect,circle,polygon,ellipse').forEach((c) => c.classList.add('hl')); }
+    const inHit = (n) => { for (let p = n; p && p !== el; p = p.parentNode) if (hits.has(p)) return true; return false; };
+    el.querySelectorAll('line,path,text,rect,circle,polygon,ellipse').forEach((n) => { if (!inHit(n) && !n.closest('defs')) n.classList.add('dimmed'); });
+    // zoom: union of the live elements' screen boxes, mapped back to viewBox units
+    const vb = src.viewBox.baseVal, r = src.getBoundingClientRect(), sx = vb.width / r.width, sy = vb.height / r.height;
+    let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+    for (const n of live) { const b = n.getBoundingClientRect(); if (!b.width && !b.height) continue; x0 = Math.min(x0, b.left); y0 = Math.min(y0, b.top); x1 = Math.max(x1, b.right); y1 = Math.max(y1, b.bottom); }
+    if (Number.isFinite(x0)) {
+      let bx = vb.x + (x0 - r.left) * sx, by = vb.y + (y0 - r.top) * sy, bw = (x1 - x0) * sx, bh = (y1 - y0) * sy;
+      const minW = vb.width * 0.42, minH = vb.height * 0.42, pad = 28;
+      const w = Math.max(bw + 2 * pad, minW), hgt = Math.max(bh + 2 * pad, minH, w * 0.45);
+      bx = Math.max(vb.x, Math.min(vb.x + vb.width - w, bx + bw / 2 - w / 2));
+      by = Math.max(vb.y, Math.min(vb.y + vb.height - hgt, by + bh / 2 - hgt / 2));
+      el.setAttribute('viewBox', `${bx} ${by} ${Math.min(w, vb.width)} ${Math.min(hgt, vb.height)}`);
+    }
+    const sym = f?.sym ? ` $${f.sym}$` : '';
+    return { el, caption: `<b>${rich(f?.label || '')}</b>${rich(sym)} — shown in red on your current design; the rest of the drawing is faded.` };
   }
 
   function highlight(id, extra) {
@@ -320,7 +324,7 @@ export async function mountCalculator(def) {
     toast((await copyText(`${def.title}\n${txt}`)) ? 'Results copied' : 'Copy failed');
   }
 
-  resetBtn.addEventListener('click', () => { state.values = Object.assign(state.values, defaults()); if (compatBox) compatBox.querySelector('input').checked = false; form.refresh(); recompute(); toast('Inputs reset'); });
+  resetBtn.addEventListener('click', () => { state.values = Object.assign(state.values, defaults()); form.refresh(); recompute(); toast('Inputs reset'); });
   exampleBtn?.addEventListener('click', () => { Object.assign(state.values, clone(def.examples[0].values)); form.refresh(); recompute(); toast(`Loaded: ${def.examples[0].name}`); });
   exampleSel?.addEventListener('change', () => {
     const e = def.examples[+exampleSel.value]; if (!e) return;

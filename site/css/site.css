@@ -144,6 +144,8 @@ hr { border: 0; border-top: 1px solid var(--border); margin: 2rem 0; }
 .icon-btn { width: 38px; height: 38px; display: inline-grid; place-items: center; border-radius: 50%; border: 1px solid rgba(255, 255, 255, 0.45); background: transparent; color: var(--on-dark); cursor: pointer; padding: 0; }
 .icon-btn:hover { background: rgba(255, 255, 255, 0.12); }
 .icon-btn svg { width: 18px; height: 18px; }
+.gh-btn svg { width: 19px; height: 19px; }
+@media (max-width: 480px) { .gh-btn { display: none; } } /* the footer carries the GitHub link on phones */
 .menu-btn { display: none; }
 @media (max-width: 1040px) { .search-btn { min-width: 0; } .search-btn .label, .search-btn kbd { display: none; } }
 @media (max-width: 780px) {

@@ -134,15 +134,26 @@ export const lbl = (v, unit, digits = 4) => `${fmt(v, { digits })}${unit ? '\\,'
  * Rear (end) view of the body with N fins, so the fin count is visible.
  * r = body radius, s = fin tip radius (same units); size = outer radius in px.
  */
-export function finEndView(cx, cy, size, { N, r, s: sTip, field, label = true }) {
+export function finEndView(cx, cy, size, { N, r, s: sTip, field, label = true, caption, t: thick, cant = 0, cR = 0, cT = 0, spin }) {
+  // Rear view: body disc and N fin panels. Optional thickness t, drawn cant angle (rad) with root/tip chords
+  // (a canted panel shows its chord × sin δ), and spin = { dur, dir } to rotate it.
   const g = s('g', { 'data-field': field || 'N' });
-  const k = size / Math.max(sTip, r * 1.05), rb = r * k, rt = sTip * k, w = Math.max(2, size * 0.035);
+  const k = size / Math.max(sTip, r * 1.05), rb = r * k, rt = sTip * k;
+  const w0 = thick ? Math.max(1.2, (thick * k) / 2) : Math.max(2, size * 0.035);
+  const half = (c) => Math.max(w0, (c * k * Math.abs(Math.sin(cant)) + 2 * w0 * Math.cos(cant)) / 2);
+  const wr = cant ? half(cR) : w0, wt = cant ? half(cT) : w0, sg = Math.sign(cant) || 1;
   g.append(s('circle', { cx, cy, r: size + 8, fill: 'var(--surface-2)', stroke: 'var(--border)' }));
+  const rot = s('g', {});
   for (let i = 0; i < N; i++) {
-    const th = (2 * Math.PI * i) / N - Math.PI / 2, ux = Math.cos(th), uy = Math.sin(th), nx = -uy * w, ny = ux * w;
-    g.append(s('path', { class: 'sc-body-2', d: path([[cx + ux * rb + nx, cy + uy * rb + ny], [cx + ux * rt + nx, cy + uy * rt + ny], [cx + ux * rt - nx, cy + uy * rt - ny], [cx + ux * rb - nx, cy + uy * rb - ny]], true) }));
+    const th = (2 * Math.PI * i) / N - Math.PI / 2, ux = Math.cos(th), uy = Math.sin(th), nx = -uy * sg, ny = ux * sg;
+    rot.append(s('path', { class: 'sc-body-2', d: path([[cx + ux * rb + nx * wr, cy + uy * rb + ny * wr], [cx + ux * rt + nx * wt, cy + uy * rt + ny * wt],
+      [cx + ux * rt - nx * wt, cy + uy * rt - ny * wt], [cx + ux * rb - nx * wr, cy + uy * rb - ny * wr]], true) }));
   }
-  g.append(s('circle', { cx, cy, r: rb, class: 'sc-body' }));
-  if (label) g.append(text(cx, cy + size + 24, `${N} fin${N === 1 ? '' : 's'} · rear view`, { anchor: 'middle', cls: 'sc-dim-text', size: 11 }));
+  rot.append(s('circle', { cx, cy, r: rb, class: 'sc-body' }));
+  rot.append(s('circle', { cx, cy, r: 2.5, fill: 'var(--text)' }));
+  if (spin) rot.append(s('animateTransform', { attributeName: 'transform', type: 'rotate', from: `0 ${cx} ${cy}`, to: `${spin.dir < 0 ? 360 : -360} ${cx} ${cy}`, dur: `${spin.dur}s`, repeatCount: 'indefinite' }));
+  g.append(rot);
+  if (label) [].concat(caption || `${N} fin${N === 1 ? '' : 's'} · rear view`).forEach((c, i) =>
+    g.append(text(cx, cy + size + 24 + 15 * i, c, { anchor: 'middle', cls: 'sc-dim-text', size: 11 })));
   return g;
 }

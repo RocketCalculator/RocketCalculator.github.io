@@ -154,20 +154,18 @@ export async function mountHome() {
 
 function topicCard(t, reg) {
   const calcs = t.calculators.map((slug) => reg.calculators.find((c) => c.slug === slug));
-  const refsChip = t.references.length ? h('span.chip', `${t.references.length} reference${t.references.length === 1 ? '' : 's'}`)
-    : h('span.chip', `${t.sourceFiles.length} spreadsheet${t.sourceFiles.length === 1 ? '' : 's'}`);
   if (t.status === 'available' && calcs.length === 1) {
     return h('a.card.topic-card.available', { href: url(`calculators/${calcs[0].slug}.html`) },
       h('h4', calcs[0].title), h('p', t.summary),
-      h('div.meta', h('span.chip.ok', h('span.dot'), 'Available'), h('span.chip', t.title), refsChip));
+      h('div.meta', h('span.chip.ok', h('span.dot'), 'Available'), h('span.chip', t.title)));
   }
   if (t.status === 'available') {
     return h('div.card.topic-card.available',
       h('h4', t.title), h('p', t.summary),
       h('div.calc-links', calcs.map((c) => h('a', { href: url(`calculators/${c.slug}.html`) }, h('span', '→ '), c.title))),
-      h('div.meta', h('span.chip.ok', h('span.dot'), `${calcs.length} calculators`), refsChip));
+      h('div.meta', h('span.chip.ok', h('span.dot'), `${calcs.length} calculators`)));
   }
   return h('a.card.topic-card', { href: url(`calculators/${t.slug}.html`) },
     h('h4', t.title), h('p', t.summary),
-    h('div.meta', h('span.chip.soon', 'Coming soon'), refsChip));
+    h('div.meta', h('span.chip.soon', 'Coming soon')));
 }

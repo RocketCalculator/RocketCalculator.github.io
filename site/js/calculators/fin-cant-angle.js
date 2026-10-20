@@ -1,7 +1,7 @@
 // Fin Cant Angle & Roll Rate — UI definition.
 import { derivatives, cantForRate, cantForCycles, cantWithLag } from '../calc/cantAngle.js';
 import { s, fmt, reducedMotion } from '../util.js';
-import { dim, path, text } from '../ui/svg.js';
+import { dim, path, text, finEndView } from '../ui/svg.js';
 
 const LEN = { dim: 'length', internal: 'in' };
 const deg = (r) => (r * 180) / Math.PI;
@@ -173,29 +173,18 @@ export default {
     g.append(dim(fr, xTE, axisY, xTE, Y(v.b), `b = ${L(v.b)}`, { off: 24, field: 'b' }));
     g.append(dim(fr, 34, axisY, 34, Y(v.R), `R = ${L(v.R)}`, { off: 0, field: 'R' }));
     // ---- rear view, spinning
-    const cx = 610, cy = 160, sc = 115 / v.b;
-    const rv = s('g', {});
-    rv.append(s('circle', { cx, cy, r: v.R * sc, class: 'sc-body-2', 'data-field': 'R' }));
+    const cx = 652, cy = 165, size = 96;
     const dd = Math.max(0.06, Math.min(0.5, Math.abs(out.res.delta) * 25)) * Math.sign(out.res.delta || 1);   // cant exaggerated
-    for (let i = 0; i < v.N; i++) {
-      const th = (2 * Math.PI * i) / v.N - Math.PI / 2;
-      const ux = Math.cos(th), uy = Math.sin(th), nx = -uy, ny = ux;
-      const r0 = v.R * sc, r1 = v.b * sc, wRoot = v.cR * sc * Math.sin(dd) * 0.5, wTip = v.cT * sc * Math.sin(dd) * 0.5;
-      rv.append(s('path', { class: 'sc-body', 'data-field': 'N', d: path([[cx + ux * r0 + nx * wRoot, cy + uy * r0 + ny * wRoot], [cx + ux * r1 + nx * wTip, cy + uy * r1 + ny * wTip],
-        [cx + ux * r1 - nx * wTip, cy + uy * r1 - ny * wTip], [cx + ux * r0 - nx * wRoot, cy + uy * r0 - ny * wRoot]], true) }));
-    }
-    rv.append(s('circle', { cx, cy, r: 3, fill: 'var(--text)' }));
-    const f = v.mode === 'rate' ? v.f : null;
-    if (f && !reducedMotion()) {
-      const slow = f > 0.5 ? Math.ceil(f / 0.5) : 1, dur = slow / f;
-      rv.append(s('animateTransform', { attributeName: 'transform', type: 'rotate', from: `0 ${cx} ${cy}`, to: `${out.res.delta >= 0 ? -360 : 360} ${cx} ${cy}`, dur: `${dur}s`, repeatCount: 'indefinite' }));
-      g.append(text(cx, cy + 150, `REAR VIEW · ${fmt(f, { digits: 3 })} Hz${slow > 1 ? ` (shown ${slow}× slower)` : ''}`, { anchor: 'middle', cls: 'sc-dim-text', size: 10, field: 'f' }));
-    } else g.append(text(cx, cy + 150, 'REAR VIEW', { anchor: 'middle', cls: 'sc-dim-text', size: 10 }));
-    g.append(rv);
-    g.append(text(cx, cy - 135, `\\delta = ${fmt(out.res.deltaDeg, { digits: 3 })}° per fin (cant drawn ×25)`, { anchor: 'middle', size: 11 }));
+    const f = v.mode === 'rate' ? v.f : null, slow = f > 0.5 ? Math.ceil(f / 0.5) : 1;
+    const spin = f && !reducedMotion() ? { dur: slow / f, dir: out.res.delta >= 0 ? 1 : -1 } : null;
+    g.append(finEndView(cx, cy, size, { N: v.N, r: v.R, s: v.b, cant: dd, cR: v.cR, cT: v.cT, spin, field: 'N',
+      caption: [`${v.N} fin${v.N === 1 ? '' : 's'} · rear view`, f ? `${fmt(f, { digits: 3 })} Hz${slow > 1 ? ` (shown ${slow}× slower)` : ''}` : null].filter(Boolean) }));
+    g.append(text(cx, cy - size - 30, `\\delta = ${fmt(out.res.deltaDeg, { digits: 3 })}° per fin (cant drawn ×25)`, { anchor: 'middle', size: 11 }));
     // roll arrow
-    const ar = v.b * sc + 14;
-    g.append(s('path', { d: `M${cx + ar * Math.cos(-2.4)},${cy + ar * Math.sin(-2.4)} A${ar},${ar} 0 0 ${out.res.delta >= 0 ? 0 : 1} ${cx + ar * Math.cos(-0.8)},${cy + ar * Math.sin(-0.8)}`, class: 'sc-accent', fill: 'none', 'marker-end': fr.arrow('acc') }));
+    const ar = size + 16;
+    // counter-clockwise on screen for δ ≥ 0 (matches the spin), over the top of the view
+    const [a0, a1, sw] = out.res.delta >= 0 ? [-0.8, -2.4, 0] : [-2.4, -0.8, 1];
+    g.append(s('path', { d: `M${cx + ar * Math.cos(a0)},${cy + ar * Math.sin(a0)} A${ar},${ar} 0 0 ${sw} ${cx + ar * Math.cos(a1)},${cy + ar * Math.sin(a1)}`, class: 'sc-accent', fill: 'none', 'marker-end': fr.arrow('acc') }));
     ctx.handle('tip', tipLE[0], tipLE[1], {
       field: 'cT b', title: 'Drag to change the tip chord and tip radius',
       onDrag: (px, py) => { ctx.setValue('b', Math.max(v.R * 1.05, (axisY - py) / k), { round: 0.05 }); ctx.setValue('cT', Math.max(0, (xTE - px) / k), { round: 0.05 }); },

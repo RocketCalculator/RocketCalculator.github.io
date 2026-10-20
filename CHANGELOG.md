@@ -4,12 +4,28 @@ Every commit adds an entry here, newest first. Live site: https://darasamii.gith
 
 ## Unreleased
 
+### Added
+- GitHub button in the header (hidden on phones) and a GitHub link in the footer.
+
+### Changed
+- Home page cards no longer show how many references a topic has.
+- One shared rear-view drawing (`finEndView`) for every calculator with a fin count. Fin Cant Angle now uses it,
+  showing canted panels as chord × sin δ, with the spin and caption on two lines.
+
 ### Fixed
+- Fin Cant Angle: the roll-direction arrow drooped through the fins (SVG arc picked the wrong centre), and the
+  "b = …" label collided with the rear view.
+
+## 2026-10-20 (continued)
+
+### 02fae4d — Footer fix, changelog
+
+#### Fixed
 - Long grey band below the footer after scrolling to the bottom of a calculator page. KaTeX's hidden MathML copy
   (`position: absolute`) escaped the scrolling report preview and stretched the document; KaTeX and scrolling boxes
   are now positioned containers.
 
-### Added
+#### Added
 - `CHANGELOG.md` (this file), updated with every commit.
 
 ## 2026-10-20

@@ -338,8 +338,21 @@ table.ptable button:hover { color: var(--red); }
 .key-results { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; }
 .kr { position: relative; padding: 16px 18px 14px; border-radius: var(--radius); background: var(--surface-2); color: var(--text); border: 1px solid var(--border-strong); border-left: 4px solid var(--red); }
 .kr .kr-label { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 0.82rem; font-weight: 600; color: var(--text-2); margin-bottom: 6px; }
-.kr .kr-value { font-weight: 800; font-size: 2rem; line-height: 1.05; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
-.kr .kr-unit { font-size: 1rem; font-weight: 400; margin-left: 6px; color: var(--text-2); }
+/* warnings dock: fixed in the bottom corner so notices never shift the layout */
+.notice-dock { position: fixed; right: 16px; bottom: 16px; z-index: 45; display: flex; flex-direction: column; gap: 8px; width: min(420px, calc(100vw - 32px)); max-height: 45vh; overflow-y: auto; pointer-events: none; }
+.notice-dock:empty { display: none; }
+.notice-dock .notice { position: relative; isolation: isolate; margin: 0; padding-right: 34px; pointer-events: auto; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18); font-size: 0.88rem; }
+/* solid layer under the (possibly translucent) tint so the page does not show through */
+.notice-dock .notice::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; background: var(--bg); }
+.notice-dock .notice-x { position: absolute; top: 6px; right: 6px; width: 24px; height: 24px; border: 0; border-radius: 50%; background: transparent; color: inherit; font-size: 1.1rem; line-height: 1; cursor: pointer; opacity: 0.7; }
+.notice-dock .notice-x:hover, .notice-dock .notice-x:focus-visible { opacity: 1; background: rgba(0, 0, 0, 0.08); }
+@media print { .notice-dock { display: none; } }
+
+/* value and unit always share one line; the number shrinks with the card instead of pushing the unit down */
+.kr { container-type: inline-size; }
+.kr .kr-row { display: flex; align-items: baseline; flex-wrap: nowrap; white-space: nowrap; min-width: 0; }
+.kr .kr-value { font-weight: 800; font-size: clamp(1.25rem, 13cqi, 2rem); line-height: 1.05; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.kr .kr-unit { font-size: 1rem; font-weight: 400; margin-left: 6px; color: var(--text-2); flex: none; }
 .kr .kr-note { font-size: 0.8rem; color: var(--text-3); margin-top: 4px; }
 .kr.status-ok { border-left-color: var(--ok); }
 .kr.status-warn { border-left-color: var(--warn); }

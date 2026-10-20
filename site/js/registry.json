@@ -98,6 +98,12 @@
    "description": "Despin weights, wire loads and timing for a two-mass yo-yo with radial release."
   },
   {
+   "slug": "propellant-slosh",
+   "title": "Propellant Sloshing",
+   "topic": "propellant-sloshing",
+   "description": "Slosh frequencies, slosh masses and equivalent pendulum for liquid in a cylindrical tank under thrust."
+  },
+  {
    "slug": "newtonian-drag",
    "title": "Modified Newtonian Drag",
    "topic": "modified-newtonian-drag",
@@ -557,9 +563,11 @@
    "area": "dyn",
    "summary": "Natural frequencies and forces of liquid sloshing in round tanks.",
    "abstract": "The major document here is \" An Analysis of the Motion of Liquids in a Partially-Filled Enclosure \", PDF file. It was written using Air Force funds to provide force and moment transfer functions for ballistic missile autopilot analyses including propellant sloshing. It was the first such analysis for circular tanks (previous work had addressed square tanks). This document was rushed into print when the author was rushed into Air Force active duty, and was therefore not as carefully proofread as it might have been. An errata sheet for the report is provided in Sloshing Errata.doc . The natural frequencies of the first three sloshing modes are computed in SLOSHIT.xls .",
-   "status": "soon",
-   "calculators": [],
-   "wasSoon": false,
+   "status": "available",
+   "calculators": [
+    "propellant-slosh"
+   ],
+   "wasSoon": true,
    "references": [
     "analysis-of-the-motion-of-liquids-in-a-partially-filled-enclosure-orig",
     "sloshing-errata"

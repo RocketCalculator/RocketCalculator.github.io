@@ -4,6 +4,23 @@ Every commit adds an entry here, newest first. Live site: https://darasamii.gith
 
 ## 2026-10-20 (continued)
 
+### New calculator: Propellant Sloshing; layout fixes
+- Added: `calculators/propellant-slosh.html`, with the following:
+  - the first three sloshing frequencies of liquid in an upright cylindrical tank under thrust;
+  - the fill depth;
+  - the equivalent slosh masses and pendulum length (NASA SP-106);
+  - plots against fill depth;
+  - an animated first-mode drawing in which dragging the free surface changes the propellant mass;
+  - a report and a documentation page.
+- The frequencies use the fill depth $h=M/(\rho\pi R^2)$ as in the report; the tabulated example puts the density
+  where the mass belongs.
+- Tests: `tests/slosh.test.js` — Bessel roots from Bessel's integral, limits, pendulum analogue, and the slosh-mass
+  sum rule.
+- Changed: warnings and notes appear in a fixed dock in the bottom corner, each one dismissible, so they no
+  longer push the results and drawings down.
+- Fixed: on key-result cards a long unit (e.g. kg m⁻³) wrapped onto a second line. Value and unit now stay on one
+  line, and the number shrinks with the card.
+
 ### New calculator: Yo-Yo Despinner
 - Added: `calculators/yo-yo-despin.html`, which gives the following for a two-mass yo-yo with radial release:
   - despin weights;

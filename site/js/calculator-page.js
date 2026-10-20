@@ -157,7 +157,18 @@ export async function mountCalculator(def) {
     } catch (err) { toast(err.message); }
   });
 
-  const warnBox = h('div.warnings', { 'aria-live': 'polite' });
+  // Warnings live in a fixed dock (bottom corner), so they never push the results down. Each can be dismissed;
+  // a dismissed message stays hidden until its text changes.
+  const warnBox = h('div.warnings.notice-dock', { 'aria-live': 'polite', role: 'status' });
+  const dismissed = new Set();
+  new MutationObserver(() => {
+    for (const n of warnBox.querySelectorAll('.notice:not([data-dock])')) {
+      n.dataset.dock = '1';
+      const key = n.textContent;
+      if (dismissed.has(key)) { n.hidden = true; continue; }
+      n.append(h('button.notice-x', { type: 'button', 'aria-label': 'Dismiss', title: 'Dismiss', onclick: () => { dismissed.add(key); n.hidden = true; } }, '×'));
+    }
+  }).observe(warnBox, { childList: true });
   const keyBox = h('div.key-results', { 'aria-live': 'polite' });
   const schemHost = h('div.schem-host');
   const ANIM_KEY = 'rc-anim-paused';
@@ -218,10 +229,11 @@ export async function mountCalculator(def) {
     intro,
     designBar,
     h('div.calc-layout', inputsCard,
-      h('div.calc-outputs', warnBox, keyBox, schemCard, plotGrid, resultsCard)),
+      h('div.calc-outputs', keyBox, schemCard, plotGrid, resultsCard)),
     h('div', { style: 'margin-top:20px' }, theory),
     h('div', { style: 'margin-top:20px' }, report.card),
     prevnext));
+  document.body.append(warnBox);
   document.title = `${def.title} — Rocket Calculator`;
   renderAll(main);
   reveal(main);
@@ -402,7 +414,7 @@ export async function mountCalculator(def) {
         const note = r.note?.(v, out, state.values);
         const card = h('div.kr', { class: st ? `status-${st}` : null, 'data-result': r.id },
           h('div.kr-label', h('span', { html: rich(r.label) }), r.sym ? h('span', { html: texHTML(r.sym) }) : null, infoButton(info, { label: r.label })),
-          h('div', h('span.kr-value', txt), u ? h('span.kr-unit', { html: u }) : null),
+          h('div.kr-row', h('span.kr-value', txt), u ? h('span.kr-unit', { html: u }) : null),
           note ? h('div.kr-note', { html: rich(note, { html: true }) }) : null,
           B && r.id in B ? (() => { const c = change(r, v, B[r.id]); return h('div.kr-base', `Baseline ${show(r, B[r.id])}`, c ? h(`span.${c.cls}`, ` · ${c.txt}`) : null); })() : null);
         if (lastKey[r.id] !== undefined && lastKey[r.id] !== txt) card.classList.add('flash');

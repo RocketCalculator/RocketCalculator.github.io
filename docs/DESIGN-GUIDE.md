@@ -70,7 +70,10 @@ Single accent, ink and greys — no second accent colour.
    (tangent ogive, cone, Von Kármán, LV-Haack, elliptical, parabolic K′, power n) with length/radius; a “Custom
    profile” option reveals the point table only for users who need it.
 6. **Key results**: 3–4 cards, **light** (`--surface-2`, dark surface in dark mode) with a 1 px border and a 4 px
-   coloured **left edge** (red; green/amber when status applies). Never solid black blocks.
+   coloured **left edge** (red; green/amber when status applies). Never solid black blocks. Value and unit stay on
+   one line (the number scales with the card width).
+   **Warnings and notes never sit in the page flow**: they appear in the fixed notice dock (bottom corner), each
+   dismissible, so they cannot shift the cards and drawings below.
 7. **Drawing** (schematic) card, to scale, linked to inputs (hover/focus highlights both ways, drag handles edit
    inputs). Must show every input that changes the geometry — e.g. a **rear view with the actual number of fins**,
    and a visible **joint line where the nose cone meets the body tube**.

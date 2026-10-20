@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Propellant Sloshing — Theory & documentation — Rocket Calculator</title>
+<meta name="description" content="Natural sloshing frequencies of liquid propellant in an upright cylindrical tank under thrust, from Bessel modes, with the equivalent slosh mass and pendulum model.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../css/site.css">
+<script>try{var t=JSON.parse(localStorage.getItem('rc-theme'));if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<main id="main">
+<div class="wrap">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Home</a><span class="sep">/</span><a href="../index.html#area-dyn">Flight Dynamics &amp; Mass Properties</a><span class="sep">/</span><a href="../calculators/propellant-slosh.html">Propellant Sloshing</a><span class="sep">/</span><span>Documentation</span></nav>
+  <div class="calc-title"><h1>Propellant Sloshing — theory</h1></div>
+  <p class="calc-sub">Liquid motion in a partially filled cylindrical tank. Based on C. P. Hoult, <em>An Analysis of the Motion of Liquids in a Partially-Filled Enclosure</em>, with its 2013 errata.</p>
+  <div class="calc-badges"><a class="btn small primary" href="../calculators/propellant-slosh.html">Open the calculator</a><a class="btn small" href="../references/index.html#analysis-of-the-motion-of-liquids-in-a-partially-filled-enclosure-orig">Original report (PDF)</a></div>
+  <div class="doc-layout">
+    <nav class="doc-toc" aria-label="Contents"></nav>
+    <article class="doc">
+
+      <section id="overview">
+        <h2>Overview</h2>
+        <p>The report gives force and moment transfer functions of sloshing propellant for ballistic-missile autopilot analysis. It was the first such analysis for circular tanks. Its key assumptions are:</p>
+        <ul>
+          <li>the liquid is inviscid and incompressible, and its motion is small, so the free-surface condition can be linearised;</li>
+          <li>the tank is a rigid upright circular cylinder;</li>
+          <li>the axial acceleration <span class="tex">a=(T-D)/m</span> is steady over the interval of interest.</li>
+        </ul>
+        <p>The natural frequencies are proportional to <span class="tex">\sqrt a</span>, so a varying thrust acceleration would make the problem non-linear. In practice the variation over the time of interest is small, and the frequencies are evaluated at the current acceleration.</p>
+      </section>
+
+      <section id="modes">
+        <h2>Natural frequencies</h2>
+        <p>The velocity potential is a sum of terms in <span class="tex">J_1(\lambda_n r/R)\cos\varphi</span>, multiplied by hyperbolic functions of depth. No flow through the wall requires</p>
+        <div class="eq"><div class="tex-display">J_1^\prime(\lambda_n)=0:\qquad \lambda_1=1.84118,\ \lambda_2=5.33144,\ \lambda_3=8.53632,\ \dots</div></div>
+        <p>These are the modern values given in the errata. The linearised free-surface condition then gives the natural frequencies, for a fill depth <span class="tex">h=M/(\rho\pi R^2)</span>:</p>
+        <div class="eq"><div class="tex-display">\omega_n^2=\frac{a}{R}\,\lambda_n\tanh\frac{\lambda_n h}{R}</div></div>
+        <p>The report writes the argument as <span class="tex">\lambda_nM/(\pi\rho R^3)</span>, which is the same thing.</p>
+        <p>Two limits are useful:</p>
+        <ul>
+          <li>For a deep fill, <span class="tex">\tanh\to1</span> and <span class="tex">\omega_n^2\to a\lambda_n/R</span>, independent of depth.</li>
+          <li>For a shallow fill, <span class="tex">\omega_n\to\lambda_n\sqrt{ah}/R</span>, the shallow-water wave speed.</li>
+        </ul>
+      </section>
+
+      <section id="model">
+        <h2>Equivalent mechanical model</h2>
+        <p>For vehicle dynamics each mode can be replaced by a pendulum (or a spring–mass) that produces the same side force at the same frequency. Following Abramson (NASA SP-106), mode <span class="tex">n</span> has slosh mass and pendulum length</p>
+        <div class="eq"><div class="tex-display">\frac{m_n}{M}=\frac{2\tanh(\lambda_nh/R)}{\lambda_n(\lambda_n^2-1)\,h/R},\qquad L_n=\frac{R}{\lambda_n\tanh(\lambda_nh/R)}</div></div>
+        <p>so that <span class="tex">\omega_n^2=a/L_n</span>. The rest of the liquid moves with the tank.</p>
+        <p>Because <span class="tex">\sum_n 2/(\lambda_n^2-1)=1</span>, almost all of a shallow fill sloshes, about 84 % of it in the first mode. In a deep tank only a small top layer does. The higher modes carry little mass, which is why the first mode dominates stability analyses.</p>
+      </section>
+
+      <section id="verification">
+        <h2>Verification</h2>
+        <p><code>tests/slosh.test.js</code> checks the following:</p>
+        <ul>
+          <li>the ten Bessel roots against <span class="tex">J_1^\prime=0</span>, evaluated from Bessel’s integral;</li>
+          <li>the frequency formula, including its deep and shallow limits;</li>
+          <li>the pendulum analogue;</li>
+          <li>the slosh-mass sum rule.</li>
+        </ul>
+      </section>
+
+      <section id="known-differences">
+        <h2>Notes on the method</h2>
+        <ul class="diff-list">
+          <li><strong>Fill depth.</strong> The frequencies use <span class="tex">\tanh(\lambda_nh/R)</span> with <span class="tex">h=M/(\rho\pi R^2)</span>, as in the report. The tabulated example puts the density where the propellant mass belongs, which removes the effect of fill depth.</li>
+          <li><strong>Equivalent mechanical model.</strong> The slosh masses and pendulum lengths are the standard model of NASA SP-106. The report expresses the same physics as transfer functions.</li>
+          <li><strong>Not modelled.</strong> Baffles, tank-bottom shape and damping. Baffles mainly add damping; they change the frequencies only by changing the tank geometry.</li>
+        </ul>
+      </section>
+
+      <section id="references">
+        <h2>References</h2>
+        <ol class="refs">
+          <li>C. P. Hoult, “An Analysis of the Motion of Liquids in a Partially-Filled Enclosure.” <a href="../references/index.html#analysis-of-the-motion-of-liquids-in-a-partially-filled-enclosure-orig">View in library</a></li>
+          <li>C. P. Hoult, “Errata for ‘An Analysis of the Motion of Liquids in a Partially-Filled Enclosure’,” RS&amp;T, 27 August 2013. <a href="../references/index.html#sloshing-errata">View in library</a></li>
+          <li>H. N. Abramson (ed.), “The Dynamic Behavior of Liquids in Moving Containers,” NASA SP-106, 1966.</li>
+        </ol>
+      </section>
+    </article>
+  </div>
+</div>
+</main>
+<script type="module">
+import { mountDocs } from '../js/docs.js';
+mountDocs();
+</script>
+</body>
+</html>

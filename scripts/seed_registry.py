@@ -147,6 +147,7 @@ CALCULATORS = [
     ('fin-cant-angle', 'Fin Cant Angle & Roll Rate', 'FinSett', 'Strip-theory roll derivatives and the cant angle for a target roll rate.'),
     ('single-wedge', 'Single Wedge Airfoil', 'SingWeAf', 'Supersonic normal-force multiplier and wave drag of single-wedge fins, with the shock-detachment limit.'),
     ('yo-yo-despin', 'Yo-Yo Despinner', 'YoYoDes', 'Despin weights, wire loads and timing for a two-mass yo-yo with radial release.'),
+    ('propellant-slosh', 'Propellant Sloshing', 'ProSlosh', 'Slosh frequencies, slosh masses and equivalent pendulum for liquid in a cylindrical tank under thrust.'),
     ('newtonian-drag', 'Modified Newtonian Drag', 'ModiNewtDrag', 'Supersonic wave drag of nose caps, cones, flat faces and rounded fin leading edges (Lees).'),
 ]
 

@@ -21,14 +21,14 @@ export default {
   info: {
     text: [
       'A tangent ogive is the solid formed by rotating a circular arc about the rocket axis. The arc is chosen so that it meets the body tube <b>tangentially</b> at the base (no kink) and closes to a point at the tip.',
-      'Only the base radius <i>R</i> and the nose length <i>L</i> are needed: they fix the radius <i>a</i> of the defining circle, and every other property follows in closed form.',
+      'Only the base radius $R$ and the nose length $L$ are needed: they fix the radius $a$ of the defining circle, and every other property follows in closed form.',
     ],
     tex: 'a=\\frac{L^2+R^2}{2R},\\qquad r(x)=R-a+\\sqrt{a^2-x^2}',
-    texNote: '<i>x</i> is measured forward from the base; body station from the tip is <i>L − x</i>.',
+    texNote: '$x$ is measured forward from the base; body station from the tip is <i>L − x</i>.',
     steps: [
-      'Enter the base radius <i>R</i> and length <i>L</i> (drag the handles on the drawing if you prefer).',
-      'The defining-circle radius <i>a</i> is found so the arc passes through the tip and is tangent at the base.',
-      'Radius is evaluated every <i>Δx</i> to build the profile table and plot.',
+      'Enter the base radius $R$ and length $L$ (drag the handles on the drawing if you prefer).',
+      'The defining-circle radius $a$ is found so the arc passes through the tip and is tangent at the base.',
+      'Radius is evaluated every $\\Deltax$ to build the profile table and plot.',
       'Surface area and its first moment come from exact integrals; their ratio gives the centroid.',
       'Optionally enter wall thickness and material density to estimate the shell mass.',
     ],
@@ -42,7 +42,7 @@ export default {
           info: { text: 'Radius of the body tube where the nose meets it (half the outside diameter).', range: '1–6 in (25–150 mm) for university sounding rockets.', doc: 'geometry' } },
         { id: 'L', label: 'Nose length', sym: 'L', ...L_IN, default: 30, min: 0, minExclusive: true, slider: { min: 2, max: 120 },
           info: { text: 'Axial length from the tip to the base (shoulder excluded).', range: 'Fineness <i>L/D</i> of 3–7 is common; 5 is a good subsonic/supersonic compromise.', doc: 'geometry' } },
-        { id: 'dx', label: 'Profile increment', sym: 'Δx', ...L_IN, default: 2.5, min: 0, minExclusive: true,
+        { id: 'dx', label: 'Profile increment', sym: '\\Delta x', ...L_IN, default: 2.5, min: 0, minExclusive: true,
           info: { text: 'Spacing of the points in the profile table. Use it to make a cutting template or CNC points; it does not change the area or centroid, which are exact.', doc: 'profile' } },
       ],
     },
@@ -51,7 +51,7 @@ export default {
       fields: [
         { id: 't', label: 'Wall thickness', sym: 't', ...L_IN, default: 0, min: 0,
           info: { text: 'Thickness of the nose shell. Leave at 0 to skip the mass estimate.', range: 'Fibreglass layup: 0.06–0.12 in (1.5–3 mm).', doc: 'shell-mass' } },
-        { id: 'rho', label: 'Material density', sym: 'ρ', dim: 'matDensity', internal: 'lbin3', default: 1.8 / 27.679904710203, min: 0,
+        { id: 'rho', label: 'Material density', sym: '\\rho', dim: 'matDensity', internal: 'lbin3', default: 1.8 / 27.679904710203, min: 0,
           info: { text: 'Density of the shell material. Mass = wetted area × wall thickness × density (thin-shell approximation from the memo).', range: 'Fibreglass ≈ 1.8 g/cm³ (0.065 lb/in³); aluminium 2.7 g/cm³ (0.098 lb/in³).', doc: 'shell-mass' } },
       ],
     },
@@ -59,7 +59,7 @@ export default {
   results: [
     { id: 'S', label: 'Wetted area', sym: 'S', dim: 'area', internal: 'in2', key: true,
       info: { text: 'Lateral surface area of the ogive (base disc excluded). Used for skin-friction drag and shell weight.', tex: 'S=2\\pi a\\left[(R-a)\\sin^{-1}\\frac{L}{a}+L\\right]', doc: 'wetted-area' } },
-    { id: 'xbar', label: 'Area centroid from tip', sym: 'x̄', dim: 'length', internal: 'in', key: true,
+    { id: 'xbar', label: 'Area centroid from tip', sym: '\\bar{x}', dim: 'length', internal: 'in', key: true,
       note: (v, o, val) => `${(100 * v / val.L).toFixed(1)} % of nose length`,
       info: { text: 'Body station of the centroid of the surface area, measured aft of the nose tip. For a uniform-thickness shell this is its centre of mass.', tex: '\\bar{x}=L-\\frac{M}{S}', doc: 'centroid' } },
     { id: 'a', label: 'Defining circle radius', sym: 'a', dim: 'length', internal: 'in', key: true,
@@ -68,9 +68,9 @@ export default {
       info: { text: 'Thin-shell estimate: wetted area × wall thickness × material density. Shoulder, bulkhead and tip fittings are not included.', tex: 'm\\approx S\\,t\\,\\rho', doc: 'shell-mass' } },
     { id: 'M', label: 'First moment of area about base', sym: 'M', dim: 'moment1', internal: 'in3',
       info: { text: 'Integral of x·dS over the surface, with x measured from the base.', tex: 'M=2\\pi a\\left[\\tfrac12L^2+(R-a)\\left(a-\\sqrt{a^2-L^2}\\right)\\right]', doc: 'centroid' } },
-    { id: 'fineness', label: 'Fineness ratio L/D', dim: 'none', digits: 4,
+    { id: 'fineness', label: 'Fineness ratio', sym: 'L/D', dim: 'none', digits: 4,
       info: { text: 'Nose length divided by base diameter. Higher fineness lowers supersonic wave drag but adds length, mass and skin friction.', doc: 'geometry' } },
-    { id: 'tipHalfAngle', label: 'Tip half-angle', dim: 'angle', digits: 4,
+    { id: 'tipHalfAngle', label: 'Tip half-angle', sym: '\\theta_{tip}', dim: 'angle', digits: 4,
       info: { text: 'Angle between the surface and the axis at the tip (derived geometry — not output by the workbook). Equals sin⁻¹(L/a).', tex: '\\theta_{tip}=\\sin^{-1}\\frac{L}{a}', doc: 'geometry' } },
   ],
   compute(v) {
@@ -102,7 +102,7 @@ export default {
         const u = U(L_IN), ua = U({ dim: 'area', internal: 'in2' });
         const pts = Array.from({ length: 81 }, (_, i) => { const xs = (v.L * i) / 80; return [u.v(xs), ua.v(wettedAreaToStation(v.R, v.L, xs))]; });
         return { x: { label: 'Body station from tip', unit: u.label }, y: { label: 'Wetted area', unit: ua.label }, includeZero: true,
-          series: [{ name: 'S(x)', points: pts }], hlines: [{ y: ua.v(out.o.S), label: `total ${ua.v(out.o.S).toPrecision(5)} ${ua.label}`, color: 'var(--key-mark)' }] };
+          series: [{ name: 'S(x)', points: pts }], hlines: [{ y: ua.v(out.o.S), label: `total ${ua.v(out.o.S).toPrecision(5)}\\,${ua.label}`, color: 'var(--key-mark)' }] };
       },
     },
   ],
@@ -147,7 +147,7 @@ export default {
     const xc = out.o.xbar, rc = R - a + Math.sqrt(Math.max(0, a * a - (L - xc) ** 2));
     g.append(pointMarker(PX(xc), PY(0), 'centroid', { kind: 'cg' }));
     g.append(s('line', { class: 'sc-thin', x1: PX(xc), x2: PX(xc), y1: PY(rc), y2: PY(-rc), 'stroke-dasharray': '2 3' }));
-    g.append(dim(fr, PX(0), PY(-R), PX(xc), PY(-R), `x̄ = ${fmtL(xc)}`, { off: 26, textOff: 14 }));
+    g.append(dim(fr, PX(0), PY(-R), PX(xc), PY(-R), `\\bar{x} = ${fmtL(xc)}`, { off: 26, textOff: 14 }));
     // handles
     ctx.handle('L', PX(0), PY(0), {
       field: 'L', title: 'Drag horizontally to change the nose length',
@@ -159,6 +159,23 @@ export default {
       onDrag: (sx, sy) => ctx.setValue('R', Math.max(0.02 * L, T.invY(sy))),
       onKey: (dx, dy) => ctx.setValue('R', R * (1 + 0.01 * dy)),
     });
+  },
+  reportNotes: ['Equations are evaluated in inches, the unit of the source workbook; the inputs and results tables use your selected unit system.'],
+  report(v, out, R) {
+    const o = out.o, q = (x, u = 'in') => R.q(x, u), n = R.n;
+    const s = [{
+      title: 'Theory',
+      text: 'A tangent ogive is generated by rotating a circular arc of radius $a$ about the rocket axis. The arc is tangent to the body tube at the base and closes to a point at the tip, so the base radius $R$ and length $L$ fix the whole shape. With $x$ measured forward from the base, the local radius is $r(x)=R-a+\\sqrt{a^2-x^2}$. Surface area and its first moment follow from exact integrals of $dS=2\\pi a\\left(1+\\frac{R-a}{\\sqrt{a^2-x^2}}\\right)dx$ (C. P. Hoult, Ogive Nose memo, 2011).',
+      steps: [
+        { label: 'Defining-circle radius', lhs: 'a', eq: '\\frac{L^2+R^2}{2R}', sub: `\\frac{(${n(v.L)})^2+(${n(v.R)})^2}{2\\times${n(v.R)}}`, res: q(o.a) },
+        { label: 'Wetted (lateral) area', lhs: 'S', eq: '2\\pi a\\left[(R-a)\\sin^{-1}\\frac{L}{a}+L\\right]', sub: `2\\pi(${n(o.a)})\\left[(${n(v.R)}-${n(o.a)})\\sin^{-1}\\frac{${n(v.L)}}{${n(o.a)}}+${n(v.L)}\\right]`, res: q(o.S, 'in2') },
+        { label: 'First moment of area about the base', lhs: 'M', eq: '2\\pi a\\left[\\tfrac12L^2+(R-a)\\left(a-\\sqrt{a^2-L^2}\\right)\\right]', sub: `2\\pi(${n(o.a)})\\left[\\tfrac12(${n(v.L)})^2+(${n(v.R - o.a)})\\left(${n(o.a)}-\\sqrt{${n(o.a)}^2-${n(v.L)}^2}\\right)\\right]`, res: q(o.M, 'in3') },
+        { label: 'Area centroid, measured aft of the nose tip', lhs: '\\bar{x}', eq: 'L-\\frac{M}{S}', sub: `${n(v.L)}-\\frac{${n(o.M)}}{${n(o.S)}}`, res: q(o.xbar) },
+        { label: 'Tip half-angle and fineness', lhs: '\\theta_{tip}', eq: '\\sin^{-1}\\frac{L}{a}', sub: `\\sin^{-1}\\frac{${n(v.L)}}{${n(o.a)}}`, res: `${n(o.tipHalfAngle)}^{\\circ},\\qquad L/D=${n(o.fineness)}` },
+      ],
+    }];
+    if (o.shellMass) s[0].steps.push({ label: 'Thin-shell mass (wall thickness × density × wetted area)', lhs: 'm', eq: 'S\\,t\\,\\rho', sub: `(${n(o.S)})(${n(v.t)})(${n(v.rho)})`, res: q(o.shellMass, 'lbm') });
+    return s;
   },
   references: ['ogive-nose', 'drag-coefficient3-4'],
   examples: [

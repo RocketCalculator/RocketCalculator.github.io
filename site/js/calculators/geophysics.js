@@ -42,11 +42,11 @@ export default {
     {
       id: 'site', title: 'Launch site',
       fields: [
-        { id: 'ho', label: 'Site altitude (MSL)', sym: 'h*', ...ALT, default: 4000, min: -1500, max: 30000,
+        { id: 'ho', label: 'Site altitude (MSL)', sym: 'h^*', ...ALT, default: 4000, min: -1500, max: 30000,
           info: { text: 'Elevation of the launch site above mean sea level (the geoid).', range: 'FAR / Mojave ≈ 2,000–4,000 ft; Spaceport America ≈ 4,600 ft.', doc: 'atmosphere' } },
-        { id: 'To', label: 'Surface temperature', sym: 'T*', ...TEMP, default: 550, min: 300, max: 600, units: { si: 'degC', us: 'degF' },
+        { id: 'To', label: 'Surface temperature', sym: 'T^*', ...TEMP, default: 550, min: 300, max: 600, units: { si: 'degC', us: 'degF' },
           info: { text: 'Air temperature measured at the launch site at launch time. The tropospheric temperature line is forced through this point.', range: 'Desert summer 90–110 °F (32–43 °C); standard day 59 °F (15 °C).', doc: 'atmosphere' } },
-        { id: 'phi', label: 'Geodetic latitude', sym: 'φ', dim: 'angle', default: 34, min: -90, max: 90, slider: { min: 0, max: 90 },
+        { id: 'phi', label: 'Geodetic latitude', sym: '\\varphi', dim: 'angle', default: 34, min: -90, max: 90, slider: { min: 0, max: 90 },
           info: { text: 'Latitude of the launch site (geodetic, as on maps). Sets the tropopause altitude, surface gravity and local Earth radius.', range: 'Mojave ≈ 35°; White Sands ≈ 32°; Esrange ≈ 68°.', doc: 'geodesy' } },
       ],
     },
@@ -70,7 +70,7 @@ export default {
     { id: 'p', label: 'Pressure', sym: 'p', ...PRES, key: true,
       note: (v) => `${fmt(v / C.po, { digits: 4 })} × sea-level`,
       info: { text: 'Static pressure from hydrostatic equilibrium in each layer.', tex: 'p=p_T\\,e^{-g(h-h_T)/RT_T}\\;\\;(h>h_T)', doc: 'atmosphere' } },
-    { id: 'rho', label: 'Density', sym: 'ρ', ...DENS, key: true,
+    { id: 'rho', label: 'Density', sym: '\\rho', ...DENS, key: true,
       note: (v) => `${fmt(v / 0.0023769, { digits: 4 })} × standard sea-level`,
       info: { text: 'Air density from the perfect-gas law.', tex: '\\rho=\\frac{p}{RT}', doc: 'atmosphere' } },
     { id: 'a', label: 'Speed of sound', sym: 'a', ...SPD, key: true,
@@ -80,13 +80,13 @@ export default {
     { id: 'TT', label: 'Tropopause temperature', sym: 'T_T', ...TEMP, units: { si: 'K', us: 'R' },
       info: { text: 'Temperature of the isothermal stratosphere. The low polar tropopause makes the polar stratosphere warmer than the tropical one.', tex: 'T_T=T^*+\\alpha(h_T-h^*)', doc: 'tropopause' } },
     { id: 'pT', label: 'Tropopause pressure', sym: 'p_T', ...PRES, info: { text: 'Pressure at the tropopause from the tropospheric equation.', doc: 'atmosphere' } },
-    { id: 'go', label: 'Surface gravity', sym: 'g₀', ...ACC,
+    { id: 'go', label: 'Surface gravity', sym: 'g_0', ...ACC,
       info: { text: 'Acceleration of gravity on the geoid at this latitude (Potsdam formula).', tex: 'g_0=32.0876228\\,(1+0.00530224\\sin^2\\varphi-0.000058\\sin^2 2\\varphi)\\ \\mathrm{ft/s^2}', doc: 'gravity' } },
     { id: 'gh', label: 'Gravity at altitude', sym: 'g(h)', ...ACC,
-      info: { text: 'Inverse-square correction of surface gravity for altitude (memo; the workbook uses g₀ throughout).', tex: 'g(h)=g_0\\Big(\\frac{R_E}{R_E+h}\\Big)^2', doc: 'gravity' } },
+      info: { text: 'Inverse-square correction of surface gravity for altitude (memo; the workbook uses $g_0$ throughout).', tex: 'g(h)=g_0\\Big(\\frac{R_E}{R_E+h}\\Big)^2', doc: 'gravity' } },
     { id: 'RE', label: 'Local Earth radius', sym: 'R_E', dim: 'radius', internal: 'ft', units: { si: 'km', us: 'ft' }, digits: 7,
       info: { text: 'Radius of the sphere tangent to the WGS-84 ellipsoid at this latitude.', tex: 'R_E^2=\\frac{(a^2\\cos\\varphi)^2+(b^2\\sin\\varphi)^2}{(a\\cos\\varphi)^2+(b\\sin\\varphi)^2}', doc: 'geodesy' } },
-    { id: 'omega', label: 'Earth rotation rate', sym: 'Ω', dim: 'rate', internal: 'rads', digits: 6,
+    { id: 'omega', label: 'Earth rotation rate', sym: '\\Omega', dim: 'rate', internal: 'rads', digits: 6,
       info: { text: 'Sidereal rotation rate, 2π / 86164.09 s.', doc: 'geodesy' } },
   ],
   compute(v, { compat }) {
@@ -122,8 +122,8 @@ export default {
         return {
           x: { label: 'Ratio to sea-level standard' }, y: { label: 'Altitude', unit: uh.label }, hover: 'y',
           series: [
-            { name: 'p / p_SL', points: out.prof.map((p) => [p.p / C.po, uh.v(p.h)]) },
-            { name: 'ρ / ρ_SL', points: out.prof.map((p) => [p.rho / 0.0023769, uh.v(p.h)]) },
+            { name: 'p/p_{SL}', points: out.prof.map((p) => [p.p / C.po, uh.v(p.h)]) },
+            { name: '\\rho/\\rho_{SL}', points: out.prof.map((p) => [p.rho / 0.0023769, uh.v(p.h)]) },
           ],
           hlines: [{ y: uh.v(out.o.hT), label: 'tropopause', color: 'var(--accent-2)' }],
           markers: [{ x: out.o.p / C.po, y: uh.v(v.h), color: 'var(--series-1)' }, { x: out.o.rho / 0.0023769, y: uh.v(v.h), color: 'var(--series-2)' }],
@@ -146,8 +146,8 @@ export default {
       build(v, out, { U }) {
         const ug = U(ACC);
         const pts = Array.from({ length: 91 }, (_, i) => [i, ug.v(surfaceGravity((i * Math.PI) / 180))]);
-        return { x: { label: 'Latitude', unit: '°' }, y: { label: 'g₀', unit: ug.label }, xDomain: [0, 90],
-          series: [{ name: 'g₀', points: pts }], hlines: [{ y: ug.v(32.174), label: 'standard g', color: 'var(--text-3)' }],
+        return { x: { label: 'Latitude', unit: '°' }, y: { label: 'g_0', unit: ug.label }, xDomain: [0, 90],
+          series: [{ name: 'g_0', points: pts }], hlines: [{ y: ug.v(32.174), label: 'standard g', color: 'var(--text-3)' }],
           markers: [{ x: Math.abs(v.phi), y: ug.v(out.o.go), label: `${fmt(ug.v(out.o.go), { digits: 5 })}` }] };
       },
     },
@@ -181,7 +181,7 @@ export default {
     const arcR = 26;
     g.append(s('path', { d: `M${footX + arcR},${cy} A${arcR},${arcR} 0 0 0 ${footX + arcR * Math.cos(Phi)},${cy - arcR * Math.sin(Phi)}`, class: 'sc-accent', fill: 'none', 'data-field': 'phi' }));
     g.append(text(footX + arcR + 6, cy - 6, `φ = ${fmt(v.phi, { digits: 3 })}°`, { field: 'phi' }));
-    g.append(text(cx - A, cy + B + 34, `R_E = ${fmt(ctx.U({ dim: 'radius', internal: 'ft', units: { si: 'km', us: 'ft' } }).v(o.RE), { digits: 6 })} ${ctx.U({ dim: 'radius', internal: 'ft', units: { si: 'km', us: 'ft' } }).label}   g₀ = ${fmt(ctx.U(ACC).v(o.go), { digits: 5 })} ${ctx.U(ACC).label}`, { size: 11 }));
+    g.append(text(cx - A, cy + B + 34, `R_E = ${fmt(ctx.U({ dim: 'radius', internal: 'ft', units: { si: 'km', us: 'ft' } }).v(o.RE), { digits: 6 })} ${ctx.U({ dim: 'radius', internal: 'ft', units: { si: 'km', us: 'ft' } }).label}   g_0 = ${fmt(ctx.U(ACC).v(o.go), { digits: 5 })} ${ctx.U(ACC).label}`, { size: 11 }));
     g.append(text(cx - A, cy + B + 50, 'flattening exaggerated ×20', { cls: 'sc-label', size: 10 }));
     ctx.handle('phi', px, py, {
       field: 'phi', title: 'Drag around the Earth to change latitude',
@@ -245,6 +245,32 @@ export default {
       onDrag: (sx, sy) => ctx.setValue('h', invY(sy), { round: 100 }),
       onKey: (dx, dy) => ctx.setValue('h', v.h + dy * 500),
     });
+  },
+  reportNotes: ['Equations are evaluated in the memo’s US customary units (ft, °R, lbf/ft², slug/ft³); the inputs and results tables use your selected unit system.'],
+  report(v, out, R) {
+    const o = out.o, n = R.n, q = R.q, a = C.alfa;
+    const tropo = v.h <= o.hT;
+    const steps = [
+      { label: 'Tropopause altitude at this latitude (ellipse between equatorial and polar values)', lhs: 'h_T', eq: '\\left[\\left(\\frac{\\cos\\varphi}{a_T}\\right)^2+\\left(\\frac{\\sin\\varphi}{b_T}\\right)^2\\right]^{-1/2}', sub: `\\left[\\left(\\frac{\\cos ${n(v.phi)}^{\\circ}}{52\\,500}\\right)^2+\\left(\\frac{\\sin ${n(v.phi)}^{\\circ}}{27\\,900}\\right)^2\\right]^{-1/2}`, res: q(o.hT, 'ft') },
+      { label: 'Tropopause temperature', lhs: 'T_T', eq: 'T^*+\\alpha\\,(h_T-h^*)', sub: `${n(v.To)}+(${n(a)})(${n(o.hT)}-${n(v.ho)})`, res: q(o.TT, 'R') },
+      { label: 'Surface gravity (Potsdam formula)', lhs: 'g_0', eq: '32.0876228\\,(1+0.00530224\\sin^2\\varphi-0.000058\\sin^2 2\\varphi)', sub: `32.0876228\\,(1+0.00530224\\sin^2 ${n(v.phi)}^{\\circ}-0.000058\\sin^2 ${n(2 * v.phi)}^{\\circ})`, res: q(o.go, 'fts2') },
+      { label: 'Local Earth radius (WGS-84 tangent sphere)', lhs: 'R_E', eq: '\\sqrt{\\frac{(a^2\\cos\\varphi)^2+(b^2\\sin\\varphi)^2}{(a\\cos\\varphi)^2+(b\\sin\\varphi)^2}}', res: q(o.RE, 'ft', 9) },
+      { label: 'Tropopause pressure', lhs: 'p_T', eq: 'p_{SL}\\left(\\frac{1}{1+\\alpha h_T/(T^*-\\alpha h^*)}\\right)^{g_0/R\\alpha}', sub: `2116.217\\left(\\frac{1}{1+(${n(a)})(${n(o.hT)})/${n(o.Tsl)}}\\right)^{${n(o.go)}/(1716\\times(${n(a)}))}`, res: q(o.pT, 'psf') },
+      tropo
+        ? { label: `Temperature at h = ${n(v.h)} ft (troposphere)`, lhs: 'T', eq: 'T^*+\\alpha\\,(h-h^*)', sub: `${n(v.To)}+(${n(a)})(${n(v.h)}-${n(v.ho)})`, res: q(o.T, 'R') }
+        : { label: `Temperature at h = ${n(v.h)} ft (isothermal stratosphere)`, lhs: 'T', eq: 'T_T', res: q(o.T, 'R') },
+      tropo
+        ? { label: v.__compat ? 'Pressure (workbook form, measured from the launch site)' : 'Pressure (memo form)', lhs: 'p', eq: v.__compat ? 'p_{SL}\\left(\\frac{1}{1+\\alpha (h-h^*)/(T^*-\\alpha h^*)}\\right)^{g_0/R\\alpha}' : 'p_{SL}\\left(\\frac{1}{1+\\alpha h/(T^*-\\alpha h^*)}\\right)^{g_0/R\\alpha}', res: q(o.p, 'psf') }
+        : { label: 'Pressure in the stratosphere', lhs: 'p', eq: 'p_T\\exp\\left[-\\frac{g_0(h-h_T)}{R\\,T_T}\\right]', sub: `${n(o.pT)}\\exp\\left[-\\frac{${n(o.go)}(${n(v.h)}-${n(o.hT)})}{1716\\times${n(o.TT)}}\\right]`, res: q(o.p, 'psf') },
+      { label: 'Density (perfect gas)', lhs: '\\rho', eq: '\\frac{p}{R\\,T}', sub: `\\frac{${n(o.p)}}{1716\\times${n(o.T)}}`, res: q(o.rho, 'slugft3') },
+      { label: 'Speed of sound', lhs: 'a', eq: '\\sqrt{\\gamma R T}', sub: `\\sqrt{1.4\\times1716\\times${n(o.T)}}`, res: q(o.a, 'fts') },
+      { label: 'Gravity at altitude (inverse square)', lhs: 'g(h)', eq: 'g_0\\left(\\frac{R_E}{R_E+h}\\right)^2', sub: `${n(o.go)}\\left(\\frac{${n(o.RE, 9)}}{${n(o.RE, 9)}+${n(v.h)}}\\right)^2`, res: q(o.gh, 'fts2') },
+    ];
+    return [{
+      title: 'Theory',
+      text: 'The model keeps the 1976 Standard Atmosphere constants ($\\alpha=-0.00357448$ °R/ft, $R=1716$ ft·lbf/(slug·°R), $\\gamma=1.4$, $p_{SL}=2116.217$ lbf/ft²) but makes the tropospheric temperature line pass through the measured launch-site temperature $T^*$ at altitude $h^*$, ending at a latitude-dependent tropopause; the stratosphere above is isothermal. Pressure follows from hydrostatic balance $dp/dh=-\\rho g$ with $p=\\rho RT$ (C. P. Hoult, Sounding Rocket Geophysical Environment, 2010).',
+      steps,
+    }];
   },
   references: ['geophysics'],
   examples: [

@@ -10,35 +10,35 @@ function heroArt() {
     return s('circle', { cx: x.toFixed(1), cy: y.toFixed(1), r, fill: 'var(--star)', class: i % 4 === 0 ? 'twinkle' : null, style: `animation-delay:${(i % 7) * 0.4}s` });
   });
   const rocket = s('g', { id: 'hero-rocket' },
-    s('path', { d: 'M14,0 C9,-3.6 3,-4.2 -10,-4.2 L -10,4.2 C 3,4.2 9,3.6 14,0 Z', fill: 'var(--text)' }),
-    s('path', { d: 'M-6,-4.2 L -12,-9 L -10,-4.2 Z M -6,4.2 L -12,9 L -10,4.2 Z', fill: 'var(--accent)' }),
-    s('path', { d: 'M-10,-2.4 L -22,0 L -10,2.4 Z', fill: 'var(--accent)', opacity: 0.9 }, s('animate', { attributeName: 'd', dur: '0.18s', repeatCount: 'indefinite', values: 'M-10,-2.4 L -22,0 L -10,2.4 Z;M-10,-2.4 L -18,0 L -10,2.4 Z;M-10,-2.4 L -22,0 L -10,2.4 Z' })));
+    s('path', { d: 'M14,0 C9,-3.6 3,-4.2 -10,-4.2 L -10,4.2 C 3,4.2 9,3.6 14,0 Z', fill: '#ffffff' }),
+    s('path', { d: 'M-6,-4.2 L -12,-9 L -10,-4.2 Z M -6,4.2 L -12,9 L -10,4.2 Z', fill: '#e60000' }),
+    s('path', { d: 'M-10,-2.4 L -22,0 L -10,2.4 Z', fill: '#e60000', opacity: 0.9 }, s('animate', { attributeName: 'd', dur: '0.18s', repeatCount: 'indefinite', values: 'M-10,-2.4 L -22,0 L -10,2.4 Z;M-10,-2.4 L -18,0 L -10,2.4 Z;M-10,-2.4 L -22,0 L -10,2.4 Z' })));
   const motion = reducedMotion() ? null : s('animateMotion', { dur: '9s', repeatCount: 'indefinite', rotate: 'auto', keyPoints: '0;0.42;0.5;1', keyTimes: '0;0.38;0.52;1', calcMode: 'spline', keySplines: '0.5 0 0.6 1;0.4 0 0.6 1;0.4 0 0.8 0.6' }, s('mpath', { href: '#hero-traj' }));
   if (motion) rocket.append(motion); else rocket.setAttribute('transform', 'translate(405 78)');
   const callout = (x, y, label, sub, dx = 14, anchor = 'start') => s('g', {},
-    s('circle', { cx: x, cy: y, r: 4.5, fill: 'var(--surface)', stroke: 'var(--accent-2)', 'stroke-width': 1.6 }),
-    s('circle', { cx: x, cy: y, r: 9, fill: 'none', stroke: 'var(--accent-2)', 'stroke-width': 1, class: 'pulse-ring' }),
-    s('text', { x: x + dx, y: y - 6, 'text-anchor': anchor, fill: 'var(--text)', style: 'font:600 12px var(--font-sans)' }, label),
-    s('text', { x: x + dx, y: y + 9, 'text-anchor': anchor, fill: 'var(--text-3)', style: 'font:11px var(--font-mono)' }, sub));
+    s('circle', { cx: x, cy: y, r: 4.5, fill: '#25282b', stroke: '#ffffff', 'stroke-width': 1.6 }),
+    s('circle', { cx: x, cy: y, r: 9, fill: 'none', stroke: '#ffffff', 'stroke-width': 1, class: 'pulse-ring' }),
+    s('text', { x: x + dx, y: y - 6, 'text-anchor': anchor, fill: '#ffffff', style: 'font:600 12px var(--font-sans)' }, label),
+    s('text', { x: x + dx, y: y + 9, 'text-anchor': anchor, fill: 'rgba(255,255,255,.62)', style: 'font:11px var(--font-sans)' }, sub));
   return s('svg', { viewBox: '0 0 640 380', role: 'img', 'aria-label': 'Animated sounding-rocket trajectory from launch to apogee' },
     s('g', {}, stars),
     // altitude ticks
-    s('g', { opacity: 0.8 }, [0, 1, 2, 3, 4].map((i) => s('line', { x1: 34, x2: 40, y1: 330 - i * 62, y2: 330 - i * 62, stroke: 'var(--text-3)' }))),
-    s('line', { x1: 40, x2: 40, y1: 80, y2: 330, stroke: 'var(--border-strong)' }),
-    s('text', { x: 46, y: 76, fill: 'var(--text-3)', style: 'font:10px var(--font-mono)' }, 'ALTITUDE'),
-    s('path', { id: 'hero-traj', d: traj, fill: 'none', stroke: 'var(--accent)', 'stroke-width': 2, class: 'traj-draw', opacity: 0.9 }),
-    s('path', { d: traj, fill: 'none', stroke: 'var(--accent)', 'stroke-width': 1, class: 'traj-path', opacity: 0.35, transform: 'translate(0 6)' }),
+    s('g', { opacity: 0.8 }, [0, 1, 2, 3, 4].map((i) => s('line', { x1: 34, x2: 40, y1: 330 - i * 62, y2: 330 - i * 62, stroke: 'rgba(255,255,255,.62)' }))),
+    s('line', { x1: 40, x2: 40, y1: 80, y2: 330, stroke: 'rgba(255,255,255,.35)' }),
+    s('text', { x: 46, y: 76, fill: 'rgba(255,255,255,.62)', style: 'font:10px var(--font-sans)' }, 'ALTITUDE'),
+    s('path', { id: 'hero-traj', d: traj, fill: 'none', stroke: '#e60000', 'stroke-width': 2, class: 'traj-draw', opacity: 0.9 }),
+    s('path', { d: traj, fill: 'none', stroke: '#e60000', 'stroke-width': 1, class: 'traj-path', opacity: 0.35, transform: 'translate(0 6)' }),
     // ground & rail
-    s('line', { x1: 20, x2: 640, y1: 330, y2: 330, stroke: 'var(--border-strong)', 'stroke-width': 1.5 }),
-    s('g', { stroke: 'var(--text-3)', 'stroke-width': 1 }, Array.from({ length: 32 }, (_, i) => s('line', { x1: 24 + i * 20, y1: 330, x2: 16 + i * 20, y2: 340 }))),
-    s('line', { x1: 66, y1: 332, x2: 92, y2: 292, stroke: 'var(--text-2)', 'stroke-width': 3, 'stroke-linecap': 'round' }),
+    s('line', { x1: 20, x2: 640, y1: 330, y2: 330, stroke: 'rgba(255,255,255,.35)', 'stroke-width': 1.5 }),
+    s('g', { stroke: 'rgba(255,255,255,.62)', 'stroke-width': 1 }, Array.from({ length: 32 }, (_, i) => s('line', { x1: 24 + i * 20, y1: 330, x2: 16 + i * 20, y2: 340 }))),
+    s('line', { x1: 66, y1: 332, x2: 92, y2: 292, stroke: 'rgba(255,255,255,.8)', 'stroke-width': 3, 'stroke-linecap': 'round' }),
     callout(245, 120, 'Burnout', 'max velocity'),
-    callout(410, 78, 'Apogee', 'v_y = 0', 0, 'middle'),
+    callout(410, 78, 'Apogee', 'vertical speed 0', 0, 'middle'),
     callout(560, 200, 'Descent', 'recovery', 14),
     // wind barb
-    s('g', { transform: 'translate(560 60)', stroke: 'var(--accent-2)', fill: 'none', 'stroke-width': 1.4, opacity: 0.85 },
+    s('g', { transform: 'translate(560 60)', stroke: '#ffffff', fill: 'none', 'stroke-width': 1.4, opacity: 0.85 },
       s('path', { d: 'M0,0 H40 M40,0 l-7,-4 M40,0 l-7,4', class: 'traj-path' }),
-      s('text', { x: 0, y: -8, fill: 'var(--accent-2)', stroke: 'none', style: 'font:10px var(--font-mono)' }, 'WIND')),
+      s('text', { x: 0, y: -8, fill: '#ffffff', stroke: 'none', style: 'font:10px var(--font-sans)' }, 'WIND')),
     rocket);
 }
 
@@ -65,12 +65,12 @@ export async function mountHome() {
     h('div.wrap',
       h('div',
         h('p.eyebrow', 'Sounding-rocket engineering toolkit'),
-        h('h1', { html: 'Rocket calculations, <em>explained</em>.' }),
+        h('h1', { html: 'Rocket maths, <em>explained</em>.' }),
         h('p.lead', 'Interactive calculators for stability, drag, atmosphere, fins and mass properties — each with a live schematic, plots, and the theory one click away. Built from C. P. Hoult’s rocket-engineering reports at rsandt.com.'),
         h('div.hero-actions',
           h('a.btn.primary', { href: '#calculators' }, 'Browse calculators'),
-          h('a.btn', { href: '#guide' }, 'How it works'),
-          h('a.btn.ghost', { href: url('references/index.html') }, 'Reference library')),
+          h('a.btn.on-dark', { href: '#guide' }, 'How it works'),
+          h('a.btn.on-dark', { href: url('references/index.html') }, 'Reference library')),
         h('div.hero-stats',
           h('div', h('b', String(avail)), 'calculators live'),
           h('div', h('b', String(reg.topics.length)), 'engineering topics'),
@@ -80,8 +80,8 @@ export async function mountHome() {
 
   const steps = [
     ['Pick a calculator', 'Choose from the grid below or press <kbd>Ctrl K</kbd> / <kbd>/</kbd> to search by name, topic or reference.'],
-    ['Enter your rocket', 'Every page opens with a worked example. Change the blue-edged inputs — results update as you type.'],
-    ['Read results & plots', 'Key results sit on top; the to-scale schematic and plots react to every change. Export CSV or SVG.'],
+    ['Enter your rocket', 'Every page opens with a worked example. Change the outlined inputs — results update as you type.'],
+    ['Read results & plots', 'Key results sit on top; the to-scale schematic and plots react to every change. Export plots as CSV, SVG, PNG, JPEG or PDF, and the whole calculation as a report.'],
     ['Press ⓘ for theory', 'Every input and result has an ⓘ: a short explanation, the formula and a walk-through, with a link to the full documentation.'],
   ];
   const guide = h('section.section.reveal#guide',
@@ -133,19 +133,24 @@ export async function mountHome() {
         h('div.card', h('h3', 'Theory in a side panel'), h('p', 'The ⓘ buttons open a side panel without leaving the calculator. “Open full documentation” opens the complete derivation in a new tab, at the right section.'))),
       h('div.card.card-pad', { style: 'margin-top:14px' },
         h('h3', 'Units and the colour code'),
-        h('p', { style: 'color:var(--text-2)' }, 'Switch between SI and US customary units with the ', h('b', 'SI · US'), ' toggle in the top bar — your choice is remembered. The original spreadsheets were written in US units; the calculators reproduce them exactly in either system. Colours follow the original workbooks’ convention:'),
+        h('p', { style: 'color:var(--text-2)' }, 'Switch between SI and US customary units with the ', h('b', 'SI · US'), ' toggle in the top bar — your choice is remembered. The original spreadsheets were written in US units; the calculators reproduce them exactly in either system. Every symbol and unit is typeset as mathematics. On the calculator pages:'),
         h('div.legend-swatches',
-          h('span', h('i', { style: 'background:var(--input-mark)' }), 'Blue edge — your inputs'),
-          h('span', h('i', { style: 'background:var(--const-mark)' }), 'Magenta — natural constants'),
-          h('span', h('i', { style: 'background:var(--key-mark)' }), 'Amber — key results'),
-          h('span', h('i', { style: 'background:var(--surface-3);border:1px solid var(--border-strong)' }), 'Plain — other outputs'))),
+          h('span', h('i', { style: 'background:var(--surface-2);border:1px solid var(--hairline)' }), 'Outlined field — your inputs'),
+          h('span', h('i', { style: 'background:var(--key-bg);box-shadow:inset 3px 0 0 var(--red)' }), 'Dark card — key results'),
+          h('span', h('i', { style: 'background:var(--red)' }), 'Red — highlighted dimension or action'),
+          h('span', h('i', { style: 'background:var(--surface);border:1px solid var(--border-strong)' }), 'Table — every other output'))),
       h('div.card.card-pad', { style: 'margin-top:14px' },
         h('h3', 'About the source'),
         h('p', { style: 'color:var(--text-2);margin:0' }, 'All methods come from the reports, memos and spreadsheets published at ',
           h('a', { href: 'http://www.rsandt.com/reports.html', rel: 'noopener' }, 'rsandt.com/reports'),
           ' by C. P. Hoult and his students at CSULB and CSULA. Where a spreadsheet and its memo disagree, the calculator uses the memo and offers a “Match original spreadsheet” switch; every such difference is listed on the documentation page.'))));
 
-  main.append(hero, guide, calcs, nav);
+  const band = h('section.hero-band-red',
+    h('div.wrap',
+      h('h2', 'Writing your PDR or FDR?'),
+      h('p', 'Every calculator ends with an Export report box: your inputs, the theory, each equation with your numbers substituted, results and references — ready to paste as Markdown, LaTeX or Word, or print to PDF. Every plot exports as CSV, SVG, PNG, JPEG or PDF.'),
+      h('a.btn', { href: url('calculators/subsonic-cp.html#report') }, 'See an example report')));
+  main.append(hero, guide, band, calcs, nav);
   renderGrid();
   reveal(main);
   if (location.hash) document.querySelector(location.hash)?.scrollIntoView();

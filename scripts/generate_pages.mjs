@@ -17,7 +17,7 @@ export function head({ title, description, depth = 1 }) {
 <meta name="description" content="${esc(description)}">
 <meta name="color-scheme" content="light dark">
 <link rel="icon" href="${up}assets/favicon.svg" type="image/svg+xml">
-<link rel="preload" href="${up}vendor/fonts/ibm-plex-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="${up}vendor/fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="${up}css/site.css">
 <script>try{var t=JSON.parse(localStorage.getItem('rc-theme'));if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
 </head>`;

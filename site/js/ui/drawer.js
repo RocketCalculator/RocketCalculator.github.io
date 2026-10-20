@@ -1,7 +1,7 @@
 // Right-side ⓘ drawer: short theory, key formula, walkthrough, typical range, link to full docs.
 import { h } from '../util.js';
 import { ICONS } from '../app.js';
-import { tex, renderAll } from '../math.js';
+import { tex, renderAll, rich, texToPlain } from '../math.js';
 
 let drawer, overlay, body, titleEl, eyebrowEl, footerEl, lastFocus;
 
@@ -36,20 +36,22 @@ export function openInfo(info) {
   if (!drawer) build();
   lastFocus = document.activeElement;
   eyebrowEl.textContent = info.eyebrow || 'How it works';
-  titleEl.textContent = info.title || '';
+  titleEl.innerHTML = rich(info.title || '');
   const parts = [];
   if (info.text) {
     const texts = Array.isArray(info.text) ? info.text : [info.text];
-    parts.push(h('h3', 'In short'), ...texts.map((t) => (t instanceof Node ? t : h('p', { html: t }))));
+    parts.push(h('h3', 'In short'), ...texts.map((t) => (t instanceof Node ? t : h('p', { html: rich(t, { html: true }) }))));
   }
   if (info.tex) {
     const f = h('div.formula');
     parts.push(h('h3', 'Key formula'), f);
     tex(f, info.tex, true);
-    if (info.texNote) parts.push(h('p.muted', { style: 'font-size:.84rem;margin-top:8px', html: info.texNote }));
+    if (info.texNote) parts.push(h('p.muted', { style: 'font-size:.84rem;margin-top:8px', html: rich(info.texNote, { html: true }) }));
   }
-  if (info.steps?.length) parts.push(h('h3', 'Walk-through'), h('ol.walk', info.steps.map((st) => h('li', { html: st }))));
-  if (info.range) parts.push(h('h3', 'Typical values'), h('p.range', { html: info.range }));
+  const dg = typeof info.diagram === 'function' ? info.diagram() : info.diagram;
+  if (dg) parts.push(h('h3', 'Diagram'), h('div.diagram', dg.el || dg), dg.caption ? h('p.diagram-cap', { html: rich(dg.caption, { html: true }) }) : null);
+  if (info.steps?.length) parts.push(h('h3', 'Walk-through'), h('ol.walk', info.steps.map((st) => h('li', { html: rich(st, { html: true }) }))));
+  if (info.range) parts.push(h('h3', 'Typical values'), h('p.range', { html: rich(info.range, { html: true }) }));
   if (info.refs?.length) parts.push(h('h3', 'Sources'), h('ul', { style: 'padding-left:1.1em;margin:0' }, info.refs.map((r) => h('li', h('a', { href: r.href }, r.title)))));
   body.replaceChildren(...parts);
   renderAll(body);
@@ -75,7 +77,7 @@ export function closeInfo() {
 
 /** A small round ⓘ button that opens `info` (object or function returning one). */
 export function infoButton(info, { label, large } = {}) {
-  const b = h('button.info-btn', { type: 'button', class: large ? 'lg' : null, 'aria-label': `More about ${label || (typeof info === 'object' ? info.title : '') || 'this'}`, title: 'Explain this' }, 'i');
+  const b = h('button.info-btn', { type: 'button', class: large ? 'lg' : null, 'aria-label': `More about ${texToPlain(label || (typeof info === 'object' ? info.title : '') || 'this')}`, title: 'Explain this' }, 'i');
   b.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); openInfo(typeof info === 'function' ? info() : info); });
   return b;
 }

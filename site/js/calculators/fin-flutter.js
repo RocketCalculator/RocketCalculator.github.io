@@ -59,32 +59,32 @@ export default {
           info: { text: 'Mach number at the condition being checked — usually maximum velocity (burnout) for low-altitude flights. Use the Atmosphere calculator to convert speed to Mach.', doc: 'margin' } },
         { id: 'h', label: 'Altitude (MSL)', sym: 'h', ...ALT, default: 7686, min: 0, max: 150000,
           info: { text: 'Altitude above sea level at that condition. Higher altitude means lower pressure and a higher flutter Mach number.', doc: 'correlation' } },
-        { id: 'Tsl', label: 'Sea-level temperature (pressure ratio)', sym: 'T_SL', dim: 'temperature', internal: 'R', units: { si: 'K', us: 'R' }, default: 551.8, min: 350, max: 650,
+        { id: 'Tsl', label: 'Sea-level temperature (pressure ratio)', sym: 'T_{SL}', dim: 'temperature', internal: 'R', units: { si: 'K', us: 'R' }, default: 551.8, min: 350, max: 650,
           info: { text: 'Sea-level temperature used in the workbook’s pressure-ratio formula. The workbook uses 551.8 °R (a hot 92 °F day); the standard day is 518.67 °R.', tex: '\\frac{p}{p_0}=\\Big(1-\\frac{0.0035662\\,h}{T_{SL}}\\Big)^{5.2575}', doc: 'correlation' } },
       ],
     },
   ],
   results: [
-    { id: 'MS', label: 'Margin of safety', sym: 'MS', dim: 'none', key: true, digits: 4,
+    { id: 'MS', label: 'Margin of safety', sym: '\\mathrm{MS}', dim: 'none', key: true, digits: 4,
       status: (v) => (v < 0 ? 'err' : v < 0.5 ? 'warn' : 'ok'),
       note: (v) => (v < 0 ? 'Flutter predicted below the flight Mach number' : v < 0.5 ? 'Positive but thin — consider thicker or stiffer fins' : 'Comfortable margin'),
       info: { text: 'How far the flutter Mach number is above the flight Mach number, as a fraction. Negative means flutter is predicted. (The 0.5 “thin margin” highlight is this site’s guidance, not a value from the source.)', tex: 'MS=\\frac{M_f-M}{M}', doc: 'margin' } },
     { id: 'Mf', label: 'Flutter Mach number', sym: 'M_f', dim: 'none', key: true, digits: 4,
       info: { text: 'Mach number at which the correlation predicts bending-torsion flutter at this altitude.', tex: 'M_f=\\sqrt{G\\big/\\big(X\\tfrac{\\lambda+1}{2}\\tfrac{p}{p_0}\\big)}', doc: 'correlation' } },
-    { id: 'tMin', label: 'Thickness for zero margin', sym: 't_min', ...LEN, key: true,
+    { id: 'tMin', label: 'Thickness for zero margin', sym: 't_{min}', ...LEN, key: true,
       info: { text: 'Fin thickness at which the flutter Mach number equals the flight Mach number (MS = 0), found by inverting the correlation. Add your own margin on top.', doc: 'margin' } },
-    { id: 'AR', label: 'Panel aspect ratio', sym: 'AR', dim: 'none', info: { text: 'Semispan squared over panel area (one exposed panel).', tex: 'A\\!R=b^2/S', doc: 'geometry' } },
-    { id: 'lambda', label: 'Taper ratio', sym: 'λ', dim: 'none', info: { text: 'Tip chord over root chord.', tex: '\\lambda=c_T/c_R', doc: 'geometry' } },
+    { id: 'AR', label: 'Panel aspect ratio', sym: '\\mathit{AR}', dim: 'none', info: { text: 'Semispan squared over panel area (one exposed panel).', tex: 'A\\!R=b^2/S', doc: 'geometry' } },
+    { id: 'lambda', label: 'Taper ratio', sym: '\\lambda', dim: 'none', info: { text: 'Tip chord over root chord.', tex: '\\lambda=c_T/c_R', doc: 'geometry' } },
     { id: 'S', label: 'Panel area', sym: 'S', dim: 'area', internal: 'in2', info: { text: 'Area of one exposed panel.', tex: 'S=(c_R+c_T)\\,b/2', doc: 'geometry' } },
-    { id: 'c75', label: 'Effective chord c(0.75)', sym: 'c', ...LEN, info: { text: 'Chord at 75 % of the semispan, used for the thickness ratio.', tex: 'c=\\tfrac14c_R+\\tfrac34c_T', doc: 'geometry' } },
-    { id: 'tc', label: 'Thickness ratio t/c', dim: 'none', digits: 4, info: { text: 'Thickness divided by the effective chord.', doc: 'geometry' } },
-    { id: 'X', label: 'Geometric parameter X', dim: 'none', info: { text: 'Combines aspect ratio and thickness ratio.', tex: 'X=\\frac{39.3\\,A\\!R^3}{(t/c)^3(A\\!R+2)}', doc: 'correlation' } },
-    { id: 'pr', label: 'Pressure ratio p/p₀', dim: 'none', digits: 4, info: { text: 'Static pressure at altitude divided by sea-level pressure.', doc: 'correlation' } },
+    { id: 'c75', label: 'Effective chord (75 % span)', sym: 'c_{0.75}', ...LEN, info: { text: 'Chord at 75 % of the semispan, used for the thickness ratio.', tex: 'c=\\tfrac14c_R+\\tfrac34c_T', doc: 'geometry' } },
+    { id: 'tc', label: 'Thickness ratio', sym: 't/c', dim: 'none', digits: 4, info: { text: 'Thickness divided by the effective chord.', doc: 'geometry' } },
+    { id: 'X', label: 'Geometric parameter', sym: 'X', dim: 'none', info: { text: 'Combines aspect ratio and thickness ratio.', tex: 'X=\\frac{39.3\\,A\\!R^3}{(t/c)^3(A\\!R+2)}', doc: 'correlation' } },
+    { id: 'pr', label: 'Pressure ratio', sym: 'p/p_0', dim: 'none', digits: 4, info: { text: 'Static pressure at altitude divided by sea-level pressure.', doc: 'correlation' } },
   ],
   compute(v) {
     const o = flutter(v);
     const warnings = [];
-    if (o.MS < 0) warnings.push({ level: 'err', text: `<b>Flutter predicted.</b> M<sub>f</sub> = ${fmt(o.Mf, { digits: 3 })} is below the flight Mach number. Increase thickness to at least ${fmt(o.tMin, { digits: 3 })} in, use a stiffer material, or reduce the span.` });
+    if (o.MS < 0) warnings.push({ level: 'err', text: `<b>Flutter predicted.</b> $M_{f}$ = ${fmt(o.Mf, { digits: 3 })} is below the flight Mach number. Increase thickness to at least ${fmt(o.tMin, { digits: 3 })} in, use a stiffer material, or reduce the span.` });
     if (o.tc > 0.15) warnings.push({ level: 'info', text: 'Thickness ratio above 15 % — outside the thin-fin experience the correlation was built on.' });
     return { results: o, warnings, o };
   },
@@ -112,7 +112,7 @@ export default {
         return { x: { label: 'Fin thickness', unit: ul.label }, y: { label: 'Margin of safety' },
           series: [{ name: 'MS(t)', points: pts }],
           hlines: [{ y: 0, label: 'flutter boundary', color: 'var(--err)' }],
-          vlines: [{ x: ul.v(out.o.tMin), label: 't for MS = 0', color: 'var(--text-3)' }],
+          vlines: [{ x: ul.v(out.o.tMin), label: 't_{min} (MS = 0)', color: 'var(--text-3)' }],
           markers: [{ x: ul.v(v.t), y: out.o.MS, label: 'your fin' }] };
       },
     },
@@ -149,7 +149,7 @@ export default {
     g.append(dim(fr, sx, sy + th / 2, sx + sw, sy + th / 2, `c = ${L(c)}`, { off: 26, textOff: 14 }));
     g.append(text(sx, sy - th / 2 - 12, `t = ${L(v.t)}  ·  t/c = ${fmt(out.o.tc, { digits: 3 })}`, { size: 11, field: 't' }));
     const st = out.o.MS < 0 ? 'var(--err)' : out.o.MS < 0.5 ? 'var(--warn)' : 'var(--ok)';
-    g.append(s('text', { x: sx, y: 218, style: `fill:${st};font:600 13px var(--font-mono)` }, `MS = ${fmt(out.o.MS, { digits: 3 })}`));
+    g.append(s('text', { x: sx, y: 218, style: `fill:${st};font:600 13px var(--font-sans)` }, `MS = ${fmt(out.o.MS, { digits: 3 })}`));
     // handles
     ctx.handle('tip', tipLE[0], tipLE[1], {
       field: 'cT b', title: 'Drag to change tip chord (horizontal) and span (vertical)',
@@ -161,6 +161,25 @@ export default {
       onDrag: (px) => ctx.setValue('cR', Math.max(0.1, (xTE - px) / k), { round: 0.05 }),
       onKey: (dx) => ctx.setValue('cR', v.cR * (1 - 0.02 * dx)),
     });
+  },
+  reportNotes: ['Equations are evaluated in the workbook’s units (inches, psi, feet); the inputs and results tables use your selected unit system.', 'The NACA TN-4197 correlation is an approximate design guide; confirm critical designs by analysis or test.'],
+  report(v, out, R) {
+    const o = out.o, n = R.n, q = R.q;
+    return [{
+      title: 'Theory',
+      text: 'Bending–torsion flutter is a self-excited vibration in which the fin’s bending and twisting modes couple with the airflow. The NACA TN-4197 correlation (D. J. Martin, 1958), as implemented in FLUTTER MARGIN1.xls, predicts the flutter Mach number of a cantilevered fin panel from its aspect ratio, taper, thickness ratio at 75 % span, material shear modulus $G$ and the air pressure ratio; the margin of safety compares it with the flight Mach number.',
+      steps: [
+        { label: 'Panel geometry', lhs: '\\lambda', eq: '\\frac{c_T}{c_R}', sub: `\\frac{${n(v.cT)}}{${n(v.cR)}}`, res: n(o.lambda) },
+        { lhs: 'S', eq: '\\frac{(c_R+c_T)\\,b}{2}', sub: `\\frac{(${n(v.cR)}+${n(v.cT)})\\times${n(v.b)}}{2}`, res: q(o.S, 'in2') },
+        { lhs: '\\mathit{AR}', eq: '\\frac{b^2}{S}', sub: `\\frac{${n(v.b)}^2}{${n(o.S)}}`, res: n(o.AR) },
+        { label: 'Effective chord and thickness ratio', lhs: 'c_{0.75}', eq: '\\tfrac14 c_R+\\tfrac34 c_T', sub: `\\tfrac14(${n(v.cR)})+\\tfrac34(${n(v.cT)})`, res: `${q(o.c75, 'in')},\\qquad t/c=${n(o.tc)}` },
+        { label: 'Geometric parameter', lhs: 'X', eq: '\\frac{39.3\\,\\mathit{AR}^3}{(t/c)^3(\\mathit{AR}+2)}', sub: `\\frac{39.3\\times${n(o.AR)}^3}{${n(o.tc)}^3\\times(${n(o.AR)}+2)}`, res: n(o.X) },
+        { label: 'Pressure ratio at the flight altitude', lhs: '\\frac{p}{p_0}', eq: '\\left(1-\\frac{0.0035662\\,h}{T_{SL}}\\right)^{5.2575}', sub: `\\left(1-\\frac{0.0035662\\times${n(v.h)}}{${n(v.Tsl)}}\\right)^{5.2575}`, res: n(o.pr) },
+        { label: 'Flutter Mach number', lhs: 'M_f', eq: '\\sqrt{\\frac{G}{X\\,\\frac{\\lambda+1}{2}\\,\\frac{p}{p_0}}}', sub: `\\sqrt{\\frac{${n(v.G)}}{${n(o.X)}\\times\\frac{${n(o.lambda)}+1}{2}\\times${n(o.pr)}}}`, res: n(o.Mf, 4) },
+        { label: 'Margin of safety', lhs: '\\mathrm{MS}', eq: '\\frac{M_f-M}{M}', sub: `\\frac{${n(o.Mf)}-${n(v.M)}}{${n(v.M)}}`, res: n(o.MS, 4), note: o.MS < 0 ? 'Negative margin: flutter is predicted below the flight Mach number.' : 'Positive margin: no flutter predicted at this condition.' },
+        { label: 'Thickness that would give zero margin', lhs: 't_{min}', eq: 'c_{0.75}\\left[\\frac{39.3\\,\\mathit{AR}^3}{X_{crit}(\\mathit{AR}+2)}\\right]^{1/3},\\ X_{crit}=\\frac{G}{M^2\\frac{\\lambda+1}{2}\\frac{p}{p_0}}', res: q(o.tMin, 'in') },
+      ],
+    }];
   },
   references: ['fin-aeroelasticity'],
   examples: [

@@ -19,28 +19,28 @@ export default {
   slug: 'subsonic-cp',
   topic: 'barrowman-equations',
   title: 'Subsonic Centre of Pressure',
-  subtitle: 'Normal-force slope <b>C<sub>Nα</sub></b> and centre-of-pressure location of a finned rocket below the critical Mach number — Barrowman’s method with NACA Report 1307 body–fin interference and a hemispherical nose cap.',
+  subtitle: 'Normal-force slope <b>$C_{N\\alpha}$</b> and centre-of-pressure location of a finned rocket below the critical Mach number — Barrowman’s method with NACA Report 1307 body–fin interference and a hemispherical nose cap.',
   source: 'SUBSONIC BARROWMAN EQUATIONS2.4.xls · Barrowman / Hemisphere memos',
   verified: { label: 'Matches workbook (64 cells)', title: 'Every body segment, fin, interference and total cell of SUBSONIC BARROWMAN EQUATIONS2.4.xls (single fin set) reproduced to 1e-12.' },
   intro: {
     what: 'Splits the rocket into body segments and a fin set, finds each part’s normal force per radian of angle of attack and where it acts, and combines them into one CP.',
     why: 'A rocket is statically stable only if its centre of pressure is behind its centre of gravity. The distance between them in calibres is the static margin.',
-    when: 'Sizing fins, checking stability before flight, and producing C<sub>Nα</sub> and CP for trajectory and dynamics tools. Valid below the critical Mach number.',
-    typical: 'Gold Rush III ignition (Mach 0.05): C<sub>Nα</sub> ≈ 18.7 /rad with the CP ≈ 79.3 in from the tip of a 93-inch rocket.',
+    when: 'Sizing fins, checking stability before flight, and producing $C_{N\\alpha}$ and CP for trajectory and dynamics tools. Valid below the critical Mach number.',
+    typical: 'Gold Rush III ignition (Mach 0.05): $C_{N\\alpha}$ ≈ 18.7 /rad with the CP ≈ 79.3 in from the tip of a 93-inch rocket.',
   },
   info: {
     text: [
       'The <b>body</b> uses Munk’s slender-body theory: each segment produces normal force in proportion to how fast its cross-section area grows. Only the nose (and any shoulder or boat-tail) contributes; cylinders carry none.',
       'A blunt nose (non-zero radius at station 0) gets a tangent <b>hemispherical cap</b> with its own normal force, or is treated as a flat face.',
-      'The <b>fins</b> use Diederich’s lifting-surface correlation with full Prandtl–Glauert compressibility; the body lifts the fins and the fins lift the body, by the NACA Report 1307 slender-body interference factors K<sub>W(B)</sub> and K<sub>B(W)</sub>.',
+      'The <b>fins</b> use Diederich’s lifting-surface correlation with full Prandtl–Glauert compressibility; the body lifts the fins and the fins lift the body, by the NACA Report 1307 slender-body interference factors $K_{W(B)}$ and $K_{B(W)}$.',
     ],
     tex: 'X_{CP}=\\frac{\\sum_i C_{N\\alpha,i}\\,x_i}{\\sum_i C_{N\\alpha,i}},\\qquad \\text{static margin}=\\frac{X_{CP}-X_{CG}}{d}',
     steps: [
       'Enter the body profile as (station, radius) points from the nose tip aft.',
       'Enter the fin set: number of panels, root and tip chords, leading-edge stations and exposed span.',
-      'Each body segment’s C<sub>Nα</sub> = 2ΔA/S<sub>ref</sub> acts at its centroid of area change.',
-      'The fins’ C<sub>Nα</sub> comes from Diederich’s formula, times the interference factors, acting at the fin and carry-over centres of pressure.',
-      'All contributions are summed; CP is the C<sub>Nα</sub>-weighted average station. Enter your CG to get the static margin.',
+      'Each body segment’s $C_{N\\alpha}$ = 2ΔA/$S_{ref}$ acts at its centroid of area change.',
+      'The fins’ $C_{N\\alpha}$ comes from Diederich’s formula, times the interference factors, acting at the fin and carry-over centres of pressure.',
+      'All contributions are summed; CP is the $C_{N\\alpha}$-weighted average station. Enter your CG to get the static margin.',
     ],
     doc: 'overview',
   },
@@ -50,7 +50,7 @@ export default {
       fields: [
         { id: 'M', label: 'Mach number', sym: 'M', dim: 'none', default: 0.05, min: 0, max: 0.95, maxExclusive: true, slider: { min: 0, max: 0.9 },
           info: { text: 'Free-stream Mach number. Must be below the critical Mach number of the body (where sonic flow first appears locally) — typically 0.8 or so for a slender ogive.', doc: 'fins' } },
-        { id: 'xcg', label: 'Centre of gravity (from tip)', sym: 'X_CG', ...LEN, default: 60, min: 0, optional: true,
+        { id: 'xcg', label: 'Centre of gravity (from tip)', sym: 'X_{CG}', ...LEN, default: 60, min: 0, optional: true,
           info: { text: 'Your rocket’s CG station measured from the nose tip, for the static margin. Not part of the workbook — the default is just an example. Leave empty to skip.', doc: 'stability' } },
       ],
     },
@@ -82,36 +82,36 @@ export default {
         { id: 'xTipLE', label: 'Tip leading-edge station', sym: 'x_T', ...LEN, default: 90.16, min: 0, info: { text: 'Station of the tip chord leading edge. Its difference from the root LE station sets the sweep.', doc: 'fins' } },
         { id: 'cT', label: 'Tip chord', sym: 'c_T', ...LEN, default: 3, min: 0, info: { text: 'Fin chord at the tip.', doc: 'fins' } },
         { id: 'b', label: 'Exposed semispan', sym: 'b', ...LEN, default: 4, min: 0, minExclusive: true, info: { text: 'Fin height from the body surface to the tip.', doc: 'fins' } },
-        { id: 'bt', label: 'Boat-tail half-angle under fins', sym: 'β', dim: 'angle', default: 0, min: 0, max: 20, info: { text: 'If the fins sit on a conical boat-tail, its half-angle (adds root area). Zero for a cylinder.', doc: 'fins' } },
+        { id: 'bt', label: 'Boat-tail half-angle under fins', sym: '\\beta', dim: 'angle', default: 0, min: 0, max: 20, info: { text: 'If the fins sit on a conical boat-tail, its half-angle (adds root area). Zero for a cylinder.', doc: 'fins' } },
       ],
     },
   ],
   results: [
-    { id: 'xcp', label: 'Centre of pressure (from tip)', sym: 'X_CP', ...LEN, key: true,
+    { id: 'xcp', label: 'Centre of pressure (from tip)', sym: 'X_{CP}', ...LEN, key: true,
       note: (v, o) => `${fmt((100 * v) / o.len, { digits: 3 })} % of length`,
       info: { text: 'Station where the total normal force acts, measured from the nose tip.', tex: 'X_{CP}=\\frac{\\sum C_{N\\alpha,i}x_i}{C_{N\\alpha}}', doc: 'stability' } },
-    { id: 'margin', label: 'Static margin', dim: 'none', key: true, digits: 3, when: (v) => v.xcg != null,
+    { id: 'margin', label: 'Static margin', sym: 'SM', dim: 'none', key: true, digits: 3, when: (v) => v.xcg != null,
       status: (m) => (m == null ? null : m < 0 ? 'err' : m < 1 ? 'warn' : 'ok'),
       note: (m) => (m == null ? '' : `calibres · ${m < 0 ? 'UNSTABLE — CP ahead of CG' : m < 1 ? 'below the usual 1-calibre rule of thumb' : 'stable'}`),
       info: { text: 'Distance from CG to CP in body diameters (calibres). Positive = CP behind CG = statically stable. The 1–2 calibre guideline is common amateur practice, not a value from the source.', tex: '\\frac{X_{CP}-X_{CG}}{d}', doc: 'stability' } },
-    { id: 'CNa', label: 'Normal-force slope C_Nα', dim: 'perAngle', internal: 'perrad', key: true,
+    { id: 'CNa', label: 'Normal-force slope', sym: 'C_{N\\alpha}', dim: 'perAngle', internal: 'perrad', key: true,
       info: { text: 'Total normal-force coefficient per radian of angle of attack, on the reference area πd²/4.', tex: 'C_{N\\alpha}=C_{N\\alpha,body}+C_{N\\alpha,fins}\\big(K_{W(B)}+K_{B(W)}\\big)', doc: 'stability' } },
-    { id: 'CNaBody', label: 'Body C_Nα', dim: 'perAngle', internal: 'perrad', info: { text: 'Slender-body normal force of the nose, shoulders and boat-tails (and the hemispherical cap).', tex: 'C_{N\\alpha}=\\frac{2(A_i-A_{i-1})}{S_{ref}}', doc: 'body' } },
-    { id: 'xcpBody', label: 'Body CP', ...LEN, info: { text: 'Where the body’s normal force acts.', doc: 'body' } },
-    { id: 'CNaTail', label: 'Fin set C_Nα (with interference)', dim: 'perAngle', internal: 'perrad', info: { text: 'Fins plus the lift they induce on the body.', tex: 'C_{N\\alpha,fins}(K_{W(B)}+K_{B(W)})', doc: 'interference' } },
-    { id: 'xcpTail', label: 'Fin set CP', ...LEN, info: { text: 'Combined CP of the fin lift and the body carry-over lift.', doc: 'interference' } },
-    { id: 'CNaFins', label: 'Fins alone C_Nα', dim: 'perAngle', internal: 'perrad', info: { text: 'Isolated fin panels (N/2 wings) on the body reference area.', tex: 'C_{N\\alpha}=\\frac N2\\frac{S}{S_{ref}}\\frac{2\\pi F\\cos\\Lambda_c}{\\beta_\\Lambda\\big(F\\sqrt{1+4/F^2}+2\\big)}', doc: 'fins' } },
-    { id: 'KWB', label: 'K_W(B) — fins in presence of body', dim: 'none', digits: 4, info: { text: 'Ratio of fin lift on the body to isolated fin lift (NACA 1307 eq. 14).', doc: 'interference' } },
-    { id: 'KBW', label: 'K_B(W) — body lift due to fins', dim: 'none', digits: 4, info: { text: 'Body carry-over lift induced by the fins, relative to isolated fin lift (eq. 21).', doc: 'interference' } },
-    { id: 'xcpFin', label: 'Fin panel CP', ...LEN, info: { text: 'Barrowman fin CP: quarter of the mean aerodynamic chord, shifted by sweep.', doc: 'fins' } },
-    { id: 'xcpBW', label: 'Carry-over lift CP', ...LEN, info: { text: 'CP of the body lift induced by the fins (NACA 1307 eq. D6).', doc: 'interference' } },
-    { id: 'AR', label: 'Fin aspect ratio (pair)', dim: 'none', digits: 4, info: { text: 'Two panels joined at the root: 2·(span)²/area.', doc: 'fins' } },
-    { id: 'sweep', label: 'Quarter-chord sweep', dim: 'angle', digits: 4, info: { text: 'Sweep of the quarter-chord line.', doc: 'fins' } },
-    { id: 'mac', label: 'Mean aerodynamic chord', ...LEN, info: { text: 'MAC of a trapezoidal panel.', tex: '\\bar c=\\tfrac23\\Big(c_R+c_T-\\frac{c_Rc_T}{c_R+c_T}\\Big)', doc: 'fins' } },
-    { id: 'CNd', label: 'Single-panel C_Nδ (fin cant)', dim: 'perAngle', internal: 'perrad', info: { text: 'Normal force per radian of panel deflection, including interference.', doc: 'interference' } },
-    { id: 'capCNa', label: 'Hemispherical cap C_Nα', dim: 'perAngle', internal: 'perrad', when: (v) => v.profile?.[0]?.r > 0,
+    { id: 'CNaBody', label: 'Body normal-force slope', sym: 'C_{N\\alpha,body}', dim: 'perAngle', internal: 'perrad', info: { text: 'Slender-body normal force of the nose, shoulders and boat-tails (and the hemispherical cap).', tex: 'C_{N\\alpha}=\\frac{2(A_i-A_{i-1})}{S_{ref}}', doc: 'body' } },
+    { id: 'xcpBody', label: 'Body centre of pressure', sym: 'x_{body}', ...LEN, info: { text: 'Where the body’s normal force acts.', doc: 'body' } },
+    { id: 'CNaTail', label: 'Fin set, with interference', sym: 'C_{N\\alpha,tail}', dim: 'perAngle', internal: 'perrad', info: { text: 'Fins plus the lift they induce on the body.', tex: 'C_{N\\alpha,fins}(K_{W(B)}+K_{B(W)})', doc: 'interference' } },
+    { id: 'xcpTail', label: 'Fin set centre of pressure', sym: 'x_{tail}', ...LEN, info: { text: 'Combined CP of the fin lift and the body carry-over lift.', doc: 'interference' } },
+    { id: 'CNaFins', label: 'Fins alone', sym: 'C_{N\\alpha,F}', dim: 'perAngle', internal: 'perrad', info: { text: 'Isolated fin panels (N/2 wings) on the body reference area.', tex: 'C_{N\\alpha}=\\frac N2\\frac{S}{S_{ref}}\\frac{2\\pi F\\cos\\Lambda_c}{\\beta_\\Lambda\\big(F\\sqrt{1+4/F^2}+2\\big)}', doc: 'fins' } },
+    { id: 'KWB', label: 'Fins in presence of body', sym: 'K_{W(B)}', dim: 'none', digits: 4, info: { text: 'Ratio of fin lift on the body to isolated fin lift (NACA 1307 eq. 14).', doc: 'interference' } },
+    { id: 'KBW', label: 'Body lift due to fins', sym: 'K_{B(W)}', dim: 'none', digits: 4, info: { text: 'Body carry-over lift induced by the fins, relative to isolated fin lift (eq. 21).', doc: 'interference' } },
+    { id: 'xcpFin', label: 'Fin panel centre of pressure', sym: 'x_F', ...LEN, info: { text: 'Barrowman fin CP: quarter of the mean aerodynamic chord, shifted by sweep.', doc: 'fins' } },
+    { id: 'xcpBW', label: 'Carry-over lift centre of pressure', sym: '\\bar{x}_{B(W)}', ...LEN, info: { text: 'CP of the body lift induced by the fins (NACA 1307 eq. D6).', doc: 'interference' } },
+    { id: 'AR', label: 'Fin aspect ratio (pair)', sym: '\\mathit{AR}', dim: 'none', digits: 4, info: { text: 'Two panels joined at the root: 2·(span)²/area.', doc: 'fins' } },
+    { id: 'sweep', label: 'Quarter-chord sweep', sym: '\\Lambda_c', dim: 'angle', digits: 4, info: { text: 'Sweep of the quarter-chord line.', doc: 'fins' } },
+    { id: 'mac', label: 'Mean aerodynamic chord', sym: '\\bar{c}', ...LEN, info: { text: 'MAC of a trapezoidal panel.', tex: '\\bar c=\\tfrac23\\Big(c_R+c_T-\\frac{c_Rc_T}{c_R+c_T}\\Big)', doc: 'fins' } },
+    { id: 'CNd', label: 'Single-panel deflection slope (fin cant)', sym: 'C_{N\\delta}', dim: 'perAngle', internal: 'perrad', info: { text: 'Normal force per radian of panel deflection, including interference.', doc: 'interference' } },
+    { id: 'capCNa', label: 'Hemispherical cap', sym: 'C_{N\\alpha,cap}', dim: 'perAngle', internal: 'perrad', when: (v) => v.profile?.[0]?.r > 0,
       info: { text: 'Normal force of the tangent hemispherical cap (zero for a flat face).', tex: 'C_{N\\alpha}=\\frac{9\\pi}{8}\\frac{R_h^2\\sin^4\\theta_T}{S_{ref}}', doc: 'hemisphere' } },
-    { id: 'd', label: 'Reference diameter', ...LEN, info: { text: 'Maximum body diameter; S<sub>ref</sub> = πd²/4.', doc: 'body' } },
+    { id: 'd', label: 'Reference diameter', sym: 'd', ...LEN, info: { text: 'Maximum body diameter; $S_{ref}$ = πd²/4.', doc: 'body' } },
   ],
   compute(v) {
     const o = subsonicCP({ M: v.M, profile: v.profile, flatNose: v.flatNose, fins: finsOf(v), xcg: v.xcg });
@@ -134,23 +134,23 @@ export default {
       build(v, out, { U }) {
         const ul = U(LEN); const pts = [];
         for (let i = 0; i <= 40; i++) { const M = (0.9 * i) / 40; const o = subsonicCP({ M, profile: v.profile, flatNose: v.flatNose, fins: finsOf(v) }); pts.push([M, ul.v(o.xcp)]); }
-        return { x: { label: 'Mach number' }, y: { label: 'X_CP from tip', unit: ul.label }, series: [{ name: 'X_CP', points: pts }],
+        return { x: { label: 'Mach number' }, y: { label: 'X_{CP} from tip', unit: ul.label }, series: [{ name: 'X_{CP}', points: pts }],
           markers: [{ x: v.M, y: ul.v(out.o.xcp), label: 'now' }] };
       },
     },
     {
       id: 'mach-cna', title: 'Normal-force slope vs Mach',
-      info: { text: 'Body C<sub>Nα</sub> is independent of Mach in slender-body theory; only the fins change.', doc: 'fins' },
+      info: { text: 'Body $C_{N\\alpha}$ is independent of Mach in slender-body theory; only the fins change.', doc: 'fins' },
       build(v, out) {
         const tot = [], body = [], tail = [];
         for (let i = 0; i <= 40; i++) { const M = (0.9 * i) / 40; const o = subsonicCP({ M, profile: v.profile, flatNose: v.flatNose, fins: finsOf(v) }); tot.push([M, o.CNa]); body.push([M, o.body.CNa]); tail.push([M, o.fin.CNa]); }
-        return { x: { label: 'Mach number' }, y: { label: 'C_Nα', unit: '/rad' }, includeZero: true,
+        return { x: { label: 'Mach number' }, y: { label: 'C_{N\\alpha}', unit: '\\mathrm{rad^{-1}}' }, includeZero: true,
           series: [{ name: 'total', points: tot }, { name: 'fin set', points: tail }, { name: 'body', points: body, dashed: true }], markers: [{ x: v.M, y: out.o.CNa }] };
       },
     },
     {
       id: 'buildup', title: 'Normal-force build-up along the rocket', wide: true,
-      info: { text: 'Cumulative C<sub>Nα</sub> from the nose aft, placing each contribution at its own centre of pressure. Steps show where lift is generated.', doc: 'stability' },
+      info: { text: 'Cumulative $C_{N\\alpha}$ from the nose aft, placing each contribution at its own centre of pressure. Steps show where lift is generated.', doc: 'stability' },
       build(v, out, { U }) {
         const ul = U(LEN), o = out.o;
         const items = [];
@@ -161,8 +161,8 @@ export default {
         let acc = 0; const pts = [[ul.v(0), 0]];
         for (const [x, c] of items) { pts.push([ul.v(x), acc]); acc += c; pts.push([ul.v(x), acc]); }
         pts.push([ul.v(out.len), acc]);
-        return { x: { label: 'Station from tip', unit: ul.label }, y: { label: 'Cumulative C_Nα', unit: '/rad' }, includeZero: true, xDomain: [0, ul.v(out.len)], xTight: true,
-          series: [{ name: 'ΣC_Nα', points: pts, area: true }],
+        return { x: { label: 'Station from tip', unit: ul.label }, y: { label: 'Cumulative C_{N\\alpha}', unit: '\\mathrm{rad^{-1}}' }, includeZero: true, xDomain: [0, ul.v(out.len)], xTight: true,
+          series: [{ name: '\\Sigma C_{N\\alpha}', points: pts, area: true }],
           vlines: [{ x: ul.v(o.xcp), label: 'CP', color: 'var(--accent)' }, ...(v.xcg != null ? [{ x: ul.v(v.xcg), label: 'CG', color: 'var(--accent-2)' }] : [])] };
       },
     },
@@ -198,15 +198,15 @@ export default {
     g.append(s('path', { class: 'sc-body-2', d: path(finBot, true), 'data-field': 'N xLE cR xTipLE cT b' }));
     g.append(s('line', { x1: X(0) - 14, x2: X(len) + 14, y1: cy, y2: cy, class: 'sc-axis' }));
     // CP / CG markers and margin
-    g.append(pointMarker(X(o.xcp), cy, 'CP', { kind: 'cp' }));
+    g.append(pointMarker(X(o.xcp), cy, 'CP', { kind: 'cp', field: 'xcp margin CNa' }));
     if (v.xcg != null) {
       g.append(pointMarker(X(v.xcg), cy, 'CG', { kind: 'cg', field: 'xcg' }));
       const st = o.margin < 0 ? 'var(--err)' : o.margin < 1 ? 'var(--warn)' : 'var(--ok)';
       const yb = Y(-(rmax + v.b)) + 26;
       g.append(dim(fr, X(Math.min(v.xcg, o.xcp)), yb, X(Math.max(v.xcg, o.xcp)), yb, null, { field: 'xcg' }));
-      g.append(s('text', { x: (X(v.xcg) + X(o.xcp)) / 2, y: yb + 16, 'text-anchor': 'middle', style: `fill:${st};font:600 12px var(--font-mono)` }, `static margin ${fmt(o.margin, { digits: 3 })} cal`));
+      g.append(s('text', { x: (X(v.xcg) + X(o.xcp)) / 2, y: yb + 16, 'text-anchor': 'middle', style: `fill:${st};font:600 12px var(--font-sans)` }, `static margin ${fmt(o.margin, { digits: 3 })} cal`));
     }
-    g.append(dim(fr, X(0), Y(rmax + v.b) - 10, X(o.xcp), Y(rmax + v.b) - 10, `X_CP = ${L(o.xcp)}`, { off: -6 }));
+    g.append(dim(fr, X(0), Y(rmax + v.b) - 10, X(o.xcp), Y(rmax + v.b) - 10, `X_{CP} = ${L(o.xcp)}`, { off: -6 }));
     g.append(text(W - 10, H - 8, `radius ×${fmt(exag, { digits: 2 })} for clarity`, { anchor: 'end', cls: 'sc-dim-text', size: 10 }));
     // profile point markers + handles (radius)
     prof.forEach((p, i) => {
@@ -224,6 +224,37 @@ export default {
       onDrag: (px, py) => { ctx.setValue('b', Math.max(0.1, (cy - py) / ky - rr), { round: 0.05 }); ctx.setValue('xTipLE', (px - 40) / kx - capLen, { round: 0.05 }); },
       onKey: (dx, dy) => { if (dy) ctx.setValue('b', v.b * (1 + 0.02 * dy)); if (dx) ctx.setValue('xTipLE', v.xTipLE + 0.2 * dx); },
     });
+  },
+  reportNotes: ['Lengths are in inches as in the workbook (the method is unit-free); stations are measured aft of the nose tip. The inputs and results tables use your selected unit system.', 'Valid below the critical Mach number, at small angles of attack, for one fin set.'],
+  report(v, out, R) {
+    const o = out.o, f = o.fin, b = o.body, n = R.n, q = R.q;
+    const terms = b.segs.filter((sg) => sg.CNa).map((sg) => n(sg.CNa, 4)).join('+');
+    const body = [
+      { label: 'Reference area and diameter', lhs: 'S_{ref}', eq: '\\frac{\\pi d^2}{4}', sub: `\\frac{\\pi\\times${n(o.d)}^2}{4}`, res: q(o.Sref, 'in2') },
+      { label: 'Slender-body normal force of each segment', lhs: 'C_{N\\alpha,i}', eq: '\\frac{2(A_i-A_{i-1})}{S_{ref}},\\qquad x_{cp,i}=\\frac{x_iA_i-x_{i-1}A_{i-1}-V_i}{A_i-A_{i-1}}' },
+    ];
+    if (b.cap.CNa) body.push({ label: 'Tangent hemispherical cap', lhs: 'C_{N\\alpha,cap}', eq: '\\frac{9\\pi}{8}\\frac{R_h^2\\sin^4\\theta_T}{S_{ref}}', sub: `\\frac{9\\pi}{8}\\times\\frac{${n(b.Rh)}^2\\sin^4(${n((b.thetaT * 180) / Math.PI)}^{\\circ})}{${n(o.Sref)}}`, res: n(b.cap.CNa) });
+    body.push({ label: 'Body total (sum of non-zero segments)', lhs: 'C_{N\\alpha,body}', eq: '\\sum_i C_{N\\alpha,i}', sub: (b.cap.CNa ? n(b.cap.CNa, 4) + '+' : '') + terms, res: `${n(b.CNa)},\\quad x_{body}=${q(b.mom / b.CNa, 'in')}` });
+    const fins = [
+      { label: 'Panel area, aspect ratio and quarter-chord sweep', lhs: 'S', eq: '\\frac{(c_R+c_T)\\,b}{2}', sub: `\\frac{(${n(v.cR)}+${n(v.cT)})\\times${n(v.b)}}{2}`, res: `${q(f.S, 'in2')},\\quad \\mathit{AR}=\\frac{2b^2}{S}=${n(f.AR)},\\quad \\Lambda_c=${n((f.sweepC4 * 180) / Math.PI)}^{\\circ}` },
+      { label: 'Diederich planform parameter with Prandtl–Glauert compressibility', lhs: 'F', eq: '\\frac{\\mathit{AR}\\sqrt{1-M^2\\cos^2\\Lambda_c}}{\\cos\\Lambda_c}', res: n(f.F) },
+      { lhs: 'C_{N\\alpha,W}', eq: '\\frac{2\\pi F\\cos\\Lambda_c}{\\sqrt{1-M^2\\cos^2\\Lambda_c}\\left(F\\sqrt{1+4/F^2}+2\\right)}', res: n(f.CNaW) },
+      { label: 'Fins on the body reference area', lhs: 'C_{N\\alpha,F}', eq: '\\frac N2\\frac{S}{S_{ref}}C_{N\\alpha,W}', sub: `\\frac{${n(v.N)}}{2}\\times\\frac{${n(f.S)}}{${n(o.Sref)}}\\times${n(f.CNaW)}`, res: n(f.CNaFins) },
+      { label: 'Fin centre of pressure', lhs: 'x_F', eq: 'x_R+\\frac{\\bar c}{4}+\\frac{(c_R+2c_T)(x_T-x_R)}{3(c_R+c_T)}', sub: `${n(v.xLE)}+\\frac{${n(f.mac)}}{4}+\\frac{(${n(v.cR)}+2\\times${n(v.cT)})(${n(v.xTipLE)}-${n(v.xLE)})}{3(${n(v.cR)}+${n(v.cT)})}`, res: q(f.xcpFin, 'in') },
+      { label: `Interference factors (NACA 1307), r/s = ${n(f.r)}/${n(f.s)}`, lhs: 'K_{W(B)}', eq: '\\frac{2}{\\pi(1-\\tau)^2}\\left[(1+\\tau^4)\\left(\\tfrac12\\tan^{-1}\\tfrac12(\\tfrac1\\tau-\\tau)+\\tfrac\\pi4\\right)-\\tau^2\\left(\\tfrac1\\tau-\\tau+2\\tan^{-1}\\tau\\right)\\right]', res: `${n(f.KWB)},\\quad K_{B(W)}=${n(f.KBW)}` },
+      { label: 'Fin set with interference', lhs: 'C_{N\\alpha,tail}', eq: 'C_{N\\alpha,F}\\left(K_{W(B)}+K_{B(W)}\\right)', sub: `${n(f.CNaFins)}\\times(${n(f.KWB)}+${n(f.KBW)})`, res: `${n(f.CNa)},\\quad x_{tail}=\\frac{x_F C_{N\\alpha,F}K_{W(B)}+\\bar x_{B(W)}C_{N\\alpha,F}K_{B(W)}}{C_{N\\alpha,tail}}=${q(f.xcp, 'in')}` },
+    ];
+    const tot = [
+      { label: 'Vehicle normal-force slope', lhs: 'C_{N\\alpha}', eq: 'C_{N\\alpha,body}+C_{N\\alpha,tail}', sub: `${n(b.CNa)}+${n(f.CNa)}`, res: `${n(o.CNa)}\\ \\mathrm{rad^{-1}}` },
+      { label: 'Centre of pressure from the nose tip', lhs: 'X_{CP}', eq: '\\frac{\\sum C_{N\\alpha,i}\\,x_i}{C_{N\\alpha}}', sub: `\\frac{${n(o.Cma)}}{${n(o.CNa)}}`, res: q(o.xcp, 'in') },
+    ];
+    if (v.xcg != null) tot.push({ label: 'Static margin', lhs: 'SM', eq: '\\frac{X_{CP}-X_{CG}}{d}', sub: `\\frac{${n(o.xcp)}-${n(v.xcg)}}{${n(o.d)}}`, res: `${n(o.margin, 3)}\\ \\text{calibres}`, note: o.margin < 0 ? 'The CP is ahead of the CG: the rocket is statically unstable.' : 'The CP is behind the CG: the rocket is statically stable.' });
+    return [
+      { title: 'Theory', text: 'The body of revolution is treated by Munk’s slender-body theory: each segment contributes $C_{N\\alpha,i}=2(A_i-A_{i-1})/S_{ref}$ at the centroid of its area change; a blunt tip gets a tangent hemispherical cap with $C_{N\\alpha}=\\tfrac{9\\pi}{8}R_h^2\\sin^4\\theta_T/S_{ref}$. The fins use Diederich’s lifting-surface correlation with Prandtl–Glauert compressibility, and the NACA Report 1307 slender-body interference factors $K_{W(B)}$ and $K_{B(W)}$ account for fin–body carry-over. The centre of pressure is the $C_{N\\alpha}$-weighted mean station (J. S. Barrowman; C. P. Hoult, Barrowman Equations and Hemispherical Nose Tip memos, 2010).' },
+      { title: 'Body of revolution', steps: body },
+      { title: 'Fin set', steps: fins },
+      { title: 'Vehicle', steps: tot },
+    ];
   },
   references: ['barrowman-equations', 'barrowmanthesis-orig', 'hemisphere', '1307-supplement-rev2'],
   examples: [

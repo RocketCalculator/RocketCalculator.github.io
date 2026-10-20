@@ -1,7 +1,10 @@
 // Input form: grouped fields with units, validation, switches, selects and editable point tables.
 // Values are held in the calc module's internal units; the form converts for display.
 import { h, num } from '../util.js';
-import { displayUnit, unitLabel, toDisplay, fromDisplay, getSystem } from '../units.js';
+import { displayUnit, unitLabel, unitTex, toDisplay, fromDisplay, getSystem } from '../units.js';
+import { texHTML, rich } from '../math.js';
+const L = (f) => h('span', { html: rich(f.label) });
+const SYM = (f) => (f.sym ? h('span.sym', { html: texHTML(f.sym) }) : null);
 import { infoButton } from './drawer.js';
 
 const parse = (str) => {
@@ -24,7 +27,7 @@ export function buildForm(def, state, { onChange, onHighlight, infoFor }) {
     const input = h('input', { type: 'number', inputmode: 'decimal', step: 'any', id: `f-${f.id}`, name: f.id, 'aria-describedby': `e-${f.id}`, autocomplete: 'off' });
     const unit = h('span.unit');
     const err = h('div.err-msg', { id: `e-${f.id}`, role: 'alert' });
-    const lab = h('label', { for: `f-${f.id}` }, f.label, f.sym ? h('span.sym', { html: f.sym }) : null, infoButton(() => infoFor(f), { label: f.label }));
+    const lab = h('label', { for: `f-${f.id}` }, L(f), SYM(f), infoButton(() => infoFor(f), { label: f.label }));
     const el = h('div.field', { 'data-for': f.id }, lab, h('div.ctl', input, unit), err);
     let slider;
     if (f.slider) {
@@ -37,7 +40,7 @@ export function buildForm(def, state, { onChange, onHighlight, infoFor }) {
     }
     const sync = () => {
       const sys = getSystem();
-      unit.textContent = unitLabel(displayUnit(f, sys));
+      unit.innerHTML = texHTML(unitTex(displayUnit(f, sys)));
       if (document.activeElement !== input || !input.value) input.value = show(state.values[f.id], f, sys);
       if (slider) {
         const lo = toDisplay(f.slider.min, f, sys), hi = toDisplay(f.slider.max, f, sys);
@@ -68,7 +71,7 @@ export function buildForm(def, state, { onChange, onHighlight, infoFor }) {
 
   function boolField(f) {
     const input = h('input', { type: 'checkbox', id: `f-${f.id}`, role: 'switch' });
-    const lab = h('label', { for: `f-${f.id}` }, f.label, infoButton(() => infoFor(f), { label: f.label }));
+    const lab = h('label', { for: `f-${f.id}` }, L(f), SYM(f), infoButton(() => infoFor(f), { label: f.label }));
     const el = h('div.field.bool', { 'data-for': f.id }, lab, h('span.switch', input, h('span')));
     input.addEventListener('change', () => { state.values[f.id] = input.checked; onChange(f.id); });
     return { el, sync: () => { input.checked = !!state.values[f.id]; }, validate: () => true, focus: () => input.focus() };
@@ -76,7 +79,7 @@ export function buildForm(def, state, { onChange, onHighlight, infoFor }) {
 
   function selectField(f) {
     const sel = h('select', { id: `f-${f.id}` }, f.options.map((o) => h('option', { value: String(o.value) }, o.label)));
-    const lab = h('label', { for: `f-${f.id}` }, f.label, infoButton(() => infoFor(f), { label: f.label }));
+    const lab = h('label', { for: `f-${f.id}` }, L(f), SYM(f), infoButton(() => infoFor(f), { label: f.label }));
     const el = h('div.field', { 'data-for': f.id }, lab, h('div.ctl', sel));
     sel.addEventListener('change', () => {
       const o = f.options.find((x) => String(x.value) === sel.value);
@@ -92,13 +95,13 @@ export function buildForm(def, state, { onChange, onHighlight, infoFor }) {
     const thead = h('thead', h('tr', h('th', '#'), f.columns.map((c, i) => h('th', c.label, ' ', headUnits[i])), h('th', h('span.sr-only', 'Remove'))));
     const tbody = h('tbody');
     wrapT.append(h('table.ptable', thead, tbody));
-    const lab = h('label', f.label, infoButton(() => infoFor(f), { label: f.label }));
+    const lab = h('label', L(f), infoButton(() => infoFor(f), { label: f.label }));
     const addBtn = h('button.btn.small', { type: 'button' }, '+ Add point');
     const el = h('div.field', { 'data-for': f.id, style: 'grid-template-columns:1fr' }, lab, wrapT, h('div.ptable-actions', addBtn), err);
     const rows = () => state.values[f.id];
     const render = () => {
       const sys = getSystem();
-      f.columns.forEach((c, i) => { const u = unitLabel(displayUnit(c, sys)); headUnits[i].textContent = u ? `(${u})` : ''; });
+      f.columns.forEach((c, i) => { const u = unitTex(displayUnit(c, sys)); headUnits[i].innerHTML = u ? `(${texHTML(u)})` : ''; });
       tbody.replaceChildren(...rows().map((row, ri) => {
         const tr = h('tr', { 'data-row': ri }, h('td.idx', String(ri)));
         for (const c of f.columns) {

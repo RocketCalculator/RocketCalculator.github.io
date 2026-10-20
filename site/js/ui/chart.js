@@ -1,6 +1,9 @@
 // Lightweight, theme-aware SVG line chart: nice ticks, hover read-out, legend toggles, SVG/CSV export.
 // Colours come from CSS custom properties (--series-N), so charts follow light/dark mode automatically.
-import { h, s, fmt, num, download, reducedMotion } from '../util.js';
+import { h, s, fmt, num, reducedMotion } from '../util.js';
+import { svgRich, texHTML, texToPlain, hasTeX } from '../math.js';
+import { exportMenu, exportFigure } from './export.js';
+const nameHTML = (n) => (hasTeX(n) ? texHTML(n) : String(n).replace(/[&<]/g, (c) => (c === '&' ? '&amp;' : '&lt;')));
 
 export function niceTicks(min, max, count = 6) {
   if (!(Number.isFinite(min) && Number.isFinite(max))) return [];
@@ -70,20 +73,20 @@ export function createChart(host, opts = {}) {
     for (const v of xt) ticks.append(s('text', { x: X(v), y: H - m.b + 15, 'text-anchor': 'middle' }, tickFmt(v, xt)));
     const lab = (a) => (a ? a.label + (a.unit ? ` (${a.unit})` : '') : '');
     const labels = s('g', {},
-      s('text', { class: 'axis-label', x: (m.l + W - m.r) / 2, y: H - 6, 'text-anchor': 'middle' }, lab(spec.x)),
-      s('text', { class: 'axis-label', transform: `translate(13 ${(m.t + H - m.b) / 2}) rotate(-90)`, 'text-anchor': 'middle' }, lab(spec.y)));
+      svgRich(s('text', { class: 'axis-label', x: (m.l + W - m.r) / 2, y: H - 6, 'text-anchor': 'middle' }), lab(spec.x), 12),
+      svgRich(s('text', { class: 'axis-label', transform: `translate(13 ${(m.t + H - m.b) / 2}) rotate(-90)`, 'text-anchor': 'middle' }), lab(spec.y), 12));
     const clipId = 'clip' + Math.random().toString(36).slice(2, 8);
     const defs = s('defs', {}, s('clipPath', { id: clipId }, s('rect', { x: m.l, y: m.t - 2, width: W - m.l - m.r, height: H - m.t - m.b + 4 })));
     const plot = s('g', { 'clip-path': `url(#${clipId})` });
     for (const l of spec.hlines || []) {
       if (!Number.isFinite(l.y)) continue;
       plot.append(s('line', { class: 'hline', x1: m.l, x2: W - m.r, y1: Y(l.y), y2: Y(l.y), stroke: l.color || 'var(--text-3)' }));
-      if (l.label) plot.append(s('text', { x: W - m.r - 4, y: Y(l.y) - 5, 'text-anchor': 'end', fill: l.color || 'var(--text-3)', 'font-size': 10.5 }, l.label));
+      if (l.label) plot.append(svgRich(s('text', { x: W - m.r - 4, y: Y(l.y) - 5, 'text-anchor': 'end', fill: l.color || 'var(--text-3)', 'font-size': 10.5 }), l.label, 10.5));
     }
     for (const l of spec.vlines || []) {
       if (!Number.isFinite(l.x)) continue;
       plot.append(s('line', { class: 'hline', y1: m.t, y2: H - m.b, x1: X(l.x), x2: X(l.x), stroke: l.color || 'var(--text-3)' }));
-      if (l.label) plot.append(s('text', { x: X(l.x) + 5, y: m.t + 11, fill: l.color || 'var(--text-3)', 'font-size': 10.5 }, l.label));
+      if (l.label) plot.append(svgRich(s('text', { x: X(l.x) + 5, y: m.t + 11, fill: l.color || 'var(--text-3)', 'font-size': 10.5 }), l.label, 10.5));
     }
     const animate = !drawn && !reducedMotion();
     for (const se of vis) {
@@ -104,7 +107,7 @@ export function createChart(host, opts = {}) {
       marks.append(s('circle', { cx: X(mk.x), cy: Y(mk.y), r: mk.r || 5, fill: c }));
       if (mk.label) {
         const right = X(mk.x) < W * 0.7;
-        marks.append(s('text', { x: X(mk.x) + (right ? 9 : -9), y: Y(mk.y) - 8, 'text-anchor': right ? 'start' : 'end', fill: c }, mk.label));
+        marks.append(svgRich(s('text', { x: X(mk.x) + (right ? 9 : -9), y: Y(mk.y) - 8, 'text-anchor': right ? 'start' : 'end', fill: c }), mk.label, 11));
       }
     }
     const cross = s('line', { class: 'crosshair', y1: m.t, y2: H - m.b, visibility: 'hidden' });
@@ -127,13 +130,14 @@ export function createChart(host, opts = {}) {
         if (v == null) continue;
         const [cx, cy] = hoverY ? [X(v), Y(yv)] : [X(xv), Y(v)];
         dots.append(s('circle', { class: 'hover-dot', cx, cy, r: 4, fill: se.col }));
-        rows.push(h('div', h('i', { style: `background:${se.col}` }), `${se.name}: ${fmt(v, { digits: 4 })}`));
+        rows.push(h('div', h('i', { style: `background:${se.col}` }), h('span', { html: nameHTML(se.name) }), `: ${fmt(v, { digits: 4 })}`));
       }
       if (hoverY) cross.setAttribute('x1', m.l), cross.setAttribute('x2', W - m.r), cross.setAttribute('y1', Y(yv)), cross.setAttribute('y2', Y(yv));
       else cross.setAttribute('x1', X(xv)), cross.setAttribute('x2', X(xv)), cross.setAttribute('y1', m.t), cross.setAttribute('y2', H - m.b);
       cross.setAttribute('visibility', 'visible');
-      const head = hoverY ? `${spec.y?.label || 'y'} = ${fmt(yv, { digits: 4 })}` : `${spec.x?.label || 'x'} = ${fmt(xv, { digits: 4 })}`;
-      tip.replaceChildren(h('div', { style: 'color:var(--text-3)' }, head), ...rows);
+      const ax = hoverY ? spec.y : spec.x, val = hoverY ? yv : xv;
+      const head = h('div', { style: 'opacity:.7', html: `${nameHTML(ax?.label || (hoverY ? 'y' : 'x'))} = ${fmt(val, { digits: 4 })}${ax?.unit ? ' ' + nameHTML(ax.unit) : ''}` });
+      tip.replaceChildren(head, ...rows);
       const hr = svgHost.getBoundingClientRect(), wr = wrap.getBoundingClientRect();
       let left = ev.clientX - wr.left; const top = ev.clientY - wr.top;
       tip.style.left = `${left}px`; tip.style.top = `${top}px`;
@@ -148,7 +152,7 @@ export function createChart(host, opts = {}) {
 
     legend.replaceChildren(...(series.length > 1 || spec.legend ? series.map((se) => {
       const b = h('button', { type: 'button', 'aria-pressed': String(!hidden.has(se.name)) },
-        h('i', { style: `background:${se.col}${se.dashed ? ';background:repeating-linear-gradient(90deg,' + se.col + ' 0 4px,transparent 4px 7px)' : ''}` }), se.name);
+        h('i', { style: `background:${se.col}${se.dashed ? ';background:repeating-linear-gradient(90deg,' + se.col + ' 0 4px,transparent 4px 7px)' : ''}` }), h('span', { html: nameHTML(se.name) }));
       b.addEventListener('click', () => { hidden.has(se.name) ? hidden.delete(se.name) : hidden.add(se.name); render(); });
       return b;
     }) : []));
@@ -165,24 +169,34 @@ export function createChart(host, opts = {}) {
       if (!spec) return '';
       const lines = [];
       for (const se of spec.series) {
-        lines.push(`# ${se.name}`, `${spec.x?.label || 'x'}${spec.x?.unit ? ' (' + spec.x.unit + ')' : ''},${spec.y?.label || 'y'}${spec.y?.unit ? ' (' + spec.y.unit + ')' : ''}`);
+        const P = texToPlain;
+        lines.push(`# ${P(se.name)}`, `${P(spec.x?.label || 'x')}${spec.x?.unit ? ' (' + P(spec.x.unit) + ')' : ''},${P(spec.y?.label || 'y')}${spec.y?.unit ? ' (' + P(spec.y.unit) + ')' : ''}`);
         for (const [x, y] of se.points) lines.push(`${num(x)},${num(y)}`);
         lines.push('');
       }
       return lines.join('\n');
     },
-    toSVG() {
-      if (!svg) return '';
-      const clone = svg.cloneNode(true);
-      // Inline computed colours so the exported file renders outside the page.
-      const cs = getComputedStyle(document.documentElement);
-      const resolve = (v) => v?.replace(/var\((--[\w-]+)\)/g, (_, n) => cs.getPropertyValue(n).trim());
-      clone.querySelectorAll('*').forEach((n) => { for (const a of ['stroke', 'fill']) if (n.getAttribute(a)?.includes('var(')) n.setAttribute(a, resolve(n.getAttribute(a))); });
-      clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-      const style = `text{font-family:${cs.getPropertyValue('--font-mono')};fill:${cs.getPropertyValue('--text-2')};font-size:11px}.grid line{stroke:${cs.getPropertyValue('--border')}}.axis path{stroke:${cs.getPropertyValue('--border-strong')};fill:none}.series{fill:none}.dashed{stroke-dasharray:6 4}.hline{stroke-dasharray:4 4}`;
-      clone.prepend(s('style', {}, style));
-      clone.prepend(s('rect', { width: '100%', height: '100%', fill: cs.getPropertyValue('--surface').trim() }));
-      return new XMLSerializer().serializeToString(clone);
+    svgEl: () => svg,
+    /** Temporarily draw title + legend into the SVG while fn(svg) runs synchronously (used for image export). */
+    withLegend(fn, title) {
+      if (!svg || !geom) return fn(svg);
+      const vis = spec.series.filter((se) => se.points?.length && !hidden.has(se.name));
+      const vb = svg.getAttribute('viewBox');
+      const g = s('g', {});
+      let x = 12, y = geom.H + 18, rowsH = 0;
+      vis.forEach((se, i) => {
+        const col = se.color || color(spec.series.indexOf(se));
+        const w = 30 + texToPlain(se.name).length * 6.6;
+        if (x + w > geom.W - 8) { x = 12; y += 18; }
+        g.append(s('line', { x1: x, x2: x + 16, y1: y - 4, y2: y - 4, stroke: col, 'stroke-width': 3, 'stroke-dasharray': se.dashed ? '5 3' : null }));
+        g.append(svgRich(s('text', { x: x + 22, y, fill: 'var(--text)', 'font-size': 11 }), se.name, 11));
+        x += w; rowsH = y - geom.H + 8; void i;
+      });
+      let top = 0;
+      if (title) { g.append(svgRich(s('text', { x: 12, y: -10, fill: 'var(--text)', 'font-size': 14, 'font-weight': 700 }), title, 14)); top = 26; }
+      svg.append(g);
+      svg.setAttribute('viewBox', `0 ${-top} ${geom.W} ${geom.H + (vis.length > 1 ? rowsH + 6 : 0) + top}`);
+      try { return fn(svg); } finally { g.remove(); svg.setAttribute('viewBox', vb); }
     },
   };
 }
@@ -203,14 +217,12 @@ function interp(points, v, byY) {
   return best;
 }
 
-/** Card wrapper with title, ⓘ slot and export buttons. Returns { card, chart }. */
+/** Card wrapper with title, ⓘ slot and one Export menu (CSV, SVG, PNG, JPEG, PDF). Returns { card, chart }. */
 export function chartCard({ title, info, height, exportName = 'chart' }) {
   const body = h('div');
-  const head = h('div.card-head', h('h3', title), info || null, h('span.spacer'));
+  const head = h('div.card-head', h('h3', { html: title.includes('$') ? title.replace(/\$([^$]+)\$/g, (_, x) => texHTML(x)) : title }), info || null, h('span.spacer'));
   const card = h('section.card', head, body);
   const chart = createChart(body, { height, title });
-  head.append(
-    h('button.btn.ghost.small', { type: 'button', title: 'Download data as CSV', onclick: () => download(`${exportName}.csv`, chart.toCSV(), 'text/csv') }, 'CSV'),
-    h('button.btn.ghost.small', { type: 'button', title: 'Download chart as SVG', onclick: () => download(`${exportName}.svg`, chart.toSVG(), 'image/svg+xml') }, 'SVG'));
+  head.append(exportMenu({ onExport: (f) => chart.withLegend((el) => el && exportFigure(el, f, exportName, () => chart.toCSV()), title) }));
   return { card, chart };
 }

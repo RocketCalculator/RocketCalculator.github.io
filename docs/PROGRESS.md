@@ -11,3 +11,15 @@
 - Not done / next: Supersonic CP calculator (SUPERSONICBARROWMANEQUATIONS3.5.xls + SUPERDELTA.xls + "Supersonic LE
   Fins" memo — SUPERDELTA formulas already inspected and look directly portable); the other 24 topics are
   "coming soon" pages with their references.
+- 2026-10-20 — Redesign after DESIGN-vodafone.md: Inter (open substitute for the Vodafone face) at 800 uppercase
+  display / 300 sub-displays; single accent #e60000; ink nav, hero and footer bands; 60 px pill buttons; flat 6 px cards;
+  dark key-result cards; red campaign band. Deliberate deviations: secondary text darkened to meet WCAG AA, plot series
+  use a red/ink/grey/slate family, light/dark mode kept.
+  All symbols and units typeset with KaTeX (HTML) or a TeX-lite SVG renderer (plots, schematics); units such as
+  m s⁻¹ come from `UNIT_TEX` in `js/units.js`.
+  Plots and schematics: one Export menu (CSV, SVG, PNG, JPEG, PDF — the PDF is written by `js/ui/export.js` without a library).
+  Schematic animations: pause/play button (remembered); cant-angle rear view capped at 0.5 Hz on screen.
+  ⓘ drawers show the live schematic with the relevant dimension highlighted.
+  Export report box on every calculator (`js/ui/report.js` + `report()` in each definition): inputs, theory, each equation
+  symbolic → substituted → result, results, notes, references; Markdown, LaTeX (all 7 compile with pdflatex),
+  Word (.doc / rich copy with MathML) and print-to-PDF.

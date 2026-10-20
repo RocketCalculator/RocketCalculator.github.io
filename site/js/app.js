@@ -43,12 +43,12 @@ export const ICONS = {
 /** The rocket brand mark: a thin-line sounding rocket on a climb angle. */
 export function brandMark() {
   return s('svg', { viewBox: '0 0 32 32', 'aria-hidden': 'true' },
-    s('circle', { cx: 16, cy: 16, r: 15, fill: 'none', stroke: 'var(--border-strong)', 'stroke-width': 1 }),
-    s('path', { d: 'M5 24 Q 13 22 22 9', fill: 'none', stroke: 'var(--accent)', 'stroke-width': 1.4, 'stroke-dasharray': '2 2.2' }),
-    s('g', { transform: 'translate(21.5 9.5) rotate(38)' },
-      s('path', { d: 'M0 -8 C 2.2 -5 2.2 -2 2.2 4 L -2.2 4 C -2.2 -2 -2.2 -5 0 -8 Z', fill: 'var(--text)' }),
-      s('path', { d: 'M-2.2 1.5 L -4.4 5.6 L -2.2 4.8 Z M 2.2 1.5 L 4.4 5.6 L 2.2 4.8 Z', fill: 'var(--accent)' }),
-      s('path', { d: 'M-1.2 4.6 L 0 8 L 1.2 4.6 Z', fill: 'var(--accent)', opacity: 0.85 })));
+    s('rect', { width: 32, height: 32, rx: 6, fill: '#e60000' }),
+    s('path', { d: 'M5 25 Q 13 23 21 10', fill: 'none', stroke: '#ffffff', 'stroke-width': 1.4, 'stroke-dasharray': '1.8 2', opacity: 0.85 }),
+    s('g', { transform: 'translate(21 10) rotate(38)' },
+      s('path', { d: 'M0 -8.5 C 2.4 -5.4 2.4 -2 2.4 4.2 L -2.4 4.2 C -2.4 -2 -2.4 -5.4 0 -8.5 Z', fill: '#ffffff' }),
+      s('path', { d: 'M-2.4 1.4 L -4.8 5.8 L -2.4 5 Z M 2.4 1.4 L 4.8 5.8 L 2.4 5 Z', fill: '#ffffff' }),
+      s('path', { d: 'M-1.2 4.8 L 0 8.4 L 1.2 4.8 Z', fill: '#25282b' })));
 }
 
 function header(active) {
@@ -107,7 +107,7 @@ function footer() {
       h('div', h('h4', 'Source'),
         h('ul', h('li', h('a', { href: 'http://www.rsandt.com/reports.html', rel: 'noopener' }, 'rsandt.com — Reports')),
           h('li', h('a', { href: 'http://www.rsandt.com/bio.html', rel: 'noopener' }, 'About the author')),
-          h('li', h('span', 'Fonts: IBM Plex (OFL) · Math: KaTeX (MIT)'))))));
+          h('li', h('span', 'Font: Inter (OFL) · Math: KaTeX (MIT)'))))));
 }
 
 /* ---------------- command palette ---------------- */

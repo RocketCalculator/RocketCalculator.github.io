@@ -2,18 +2,20 @@
 // A calculator is a definition module (js/calculators/<slug>.js) — see docs/PLAN.md for the API.
 import { h, url, fmt, num, debounce, toast, copyText, download, loadRegistry, loadReferences, storage, reveal } from './util.js';
 import { initShell, ICONS } from './app.js';
-import { displayUnit, unitLabel, toDisplay, getSystem } from './units.js';
+import { displayUnit, unitLabel, unitTex, toDisplay, getSystem } from './units.js';
 import { buildForm } from './ui/form.js';
 import { infoButton, openInfo } from './ui/drawer.js';
 import { chartCard } from './ui/chart.js';
 import { frame } from './ui/svg.js';
-import { renderAll } from './math.js';
+import { renderAll, loadKatex, texHTML, rich, texToPlain } from './math.js';
+import { exportMenu, exportFigure } from './ui/export.js';
+import { reportCard } from './ui/report.js';
 
 const clone = (v) => JSON.parse(JSON.stringify(v));
 
 export async function mountCalculator(def) {
   const main = initShell({ active: 'calculators' });
-  const [reg, refs] = await Promise.all([loadRegistry(), loadReferences()]);
+  const [reg, refs] = await Promise.all([loadRegistry(), loadReferences(), loadKatex()]);
   const topic = reg.topics.find((t) => t.slug === def.topic);
   const area = reg.areas.find((a) => a.id === topic?.area);
   const docHref = (anchor = '') => url(`docs/${def.slug}.html${anchor ? (anchor.startsWith('#') ? anchor : '#' + anchor) : ''}`);
@@ -38,17 +40,18 @@ export async function mountCalculator(def) {
   // ---------- info helpers ----------
   const infoFor = (f) => {
     const i = typeof f.info === 'function' ? f.info(state.values) : f.info || {};
-    const u = f.dim && f.dim !== 'none' ? unitLabel(displayUnit(f)) : '';
+    const u = f.dim && f.dim !== 'none' ? unitTex(displayUnit(f)) : '';
     return {
       eyebrow: f.kind === 'result' ? 'Result' : 'Input',
-      title: f.label + (u ? ` (${u})` : ''),
+      title: f.label + (f.sym ? ` $${f.sym}$` : '') + (u ? ` ($${u}$)` : ''),
+      diagram: () => schematicDiagram([f.id, ...(i.fields || [])], f),
       text: i.text || f.help,
       tex: i.tex, texNote: i.texNote, steps: i.steps,
       range: typeof i.range === 'function' ? i.range(getSystem()) : i.range,
       doc: docHref(i.doc || def.docAnchor || ''),
     };
   };
-  const pageInfo = () => ({ eyebrow: 'Calculator', title: def.title, ...def.info, doc: docHref(def.info?.doc || '') });
+  const pageInfo = () => ({ eyebrow: 'Calculator', title: def.title, ...def.info, diagram: () => schematicDiagram([]), doc: docHref(def.info?.doc || '') });
 
   // ---------- layout ----------
   const badges = h('div.calc-badges',
@@ -56,7 +59,7 @@ export async function mountCalculator(def) {
     def.source ? h('span.chip', { title: 'Original spreadsheet / memo this calculator was ported from' }, 'Source: ', def.source) : null,
     def.verified ? h('span.chip.accent', { title: def.verified.title || '' }, '✓ ', def.verified.label) : null);
   const intro = h('div.intro-grid',
-    ['what', 'why', 'when', 'typical'].map((k) => def.intro?.[k] ? h('div.card', h('h3', { what: 'What it does', why: 'Why it matters', when: 'When to use it', typical: 'Typical output' }[k]), h('p', { html: def.intro[k] })) : null));
+    ['what', 'why', 'when', 'typical'].map((k) => def.intro?.[k] ? h('div.card', h('h3', { what: 'What it does', why: 'Why it matters', when: 'When to use it', typical: 'Typical output' }[k]), h('p', { html: rich(def.intro[k], { html: true }) })) : null));
 
   const resetBtn = h('button.btn.small', { type: 'button', title: 'Restore default inputs' }, ICONS.reset(), 'Reset');
   const exampleSel = def.examples?.length > 1 ? h('select.btn.small', { 'aria-label': 'Load example' }, h('option', { value: '' }, 'Load example…'), def.examples.map((e, i) => h('option', { value: i }, e.name))) : null;
@@ -69,19 +72,31 @@ export async function mountCalculator(def) {
     cb.addEventListener('change', () => { state.values.__compat = cb.checked; recompute(); });
     return h('div.compat', h('div.field.bool', h('label', { for: 'f-__compat' }, def.compat.label || 'Match original spreadsheet',
       infoButton({ eyebrow: 'Fidelity', title: def.compat.label || 'Match original spreadsheet', text: def.compat.info, doc: docHref('known-differences') }, { label: 'fidelity switch' })),
-      h('span.switch', cb, h('span'))), h('p', { html: def.compat.note }));
+      h('span.switch', cb, h('span'))), h('p', { html: rich(def.compat.note, { html: true }) }));
   })() : null;
   const inputsCard = h('aside.card.calc-inputs', { 'aria-label': 'Inputs' },
     h('div.card-head', h('h2', 'Inputs'), h('span.spacer'), h('div.form-actions', exampleSel, exampleBtn, resetBtn, linkBtn)),
     h('div.form-scroll', form.el, compatBox, h('p.muted', { style: 'font-size:.78rem;margin:14px 0 0' },
-      'Blue-edged fields are inputs (as in the original workbook). Values update live and are remembered on this device.')));
+      'Outlined fields are inputs; dark cards are key results. Values update live and are remembered on this device.')));
 
   const warnBox = h('div.warnings', { 'aria-live': 'polite' });
   const keyBox = h('div.key-results', { 'aria-live': 'polite' });
   const schemHost = h('div.schem-host');
+  const ANIM_KEY = 'rc-anim-paused';
+  const animBtn = h('button.btn.small', { type: 'button', hidden: true, 'aria-pressed': 'false' });
+  const syncAnim = () => {
+    const svg = schemHost.querySelector('svg.schem');
+    const paused = !!storage.get(ANIM_KEY, false);
+    if (svg?.pauseAnimations) paused ? svg.pauseAnimations() : svg.unpauseAnimations();
+    animBtn.replaceChildren(paused ? '▶ Play animation' : '❚❚ Pause animation');
+    animBtn.setAttribute('aria-pressed', String(paused));
+    animBtn.hidden = !svg?.querySelector('animate, animateTransform, animateMotion');
+  };
+  animBtn.addEventListener('click', () => { storage.set(ANIM_KEY, !storage.get(ANIM_KEY, false)); syncAnim(); });
   const schemCard = def.schematic ? h('section.card',
     h('div.card-head', h('h3', def.schematicTitle || 'Schematic'), def.schematicInfo ? infoButton(def.schematicInfo, { label: 'schematic' }) : null, h('span.spacer'),
-      h('span.muted', { style: 'font-size:.76rem' }, def.schematicHint || 'Hover a dimension to find its input')), schemHost) : null;
+      h('span.muted', { style: 'font-size:.8rem' }, def.schematicHint || 'Hover a dimension to find its input'), animBtn,
+      exportMenu({ formats: ['svg', 'png', 'jpeg', 'pdf'], onExport: (f) => { const el = schemHost.querySelector('svg.schem'); if (el) exportFigure(el, f, `${def.slug}-schematic`); } })), schemHost) : null;
   const plotGrid = h('div.plot-grid');
   const charts = (def.plots || []).map((p) => {
     const info = p.info ? infoButton({ eyebrow: 'Plot', title: p.title, ...p.info, doc: docHref(p.info.doc || '') }, { label: p.title }) : null;
@@ -107,6 +122,7 @@ export async function mountCalculator(def) {
     topic?.sourceFiles?.length ? h('p.muted', { style: 'margin-top:12px;font-size:.84rem' }, 'Original files on rsandt.com: ',
       topic.sourceFiles.map((f, i) => [i ? ', ' : '', h('a', { href: f.url, rel: 'noopener' }, f.name)])) : null);
 
+  const report = reportCard({ def, state, refList, docHref, getSystem });
   const idx = reg.calculators.findIndex((c) => c.slug === def.slug);
   const prev = reg.calculators[(idx - 1 + reg.calculators.length) % reg.calculators.length];
   const next = reg.calculators[(idx + 1) % reg.calculators.length];
@@ -119,11 +135,12 @@ export async function mountCalculator(def) {
       h('a', { href: url(`index.html#area-${area?.id || ''}`) }, area?.title || 'Calculators'), h('span.sep', '/'), h('span', def.title)),
     h('div.calc-title', h('h1', def.title), infoButton(pageInfo, { label: def.title, large: true }),
       h('a.btn.small.ghost', { href: docHref(), target: '_blank', rel: 'noopener' }, ICONS.book(), 'Full documentation', ICONS.external())),
-    h('p.calc-sub', { html: def.subtitle || '' }),
+    h('p.calc-sub', { html: rich(def.subtitle || '', { html: true }) }),
     badges, intro,
     h('div.calc-layout', inputsCard,
       h('div.calc-outputs', warnBox, keyBox, schemCard, plotGrid, resultsCard)),
-    h('div', { style: 'margin-top:18px' }, theory),
+    h('div', { style: 'margin-top:20px' }, theory),
+    h('div', { style: 'margin-top:20px' }, report.card),
     prevnext));
   document.title = `${def.title} — Rocket Calculator`;
   renderAll(main);
@@ -132,7 +149,7 @@ export async function mountCalculator(def) {
   // ---------- behaviour ----------
   const U = (spec) => {
     const sp = typeof spec === 'string' ? { dim: spec } : spec;
-    return { v: (x) => toDisplay(x, sp), label: unitLabel(displayUnit(sp)) };
+    return { v: (x) => toDisplay(x, sp), label: unitTex(displayUnit(sp)), plain: unitLabel(displayUnit(sp)) };
   };
   const handles = new Map();
   let schemFrame;
@@ -166,6 +183,26 @@ export async function mountCalculator(def) {
       return rec.el;
     },
   };
+
+  /** Copy of the live schematic with the elements tied to `ids` highlighted — shown in the ⓘ drawer. */
+  function schematicDiagram(ids, f) {
+    const src = schemHost.querySelector('svg.schem');
+    if (!src) return null;
+    const el = src.cloneNode(true);
+    el.querySelectorAll('.sc-handle, animate, animateTransform, animateMotion').forEach((n) => n.remove());
+    el.querySelectorAll('.hl').forEach((n) => n.classList.remove('hl'));
+    let hits = 0;
+    for (const id of ids) {
+      el.querySelectorAll(`[data-field~="${CSS.escape(id)}"]`).forEach((g) => {
+        hits++; g.classList.add('hl');
+        g.querySelectorAll('line,path,text,rect,circle,polygon,ellipse').forEach((c) => c.classList.add('hl'));
+      });
+    }
+    el.removeAttribute('data-id');
+    if (!ids.length) return { el, caption: 'The current drawing, to scale with your inputs.' };
+    if (!hits) return f?.diagramAlways ? { el, caption: 'Current drawing.' } : null;
+    return { el, caption: `<b>${rich(f?.label || '')}</b> is highlighted in red on the current drawing.` };
+  }
 
   function highlight(id, extra) {
     schemHost.querySelectorAll('.hl').forEach((e) => e.classList.remove('hl'));
@@ -217,14 +254,16 @@ export async function mountCalculator(def) {
     }
     keyBox.style.opacity = 1;
     state.out = out;
-    for (const w of out.warnings || []) warnBox.append(h(`div.notice.${w.level || 'warn'}`, { html: w.text }));
+    for (const w of out.warnings || []) warnBox.append(h(`div.notice.${w.level || 'warn'}`, { html: rich(w.text, { html: true }) }));
     renderResults(out);
     if (def.schematic) {
       try { def.schematic(ctx, state.values, out); } catch (err) { console.error(err); }
+      syncAnim();
     }
     for (const c of charts) {
       try { const sp = c.def.build(state.values, out, ctx); c.card.hidden = !sp; if (sp) c.chart.update(sp); } catch (err) { console.error(err); }
     }
+    report.markDirty();
   }
   const recomputeSoon = debounce(recompute, 110);
 
@@ -234,7 +273,7 @@ export async function mountCalculator(def) {
     for (const r of def.results) {
       if (r.when && !r.when(state.values, out)) continue;
       const v = R[r.id];
-      const u = r.dim && r.dim !== 'none' ? unitLabel(displayUnit(r)) : '';
+      const u = r.dim && r.dim !== 'none' ? texHTML(unitTex(displayUnit(r))) : '';
       const disp = typeof v === 'number' ? toDisplay(v, r) : v;
       const txt = typeof disp === 'number' ? fmt(disp, { digits: r.digits || 5 }) : disp == null ? '—' : String(disp);
       const info = () => infoFor({ ...r, kind: 'result' });
@@ -242,16 +281,16 @@ export async function mountCalculator(def) {
         const st = r.status?.(v, out, state.values);
         const note = r.note?.(v, out, state.values);
         const card = h('div.kr', { class: st ? `status-${st}` : null, 'data-result': r.id },
-          h('div.kr-label', r.label, infoButton(info, { label: r.label })),
-          h('div', h('span.kr-value', txt), u ? h('span.kr-unit', u) : null),
-          note ? h('div.kr-note', { html: note }) : null);
+          h('div.kr-label', h('span', { html: rich(r.label) }), r.sym ? h('span', { html: texHTML(r.sym) }) : null, infoButton(info, { label: r.label })),
+          h('div', h('span.kr-value', txt), u ? h('span.kr-unit', { html: u }) : null),
+          note ? h('div.kr-note', { html: rich(note, { html: true }) }) : null);
         if (lastKey[r.id] !== undefined && lastKey[r.id] !== txt) card.classList.add('flash');
         lastKey[r.id] = txt;
         cards.push(card);
       }
       rows.push(h('tr', { class: r.key ? 'key' : null },
-        h('th', h('span.lbl', r.label, r.sym ? h('span.muted.mono', { style: 'font-size:.78rem', html: r.sym }) : null, infoButton(info, { label: r.label }))),
-        h('td.v', txt), h('td.u', u)));
+        h('th', h('span.lbl', h('span', { html: rich(r.label) }), r.sym ? h('span.muted', { html: texHTML(r.sym) }) : null, infoButton(info, { label: r.label }))),
+        h('td.v', txt), h('td.u', { html: u })));
     }
     keyBox.replaceChildren(...cards);
     tableBody.replaceChildren(...rows);
@@ -263,12 +302,12 @@ export async function mountCalculator(def) {
       if (f.when && !f.when(state.values)) continue;
       const v = state.values[f.id];
       if (f.kind === 'table') {
-        v.forEach((row, i) => f.columns.forEach((c) => lines.push(['input', `${f.label}[${i}].${c.label}`, num(toDisplay(row[c.id], c, sys), 8), unitLabel(displayUnit(c, sys))])));
-      } else lines.push(['input', f.label, typeof v === 'number' ? num(toDisplay(v, f, sys), 8) : String(v), f.dim ? unitLabel(displayUnit(f, sys)) : '']);
+        v.forEach((row, i) => f.columns.forEach((c) => lines.push(['input', `${texToPlain(f.label)}[${i}].${c.label}`, num(toDisplay(row[c.id], c, sys), 8), unitLabel(displayUnit(c, sys))])));
+      } else lines.push(['input', texToPlain(f.label), typeof v === 'number' ? num(toDisplay(v, f, sys), 8) : String(v), f.dim ? unitLabel(displayUnit(f, sys)) : '']);
     }
     for (const r of def.results) {
       const v = state.out?.results?.[r.id];
-      lines.push(['result', r.label, typeof v === 'number' ? num(toDisplay(v, r, sys), 8) : String(v ?? ''), r.dim ? unitLabel(displayUnit(r, sys)) : '']);
+      lines.push(['result', texToPlain(r.label), typeof v === 'number' ? num(toDisplay(v, r, sys), 8) : String(v ?? ''), r.dim ? unitLabel(displayUnit(r, sys)) : '']);
     }
     return lines;
   }

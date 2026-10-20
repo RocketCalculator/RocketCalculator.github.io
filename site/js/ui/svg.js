@@ -1,6 +1,7 @@
 // Schematic helpers: scaled drawing frame, dimension lines, labels, draggable handles.
 // Elements tagged with data-field="<inputId>" are linked to the form (hover/focus highlight both ways).
 import { s, fmt } from '../util.js';
+import { svgRich } from '../math.js';
 
 let uid = 0;
 
@@ -72,7 +73,7 @@ export function dim(fr, x1, y1, x2, y2, label, opts = {}) {
     let anchor = vertical ? (opts.textSide < 0 ? 'end' : 'start') : 'middle';
     if (opts.labelPos === 'before') { const p = dx >= 0 ? a : b; tx = p[0] - 6; ty = p[1] + 4; anchor = 'end'; }
     if (opts.labelPos === 'after') { const p = dx >= 0 ? b : a; tx = p[0] + 6; ty = p[1] + 4; anchor = 'start'; }
-    const t = s('text', { class: 'sc-dim-text', x: tx, y: ty, 'text-anchor': anchor }, label);
+    const t = svgRich(s('text', { class: 'sc-dim-text', x: tx, y: ty, 'text-anchor': anchor }), label);
     g.append(t);
   }
   // wide invisible hit target so the dimension is easy to hover/tap
@@ -81,7 +82,7 @@ export function dim(fr, x1, y1, x2, y2, label, opts = {}) {
 }
 
 export function text(x, y, str, { cls = 'sc-label', anchor = 'start', field, size } = {}) {
-  return s('text', { class: cls, x, y, 'text-anchor': anchor, 'data-field': field || null, style: size ? `font-size:${size}px` : null }, str);
+  return svgRich(s('text', { class: cls, x, y, 'text-anchor': anchor, 'data-field': field || null, style: size ? `font-size:${size}px` : null }), str, size || 11.5);
 }
 
 /** Marker for CP / CG style points: circle with cross, labelled. */
@@ -127,4 +128,4 @@ export function handle(fr, x, y, { field, onDrag, onKey, title } = {}) {
 }
 
 /** Format a value with its unit for schematic labels. */
-export const lbl = (v, unit, digits = 4) => `${fmt(v, { digits })}${unit ? ' ' + unit : ''}`;
+export const lbl = (v, unit, digits = 4) => `${fmt(v, { digits })}${unit ? '\\,' + unit : ''}`;

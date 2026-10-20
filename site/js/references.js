@@ -6,7 +6,7 @@ const pdfIcon = (kind) => s('svg', { viewBox: '0 0 30 36', class: 'pdf-ico', 'ar
   s('path', { d: 'M3 1h17l7 7v26a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1z', fill: 'var(--surface-2)', stroke: 'var(--border-strong)' }),
   s('path', { d: 'M20 1v7h7', fill: 'none', stroke: 'var(--border-strong)' }),
   s('rect', { x: 0, y: 19, width: 22, height: 10, rx: 2, fill: kind === 'original' ? 'var(--accent)' : 'var(--accent-2)' }),
-  s('text', { x: 11, y: 26.6, 'text-anchor': 'middle', fill: 'var(--surface)', style: 'font:700 7px var(--font-mono)' }, kind === 'original' ? 'PDF' : 'DOC'));
+  s('text', { x: 11, y: 26.6, 'text-anchor': 'middle', fill: 'var(--surface)', style: 'font:700 7px var(--font-sans)' }, kind === 'original' ? 'PDF' : 'DOC'));
 
 export async function mountReferences() {
   const main = initShell({ active: 'references' });

@@ -17,7 +17,7 @@ export const UNITS = {
   m3: { label: 'm³', ...lin(1) }, cm3: { label: 'cm³', ...lin(1e-6) }, in3: { label: 'in³', ...lin(IN ** 3) }, ft3: { label: 'ft³', ...lin(FT ** 3) },
   // pressure / stress
   Pa: { label: 'Pa', ...lin(1) }, kPa: { label: 'kPa', ...lin(1e3) }, MPa: { label: 'MPa', ...lin(1e6) }, GPa: { label: 'GPa', ...lin(1e9) },
-  psf: { label: 'lb/ft²', ...lin(LBF / (FT * FT)) }, psi: { label: 'psi', ...lin(LBF / (IN * IN)) }, Mpsi: { label: 'Mpsi', ...lin(1e6 * LBF / (IN * IN)) },
+  psf: { label: 'lbf/ft²', ...lin(LBF / (FT * FT)) }, psi: { label: 'psi', ...lin(LBF / (IN * IN)) }, Mpsi: { label: 'Mpsi', ...lin(1e6 * LBF / (IN * IN)) },
   // density
   kgm3: { label: 'kg/m³', ...lin(1) }, slugft3: { label: 'slug/ft³', ...lin(SLUG / FT ** 3) },
   gcm3: { label: 'g/cm³', ...lin(1000) }, lbin3: { label: 'lb/in³', ...lin(LBM / IN ** 3) }, lbft3: { label: 'lb/ft³', ...lin(LBM / FT ** 3) },
@@ -101,3 +101,20 @@ export function convert(v, from, to) {
 /** internal → display, using spec.internal (default: SI display unit of the dim). */
 export const toDisplay = (v, spec, sys) => convert(v, spec.internal ?? displayUnit(spec, 'si'), displayUnit(spec, sys));
 export const fromDisplay = (v, spec, sys) => convert(v, displayUnit(spec, sys), spec.internal ?? displayUnit(spec, 'si'));
+
+/** LaTeX for each unit (rendered with KaTeX in HTML and TeX-lite in SVG). */
+export const UNIT_TEX = {
+  m: '\\mathrm{m}', mm: '\\mathrm{mm}', cm: '\\mathrm{cm}', km: '\\mathrm{km}', in: '\\mathrm{in}', ft: '\\mathrm{ft}',
+  m2: '\\mathrm{m^{2}}', cm2: '\\mathrm{cm^{2}}', mm2: '\\mathrm{mm^{2}}', in2: '\\mathrm{in^{2}}', ft2: '\\mathrm{ft^{2}}',
+  m3: '\\mathrm{m^{3}}', cm3: '\\mathrm{cm^{3}}', in3: '\\mathrm{in^{3}}', ft3: '\\mathrm{ft^{3}}',
+  Pa: '\\mathrm{Pa}', kPa: '\\mathrm{kPa}', MPa: '\\mathrm{MPa}', GPa: '\\mathrm{GPa}', psf: '\\mathrm{lbf\\,ft^{-2}}', psi: '\\mathrm{psi}', Mpsi: '\\mathrm{Mpsi}',
+  kgm3: '\\mathrm{kg\\,m^{-3}}', slugft3: '\\mathrm{slug\\,ft^{-3}}', gcm3: '\\mathrm{g\\,cm^{-3}}', lbin3: '\\mathrm{lb\\,in^{-3}}', lbft3: '\\mathrm{lb\\,ft^{-3}}',
+  ms: '\\mathrm{m\\,s^{-1}}', fts: '\\mathrm{ft\\,s^{-1}}', kmh: '\\mathrm{km\\,h^{-1}}', ms2: '\\mathrm{m\\,s^{-2}}', fts2: '\\mathrm{ft\\,s^{-2}}',
+  rads: '\\mathrm{rad\\,s^{-1}}', hz: '\\mathrm{Hz}', rpm: '\\mathrm{rpm}',
+  K: '\\mathrm{K}', R: '{}^{\\circ}\\mathrm{R}', degC: '{}^{\\circ}\\mathrm{C}', degF: '{}^{\\circ}\\mathrm{F}', Km: '\\mathrm{K\\,m^{-1}}', Rft: '{}^{\\circ}\\mathrm{R\\,ft^{-1}}',
+  kg: '\\mathrm{kg}', g: '\\mathrm{g}', lbm: '\\mathrm{lb}', slug: '\\mathrm{slug}', N: '\\mathrm{N}', lbf: '\\mathrm{lbf}',
+  kgm2: '\\mathrm{kg\\,m^{2}}', slugft2: '\\mathrm{slug\\,ft^{2}}', lbmin2: '\\mathrm{lb\\,in^{2}}',
+  s: '\\mathrm{s}', deg: '{}^{\\circ}', rad: '\\mathrm{rad}', perrad: '\\mathrm{rad^{-1}}', perdeg: '{}^{\\circ\\,-1}',
+  perm: '\\mathrm{m^{-1}}', perft: '\\mathrm{ft^{-1}}', pct: '\\%', none: '',
+};
+export const unitTex = (key) => UNIT_TEX[key] ?? `\\mathrm{${key}}`;

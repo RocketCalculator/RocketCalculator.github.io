@@ -11,7 +11,7 @@ export default {
   title: 'Ogive Nose Profile',
   subtitle: 'Shape, surface area and centroid of a <b>tangent-ogive</b> nose cone — the circular-arc nose used on most sounding rockets.',
   source: 'Ogive Profile.xls · Ogive Nose memo (2011)',
-  verified: { label: 'Matches workbook (52 cells)', title: 'Every profile point, area, moment and centroid reproduces Ogive Profile.xls to 1e-9.' },
+  verified: { label: 'Matches workbook (56 cells)', title: 'Every profile point, area, moment and centroid reproduces Ogive Profile.xls to 1e-9.' },
   intro: {
     what: 'Builds the nose profile from just two numbers — base radius and length — and returns its wetted area and area centroid.',
     why: 'Wetted area drives skin-friction drag and the nose shell’s weight; the centroid locates that weight for CG estimates.',

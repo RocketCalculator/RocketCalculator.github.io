@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ogive Nose Profile — Theory & documentation — Rocket Calculator</title>
+<meta name="description" content="Tangent-ogive nose geometry: defining circle, profile, wetted area, area centroid and shell mass, with derivations and workbook cell mapping.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../css/site.css">
+<script>try{var t=JSON.parse(localStorage.getItem('rc-theme'));if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<main id="main">
+<div class="wrap">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Home</a><span class="sep">/</span><a href="../index.html#area-aero">Aerodynamics</a><span class="sep">/</span><a href="../calculators/ogive-nose.html">Ogive Nose Profile</a><span class="sep">/</span><span>Documentation</span></nav>
+  <div class="calc-title"><h1>Ogive Nose Profile — theory</h1></div>
+  <p class="calc-sub">Geometry of the tangent-ogive nose: the defining circle, the profile, and exact closed forms for wetted area and its centroid. Based on C. P. Hoult, <em>Ogive Nose</em>, RS&amp;T memo, 6 May 2011, and the workbook <code>Ogive Profile.xls</code>.</p>
+  <div class="calc-badges"><a class="btn small primary" href="../calculators/ogive-nose.html">Open the calculator</a><a class="btn small" href="../references/index.html#ogive-nose">Original memo (PDF)</a></div>
+  <div class="doc-layout">
+    <nav class="doc-toc" aria-label="Contents"></nav>
+    <article class="doc">
+
+      <section id="overview">
+        <h2>Overview</h2>
+        <p>The ogive is the most common nose shape on sounding rockets. Its side profile is a single circular arc that is <strong>tangent to the body tube</strong> at the base — so there is no kink where nose meets tube — and that closes to a sharp point at the tip. Because the arc is fixed by only two numbers, the base radius <span class="tex">R</span> and the length <span class="tex">L</span>, every geometric property can be written in closed form.</p>
+        <p>The calculator returns the profile (for templates and CAD), the <strong>wetted area</strong> (for skin-friction drag and shell weight) and the <strong>area centroid</strong> (for centre-of-gravity estimates).</p>
+      </section>
+
+      <section id="geometry">
+        <h2>Geometry and the defining circle</h2>
+        <p>Place the origin at the centre of the defining circle, with <span class="tex">x</span> along the rocket axis measured forward from the base plane and <span class="tex">y</span> perpendicular. The circle of radius <span class="tex">a</span> is</p>
+        <div class="eq"><div class="tex-display">x^2+y^2=a^2 .</div></div>
+        <p>The centre lies in the base plane, a distance <span class="tex">a-R</span> below the axis, so the arc is horizontal (tangent to the tube) at <span class="tex">x=0</span>. The tip lies on the axis, <span class="tex">y=a-R</span>, at <span class="tex">x=L</span>. Substituting gives the defining radius:</p>
+        <div class="eq"><div class="tex-display">L^2+(a-R)^2=a^2\quad\Longrightarrow\quad a=\frac{L^2+R^2}{2R}.</div></div>
+        <p>Two further quantities follow directly. The fineness ratio is <span class="tex">L/2R</span>. The surface makes an angle with the axis at the tip of</p>
+        <div class="eq"><div class="tex-display">\theta_{tip}=\sin^{-1}\!\frac{L}{a},</div></div>
+        <p>since the tangent at the tip is perpendicular to the radius drawn to it. (The tip angle is derived geometry added by this site; the workbook does not output it.)</p>
+        <table class="sym-table">
+          <thead><tr><th>Symbol</th><th>Meaning</th><th>Workbook</th></tr></thead>
+          <tbody>
+            <tr><td><span class="tex">R</span></td><td>Base radius</td><td class="mono">B5</td></tr>
+            <tr><td><span class="tex">L</span></td><td>Nose length, tip to base</td><td class="mono">C5</td></tr>
+            <tr><td><span class="tex">a</span></td><td>Defining-circle radius</td><td class="mono">D5</td></tr>
+            <tr><td><span class="tex">\Delta x</span></td><td>Profile increment</td><td class="mono">E5</td></tr>
+            <tr><td><span class="tex">x</span></td><td>Axial coordinate forward of the base</td><td class="mono">F</td></tr>
+            <tr><td><span class="tex">r(x)</span></td><td>Local body radius</td><td class="mono">I</td></tr>
+            <tr><td><span class="tex">S</span></td><td>Wetted (lateral) area</td><td class="mono">J5</td></tr>
+            <tr><td><span class="tex">M</span></td><td>First moment of wetted area about the base</td><td class="mono">K5</td></tr>
+            <tr><td><span class="tex">\bar x</span></td><td>Area centroid, body station aft of the tip</td><td class="mono">L5</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="profile">
+        <h2>Profile</h2>
+        <p>The local body radius is the height of the arc above the axis:</p>
+        <div class="eq"><div class="tex-display">r(x)=R-a+\sqrt{a^2-x^2},\qquad 0\le x\le L,</div></div>
+        <p>and the corresponding body station measured aft of the tip is <span class="tex">L-x</span>. The calculator evaluates the profile every <span class="tex">\Delta x</span> starting at the base (as the workbook does), and always includes the tip point. The increment affects only the table; area and centroid are exact integrals.</p>
+      </section>
+
+      <section id="wetted-area">
+        <h2>Wetted area</h2>
+        <p>A strip of surface of axial width <span class="tex">dx</span> has area <span class="tex">dS=2\pi r\sqrt{1+(dr/dx)^2}\,dx</span>. With <span class="tex">dr/dx=-x/\sqrt{a^2-x^2}</span> the square root becomes <span class="tex">a/\sqrt{a^2-x^2}</span>, so</p>
+        <div class="eq"><div class="tex-display">dS=2\pi a\left(1+\frac{R-a}{\sqrt{a^2-x^2}}\right)dx .</div></div>
+        <p>Integrating from the base to the tip,</p>
+        <div class="eq"><div class="tex-display">S=2\pi a\left[(R-a)\sin^{-1}\frac{L}{a}+L\right].</div></div>
+        <p>Integrating instead from <span class="tex">x=L-x_s</span> to <span class="tex">L</span> gives the area between the tip and body station <span class="tex">x_s</span>,</p>
+        <div class="eq"><div class="tex-display">S(x_s)=2\pi a\left[x_s+(R-a)\left(\sin^{-1}\frac{L}{a}-\sin^{-1}\frac{L-x_s}{a}\right)\right],</div></div>
+        <p>which is plotted on the calculator page. This cumulative curve is what the drag calculation needs to find the laminar wetted area ahead of boundary-layer transition.</p>
+        <div class="callout"><p>For the memo’s example, <span class="tex">R=3</span> in and <span class="tex">L=30</span> in, the surface area is <strong>379.2477 in²</strong>.</p></div>
+      </section>
+
+      <section id="centroid">
+        <h2>Area centroid</h2>
+        <p>The first moment of the strip about the base is <span class="tex">dM=x\,dS</span>:</p>
+        <div class="eq"><div class="tex-display">dM=2\pi a\,x\left(1+\frac{R-a}{\sqrt{a^2-x^2}}\right)dx,</div></div>
+        <div class="eq"><div class="tex-display">M=2\pi a\left[\tfrac12L^2+(R-a)\left(a-\sqrt{a^2-L^2}\right)\right].</div></div>
+        <p>The centroid lies <span class="tex">M/S</span> forward of the base, so its body station aft of the tip is</p>
+        <div class="eq"><div class="tex-display">\bar x=L-\frac{M}{S}.</div></div>
+        <div class="callout"><p>Memo example: <span class="tex">\bar x=18.70511</span> in aft of the nose tip, 62.4 % of the nose length.</p></div>
+      </section>
+
+      <section id="shell-mass">
+        <h2>Shell mass</h2>
+        <p>The memo notes that wetted area multiplied by wall thickness and material density gives the ogive weight. For a thin shell of uniform thickness <span class="tex">t\ll R</span> and density <span class="tex">\rho</span>,</p>
+        <div class="eq"><div class="tex-display">m\approx S\,t\,\rho ,</div></div>
+        <p>with its centre of mass at the area centroid <span class="tex">\bar x</span>. Shoulders, bulkheads, tip inserts and ballast must be added separately. The approximation over-estimates slightly near the tip, where the inner surface is smaller than the outer.</p>
+      </section>
+
+      <section id="assumptions">
+        <h2>Assumptions and limits</h2>
+        <ul>
+          <li>Tangent ogive only (the arc meets the tube with zero slope). Secant ogives and ogives with a blunted (spherical) tip are not covered. For a hemispherical tip see the Barrowman calculator, which caps the profile automatically.</li>
+          <li>Any consistent length unit works; the equations are scale-free.</li>
+          <li><span class="tex">a\ge L</span> always holds because <span class="tex">L^2+R^2\ge 2RL</span>, so <span class="tex">\sin^{-1}(L/a)</span> is always defined.</li>
+        </ul>
+      </section>
+
+      <section id="worked-example">
+        <h2>Worked example</h2>
+        <p>Take <span class="tex">R=3</span> in, <span class="tex">L=30</span> in (a 6-inch, 5-calibre nose):</p>
+        <ol>
+          <li><span class="tex">a=(30^2+3^2)/(2\cdot3)=151.5</span> in.</li>
+          <li><span class="tex">S=2\pi(151.5)\left[(3-151.5)\sin^{-1}(30/151.5)+30\right]=379.248</span> in².</li>
+          <li><span class="tex">M=2\pi(151.5)\left[450+(-148.5)(151.5-\sqrt{151.5^2-30^2})\right]=4283.56</span> in³.</li>
+          <li><span class="tex">\bar x=30-4283.56/379.248=18.705</span> in aft of the tip.</li>
+        </ol>
+      </section>
+
+      <section id="code-map">
+        <h2>Equations ↔ code ↔ workbook</h2>
+        <table class="sym-table">
+          <thead><tr><th>Quantity</th><th>Eq.</th><th>Code (<code>js/calc/ogive.js</code>)</th><th>Workbook cell</th></tr></thead>
+          <tbody>
+            <tr><td>Defining radius</td><td>(2)</td><td class="mono">circleRadius()</td><td class="mono">D5 =(C5^2+B5^2)/(2*B5)</td></tr>
+            <tr><td>Profile radius</td><td>(4)</td><td class="mono">radiusAt(), ogive().profile</td><td class="mono">G, I =$B$5-$D$5+G</td></tr>
+            <tr><td>Wetted area</td><td>(6)</td><td class="mono">wettedArea()</td><td class="mono">J5</td></tr>
+            <tr><td>Area moment</td><td>(9)</td><td class="mono">areaMoment()</td><td class="mono">K5</td></tr>
+            <tr><td>Centroid</td><td>(10)</td><td class="mono">ogive().xbar</td><td class="mono">L5 =C5-K5/J5</td></tr>
+          </tbody>
+        </table>
+        <p><strong>Verification:</strong> <code>tests/ogive.test.js</code> reproduces all 56 numeric cells of the workbook example (a, S, M, x̄ and every profile row) to a relative error below 10⁻⁹, plus the memo’s quoted values.</p>
+      </section>
+
+      <section id="known-differences">
+        <h2>Known differences from the workbook</h2>
+        <ul class="diff-list">
+          <li><strong>Centroid label.</strong> The workbook heads cell L5 “Volume Centroid, in from Base”, but the formula <code>=C5-K5/J5</code> gives the <em>area</em> centroid measured from the <em>tip</em>, as the memo states. The calculator labels it accordingly; the number is identical.</li>
+          <li><strong>Additions.</strong> The tip half-angle, fineness ratio, cumulative-area curve and shell mass are not in the workbook. They are derived directly from the memo’s equations.</li>
+        </ul>
+      </section>
+
+      <section id="references">
+        <h2>References</h2>
+        <ol class="refs">
+          <li>C. P. Hoult, “Ogive Nose,” RS&amp;T memo, 6 May 2011. <a href="../references/index.html#ogive-nose">View in library</a> · <a href="../references/from-word/Ogive%20Nose.pdf" target="_blank" rel="noopener">PDF</a></li>
+          <li>C. P. Hoult, “Drag Coefficient (rev. 3.4),” RS&amp;T memo, 8 April 2016 — uses the wetted-area curve. <a href="../references/index.html#drag-coefficient3-4">View in library</a></li>
+          <li>Original workbook: <a href="http://www.rsandt.com/media/Ogive%20Profile.xls" rel="noopener">Ogive Profile.xls</a> (rsandt.com).</li>
+        </ol>
+      </section>
+    </article>
+  </div>
+</div>
+</main>
+<script type="module">
+import { mountDocs } from '../js/docs.js';
+mountDocs();
+</script>
+</body>
+</html>

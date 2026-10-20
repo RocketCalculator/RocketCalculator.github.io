@@ -103,6 +103,7 @@ const INVARIANTS = {
   'single-wedge': (v, R, warned) => [R.K >= 1 - 1e-12, R.CDw >= 0, R.CDvehicle >= 0, R.MN > 0, R.thetaMax == null || (R.thetaMax > 0 && R.thetaMax < 46)],
   'yo-yo-despin': (v, R) => [R.weightEach > 0 || !Number.isFinite(R.weightEach), R.T1 >= 0, R.T2 >= 0, R.tRelease > 0, R.r >= 0 && R.r < 1],
   'propellant-slosh': (v, R) => [R.f1 > 0 && R.f2 > R.f1 && R.f3 > R.f2, R.m1frac > 0 && R.m1frac <= 100, R.fixedFrac >= -1e-9 && R.fixedFrac <= 100, R.L1 > 0],
+  'reliability-growth': (v, R) => [R.RT >= R.R0 && R.RT <= 1, R.R0 >= 0, R.DT >= 0 && R.DT <= v.D0, R.F >= 0 && R.F <= v.N + 1e-9, R.Tstar === 'never' || (Number.isInteger(R.Tstar) && (R.Tstar > v.N) === (R.RT < v.Rt))],
   'ogive-nose': (v, R) => [R.S > 0, R.xbar > 0 && R.xbar < v.L, R.fineness > 0, R.tipHalfAngle > 0 && R.tipHalfAngle <= 90],
   'subsonic-cp': (v, R, warned) => [R.CNa > 0 || warned, R.CNaFins >= 0, Number.isFinite(R.xcp), R.d > 0],
 };
@@ -259,4 +260,11 @@ test('Fin cant: steady cant angle is linear in roll rate and sign-symmetric', ()
   const n = run('fin-cant-angle', { mode: 'rate', f: -1 }).delta;
   assert.ok(Math.abs(n + a) < 1e-12);
   increasing([2, 4, 8].map((Mc) => run('fin-cant-angle', { mode: 'cycles', Mc }).delta), 'cant vs roll cycles');
+});
+
+test('Reliability growth: more tests and better fixing raise reliability; the worksheet table is reproduced', () => {
+  increasing([0, 1, 3, 6, 10].map((N) => run('reliability-growth', { N }).RT), 'R vs tests');
+  increasing([0, 0.3, 0.6, 1].map((d) => run('reliability-growth', { d }).RT), 'R vs d');
+  increasing([8, 4, 2, 1].map((D0) => run('reliability-growth', { D0 }).RT), 'R vs fewer defects');
+  assert.ok(Math.abs(run('reliability-growth', { D0: 4, p: 0.6, d: 0.8, N: 10 }).RT - 0.9947158304489335) < 1e-12);
 });

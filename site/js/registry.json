@@ -104,6 +104,12 @@
    "description": "Slosh frequencies, slosh masses and equivalent pendulum for liquid in a cylindrical tank under thrust."
   },
   {
+   "slug": "reliability-growth",
+   "title": "Reliability Growth",
+   "topic": "reliability",
+   "description": "Reliability of each flight as test flights reveal latent defects, and the number of tests that reaches a target."
+  },
+  {
    "slug": "newtonian-drag",
    "title": "Modified Newtonian Drag",
    "topic": "modified-newtonian-drag",
@@ -605,9 +611,11 @@
    "area": "safety",
    "summary": "How reliability grows from one flight test to the next.",
    "abstract": "These files address the growth of reliability during the flight testing process. Reliability Growth.doc provides the theoretical background and RELGRWTH.xls the Excel implementation.",
-   "status": "soon",
-   "calculators": [],
-   "wasSoon": false,
+   "status": "available",
+   "calculators": [
+    "reliability-growth"
+   ],
+   "wasSoon": true,
    "references": [
     "reliability-growth"
    ],

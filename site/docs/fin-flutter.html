@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fin Flutter Margin — Theory & documentation — Rocket Calculator</title>
+<meta name="description" content="Bending-torsion fin flutter margin from the NACA TN-4197 correlation as implemented in FLUTTER MARGIN1.xls: geometry, correlation, pressure ratio, margin of safety and minimum thickness.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../css/site.css">
+<script>try{var t=JSON.parse(localStorage.getItem('rc-theme'));if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<main id="main">
+<div class="wrap">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Home</a><span class="sep">/</span><a href="../index.html#area-struct">Structures &amp; Aeroelasticity</a><span class="sep">/</span><a href="../calculators/fin-flutter.html">Fin Flutter Margin</a><span class="sep">/</span><span>Documentation</span></nav>
+  <div class="calc-title"><h1>Fin Flutter Margin — theory</h1></div>
+  <p class="calc-sub">An approximate bending-torsion flutter check for fin panels. The workbook <code>FLUTTER MARGIN1.xls</code> implements the correlation of D. J. Martin, <em>Summary of Flutter Experiences as a Guide to the Preliminary Design of Lifting Surfaces on Missiles</em>, NACA TN-4197, 1958.</p>
+  <div class="calc-badges"><a class="btn small primary" href="../calculators/fin-flutter.html">Open the calculator</a><a class="btn small" href="../references/index.html#fin-aeroelasticity">Related memo: fin static aeroelasticity</a></div>
+  <div class="doc-layout">
+    <nav class="doc-toc" aria-label="Contents"></nav>
+    <article class="doc">
+
+      <section id="overview">
+        <h2>Overview</h2>
+        <p>Aeroelasticity covers the static twisting of fins under load and a dynamic phenomenon, <strong>flutter</strong>, in which a fin’s bending and torsion modes couple with the airflow and extract energy from it. Once flutter starts the amplitude grows within a few cycles and the fin usually fails. After the Prospector P-8 fin-flutter failure, the rsandt.com notes say, “everyone should be sensitive to the possibility of flutter”.</p>
+        <p>The model here is a rough approximation, intended to be good enough to keep the designer out of trouble. It reduces flight and wind-tunnel experience to one correlation for the flutter Mach number of a fin panel. The output is a <strong>margin of safety</strong> against the flight Mach number.</p>
+      </section>
+
+      <section id="geometry">
+        <h2>Panel geometry</h2>
+        <p>For one exposed trapezoidal panel with root chord <span class="tex">c_R</span>, tip chord <span class="tex">c_T</span>, exposed semispan <span class="tex">b</span> and uniform thickness <span class="tex">t</span>:</p>
+        <div class="eq"><div class="tex-display">\lambda=\frac{c_T}{c_R},\qquad S=\frac{(c_R+c_T)\,b}{2},\qquad A\!R=\frac{b^2}{S}.</div></div>
+        <p>The thickness ratio is taken at the chord three-quarters of the way out along the span, which for a straight-tapered panel is</p>
+        <div class="eq"><div class="tex-display">c_{0.75}=\tfrac14c_R+\tfrac34c_T,\qquad \frac{t}{c}=\frac{t}{c_{0.75}}.</div></div>
+        <p>Sweep does not appear in the correlation.</p>
+      </section>
+
+      <section id="correlation">
+        <h2>The flutter correlation</h2>
+        <p>The geometry enters through one parameter,</p>
+        <div class="eq"><div class="tex-display">X=\frac{39.3\,A\!R^3}{(t/c)^3\,(A\!R+2)},</div></div>
+        <p>and the flutter Mach number is</p>
+        <div class="eq"><div class="tex-display">M_f=\sqrt{\frac{G}{X\,\dfrac{\lambda+1}{2}\,\dfrac{p}{p_0}}},</div></div>
+        <p>with the material shear modulus <span class="tex">G</span> in psi and <span class="tex">p/p_0</span> the ratio of static pressure at the flight altitude to sea-level pressure. The flutter <em>speed</em> is <span class="tex">M_f</span> times the local speed of sound.</p>
+        <p>The trends are worth remembering: <span class="tex">M_f\propto\sqrt{G}</span> (stiffer material helps), <span class="tex">M_f\propto(t/c)^{3/2}</span> (thickness helps most), and <span class="tex">M_f\propto(p/p_0)^{-1/2}</span> (low altitude is the critical place).</p>
+        <h3>Pressure ratio</h3>
+        <p>The workbook evaluates the pressure ratio with a single-layer tropospheric law:</p>
+        <div class="eq"><div class="tex-display">\frac{p}{p_0}=\left(1-\frac{0.0035662\,h}{T_{SL}}\right)^{32.174/(1716\times0.0035662)}=\left(1-\frac{0.0035662\,h}{T_{SL}}\right)^{5.2575},</div></div>
+        <p>with altitude <span class="tex">h</span> in feet above sea level and <span class="tex">T_{SL}=551.8</span> °R (about 92 °F, a hot day). The calculator exposes <span class="tex">T_{SL}</span> as an input so a standard day (518.67 °R) can be used. The law is valid in the troposphere; above the tropopause it under-predicts the pressure ratio slightly.</p>
+      </section>
+
+      <section id="margin">
+        <h2>Margin of safety and minimum thickness</h2>
+        <p>The margin of safety compares the flutter Mach number with the flight Mach number <span class="tex">M</span>:</p>
+        <div class="eq"><div class="tex-display">MS=\frac{M_f-M}{M}.</div></div>
+        <p>A negative margin means flutter is predicted. Check the worst point on the trajectory: usually maximum velocity at low altitude.</p>
+        <p>Setting <span class="tex">M_f=M</span> and solving for the thickness gives the thickness at which the margin is zero — the calculator’s <em>thickness for zero margin</em>:</p>
+        <div class="eq"><div class="tex-display">X_{crit}=\frac{G}{M^2\,\frac{\lambda+1}{2}\,\frac{p}{p_0}},\qquad t_{min}=c_{0.75}\left[\frac{39.3\,A\!R^3}{X_{crit}\,(A\!R+2)}\right]^{1/3}.</div></div>
+        <p>This inversion is an addition by this site, using the same correlation. Choose a design thickness comfortably above <span class="tex">t_{min}</span>.</p>
+      </section>
+
+      <section id="assumptions">
+        <h2>Assumptions and limits</h2>
+        <ul>
+          <li>An empirical correlation for thin, flat, cantilevered panels of uniform thickness and isotropic material. For composites, <span class="tex">G</span> should be the laminate’s in-plane shear modulus, which can be far below its tensile modulus.</li>
+          <li>Root fixity is assumed. Flexible fin attachments lower the true flutter speed.</li>
+          <li>Static aeroelastic twist (loss of roll control or divergence) is a separate effect, covered by the related memo “Effects of Fin Static Aeroelasticity on Roll Rate” and the TWISTIT workbook (not yet a calculator here).</li>
+          <li>The calculator highlights margins below 0.5 as “thin”. That threshold is this site’s guidance, not part of the source.</li>
+        </ul>
+      </section>
+
+      <section id="worked-example">
+        <h2>Worked example (Gold Rush III)</h2>
+        <p>Aluminium 6061 fins, <span class="tex">G=3.8\times10^6</span> psi, <span class="tex">c_R=10</span> in, <span class="tex">c_T=2</span> in, <span class="tex">b=5.5</span> in, <span class="tex">t=0.125</span> in, at <span class="tex">M=0.915</span> and 7,686 ft:</p>
+        <ol>
+          <li><span class="tex">\lambda=0.2</span>, <span class="tex">S=33</span> in², <span class="tex">A\!R=0.9167</span>, <span class="tex">c_{0.75}=4</span> in, <span class="tex">t/c=0.03125</span>.</li>
+          <li><span class="tex">X=39.3(0.9167)^3/\big((0.03125)^3(2.9167)\big)=340{,}087</span>.</li>
+          <li><span class="tex">p/p_0=0.76501</span>.</li>
+          <li><span class="tex">M_f=\sqrt{3.8\times10^6/(340087\times0.6\times0.76501)}=4.934</span>.</li>
+          <li><span class="tex">MS=(4.934-0.915)/0.915=4.39</span>; zero margin would need only <span class="tex">t_{min}=0.041</span> in.</li>
+        </ol>
+      </section>
+
+      <section id="code-map">
+        <h2>Equations ↔ code ↔ workbook</h2>
+        <table class="sym-table">
+          <thead><tr><th>Quantity</th><th>Code (<code>js/calc/flutter.js</code>)</th><th>Workbook cell</th></tr></thead>
+          <tbody>
+            <tr><td>Taper ratio, area, aspect ratio</td><td class="mono">lambda, S, AR</td><td class="mono">I6, J6, K6</td></tr>
+            <tr><td>Effective chord</td><td class="mono">c75</td><td class="mono">L6 =B6/4+3*C6/4</td></tr>
+            <tr><td><span class="tex">X</span></td><td class="mono">Xparam()</td><td class="mono">M6</td></tr>
+            <tr><td><span class="tex">p/p_0</span></td><td class="mono">pressureRatio()</td><td class="mono">N6</td></tr>
+            <tr><td>Flutter Mach number</td><td class="mono">Mf</td><td class="mono">O6</td></tr>
+            <tr><td>Margin of safety</td><td class="mono">MS</td><td class="mono">Q6</td></tr>
+            <tr><td>Thickness for zero margin</td><td class="mono">tMin</td><td class="mono">— (addition)</td></tr>
+          </tbody>
+        </table>
+        <p><strong>Verification:</strong> <code>tests/flutter.test.js</code> reproduces all eight computed cells of the workbook to 10⁻¹², and checks that <span class="tex">t_{min}</span> gives exactly zero margin.</p>
+      </section>
+
+      <section id="known-differences">
+        <h2>Known differences from the workbook</h2>
+        <ul class="diff-list">
+          <li><strong>Flight speed input.</strong> The workbook has a flight-speed cell (F6, 1037 ft/s) that no formula uses; the Mach number is entered separately (P6). The calculator asks only for the Mach number.</li>
+          <li><strong>Sea-level temperature exposed.</strong> The workbook hard-codes 551.8 °R in the pressure ratio; the calculator makes it an input with that default. Its lapse rate (0.0035662 °R/ft) is the 1976 standard value, slightly different from the Geophysics memo’s 0.00357448.</li>
+          <li><strong>Additions.</strong> Thickness for zero margin and the two plots are derived from the same correlation.</li>
+        </ul>
+      </section>
+
+      <section id="references">
+        <h2>References</h2>
+        <ol class="refs">
+          <li>D. J. Martin, “Summary of Flutter Experiences as a Guide to the Preliminary Design of Lifting Surfaces on Missiles,” NACA TN-4197, 1958 (not hosted here).</li>
+          <li>C. P. Hoult, “Effects of Fin Static Aeroelasticity on Roll Rate,” RS&amp;T memo, 5 October 2013. <a href="../references/index.html#fin-aeroelasticity">View in library</a></li>
+          <li>Original workbook: <a href="http://www.rsandt.com/media/FLUTTER%20MARGIN1.xls" rel="noopener">FLUTTER MARGIN1.xls</a> (rsandt.com).</li>
+        </ol>
+      </section>
+    </article>
+  </div>
+</div>
+</main>
+<script type="module">
+import { mountDocs } from '../js/docs.js';
+mountDocs();
+</script>
+</body>
+</html>

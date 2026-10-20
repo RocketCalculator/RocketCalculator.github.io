@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fin Cant Angle & Roll Rate — Theory & documentation — Rocket Calculator</title>
+<meta name="description" content="Strip theory for fin cant angles: rolling moment, roll-driving and roll-damping derivatives, cant angle for a target roll rate or a whole number of roll cycles, with workbook mapping.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../css/site.css">
+<script>try{var t=JSON.parse(localStorage.getItem('rc-theme'));if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<main id="main">
+<div class="wrap">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Home</a><span class="sep">/</span><a href="../index.html#area-dyn">Flight Dynamics &amp; Mass Properties</a><span class="sep">/</span><a href="../calculators/fin-cant-angle.html">Fin Cant Angle &amp; Roll Rate</a><span class="sep">/</span><span>Documentation</span></nav>
+  <div class="calc-title"><h1>Fin Cant Angle &amp; Roll Rate — theory</h1></div>
+  <p class="calc-sub">Strip theory for setting fin angles. Based on C. P. Hoult, <em>Strip Theory for Setting Fin Angles (rev. 3)</em>, RS&amp;T memo, 22 May 2014, and the workbook <code>CANT ANGLE3.xls</code>.</p>
+  <div class="calc-badges"><a class="btn small primary" href="../calculators/fin-cant-angle.html">Open the calculator</a><a class="btn small" href="../references/index.html#fin-setting-theory-3">Original memo (PDF)</a></div>
+  <div class="doc-layout">
+    <nav class="doc-toc" aria-label="Contents"></nav>
+    <article class="doc">
+
+      <section id="overview">
+        <h2>Overview</h2>
+        <p>Fin warpage makes every fin-stabilised rocket roll at random and adds random pitch/yaw moments. Setting the fins deliberately serves two purposes:</p>
+        <ul>
+          <li><strong>Dispersion.</strong> A well-chosen roll-rate profile averages out the impact-point errors caused by body-fixed misalignments, especially thrust misalignment.</li>
+          <li><strong>Loads.</strong> Fin misalignments add angle of attack, and with it structural load on the fins and the whole airframe.</li>
+        </ul>
+        <p>The process is: measure the as-built cant angles, null each panel’s misalignment normal force, then set <strong>all panels to one common cant angle</strong> that produces the planned roll rate. This page derives the roll derivatives and that common angle.</p>
+      </section>
+
+      <section id="strip-theory">
+        <h2>Strip theory</h2>
+        <p>Each fin panel is divided into streamwise strips of span <span class="tex">dy</span>, each with the same normal-force slope <span class="tex">c_{N\alpha}</span>. There is no fin–body interference and no spanwise variation of lift slope from tip losses — the simplest model that accounts for planform geometry. Thin-airfoil theory makes <span class="tex">c_{N\alpha}</span> depend only on Mach number; using a panel-averaged value captures root and tip losses approximately.</p>
+        <p>A strip at radius <span class="tex">y</span> from the body centre line, on a fin canted by <span class="tex">\delta</span> and rolling at rate <span class="tex">p</span>, sees the local angle of attack <span class="tex">\delta-py/U</span>. Its normal force and rolling moment are</p>
+        <div class="eq"><div class="tex-display">dN_T=q\,c\,c_{N\alpha}\left(\delta-\frac{py}{U}\right)dy,\qquad dL=y\,dN_T=q\,y\,c\,c_{N\alpha}\left(\delta-\frac{py}{U}\right)dy .</div></div>
+        <p>For a straight-tapered fin running from the body radius <span class="tex">R</span> to the tip radius <span class="tex">b</span>, the chord is linear:</p>
+        <div class="eq"><div class="tex-display">c=A-Cy,\qquad A=\frac{c_Rb-c_TR}{b-R},\qquad C=\frac{c_R-c_T}{b-R}.</div></div>
+        <p>Integrating over the panel gives the rolling moment of one fin,</p>
+        <div class="eq"><div class="tex-display">L=q\,c_{N\alpha}(b-R)\,\delta\,L_\delta+q\,c_{N\alpha}(b-R)\frac{p}{U}\,M,</div></div>
+        <p>where the two planform integrals are</p>
+        <div class="eq"><div class="tex-display">L_\delta=\frac{A(b+R)}{2}-\frac{C(b^2+bR+R^2)}{3},\qquad M=-\frac{A(b^2+bR+R^2)}{3}+\frac{C(b^3+b^2R+bR^2+R^3)}{4}.</div></div>
+        <p>The spanwise location of the normal force due to cant is</p>
+        <div class="eq"><div class="tex-display">Y_{CP}=\frac{3A(b+R)-2C(b^2+bR+R^2)}{6A-3C(b+R)}.</div></div>
+      </section>
+
+      <section id="derivatives">
+        <h2>Roll stability derivatives</h2>
+        <p>With reference area <span class="tex">S=\pi R^2</span> and reference length <span class="tex">d=2R</span>, the rolling-moment coefficient is <span class="tex">C_L=L/(qSd)=L/(2\pi R^3q)</span>. The roll-driving derivative of a single fin is</p>
+        <div class="eq"><div class="tex-display">C_{L\delta}=\frac{\partial C_L}{\partial\delta}=\frac{c_{N\alpha}(b-R)}{2\pi R^3}\,L_\delta,</div></div>
+        <p>and the roll-damping derivative of all <span class="tex">N</span> fins, per unit <span class="tex">pR/U</span>, is</p>
+        <div class="eq"><div class="tex-display">C_{Lp}=\frac{\partial C_L}{\partial(pR/U)}=\frac{c_{N\alpha}(b-R)N}{2\pi R^4}\,M .</div></div>
+        <p><span class="tex">M</span> is negative, so <span class="tex">C_{Lp}</span> is negative: rolling always generates an opposing moment.</p>
+      </section>
+
+      <section id="fin-adjustment">
+        <h2>Fin adjustment and the cant angle for a roll rate</h2>
+        <p>Many adjustments are possible, but the preferred one sets every panel to the same cant after nulling its normal force. For three or more panels this cancels the combined pitch and yaw moments and gives all panels the same cant-induced loads. In the field the as-built cant is measured with a laser level aligned with the body axis: the spot’s height on a screen at the nose tip shows the cant, which is then adjusted to the desired value.</p>
+        <p>In steady roll the driving and damping moments balance, <span class="tex">L=0</span>, so the common cant for a roll rate <span class="tex">p</span> at speed <span class="tex">U</span> is</p>
+        <div class="eq"><div class="tex-display">\delta=-\frac{p}{U}\,\frac{M}{L_\delta}=-\frac{pR\,C_{Lp}}{N\,U\,C_{L\delta}}.</div></div>
+        <p>This is what the workbook’s “fixed burnout roll rate” block computes. The memo’s expression also includes the lag caused by roll inertia during the boost:</p>
+        <div class="eq"><div class="tex-display">\delta=-\frac{pR\,C_{Lp}}{N\,U\,C_{L\delta}}\,(1-J),\qquad J=\frac{I_{xx}}{2\pi\rho\,(h-L)\,R^4C_{Lp}},</div></div>
+        <p>where <span class="tex">h</span> is the burnout altitude and <span class="tex">L</span> the launcher length. The memo considers this good enough for small rockets up to about 8 inches in diameter; for larger ones it suggests fitting the measured cant data, the simplest fit being a helix <span class="tex">\delta(y)=(-\delta_1y_2+\delta_2y_1)/(y_1-y_2)+y(\delta_1-\delta_2)/(y_1-y_2)</span> through two spanwise measurements.</p>
+      </section>
+
+      <section id="roll-rate-selection">
+        <h2>Choosing the roll rate</h2>
+        <p>For multistage rockets, set the last stage first and work down. For a single stage, the mean cant <span class="tex">\bar\delta_F</span> for a given roll wavenumber <span class="tex">\lambda_R</span> is</p>
+        <div class="eq"><div class="tex-display">\lambda_R=-\frac{C_{L\delta}N\bar\delta_F}{RC_{Lp}}\left[\frac{2\pi\rho(h-L)R^4C_{Lp}}{2\pi\rho(h-L)R^4C_{Lp}-I_{xx}}\right].</div></div>
+        <p><strong>Whole roll cycles.</strong> To minimise dispersion from body-fixed perturbations, the booster should complete a whole number <span class="tex">M</span> of roll cycles between launcher exit and burnout:</p>
+        <div class="eq"><div class="tex-display">\Delta\phi_{BO}=2\pi M=-\frac{C_{L\delta}N\bar\delta_F}{RC_{Lp}}\left[h-L+k\ln\!\left(\frac{h-L-k}{-k}\right)\right],\qquad k=\frac{I_{xx}}{2\pi\rho R^4C_{Lp}},</div></div>
+        <p>which is solved for <span class="tex">\bar\delta_F</span>. <span class="tex">M</span> should be at least 2 or 3; more is better. This choice matters mainly for the booster.</p>
+        <p><strong>Fraction of the pitch wavenumber.</strong> Alternatively, for any stage, choose <span class="tex">\lambda_R</span> as a fraction of the pitch wavenumber <span class="tex">\lambda_P</span>. Body-fixed perturbations produce an angle-of-attack response proportional to <span class="tex">\lambda_P^2/(\lambda_P^2-\lambda_R^2)</span>, so roll erodes static stability; as long as <span class="tex">\lambda_R</span> stays below 30–40 % of <span class="tex">\lambda_P</span> the damage is small. A higher roll rate still reduces dispersion. The memo’s example sets the burnout roll rate to 0.3 × the burnout pitch natural frequency, about 5 roll cycles to burnout.</p>
+      </section>
+
+      <section id="assumptions">
+        <h2>Assumptions and limits</h2>
+        <ul>
+          <li>Linear strip theory: no fin–body interference, constant <span class="tex">c_{N\alpha}</span> along the span, small angles.</li>
+          <li>Straight-tapered fins; the root is at the body surface.</li>
+          <li>In practice, errors in measuring misalignment and cant tend to dominate everything else, so one usually only aims for a desired roll rate.</li>
+          <li>The calculator warns above 3° of cant; that threshold is this site’s guidance.</li>
+        </ul>
+      </section>
+
+      <section id="worked-example">
+        <h2>Worked example (Gold Rush III)</h2>
+        <p><span class="tex">R=3.125</span> in, <span class="tex">b=5.5</span> in, <span class="tex">c_R=10</span> in, <span class="tex">c_T=2</span> in, 4 fins, <span class="tex">c_{N\alpha}=3.5</span>/rad:</p>
+        <ol>
+          <li><span class="tex">A=20.526</span> in, <span class="tex">C=3.368</span>, <span class="tex">L_\delta=24.292</span> in², <span class="tex">M=-100.75</span> in³, <span class="tex">Y_{CP}=4.049</span> in.</li>
+          <li><span class="tex">C_{L\delta}=3.5(2.375)(24.292)/(2\pi\,3.125^3)=1.0531</span> /rad (memo); <span class="tex">C_{Lp}=-5.5906</span>.</li>
+          <li>For 1.24 Hz at 1037.2 ft/s: <span class="tex">p/U=6.26\times10^{-4}</span> /in and <span class="tex">\delta=0.1488°</span> (steady state). With <span class="tex">I_{xx}=0.22</span> slug·ft², <span class="tex">\rho=0.0023</span>, <span class="tex">h=2000</span> ft and <span class="tex">L=18</span> ft, <span class="tex">J=-0.299</span> and the memo’s cant is <span class="tex">0.193°</span>.</li>
+          <li>For 4 roll cycles to burnout: <span class="tex">k=-592.1</span> ft, bracket 1111.9 ft, <span class="tex">\delta=0.448°</span> (memo <span class="tex">C_{L\delta}</span>) or 0.230° (workbook <span class="tex">C_{L\delta}</span>).</li>
+        </ol>
+      </section>
+
+      <section id="code-map">
+        <h2>Equations ↔ code ↔ workbook</h2>
+        <table class="sym-table">
+          <thead><tr><th>Quantity</th><th>Code (<code>js/calc/cantAngle.js</code>)</th><th>Workbook cell</th></tr></thead>
+          <tbody>
+            <tr><td><span class="tex">A,\ C</span></td><td class="mono">planform()</td><td class="mono">J5, K5</td></tr>
+            <tr><td><span class="tex">L_\delta,\ M</span></td><td class="mono">planform().Ld, .M</td><td class="mono">L5, M5</td></tr>
+            <tr><td><span class="tex">C_{L\delta}</span></td><td class="mono">derivatives().CLd</td><td class="mono">Q5 (see below)</td></tr>
+            <tr><td><span class="tex">C_{Lp}</span></td><td class="mono">derivatives().CLp</td><td class="mono">R5</td></tr>
+            <tr><td>Cant for roll rate</td><td class="mono">cantForRate()</td><td class="mono">C9–H9</td></tr>
+            <tr><td>Cant with inertia lag</td><td class="mono">cantWithLag()</td><td class="mono">— (memo only)</td></tr>
+            <tr><td>Cant for roll cycles</td><td class="mono">cantForCycles()</td><td class="mono">F12–J12</td></tr>
+          </tbody>
+        </table>
+        <p><strong>Verification:</strong> <code>tests/cant-angle.test.js</code> reproduces every computed workbook cell to 10⁻¹² (C<sub>Lδ</sub> and the roll-cycle cant in spreadsheet mode), checks <span class="tex">L_\delta</span>, <span class="tex">M</span> and the memo’s <span class="tex">C_{L\delta}</span> against direct numerical strip integration, and checks that the lag form reduces to the steady state when <span class="tex">J\to0</span>.</p>
+      </section>
+
+      <section id="known-differences">
+        <h2>Known differences from the workbook</h2>
+        <ul class="diff-list">
+          <li><strong>Roll-driving derivative, cell Q5 (fidelity switch).</strong> The workbook has <code>=O5*(D5-B5)*L5/(2+PI()*C5^3)</code>, where B5 holds π: that is <span class="tex">c_{N\alpha}(b-\pi)L_\delta/(2+\pi R^3)</span> instead of the memo’s <span class="tex">c_{N\alpha}(b-R)L_\delta/(2\pi R^3)</span>. For Gold Rush III it gives 2.0487 instead of 1.0531, so the roll-cycle cant comes out 0.230° instead of 0.448°. Strip integration confirms the memo’s value. The calculator uses the memo by default; “Match original spreadsheet” reproduces the workbook. The steady-state roll-rate result (G9/H9) does not use <span class="tex">C_{L\delta}</span> and is the same in both modes.</li>
+          <li><strong>Roll-inertia lag.</strong> The workbook’s roll-rate block omits the memo’s <span class="tex">(1-J)</span> factor; the calculator shows both.</li>
+          <li><strong>File name.</strong> The memo refers to “CANT ANGLE2.xls”; the published workbook is CANT ANGLE3.xls.</li>
+        </ul>
+      </section>
+
+      <section id="references">
+        <h2>References</h2>
+        <ol class="refs">
+          <li>C. P. Hoult, “Strip Theory for Setting Fin Angles (rev. 3),” RS&amp;T memo, 22 May 2014. <a href="../references/index.html#fin-setting-theory-3">View in library</a></li>
+          <li>C. P. Hoult, “Small Sounding Rocket Boost Phase Roll Rate,” RS&amp;T memo, 28 September 2013. <a href="../references/index.html#boost-phase-roll-rate2">View in library</a></li>
+          <li>Original workbook: <a href="http://www.rsandt.com/media/CANT%20ANGLE3.xls" rel="noopener">CANT ANGLE3.xls</a>; slides: <a href="http://www.rsandt.com/media/Fin%20Adjustment%20Tips.ppt" rel="noopener">Fin Adjustment Tips.ppt</a> (rsandt.com).</li>
+        </ol>
+      </section>
+    </article>
+  </div>
+</div>
+</main>
+<script type="module">
+import { mountDocs } from '../js/docs.js';
+mountDocs();
+</script>
+</body>
+</html>

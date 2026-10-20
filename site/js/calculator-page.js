@@ -217,7 +217,7 @@ export async function mountCalculator(def) {
       try { def.schematic(ctx, state.values, out); } catch (err) { console.error(err); }
     }
     for (const c of charts) {
-      try { const sp = c.def.build(state.values, out, ctx); if (sp) c.chart.update(sp); } catch (err) { console.error(err); }
+      try { const sp = c.def.build(state.values, out, ctx); c.card.hidden = !sp; if (sp) c.chart.update(sp); } catch (err) { console.error(err); }
     }
   }
   const recomputeSoon = debounce(recompute, 110);

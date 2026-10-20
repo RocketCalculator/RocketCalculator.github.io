@@ -15,7 +15,7 @@
 <div class="wrap">
   <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Home</a><span class="sep">/</span><a href="../index.html#area-dyn">Flight Dynamics &amp; Mass Properties</a><span class="sep">/</span><a href="../calculators/bifilar-pendulum.html">Bifilar Pendulum Inertia</a><span class="sep">/</span><span>Documentation</span></nav>
   <div class="calc-title"><h1>Bifilar Pendulum — theory</h1></div>
-  <p class="calc-sub">Experimental measurement of pitch/yaw moment of inertia. Based on C. P. Hoult, <em>Moment of Inertia Measurement with a Bifilar Pendulum</em>, RS&amp;T memo, 11 June 2009. There is no spreadsheet for this topic; the calculator implements the memo’s formulae directly.</p>
+  <p class="calc-sub">Experimental measurement of pitch/yaw moment of inertia. Based on C. P. Hoult, <em>Moment of Inertia Measurement with a Bifilar Pendulum</em>, RS&amp;T memo, 11 June 2009. The calculator implements the memo’s formulae directly.</p>
   <div class="calc-badges"><a class="btn small primary" href="../calculators/bifilar-pendulum.html">Open the calculator</a><a class="btn small" href="../references/index.html#bifilar-pendulum">Original memo (PDF)</a></div>
   <div class="doc-layout">
     <nav class="doc-toc" aria-label="Contents"></nav>
@@ -68,7 +68,7 @@
           <li>wires half-way between the centroid and the ends (<span class="tex">x_1=x_2=L/4</span>): <span class="tex">P_Y/P_G=1.155</span>.</li>
         </ul>
         <p>Between these lies <span class="tex">P_Y/P_G=1</span> — resonance. Good design puts the wires <strong>close to the CG</strong>, which makes the yaw period much longer than the swing period. The calculator’s “Mode separation” plot shows the ratio against wire spacing for your rocket.</p>
-        <p class="muted">The calculator flags ratios between 0.8 and 1.25 as “close to 1”. That band is this site’s guidance; the memo only says the ratio should not be too close to unity.</p>
+        <p class="muted">The calculator flags ratios between 0.8 and 1.25 as “close to 1”. That band is a rule of thumb; the memo only says the ratio should not be too close to unity.</p>
         <p>Because <span class="tex">I\propto P_Y^2</span>, a 1 % timing error produces a 2 % inertia error — another reason to time many cycles.</p>
       </section>
 
@@ -109,9 +109,9 @@
       </section>
 
       <section id="known-differences">
-        <h2>Known differences</h2>
+        <h2>Notes on the method</h2>
         <ul class="diff-list">
-          <li><strong>No spreadsheet.</strong> This topic has only the memo, so there is no workbook to compare with. The wire-length cross-check, tension readout, uniform-rod comparison and resonance warning band are additions built from the memo’s equations.</li>
+          <li><strong>Additions to the memo.</strong> The wire-length cross-check, tension readout, uniform-rod comparison and resonance warning band are additions built from the memo’s equations.</li>
         </ul>
       </section>
 

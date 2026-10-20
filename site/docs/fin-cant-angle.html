@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Fin Cant Angle & Roll Rate — Theory & documentation — Rocket Calculator</title>
-<meta name="description" content="Strip theory for fin cant angles: rolling moment, roll-driving and roll-damping derivatives, cant angle for a target roll rate or a whole number of roll cycles, with workbook mapping.">
+<meta name="description" content="Strip theory for fin cant angles: rolling moment, roll-driving and roll-damping derivatives, cant angle for a target roll rate or a whole number of roll cycles, with code mapping.">
 <meta name="color-scheme" content="light dark">
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="../css/site.css">
@@ -15,7 +15,7 @@
 <div class="wrap">
   <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Home</a><span class="sep">/</span><a href="../index.html#area-dyn">Flight Dynamics &amp; Mass Properties</a><span class="sep">/</span><a href="../calculators/fin-cant-angle.html">Fin Cant Angle &amp; Roll Rate</a><span class="sep">/</span><span>Documentation</span></nav>
   <div class="calc-title"><h1>Fin Cant Angle &amp; Roll Rate — theory</h1></div>
-  <p class="calc-sub">Strip theory for setting fin angles. Based on C. P. Hoult, <em>Strip Theory for Setting Fin Angles (rev. 3)</em>, RS&amp;T memo, 22 May 2014, and the workbook <code>CANT ANGLE3.xls</code>.</p>
+  <p class="calc-sub">Strip theory for setting fin angles. Based on C. P. Hoult, <em>Strip Theory for Setting Fin Angles (rev. 3)</em>, RS&amp;T memo, 22 May 2014.</p>
   <div class="calc-badges"><a class="btn small primary" href="../calculators/fin-cant-angle.html">Open the calculator</a><a class="btn small" href="../references/index.html#fin-setting-theory-3">Original memo (PDF)</a></div>
   <div class="doc-layout">
     <nav class="doc-toc" aria-label="Contents"></nav>
@@ -60,7 +60,7 @@
         <p>Many adjustments are possible, but the preferred one sets every panel to the same cant after nulling its normal force. For three or more panels this cancels the combined pitch and yaw moments and gives all panels the same cant-induced loads. In the field the as-built cant is measured with a laser level aligned with the body axis: the spot’s height on a screen at the nose tip shows the cant, which is then adjusted to the desired value.</p>
         <p>In steady roll the driving and damping moments balance, <span class="tex">L=0</span>, so the common cant for a roll rate <span class="tex">p</span> at speed <span class="tex">U</span> is</p>
         <div class="eq"><div class="tex-display">\delta=-\frac{p}{U}\,\frac{M}{L_\delta}=-\frac{pR\,C_{Lp}}{N\,U\,C_{L\delta}}.</div></div>
-        <p>This is what the workbook’s “fixed burnout roll rate” block computes. The memo’s expression also includes the lag caused by roll inertia during the boost:</p>
+        <p>This is the steady-state cant. The memo’s expression also includes the lag caused by roll inertia during the boost:</p>
         <div class="eq"><div class="tex-display">\delta=-\frac{pR\,C_{Lp}}{N\,U\,C_{L\delta}}\,(1-J),\qquad J=\frac{I_{xx}}{2\pi\rho\,(h-L)\,R^4C_{Lp}},</div></div>
         <p>where <span class="tex">h</span> is the burnout altitude and <span class="tex">L</span> the launcher length. The memo considers this good enough for small rockets up to about 8 inches in diameter; for larger ones it suggests fitting the measured cant data, the simplest fit being a helix <span class="tex">\delta(y)=(-\delta_1y_2+\delta_2y_1)/(y_1-y_2)+y(\delta_1-\delta_2)/(y_1-y_2)</span> through two spanwise measurements.</p>
       </section>
@@ -81,7 +81,7 @@
           <li>Linear strip theory: no fin–body interference, constant <span class="tex">c_{N\alpha}</span> along the span, small angles.</li>
           <li>Straight-tapered fins; the root is at the body surface.</li>
           <li>In practice, errors in measuring misalignment and cant tend to dominate everything else, so one usually only aims for a desired roll rate.</li>
-          <li>The calculator warns above 3° of cant; that threshold is this site’s guidance.</li>
+          <li>The calculator warns above 3° of cant; that threshold is a rule of thumb.</li>
         </ul>
       </section>
 
@@ -92,33 +92,32 @@
           <li><span class="tex">A=20.526</span> in, <span class="tex">C=3.368</span>, <span class="tex">L_\delta=24.292</span> in², <span class="tex">M=-100.75</span> in³, <span class="tex">Y_{CP}=4.049</span> in.</li>
           <li><span class="tex">C_{L\delta}=3.5(2.375)(24.292)/(2\pi\,3.125^3)=1.0531</span> /rad (memo); <span class="tex">C_{Lp}=-5.5906</span>.</li>
           <li>For 1.24 Hz at 1037.2 ft/s: <span class="tex">p/U=6.26\times10^{-4}</span> /in and <span class="tex">\delta=0.1488°</span> (steady state). With <span class="tex">I_{xx}=0.22</span> slug·ft², <span class="tex">\rho=0.0023</span>, <span class="tex">h=2000</span> ft and <span class="tex">L=18</span> ft, <span class="tex">J=-0.299</span> and the memo’s cant is <span class="tex">0.193°</span>.</li>
-          <li>For 4 roll cycles to burnout: <span class="tex">k=-592.1</span> ft, bracket 1111.9 ft, <span class="tex">\delta=0.448°</span> (memo <span class="tex">C_{L\delta}</span>) or 0.230° (workbook <span class="tex">C_{L\delta}</span>).</li>
+          <li>For 4 roll cycles to burnout: <span class="tex">k=-592.1</span> ft, bracket 1111.9 ft, <span class="tex">\delta=0.448°</span>.</li>
         </ol>
       </section>
 
       <section id="code-map">
-        <h2>Equations ↔ code ↔ workbook</h2>
+        <h2>Equations ↔ code</h2>
         <table class="sym-table">
-          <thead><tr><th>Quantity</th><th>Code (<code>js/calc/cantAngle.js</code>)</th><th>Workbook cell</th></tr></thead>
+          <thead><tr><th>Quantity</th><th>Code (<code>js/calc/cantAngle.js</code>)</th></tr></thead>
           <tbody>
-            <tr><td><span class="tex">A,\ C</span></td><td class="mono">planform()</td><td class="mono">J5, K5</td></tr>
-            <tr><td><span class="tex">L_\delta,\ M</span></td><td class="mono">planform().Ld, .M</td><td class="mono">L5, M5</td></tr>
-            <tr><td><span class="tex">C_{L\delta}</span></td><td class="mono">derivatives().CLd</td><td class="mono">Q5 (see below)</td></tr>
-            <tr><td><span class="tex">C_{Lp}</span></td><td class="mono">derivatives().CLp</td><td class="mono">R5</td></tr>
-            <tr><td>Cant for roll rate</td><td class="mono">cantForRate()</td><td class="mono">C9–H9</td></tr>
-            <tr><td>Cant with inertia lag</td><td class="mono">cantWithLag()</td><td class="mono">— (memo only)</td></tr>
-            <tr><td>Cant for roll cycles</td><td class="mono">cantForCycles()</td><td class="mono">F12–J12</td></tr>
+            <tr><td><span class="tex">A,\ C</span></td><td class="mono">planform()</td></tr>
+            <tr><td><span class="tex">L_\delta,\ M</span></td><td class="mono">planform().Ld, .M</td></tr>
+            <tr><td><span class="tex">C_{L\delta}</span></td><td class="mono">derivatives().CLd</td></tr>
+            <tr><td><span class="tex">C_{Lp}</span></td><td class="mono">derivatives().CLp</td></tr>
+            <tr><td>Cant for roll rate</td><td class="mono">cantForRate()</td></tr>
+            <tr><td>Cant with inertia lag</td><td class="mono">cantWithLag()</td></tr>
+            <tr><td>Cant for roll cycles</td><td class="mono">cantForCycles()</td></tr>
           </tbody>
         </table>
-        <p><strong>Verification:</strong> <code>tests/cant-angle.test.js</code> reproduces every computed workbook cell to 10⁻¹² (C<sub>Lδ</sub> and the roll-cycle cant in spreadsheet mode), checks <span class="tex">L_\delta</span>, <span class="tex">M</span> and the memo’s <span class="tex">C_{L\delta}</span> against direct numerical strip integration, and checks that the lag form reduces to the steady state when <span class="tex">J\to0</span>.</p>
+        <p><strong>Verification:</strong> <code>tests/cant-angle.test.js</code> reproduces the reference example to 10⁻¹², checks <span class="tex">L_\delta</span>, <span class="tex">M</span> and the memo’s <span class="tex">C_{L\delta}</span> against direct numerical strip integration, and checks that the lag form reduces to the steady state when <span class="tex">J\to0</span>.</p>
       </section>
 
       <section id="known-differences">
-        <h2>Known differences from the workbook</h2>
+        <h2>Notes on the method</h2>
         <ul class="diff-list">
-          <li><strong>Roll-driving derivative, cell Q5 (fidelity switch).</strong> The workbook has <code>=O5*(D5-B5)*L5/(2+PI()*C5^3)</code>, where B5 holds π: that is <span class="tex">c_{N\alpha}(b-\pi)L_\delta/(2+\pi R^3)</span> instead of the memo’s <span class="tex">c_{N\alpha}(b-R)L_\delta/(2\pi R^3)</span>. For Gold Rush III it gives 2.0487 instead of 1.0531, so the roll-cycle cant comes out 0.230° instead of 0.448°. Strip integration confirms the memo’s value. The calculator uses the memo by default; “Match original spreadsheet” reproduces the workbook. The steady-state roll-rate result (G9/H9) does not use <span class="tex">C_{L\delta}</span> and is the same in both modes.</li>
-          <li><strong>Roll-inertia lag.</strong> The workbook’s roll-rate block omits the memo’s <span class="tex">(1-J)</span> factor; the calculator shows both.</li>
-          <li><strong>File name.</strong> The memo refers to “CANT ANGLE2.xls”; the published workbook is CANT ANGLE3.xls.</li>
+          <li><strong>Roll-driving derivative.</strong> <span class="tex">C_{L\delta}=c_{N\alpha}(b-R)L_\delta/(2\pi R^3)</span>, as in the memo. Direct numerical strip integration confirms it (1.0531 /rad for Gold Rush III). The steady-state cant for a roll rate does not depend on <span class="tex">C_{L\delta}</span>.</li>
+          <li><strong>Roll-inertia lag.</strong> The calculator shows the steady-state cant and the memo’s form with the <span class="tex">(1-J)</span> factor side by side.</li>
         </ul>
       </section>
 
@@ -127,7 +126,7 @@
         <ol class="refs">
           <li>C. P. Hoult, “Strip Theory for Setting Fin Angles (rev. 3),” RS&amp;T memo, 22 May 2014. <a href="../references/index.html#fin-setting-theory-3">View in library</a></li>
           <li>C. P. Hoult, “Small Sounding Rocket Boost Phase Roll Rate,” RS&amp;T memo, 28 September 2013. <a href="../references/index.html#boost-phase-roll-rate2">View in library</a></li>
-          <li>Original workbook: <a href="http://www.rsandt.com/media/CANT%20ANGLE3.xls" rel="noopener">CANT ANGLE3.xls</a>; slides: <a href="http://www.rsandt.com/media/Fin%20Adjustment%20Tips.ppt" rel="noopener">Fin Adjustment Tips.ppt</a> (rsandt.com).</li>
+          <li>Source file: <a href="http://www.rsandt.com/media/CANT%20ANGLE3.xls" rel="noopener">CANT ANGLE3.xls</a>; slides: <a href="http://www.rsandt.com/media/Fin%20Adjustment%20Tips.ppt" rel="noopener">Fin Adjustment Tips.ppt</a> (rsandt.com).</li>
         </ol>
       </section>
     </article>

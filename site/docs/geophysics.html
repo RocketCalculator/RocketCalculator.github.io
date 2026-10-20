@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Atmosphere & Gravity — Theory & documentation — Rocket Calculator</title>
-<meta name="description" content="Local two-layer atmosphere through the launch-site temperature, latitude-dependent tropopause, Potsdam gravity and WGS-84 Earth radius: equations, derivation and workbook mapping.">
+<meta name="description" content="Local two-layer atmosphere through the launch-site temperature, latitude-dependent tropopause, Potsdam gravity and WGS-84 Earth radius: equations, derivation and code mapping.">
 <meta name="color-scheme" content="light dark">
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="../css/site.css">
@@ -15,7 +15,7 @@
 <div class="wrap">
   <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Home</a><span class="sep">/</span><a href="../index.html#area-env">Environment</a><span class="sep">/</span><a href="../calculators/geophysics.html">Atmosphere &amp; Gravity</a><span class="sep">/</span><span>Documentation</span></nav>
   <div class="calc-title"><h1>Atmosphere &amp; Gravity — theory</h1></div>
-  <p class="calc-sub">A local atmosphere, geodesy and gravity model for sounding-rocket analysis. Based on C. P. Hoult, <em>Sounding Rocket Geophysical Environment</em>, RS&amp;T memo, 10 February 2010, and the workbook <code>GEOPHYSICS.xls</code>.</p>
+  <p class="calc-sub">A local atmosphere, geodesy and gravity model for sounding-rocket analysis. Based on C. P. Hoult, <em>Sounding Rocket Geophysical Environment</em>, RS&amp;T memo, 10 February 2010.</p>
   <div class="calc-badges"><a class="btn small primary" href="../calculators/geophysics.html">Open the calculator</a><a class="btn small" href="../references/index.html#geophysics">Original memo (PDF)</a></div>
   <div class="doc-layout">
     <nav class="doc-toc" aria-label="Contents"></nav>
@@ -43,10 +43,10 @@
         <div class="eq"><div class="tex-display">p(h)=p_{SL}\left(\frac{1}{1+\alpha h/T_{SL}}\right)^{g/R\alpha}=p_{SL}\left(\frac{T(h)}{T_{SL}}\right)^{-g/R\alpha},\qquad h\le h_T,</div></div>
         <p>with <span class="tex">p_{SL}=2116.217</span> lb/ft² on the geoid. At the tropopause <span class="tex">p_T=p(h_T)</span>. In the isothermal stratosphere the integral is exponential:</p>
         <div class="eq"><div class="tex-display">p(h)=p_T\exp\!\left[-\frac{g\,(h-h_T)}{R\,T_T}\right],\qquad h>h_T.</div></div>
-        <div class="callout warn"><p><strong>Note on the memo’s exponent.</strong> The memo prints the tropospheric law as <span class="tex">p_{SL}\big(1/(1+\alpha h/(T^*-\alpha h^*))\big)^{-g/R\alpha}</span>. With the reciprocal inside the bracket the exponent must be <span class="tex">+g/R\alpha</span> (equivalently, <span class="tex">-g/R\alpha</span> without the reciprocal) — otherwise pressure would <em>rise</em> with altitude. The workbook uses the correct sign, and so does this site.</p></div>
+        <div class="callout warn"><p><strong>Note on the memo’s exponent.</strong> The memo prints the tropospheric law as <span class="tex">p_{SL}\big(1/(1+\alpha h/(T^*-\alpha h^*))\big)^{-g/R\alpha}</span>. With the reciprocal inside the bracket the exponent must be <span class="tex">+g/R\alpha</span> (equivalently, <span class="tex">-g/R\alpha</span> without the reciprocal) — otherwise pressure would <em>rise</em> with altitude. The calculator uses the correct sign.</p></div>
         <h3>Density and speed of sound</h3>
         <div class="eq"><div class="tex-display">\rho=\frac{p}{RT},\qquad a=\sqrt{\gamma R T},</div></div>
-        <p>with <span class="tex">R=1716</span> ft·lb/(slug·°R) (mean molecular weight 28.9644) and <span class="tex">\gamma=1.4</span>. In the calculations <span class="tex">g</span> is the surface gravity at the launch latitude, as in the workbook.</p>
+        <p>with <span class="tex">R=1716</span> ft·lb/(slug·°R) (mean molecular weight 28.9644) and <span class="tex">\gamma=1.4</span>. In the calculations <span class="tex">g</span> is the surface gravity at the launch latitude.</p>
       </section>
 
       <section id="tropopause">
@@ -76,13 +76,13 @@
         <ul>
           <li>Two layers only. Above about 66,000 ft (20 km) the real stratosphere warms with height; the model keeps it isothermal.</li>
           <li>Dry air and a constant lapse rate. Inversions near the ground and weather are not modelled.</li>
-          <li>Pressure uses the surface gravity at the launch latitude (no altitude variation inside the pressure integral), as in the workbook.</li>
+          <li>Pressure uses the surface gravity at the launch latitude (no altitude variation inside the pressure integral).</li>
           <li>The memo’s lapse rate (−0.00357448 °R/ft) is 0.23 % steeper than the 1976 value (−0.0035662 °R/ft). For a standard sea-level day the model matches the 1976 table to about 0.02 % in temperature and 0.03 % in pressure at 10,000 ft.</li>
         </ul>
       </section>
 
       <section id="worked-example">
-        <h2>Worked example (workbook case)</h2>
+        <h2>Worked example</h2>
         <p>Launch site at <span class="tex">h^*=4000</span> ft, <span class="tex">T^*=550</span> °R (90 °F), latitude 34°, evaluated at 40,000 ft:</p>
         <ol>
           <li>Tropopause: <span class="tex">h_T=39{,}190.87</span> ft; <span class="tex">T_T=550-0.00357448(39190.87-4000)=424.21</span> °R.</li>
@@ -94,27 +94,27 @@
       </section>
 
       <section id="code-map">
-        <h2>Equations ↔ code ↔ workbook</h2>
+        <h2>Equations ↔ code</h2>
         <table class="sym-table">
-          <thead><tr><th>Quantity</th><th>Code (<code>js/calc/geophysics.js</code>)</th><th>Workbook</th></tr></thead>
+          <thead><tr><th>Quantity</th><th>Code (<code>js/calc/geophysics.js</code>)</th></tr></thead>
           <tbody>
-            <tr><td>Tropopause <span class="tex">h_T</span></td><td class="mono">tropopause()</td><td class="mono">H5</td></tr>
-            <tr><td>Surface gravity <span class="tex">g_0</span></td><td class="mono">surfaceGravity()</td><td class="mono">I5</td></tr>
-            <tr><td>Earth radius <span class="tex">R_E</span></td><td class="mono">earthRadius()</td><td class="mono">J5</td></tr>
-            <tr><td><span class="tex">T_T,\ p_T</span></td><td class="mono">atmosphere().TT, .pT</td><td class="mono">K5, L5</td></tr>
-            <tr><td><span class="tex">T,\ p,\ \rho,\ a</span></td><td class="mono">atmosphere()</td><td class="mono">M5, N5, O5, P5</td></tr>
-            <tr><td><span class="tex">\Omega</span></td><td class="mono">atmosphere().omega</td><td class="mono">Q5</td></tr>
-            <tr><td>Constants</td><td class="mono">C</td><td class="mono">named ranges ATR, BTR, ARE, BRE, alfa, po, Rair, gamma, Prot</td></tr>
+            <tr><td>Tropopause <span class="tex">h_T</span></td><td class="mono">tropopause()</td></tr>
+            <tr><td>Surface gravity <span class="tex">g_0</span></td><td class="mono">surfaceGravity()</td></tr>
+            <tr><td>Earth radius <span class="tex">R_E</span></td><td class="mono">earthRadius()</td></tr>
+            <tr><td><span class="tex">T_T,\ p_T</span></td><td class="mono">atmosphere().TT, .pT</td></tr>
+            <tr><td><span class="tex">T,\ p,\ \rho,\ a</span></td><td class="mono">atmosphere()</td></tr>
+            <tr><td><span class="tex">\Omega</span></td><td class="mono">atmosphere().omega</td></tr>
+            <tr><td>Constants</td><td class="mono">C</td></tr>
           </tbody>
         </table>
-        <p><strong>Verification:</strong> <code>tests/geophysics.test.js</code> reproduces all eleven computed cells of the workbook to 10⁻¹² in both modes, confirms that spreadsheet mode puts 2116.217 lb/ft² at the launch site, checks the memo form against the 1976 standard atmosphere, and checks that memo-form pressure is continuous across the tropopause.</p>
+        <p><strong>Verification:</strong> <code>tests/geophysics.test.js</code> reproduces the reference example to 10⁻¹², checks the memo form against the 1976 standard atmosphere, and checks that memo-form pressure is continuous across the tropopause.</p>
       </section>
 
       <section id="known-differences">
-        <h2>Known differences from the workbook</h2>
+        <h2>Notes on the method</h2>
         <ul class="diff-list">
-          <li><strong>Tropospheric pressure datum (fidelity switch).</strong> The workbook evaluates <code>N5 = po*(1/(1+alfa*(h-ho)/(To-alfa*ho)))^(go/(Rair*alfa))</code>, using <span class="tex">h-h^*</span> where the memo uses <span class="tex">h</span>. That places sea-level pressure at the launch site and, for a site above sea level, makes pressure jump at the tropopause, because the tropopause pressure <code>L5</code> uses the memo form. The calculator uses the memo form by default; switch on “Match original spreadsheet” to reproduce the workbook. The two agree for a sea-level site and everywhere above the tropopause, including the workbook’s own 40,000 ft example.</li>
-          <li><strong>Gravity at altitude.</strong> <span class="tex">g(h)</span> from the memo’s inverse-square correction is reported in addition; the workbook only computes <span class="tex">g_0</span>.</li>
+          <li><strong>Tropospheric pressure datum.</strong> The tropospheric law uses altitude <span class="tex">h</span> above the geoid, not height <span class="tex">h-h^*</span> above the launch site. Sea-level pressure therefore sits on the geoid, and pressure is continuous across the tropopause.</li>
+          <li><strong>Gravity at altitude.</strong> <span class="tex">g(h)</span> from the memo’s inverse-square correction is reported alongside the surface value <span class="tex">g_0</span>.</li>
         </ul>
       </section>
 
@@ -124,7 +124,7 @@
           <li>C. P. Hoult, “Sounding Rocket Geophysical Environment,” RS&amp;T memo, 10 February 2010. <a href="../references/index.html#geophysics">View in library</a></li>
           <li>COESA, <em>U.S. Standard Atmosphere, 1976</em>, U.S. Government Printing Office, 1976.</li>
           <li>Air Force Geophysics Laboratory, <em>Handbook of Geophysics and the Space Environment</em>, 3rd ed., 1985.</li>
-          <li>Original workbook: <a href="http://www.rsandt.com/media/GEOPHYSICS.xls" rel="noopener">GEOPHYSICS.xls</a> (rsandt.com).</li>
+          <li>Source file: <a href="http://www.rsandt.com/media/GEOPHYSICS.xls" rel="noopener">GEOPHYSICS.xls</a> (rsandt.com).</li>
         </ol>
       </section>
     </article>

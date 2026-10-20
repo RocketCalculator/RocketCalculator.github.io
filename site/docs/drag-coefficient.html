@@ -15,7 +15,7 @@
 <div class="wrap">
   <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Home</a><span class="sep">/</span><a href="../index.html#area-aero">Aerodynamics</a><span class="sep">/</span><a href="../calculators/drag-coefficient.html">Zero-Lift Drag Coefficient</a><span class="sep">/</span><span>Documentation</span></nav>
   <div class="calc-title"><h1>Zero-Lift Drag Coefficient — theory</h1></div>
-  <p class="calc-sub">A component build-up of sounding-rocket zero-lift drag. Based on C. P. Hoult, <em>Drag Coefficient (rev. 3.4)</em>, RS&amp;T memo, 8 April 2016, which relies mostly on Hoerner’s drag handbook, and on the workbook <code>DRAG_COEFFICIENT3.4.xls</code>.</p>
+  <p class="calc-sub">A component build-up of sounding-rocket zero-lift drag. Based on C. P. Hoult, <em>Drag Coefficient (rev. 3.4)</em>, RS&amp;T memo, 8 April 2016, which relies mostly on Hoerner’s drag handbook.</p>
   <div class="calc-badges"><a class="btn small primary" href="../calculators/drag-coefficient.html">Open the calculator</a><a class="btn small" href="../references/index.html#drag-coefficient3-4">Original memo (PDF)</a></div>
   <div class="doc-layout">
     <nav class="doc-toc" aria-label="Contents"></nav>
@@ -61,12 +61,12 @@
         <h3>Compressibility</h3>
         <p>Following Hoerner (pp. 15-9 and 17-4) for modest heating and an adiabatic wall, the laminar friction is left unchanged and the turbulent friction is reduced by</p>
         <div class="eq"><div class="tex-display">C_f(M)=C_f(0)\,(1+0.15M^2)^{-0.58}.</div></div>
-        <p>The workbook additionally multiplies each friction drag by <span class="tex">(1-0.09M^2)</span>; this factor is not written in the memo but is retained in both modes of the calculator.</p>
+        <p>Each friction drag is also multiplied by an empirical factor <span class="tex">(1-0.09M^2)</span>.</p>
       </section>
 
       <section id="wave-drag">
         <h2>Wave drag</h2>
-        <p>Wave drag cannot be estimated with simple classical methods until the flow is well-developed supersonic. For the body of revolution the memo uses the second-order shock-expansion method (Syvertson &amp; Dennis, NACA Report 1328), coded in the supersonic Barrowman workbook; very blunt parts — hemispherical caps, rounded fin edges — use modified Newtonian theory. In this calculator the <strong>nose and fin wave drag are inputs</strong>, to be taken from those tools; the memo’s examples show an ogive wave drag falling from about 0.68 at Mach 1.5 to 0.15 at Mach 4, and fin leading-edge wave drag of 0.07–0.09.</p>
+        <p>Wave drag cannot be estimated with simple classical methods until the flow is well-developed supersonic. For the body of revolution the memo uses the second-order shock-expansion method (Syvertson &amp; Dennis, NACA Report 1328); very blunt parts — hemispherical caps, rounded fin edges — use modified Newtonian theory. In this calculator the <strong>nose and fin wave drag are inputs</strong>, to be taken from those tools; the memo’s examples show an ogive wave drag falling from about 0.68 at Mach 1.5 to 0.15 at Mach 4, and fin leading-edge wave drag of 0.07–0.09.</p>
       </section>
 
       <section id="base-drag">
@@ -79,7 +79,7 @@
         <div class="eq"><div class="tex-display">\Delta C_{PB}=0.055,</div></div>
         <p>extended until it meets the quasi-vacuum curve at</p>
         <div class="eq"><div class="tex-display">M_{lim}=\sqrt{\frac{1.3}{\gamma\,(C_{DB}+\Delta C_{DB})}}.</div></div>
-        <p>The memo refers the increment to below the fore-body critical Mach number (about 0.8); the workbook switches at <span class="tex">M=1</span>.</p>
+        <p>The memo refers the increment to below the fore-body critical Mach number (about 0.8); the calculator switches at <span class="tex">M=1</span>.</p>
         <h3>Power-on</h3>
         <p>Power-on base drag is complicated and depends on nozzle exit pressure. Hoerner (p. 20-16) suggests that, based on the unpowered base area, it could be 1.5 times the power-off value for well-developed nozzle flow, because the jet entrains air from the base region. The memo recommends applying this to the annulus outside the nozzle:</p>
         <div class="eq"><div class="tex-display">C_{PB}(S_{ex})=1.5\,C_{PB}(0)\left(1-\frac{S_{ex}}{S_{ref}}\right).</div></div>
@@ -110,9 +110,9 @@
         <p>Two riding lugs hold the rocket on its rail. Hoerner gives an incompressible drag coefficient of 0.76–0.8 on the projected frontal area, so <span class="tex">C_DS\approx0.8(2Rh)</span>. A compressible estimate uses the Newtonian stagnation-pressure coefficient,</p>
         <div class="eq"><div class="tex-display">C_{PT}=\left[\frac{p_T}{p_\infty}-1\right]\frac{2}{\gamma M^2},</div></div>
         <div class="eq"><div class="tex-display">\frac{p_T}{p_\infty}=\left[1+\frac{\gamma-1}{2}M^2\right]^{\frac{\gamma}{\gamma-1}}\quad(M\le1),\qquad \frac{p_T}{p_\infty}=\left[\frac{\gamma+1}{2}M^2\right]^{\frac{\gamma}{\gamma-1}}\left[\frac{\gamma+1}{2\gamma M^2-\gamma+1}\right]^{\frac{1}{\gamma-1}}\quad(M\ge1),</div></div>
-        <p>the second being the Rayleigh pitot formula. The cylindrical Newtonian model gives <span class="tex">C_DS=\tfrac43RhC_{PT}</span>; to match Hoerner’s data the workbook uses</p>
+        <p>the second being the Rayleigh pitot formula. The cylindrical Newtonian model gives <span class="tex">C_DS=\tfrac43RhC_{PT}</span>; to match Hoerner’s data the calculator uses</p>
         <div class="eq"><div class="tex-display">C_DS=0.8\,(2Rh)\,C_{PT}.</div></div>
-        <p>In the workbook this stagnation-pressure coefficient is the VBA function <code>CPT(gamma, M)</code>; the calculator implements it in <code>cpt()</code>.</p>
+        <p>The calculator evaluates this stagnation-pressure coefficient in <code>cpt()</code>.</p>
       </section>
 
       <section id="flat-face">
@@ -145,49 +145,46 @@
       </section>
 
       <section id="worked-example">
-        <h2>Worked example (workbook case)</h2>
+        <h2>Worked example</h2>
         <p>Body 6.14 in diameter, 148 in long with a 36 in tangent ogive and a 1.5 in flat face; four fins (11.8/4.5 in chords, 5.84 in span, 1/8 in thick, blunt edges); 0.4 in nozzle; two lugs of 0.36 in². Mach 0.9, 499.17 °R, 2124 lb/ft²; body <span class="tex">Re_T=200{,}000</span>, fin <span class="tex">Re_T=25{,}000</span>.</p>
         <ol>
           <li><span class="tex">\rho a/\mu=7.459\times10^6</span> /ft; the laminar run is only 0.030 ft, so 4.6 in² of the 2625 in² body is laminar.</li>
-          <li>Body <span class="tex">C_f=0.00195</span> → <span class="tex">C_{D_f}=0.160</span>; fins: memo <span class="tex">C_f=0.00315</span> → 0.038 (workbook 0.0115 → 0.137).</li>
-          <li>Body base 0.0697 power-off; fin base 0.091 (memo) / 0.059 (workbook); fin leading edges 0.028; lugs 0.024.</li>
-          <li>Flat face: memo 0.069, workbook 0.094 (and counted twice).</li>
-          <li>Totals: <strong>memo 0.479 power-off, 0.514 power-on</strong>; workbook 0.666 and 0.666.</li>
+          <li>Body <span class="tex">C_f=0.00195</span> → <span class="tex">C_{D_f}=0.160</span>; fins <span class="tex">C_f=0.00315</span> → 0.038.</li>
+          <li>Body base 0.0697 power-off; fin base 0.091; fin leading edges 0.028; lugs 0.024.</li>
+          <li>Flat face 0.069.</li>
+          <li>Totals: <strong>0.479 power-off, 0.514 power-on</strong>.</li>
         </ol>
       </section>
 
       <section id="code-map">
-        <h2>Equations ↔ code ↔ workbook</h2>
+        <h2>Equations ↔ code</h2>
         <table class="sym-table">
-          <thead><tr><th>Quantity</th><th>Code (<code>js/calc/drag.js</code>)</th><th>Workbook cells</th></tr></thead>
+          <thead><tr><th>Quantity</th><th>Code (<code>js/calc/drag.js</code>)</th></tr></thead>
           <tbody>
-            <tr><td><span class="tex">\rho a/\mu</span></td><td class="mono">rhoAOverMu()</td><td class="mono">E4</td></tr>
-            <tr><td>Wetted areas</td><td class="mono">noseWettedArea(), Swet</td><td class="mono">J22, J23, J4</td></tr>
-            <tr><td>Transition, laminar area</td><td class="mono">xNat, xTr, Slam</td><td class="mono">Q4, S4, T4</td></tr>
-            <tr><td>Body friction</td><td class="mono">CfBody, CDfBody</td><td class="mono">U4, W4</td></tr>
-            <tr><td>Fin friction</td><td class="mono">CfFin, CDfFin</td><td class="mono">O8, Q8, U8, V8</td></tr>
-            <tr><td>Fin base, sweep, LE</td><td class="mono">CDbFin, sweep, CptLE, CDle</td><td class="mono">AD8, AE8, AF8, AG8</td></tr>
-            <tr><td>CPT, lugs</td><td class="mono">cpt(), CDlug</td><td class="mono">J16 (VBA CPT), L16</td></tr>
-            <tr><td>Base drag</td><td class="mono">CPBsub, CPBtr, Mlim, CDbOff, CDbOn</td><td class="mono">Q16, R16, U16, V16, V20</td></tr>
-            <tr><td>Flat face</td><td class="mono">CDflat</td><td class="mono">P21, R21</td></tr>
-            <tr><td>Totals</td><td class="mono">CDoff, CDon</td><td class="mono">AK8, AK4, AK16</td></tr>
+            <tr><td><span class="tex">\rho a/\mu</span></td><td class="mono">rhoAOverMu()</td></tr>
+            <tr><td>Wetted areas</td><td class="mono">noseWettedArea(), Swet</td></tr>
+            <tr><td>Transition, laminar area</td><td class="mono">xNat, xTr, Slam</td></tr>
+            <tr><td>Body friction</td><td class="mono">CfBody, CDfBody</td></tr>
+            <tr><td>Fin friction</td><td class="mono">CfFin, CDfFin</td></tr>
+            <tr><td>Fin base, sweep, LE</td><td class="mono">CDbFin, sweep, CptLE, CDle</td></tr>
+            <tr><td>CPT, lugs</td><td class="mono">cpt(), CDlug</td></tr>
+            <tr><td>Base drag</td><td class="mono">CPBsub, CPBtr, Mlim, CDbOff, CDbOn</td></tr>
+            <tr><td>Flat face</td><td class="mono">CDflat</td></tr>
+            <tr><td>Totals</td><td class="mono">CDoff, CDon</td></tr>
           </tbody>
         </table>
-        <p><strong>Verification:</strong> <code>tests/drag.test.js</code> reproduces all 38 computed cells of the workbook to 10⁻¹² in spreadsheet mode, using Excel’s own cached values read from the original <code>.xls</code> (so the VBA <code>CPT</code> results are included). It also checks each memo-mode difference listed below.</p>
+        <p><strong>Verification:</strong> <code>tests/drag.test.js</code> reproduces the reference example to 10⁻¹², including the stagnation-pressure values. It also checks each method note listed below.</p>
       </section>
 
       <section id="known-differences">
-        <h2>Known differences from the workbook</h2>
-        <p>The first four are switched by “Match original spreadsheet”; the memo form is the default.</p>
+        <h2>Notes on the method</h2>
         <ul class="diff-list">
-          <li><strong>Flat-face drag counted twice.</strong> <code>AI8</code> already includes the flat-face term <code>R21</code>, and the totals <code>AK4</code>/<code>AK8</code> add <code>R21</code> again.</li>
-          <li><strong>Subsonic flat-face formula.</strong> <code>P21</code> uses <code>0.85*(1+0.25*M^2+M^4)</code>, whereas memo eq. (22) is <span class="tex">0.85(1+\tfrac14(M^2+M^4))</span>. Only the memo form is continuous with the supersonic value at Mach 1 (1.275 vs 1.276; the workbook form gives 1.91), and the subsonic Barrowman workbook uses the memo form.</li>
-          <li><strong>Fin laminar friction.</strong> <code>U8</code> adds <code>1.328/SQRT(P8)</code> without multiplying by the laminar fraction <code>Q8/N8</code>, which makes the fin friction coefficient about 3.6 times the memo value in the example.</li>
-          <li><strong>Power-on base drag.</strong> <code>V20</code> is <span class="tex">(1-S_{ex}/S_{ref})</span> times the power-off value, without the factor 1.5 of memo eq. (14).</li>
-          <li><strong>Laminar-area interpolation.</strong> <code>T4</code> contains <code>#REF!</code> branches, so in the workbook it only evaluates when transition lies on the nose. The calculator interpolates the full wetted-area curve; results are identical wherever the workbook works.</li>
-          <li><strong>Cone nose.</strong> The workbook’s cone wetted area <span class="tex">\pi R(R+\sqrt{R^2+L^2})</span> includes the base disc; it is kept as published.</li>
-          <li><strong>Wedge base area.</strong> <code>Y8</code> multiplies by the second-stage fin count <code>F12</code>; the calculator uses the first-stage count (identical in the example, and zero without a wedge).</li>
-          <li><strong>Not ported.</strong> The second fin set (rows 11–12) and the leading-edge sweep input <code>G8</code>, which no formula uses.</li>
+          <li><strong>Flat face.</strong> The subsonic face drag uses memo eq. (22), <span class="tex">0.85(1+\tfrac14(M^2+M^4))</span>. It is continuous with the supersonic value at Mach 1 (1.275 against 1.276). The face term is counted once in the totals.</li>
+          <li><strong>Fin laminar friction.</strong> The laminar term is weighted by the laminar fraction <span class="tex">x_T/\bar c</span>, as in the fin equation above.</li>
+          <li><strong>Power-on base drag.</strong> The factor 1.5 of memo eq. (14) is applied to the annulus outside the nozzle.</li>
+          <li><strong>Laminar wetted area.</strong> The laminar area is interpolated on the full wetted-area curve, so transition may lie anywhere on the body, not only on the nose.</li>
+          <li><strong>Cone nose.</strong> The cone wetted area <span class="tex">\pi R(R+\sqrt{R^2+L^2})</span> includes the base disc.</li>
+          <li><strong>Single fin set.</strong> A second fin set is not modelled; the wedge base area uses the fin count of the one set.</li>
         </ul>
       </section>
 
@@ -200,7 +197,7 @@
           <li>C. A. Syvertson and D. H. Dennis, “A Second-Order Shock-Expansion Method Applicable to Bodies of Revolution Near Zero Lift,” NACA Report 1328, 1957.</li>
           <li>C. P. Hoult, “Modified Newtonian Aerodynamics (rev. 4),” RS&amp;T memo, 6 April 2016. <a href="../references/index.html#modified-newtonian-aero4">View in library</a></li>
           <li>Ames Research Staff, “Equations, Tables and Charts for Compressible Flow,” NACA Report 1135, 1953.</li>
-          <li>Original workbook: <a href="http://www.rsandt.com/media/DRAG_COEFFICIENT3.4.xls" rel="noopener">DRAG_COEFFICIENT3.4.xls</a> (rsandt.com).</li>
+          <li>Source file: <a href="http://www.rsandt.com/media/DRAG_COEFFICIENT3.4.xls" rel="noopener">DRAG_COEFFICIENT3.4.xls</a> (rsandt.com).</li>
         </ol>
       </section>
     </article>

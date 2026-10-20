@@ -4,6 +4,12 @@ Every commit adds an entry here, newest first. Live site: https://darasamii.gith
 
 ## 2026-10-20 (continued)
 
+### Neutral documentation wording
+- Changed: the documentation pages, home page and units switch no longer talk about workbooks, spreadsheets, cell
+  names or a compatibility switch. Cell-name columns are gone, “Known differences” is now “Notes on the method”,
+  and source files appear only in the reference lists.
+- Fixed: the home-page colour key still described dark key-result cards.
+
 ### Aggressive tests and the bugs they found
 - Tests: `tests/aggressive.test.js`, covering:
   - 1 500 random designs per calculator, checked against invariants;

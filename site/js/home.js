@@ -133,17 +133,17 @@ export async function mountHome() {
         h('div.card', h('h3', 'Theory in a side panel'), h('p', 'The ⓘ buttons open a side panel without leaving the calculator. “Open full documentation” opens the complete derivation in a new tab, at the right section.'))),
       h('div.card.card-pad', { style: 'margin-top:14px' },
         h('h3', 'Units and the colour code'),
-        h('p', { style: 'color:var(--text-2)' }, 'Switch between SI and US customary units with the ', h('b', 'SI · US'), ' toggle in the top bar — your choice is remembered. The original spreadsheets were written in US units; the calculators reproduce them exactly in either system. Every symbol and unit is typeset as mathematics. On the calculator pages:'),
+        h('p', { style: 'color:var(--text-2)' }, 'Switch between SI and US customary units with the ', h('b', 'SI · US'), ' toggle in the top bar — your choice is remembered, and plots, drawings and reports follow it. Every symbol and unit is typeset as mathematics. On the calculator pages:'),
         h('div.legend-swatches',
           h('span', h('i', { style: 'background:var(--surface-2);border:1px solid var(--hairline)' }), 'Outlined field — your inputs'),
-          h('span', h('i', { style: 'background:var(--key-bg);box-shadow:inset 3px 0 0 var(--red)' }), 'Dark card — key results'),
+          h('span', h('i', { style: 'background:var(--surface-2);border:1px solid var(--border);box-shadow:inset 4px 0 0 var(--red)' }), 'Card with a red edge — key results'),
           h('span', h('i', { style: 'background:var(--red)' }), 'Red — highlighted dimension or action'),
           h('span', h('i', { style: 'background:var(--surface);border:1px solid var(--border-strong)' }), 'Table — every other output'))),
       h('div.card.card-pad', { style: 'margin-top:14px' },
         h('h3', 'About the source'),
-        h('p', { style: 'color:var(--text-2);margin:0' }, 'All methods come from the reports, memos and spreadsheets published at ',
+        h('p', { style: 'color:var(--text-2);margin:0' }, 'All methods come from the reports and memos published at ',
           h('a', { href: 'http://www.rsandt.com/reports.html', rel: 'noopener' }, 'rsandt.com/reports'),
-          ' by C. P. Hoult and his students at CSULB and CSULA. Where a spreadsheet and its memo disagree, the calculator uses the memo and offers a “Match original spreadsheet” switch; every such difference is listed on the documentation page.'))));
+          ' by C. P. Hoult and his students at CSULB and CSULA. Each calculator lists its sources under Theory & references, and its documentation page gives the full derivation.'))));
 
   main.append(hero, guide, calcs, nav);
   renderGrid();

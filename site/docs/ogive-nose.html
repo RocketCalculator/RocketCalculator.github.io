@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Ogive Nose Profile — Theory & documentation — Rocket Calculator</title>
-<meta name="description" content="Tangent-ogive nose geometry: defining circle, profile, wetted area, area centroid and shell mass, with derivations and workbook cell mapping.">
+<meta name="description" content="Tangent-ogive nose geometry: defining circle, profile, wetted area, area centroid and shell mass, with derivations and code mapping.">
 <meta name="color-scheme" content="light dark">
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="../css/site.css">
@@ -15,7 +15,7 @@
 <div class="wrap">
   <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Home</a><span class="sep">/</span><a href="../index.html#area-aero">Aerodynamics</a><span class="sep">/</span><a href="../calculators/ogive-nose.html">Ogive Nose Profile</a><span class="sep">/</span><span>Documentation</span></nav>
   <div class="calc-title"><h1>Ogive Nose Profile — theory</h1></div>
-  <p class="calc-sub">Geometry of the tangent-ogive nose: the defining circle, the profile, and exact closed forms for wetted area and its centroid. Based on C. P. Hoult, <em>Ogive Nose</em>, RS&amp;T memo, 6 May 2011, and the workbook <code>Ogive Profile.xls</code>.</p>
+  <p class="calc-sub">Geometry of the tangent-ogive nose: the defining circle, the profile, and exact closed forms for wetted area and its centroid. Based on C. P. Hoult, <em>Ogive Nose</em>, RS&amp;T memo, 6 May 2011.</p>
   <div class="calc-badges"><a class="btn small primary" href="../calculators/ogive-nose.html">Open the calculator</a><a class="btn small" href="../references/index.html#ogive-nose">Original memo (PDF)</a></div>
   <div class="doc-layout">
     <nav class="doc-toc" aria-label="Contents"></nav>
@@ -35,19 +35,19 @@
         <div class="eq"><div class="tex-display">L^2+(a-R)^2=a^2\quad\Longrightarrow\quad a=\frac{L^2+R^2}{2R}.</div></div>
         <p>Two further quantities follow directly. The fineness ratio is <span class="tex">L/2R</span>. The surface makes an angle with the axis at the tip of</p>
         <div class="eq"><div class="tex-display">\theta_{tip}=\sin^{-1}\!\frac{L}{a},</div></div>
-        <p>since the tangent at the tip is perpendicular to the radius drawn to it. (The tip angle is derived geometry added by this site; the workbook does not output it.)</p>
+        <p>since the tangent at the tip is perpendicular to the radius drawn to it.</p>
         <table class="sym-table">
-          <thead><tr><th>Symbol</th><th>Meaning</th><th>Workbook</th></tr></thead>
+          <thead><tr><th>Symbol</th><th>Meaning</th></tr></thead>
           <tbody>
-            <tr><td><span class="tex">R</span></td><td>Base radius</td><td class="mono">B5</td></tr>
-            <tr><td><span class="tex">L</span></td><td>Nose length, tip to base</td><td class="mono">C5</td></tr>
-            <tr><td><span class="tex">a</span></td><td>Defining-circle radius</td><td class="mono">D5</td></tr>
-            <tr><td><span class="tex">\Delta x</span></td><td>Profile increment</td><td class="mono">E5</td></tr>
-            <tr><td><span class="tex">x</span></td><td>Axial coordinate forward of the base</td><td class="mono">F</td></tr>
-            <tr><td><span class="tex">r(x)</span></td><td>Local body radius</td><td class="mono">I</td></tr>
-            <tr><td><span class="tex">S</span></td><td>Wetted (lateral) area</td><td class="mono">J5</td></tr>
-            <tr><td><span class="tex">M</span></td><td>First moment of wetted area about the base</td><td class="mono">K5</td></tr>
-            <tr><td><span class="tex">\bar x</span></td><td>Area centroid, body station aft of the tip</td><td class="mono">L5</td></tr>
+            <tr><td><span class="tex">R</span></td><td>Base radius</td></tr>
+            <tr><td><span class="tex">L</span></td><td>Nose length, tip to base</td></tr>
+            <tr><td><span class="tex">a</span></td><td>Defining-circle radius</td></tr>
+            <tr><td><span class="tex">\Delta x</span></td><td>Profile increment</td></tr>
+            <tr><td><span class="tex">x</span></td><td>Axial coordinate forward of the base</td></tr>
+            <tr><td><span class="tex">r(x)</span></td><td>Local body radius</td></tr>
+            <tr><td><span class="tex">S</span></td><td>Wetted (lateral) area</td></tr>
+            <tr><td><span class="tex">M</span></td><td>First moment of wetted area about the base</td></tr>
+            <tr><td><span class="tex">\bar x</span></td><td>Area centroid, body station aft of the tip</td></tr>
           </tbody>
         </table>
       </section>
@@ -56,7 +56,7 @@
         <h2>Profile</h2>
         <p>The local body radius is the height of the arc above the axis:</p>
         <div class="eq"><div class="tex-display">r(x)=R-a+\sqrt{a^2-x^2},\qquad 0\le x\le L,</div></div>
-        <p>and the corresponding body station measured aft of the tip is <span class="tex">L-x</span>. The calculator evaluates the profile every <span class="tex">\Delta x</span> starting at the base (as the workbook does), and always includes the tip point. The increment affects only the table; area and centroid are exact integrals.</p>
+        <p>and the corresponding body station measured aft of the tip is <span class="tex">L-x</span>. The calculator evaluates the profile every <span class="tex">\Delta x</span> starting at the base and always includes the tip point. The increment affects only the table; area and centroid are exact integrals.</p>
       </section>
 
       <section id="wetted-area">
@@ -109,25 +109,25 @@
       </section>
 
       <section id="code-map">
-        <h2>Equations ↔ code ↔ workbook</h2>
+        <h2>Equations ↔ code</h2>
         <table class="sym-table">
-          <thead><tr><th>Quantity</th><th>Eq.</th><th>Code (<code>js/calc/ogive.js</code>)</th><th>Workbook cell</th></tr></thead>
+          <thead><tr><th>Quantity</th><th>Eq.</th><th>Code (<code>js/calc/ogive.js</code>)</th></tr></thead>
           <tbody>
-            <tr><td>Defining radius</td><td>(2)</td><td class="mono">circleRadius()</td><td class="mono">D5 =(C5^2+B5^2)/(2*B5)</td></tr>
-            <tr><td>Profile radius</td><td>(4)</td><td class="mono">radiusAt(), ogive().profile</td><td class="mono">G, I =$B$5-$D$5+G</td></tr>
-            <tr><td>Wetted area</td><td>(6)</td><td class="mono">wettedArea()</td><td class="mono">J5</td></tr>
-            <tr><td>Area moment</td><td>(9)</td><td class="mono">areaMoment()</td><td class="mono">K5</td></tr>
-            <tr><td>Centroid</td><td>(10)</td><td class="mono">ogive().xbar</td><td class="mono">L5 =C5-K5/J5</td></tr>
+            <tr><td>Defining radius</td><td>(2)</td><td class="mono">circleRadius()</td></tr>
+            <tr><td>Profile radius</td><td>(4)</td><td class="mono">radiusAt(), ogive().profile</td></tr>
+            <tr><td>Wetted area</td><td>(6)</td><td class="mono">wettedArea()</td></tr>
+            <tr><td>Area moment</td><td>(9)</td><td class="mono">areaMoment()</td></tr>
+            <tr><td>Centroid</td><td>(10)</td><td class="mono">ogive().xbar</td></tr>
           </tbody>
         </table>
-        <p><strong>Verification:</strong> <code>tests/ogive.test.js</code> reproduces all 56 numeric cells of the workbook example (a, S, M, x̄ and every profile row) to a relative error below 10⁻⁹, plus the memo’s quoted values.</p>
+        <p><strong>Verification:</strong> <code>tests/ogive.test.js</code> reproduces the reference example (a, S, M, x̄ and every profile row) to a relative error below 10⁻⁹, plus the memo’s quoted values.</p>
       </section>
 
       <section id="known-differences">
-        <h2>Known differences from the workbook</h2>
+        <h2>Notes on the method</h2>
         <ul class="diff-list">
-          <li><strong>Centroid label.</strong> The workbook heads cell L5 “Volume Centroid, in from Base”, but the formula <code>=C5-K5/J5</code> gives the <em>area</em> centroid measured from the <em>tip</em>, as the memo states. The calculator labels it accordingly; the number is identical.</li>
-          <li><strong>Additions.</strong> The tip half-angle, fineness ratio, cumulative-area curve and shell mass are not in the workbook. They are derived directly from the memo’s equations.</li>
+          <li><strong>Centroid.</strong> <span class="tex">\bar x=L-M/S</span> is the centroid of the wetted <em>area</em>, not the volume. It is measured aft of the <em>tip</em>, as the memo states.</li>
+          <li><strong>Derived quantities.</strong> The tip half-angle, fineness ratio, cumulative-area curve and shell mass follow directly from the memo’s equations.</li>
         </ul>
       </section>
 
@@ -136,7 +136,7 @@
         <ol class="refs">
           <li>C. P. Hoult, “Ogive Nose,” RS&amp;T memo, 6 May 2011. <a href="../references/index.html#ogive-nose">View in library</a> · <a href="../references/from-word/Ogive%20Nose.pdf" target="_blank" rel="noopener">PDF</a></li>
           <li>C. P. Hoult, “Drag Coefficient (rev. 3.4),” RS&amp;T memo, 8 April 2016 — uses the wetted-area curve. <a href="../references/index.html#drag-coefficient3-4">View in library</a></li>
-          <li>Original workbook: <a href="http://www.rsandt.com/media/Ogive%20Profile.xls" rel="noopener">Ogive Profile.xls</a> (rsandt.com).</li>
+          <li>Source file: <a href="http://www.rsandt.com/media/Ogive%20Profile.xls" rel="noopener">Ogive Profile.xls</a> (rsandt.com).</li>
         </ol>
       </section>
     </article>

@@ -67,7 +67,7 @@ function header(active) {
     h('a', { href: url('index.html#guide') }, 'How to use'));
   const unitsSeg = h('div.seg', { role: 'group', 'aria-label': 'Unit system' },
     h('button', { type: 'button', 'data-sys': 'si', title: 'SI units (metres, kilograms, pascals)' }, 'SI'),
-    h('button', { type: 'button', 'data-sys': 'us', title: 'English units (inches, feet, pounds) — as in the original workbooks' }, 'US'));
+    h('button', { type: 'button', 'data-sys': 'us', title: 'US customary units (inches, feet, pounds)' }, 'US'));
   const syncUnits = () => unitsSeg.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.sys === getSystem())));
   unitsSeg.addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) { setSystem(b.dataset.sys); syncUnits(); } });
   window.addEventListener('unitschange', syncUnits);

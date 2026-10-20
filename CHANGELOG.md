@@ -4,6 +4,35 @@ Every commit adds an entry here, newest first. Live site: https://darasamii.gith
 
 ## 2026-10-20 (continued)
 
+### Aggressive tests and the bugs they found
+- Tests: `tests/aggressive.test.js`, covering:
+  - 1 500 random designs per calculator, checked against invariants;
+  - every field at its limits;
+  - unit round-trips;
+  - report checks;
+  - physical trends;
+  - extreme chart ranges.
+- Tests: `scripts/uifuzz.mjs`, a browser fuzz of every input, option, handle and report tab.
+- Fixed — Ogive Nose: the page froze for very long noses with a small profile increment (the profile is now capped
+  at 2 000 points).
+- Fixed — Ogive Nose: wrong area and centroid for very slender noses. Floating-point cancellation is gone; the
+  formulas are rewritten in an equivalent stable form.
+- Fixed — Ogive Nose: `$\Deltax$` typo in the walk-through.
+- Fixed — Drag: NaN when the boundary-layer trip is at the nose tip, or when the whole body is laminar.
+- Fixed — Drag: negative power-on base drag when the nozzle is wider than the body (now clamped, with a warning).
+- Added — Drag: a low-Reynolds-number warning.
+- Fixed — Fin Flutter: NaN above about 120 000 ft. The pressure ratio now continues isothermally above the
+  tropopause, and the report shows that step.
+- Fixed — Fin Cant Angle: the helix parameter was missing at a roll rate of 0.
+- Added — Subsonic CP: a refusal for a boat-tail too steep for the fin, and warnings for blunt noses, steep
+  boat-tails and non-positive total $C_{N\alpha}$.
+- Fixed — charts: a near-flat curve (span below float resolution) drew NaN paths or never-ending tick loops.
+- Fixed — inputs: "1e309" (∞) and unparseable text in optional fields were accepted silently.
+- Changed: impossible designs raise `InputError` (shown to the user, never logged as a console error).
+- Changed — Atmosphere drawing: altitude ticks are round numbers in the displayed unit; the readout no longer
+  covers the altitude line, and the tropopause label clears the handle.
+- Changed: pages without shared dimensions hide the sharing switch.
+
 ### Shared rocket, design files, A/B comparison
 - Added: **shared rocket**. Body radius, nose length and shape, overall length, fin count, chords, exposed semispan
   and thickness are entered once and fill every calculator that uses them. A chain mark shows the shared fields,

@@ -1,5 +1,5 @@
 // Fin Flutter Margin — UI definition.
-import { flutter } from '../calc/flutter.js';
+import { flutter, H_TROPO } from '../calc/flutter.js';
 import { s, fmt } from '../util.js';
 import { dim, path, text } from '../ui/svg.js';
 
@@ -165,6 +165,7 @@ export default {
     M: 'flight Mach number', h: 'altitude above sea level', 'T_{SL}': 'sea-level temperature used in the pressure ratio', '\\lambda': 'taper ratio', S: 'area of one exposed panel',
     '\\mathit{AR}': 'panel aspect ratio', 'c_{0.75}': 'chord at 75 % of the semispan', 't/c': 'thickness ratio', X: 'geometric flutter parameter', 'p/p_0': 'ratio of static pressure to sea-level pressure',
     M_f: 'flutter Mach number', '\\mathrm{MS}': 'margin of safety against flutter', 't_{min}': 'thickness giving zero margin', 'X_{crit}': 'value of $X$ at which $M_f=M$', K_X: 'correlation constant (39.3 psi)', k_p: 'lapse constant of the pressure-ratio law',
+    h_T: 'tropopause altitude', T_T: 'temperature at the tropopause', g: 'standard gravity', R_a: 'gas constant of air',
   },
   constants: [
     { sym: 'K_X', desc: 'flutter correlation constant', si: [39.3 * 6894.757293, '\\mathrm{Pa}'], us: [39.3, '\\mathrm{psi}'] },
@@ -174,7 +175,7 @@ export default {
     const o = out.o, n = R.n;
     const Ls = { dim: 'length', internal: 'in' }, As = { dim: 'area', internal: 'in2', units: { si: 'mm2', us: 'in2' } }, H = { dim: 'altitude', internal: 'ft' }, Gs = { dim: 'modulus', internal: 'psi', units: { si: 'Pa', us: 'psi' } }, Ts = { dim: 'temperature', internal: 'R', units: { si: 'K', us: 'R' } };
     const l = (x) => R.v(x, Ls), KX = R.pick(n(39.3 * 6894.757293, 6), '39.3'), kp = R.pick(n(0.0035662 * (5 / 9) / 0.3048, 5), '0.0035662');
-    const Xs = R.pick(o.X * 6894.757293, o.X);
+    const Xs = R.pick(o.X * 6894.757293, o.X), TT = v.Tsl - 0.0035662 * H_TROPO;
     return [{
       title: 'Theory',
       text: 'Bending–torsion flutter is a self-excited vibration in which the bending and twisting modes of a fin couple with the airflow and draw energy from it. The NACA TN-4197 correlation (D. J. Martin, 1958) summarises flight and wind-tunnel experience: the flutter Mach number $M_f$ of a cantilevered panel rises with the square root of the shear modulus $G$ and with $(t/c)^{3/2}$, and falls with aspect ratio and with air pressure. The thickness ratio is taken at 75 % of the semispan. The margin of safety compares $M_f$ with the flight Mach number $M$.',
@@ -184,7 +185,10 @@ export default {
         { label: 'Panel aspect ratio', lhs: '\\mathit{AR}', eq: '\\frac{b^2}{S}', sub: `\\frac{(${l(v.b)})^2}{${R.v(o.S, As)}}`, res: n(o.AR) },
         { label: 'Chord at 75 % semispan and thickness ratio', lhs: 'c_{0.75}', eq: '\\tfrac14 c_R+\\tfrac34 c_T', sub: `\\tfrac14(${l(v.cR)})+\\tfrac34(${l(v.cT)})`, res: `${R.Q(o.c75, Ls)},\\qquad t/c=\\frac{${l(v.t)}}{${l(o.c75)}}=${n(o.tc)}` },
         { label: 'Geometric flutter parameter', lhs: 'X', eq: '\\frac{K_X\\,\\mathit{AR}^3}{(t/c)^3(\\mathit{AR}+2)}', sub: `\\frac{${KX}\\times${n(o.AR)}^3}{${n(o.tc)}^3\\times(${n(o.AR)}+2)}`, res: `${n(Xs)}\\,${R.pick('\\mathrm{Pa}', '\\mathrm{psi}')}` },
-        { label: 'Pressure ratio at the flight altitude', lhs: '\\frac{p}{p_0}', eq: '\\left(1-\\frac{k_p\\,h}{T_{SL}}\\right)^{5.2575}', sub: `\\left(1-\\frac{${kp}\\times${R.v(v.h, H)}}{${R.v(v.Tsl, Ts)}}\\right)^{5.2575}`, res: n(o.pr) },
+        v.h <= H_TROPO
+          ? { label: 'Pressure ratio at the flight altitude', lhs: '\\frac{p}{p_0}', eq: '\\left(1-\\frac{k_p\\,h}{T_{SL}}\\right)^{5.2575}', sub: `\\left(1-\\frac{${kp}\\times${R.v(v.h, H)}}{${R.v(v.Tsl, Ts)}}\\right)^{5.2575}`, res: n(o.pr) }
+          : { label: 'Pressure ratio above the tropopause (isothermal layer)', lhs: '\\frac{p}{p_0}', eq: '\\left(\\frac{T_T}{T_{SL}}\\right)^{5.2575}\\exp\\!\\left(-\\frac{g\\,(h-h_T)}{R_a\\,T_T}\\right),\\qquad T_T=T_{SL}-k_p\\,h_T',
+            sub: `\\left(\\frac{${R.v(TT, Ts)}}{${R.v(v.Tsl, Ts)}}\\right)^{5.2575}\\exp\\!\\left(-\\frac{${R.pick('9.80665', '32.174')}\\times(${R.v(v.h, H)}-${R.v(H_TROPO, H)})}{${R.pick('287.05', '1716')}\\times${R.v(TT, Ts)}}\\right)`, res: n(o.pr) },
         { label: 'Flutter Mach number', lhs: 'M_f', eq: '\\sqrt{\\frac{G}{X\\,\\frac{\\lambda+1}{2}\\,\\frac{p}{p_0}}}', sub: `\\sqrt{\\frac{${R.v(v.G, Gs)}}{${n(Xs)}\\times\\frac{${n(o.lambda)}+1}{2}\\times${n(o.pr)}}}`, res: n(o.Mf, 4) },
         { label: 'Margin of safety', lhs: '\\mathrm{MS}', eq: '\\frac{M_f-M}{M}', sub: `\\frac{${n(o.Mf)}-${n(v.M)}}{${n(v.M)}}`, res: n(o.MS, 4), note: o.MS < 0 ? 'The margin is negative: flutter is predicted below the flight Mach number.' : 'The margin is positive: no flutter is predicted at this condition.' },
         { label: 'Thickness that would give zero margin ($M_f=M$)', lhs: 't_{min}', eq: 'c_{0.75}\\left[\\frac{K_X\\,\\mathit{AR}^3}{X_{crit}(\\mathit{AR}+2)}\\right]^{1/3},\\qquad X_{crit}=\\frac{G}{M^2\\frac{\\lambda+1}{2}\\frac{p}{p_0}}', res: R.Q(o.tMin, Ls) },

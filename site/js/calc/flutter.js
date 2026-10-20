@@ -1,8 +1,15 @@
 // Fin flutter margin — workbook FLUTTER MARGIN1.xls, implementing the bending-torsion flutter correlation of
 // D. J. Martin, NACA TN-4197 (1958). Native units: inches, psi, feet.
 
-/** Atmospheric pressure ratio used by the workbook: (1 − 0.0035662 h / T_SL)^(32.174 / (1716·0.0035662)). */
-export const pressureRatio = (h, Tsl = 551.8) => (1 - (0.0035662 * h) / Tsl) ** (32.174 / (1716 * 0.0035662));
+export const H_TROPO = 36089;   // ft
+/** Atmospheric pressure ratio: (1 − 0.0035662 h / T_SL)^(32.174 / (1716·0.0035662)) in the troposphere, continued
+ *  isothermally above the tropopause (the single-layer law alone turns negative near 120 000–155 000 ft). */
+export function pressureRatio(h, Tsl = 551.8) {
+  const k = 32.174 / (1716 * 0.0035662);
+  if (h <= H_TROPO) return (1 - (0.0035662 * h) / Tsl) ** k;
+  const TT = Tsl - 0.0035662 * H_TROPO;
+  return (TT / Tsl) ** k * Math.exp((-32.174 * (h - H_TROPO)) / (1716 * TT));
+}
 
 /** Geometric parameter X = 39.3 AR³ / ((t/c)³ (AR + 2)). */
 export const Xparam = (AR, tc) => (39.3 * AR ** 3) / (tc ** 3 * (AR + 2));

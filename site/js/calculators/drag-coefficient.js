@@ -1,6 +1,6 @@
 // Zero-Lift Drag Coefficient — UI definition.
 import { drag } from '../calc/drag.js';
-import { s, fmt } from '../util.js';
+import { s, fmt, InputError } from '../util.js';
 import { dim, path, text, finEndView } from '../ui/svg.js';
 
 const LEN = { dim: 'length', internal: 'in' };
@@ -124,10 +124,12 @@ export default {
   compute(v, { compat }) {
     const r = drag(v, { compat });
     const warnings = [];
-    if (v.noseLength >= v.bodyLength) throw new Error('The nose must be shorter than the overall length.');
+    if (v.noseLength >= v.bodyLength) throw new InputError('The nose must be shorter than the overall length.');
     if (v.M > 1 && v.noseWave === 0) warnings.push({ level: 'info', text: 'Supersonic: add the nose and fin <b>wave drag</b> inputs from the supersonic tools — they are not computed here.' });
     if (v.M > 2.5) warnings.push({ level: 'warn', text: 'The (1 − 0.09M²) friction factor and the base-drag model are increasingly uncertain above Mach ≈ 2.5.' });
     if (v.flatNose && v.flatD >= 2 * v.bodyRadius) warnings.push({ level: 'warn', text: 'The flat face is as large as the body.' });
+    if (v.nozzleD > 2 * v.bodyRadius) warnings.push({ level: 'warn', text: 'The nozzle exit is wider than the body; power-on base drag is taken as zero. Check the nozzle diameter.' });
+    if (r.ReBody < 1e5) warnings.push({ level: 'warn', text: `The body Reynolds number is only ${Math.round(r.ReBody).toLocaleString('en')} — the friction correlations assume at least about 10⁵. Check the length, Mach number and air pressure.` });
     const res = { ...r, lamFrac: 100 * r.lamFrac };
     return { results: res, warnings, r, v };
   },

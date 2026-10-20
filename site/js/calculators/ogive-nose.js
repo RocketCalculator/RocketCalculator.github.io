@@ -25,7 +25,7 @@ export default {
     steps: [
       'Enter the base radius $R$ and length $L$ (drag the handles on the drawing if you prefer).',
       'The defining-circle radius $a$ is found so the arc passes through the tip and is tangent at the base.',
-      'Radius is evaluated every $\\Deltax$ to build the profile table and plot.',
+      'Radius is evaluated every $\\Delta x$ to build the profile table and plot.',
       'Surface area and its first moment come from exact integrals; their ratio gives the centroid.',
       'Optionally enter wall thickness and material density to estimate the shell mass.',
     ],
@@ -74,7 +74,7 @@ export default {
     const o = ogive({ R: v.R, L: v.L, dx: v.dx, t: v.t, rho: v.rho });
     const warnings = [];
     if (v.L / (2 * v.R) < 1) warnings.push({ level: 'warn', text: 'Fineness below 1: this is a very blunt arc — check that a tangent ogive is really what you want.' });
-    if (v.L / v.dx > 400) warnings.push({ level: 'info', text: `Profile increment gives ${Math.round(v.L / v.dx)} points; the table is limited for readability.` });
+    if (o.step > v.dx) warnings.push({ level: 'info', text: `The profile increment is very small for this length; the profile uses ${o.profile.length - 1} steps instead.` });
     return { results: { S: o.S, xbar: o.xbar, a: o.a, M: o.M, fineness: o.fineness, tipHalfAngle: o.tipHalfAngle, shellMass: o.shellMass }, warnings, o };
   },
   plots: [

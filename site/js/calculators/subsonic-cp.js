@@ -1,7 +1,7 @@
 // Subsonic Centre of Pressure (Barrowman / NACA 1307) — UI definition.
 import { subsonicCP } from '../calc/barrowmanSub.js';
 import { NOSE_TYPES, bodyProfile } from '../calc/noseShapes.js';
-import { s, fmt } from '../util.js';
+import { s, fmt, InputError } from '../util.js';
 import { dim, path, text, pointMarker, finEndView } from '../ui/svg.js';
 
 const LEN = { dim: 'length', internal: 'in' };
@@ -136,13 +136,17 @@ export default {
   ],
   compute(v) {
     const prof = profileOf(v);
-    if (notCustom(v) && v.noseL >= v.bodyLen) throw new Error('The nose must be shorter than the overall length.');
+    if (notCustom(v) && v.noseL >= v.bodyLen) throw new InputError('The nose must be shorter than the overall length.');
+    if (v.bt > 0 && v.b <= v.cR * Math.tan((v.bt * Math.PI) / 180)) throw new InputError('The boat-tail is too steep for this fin: the exposed semispan must be larger than root chord × tan(boat-tail angle).');
     const o = subsonicCP({ M: v.M, profile: prof, flatNose: v.flatNose, fins: finsOf(v), xcg: v.xcg });
     const len = prof[prof.length - 1].x;
     const warnings = [];
     if (v.xLE + v.cR > len + 1e-9) warnings.push({ level: 'warn', text: 'The fin root extends past the end of the body profile.' });
     if (v.b < o.fin.r) warnings.push({ level: 'info', text: 'Fin span is less than the body radius: the carry-over CP uses the analytic continuation of the NACA 1307 formula.' });
     if (v.M > 0.8) warnings.push({ level: 'warn', text: 'Above Mach ≈ 0.8 the flow over the nose may be locally sonic; the subsonic model loses accuracy.' });
+    if (notCustom(v) && v.noseL < 2 * v.R) warnings.push({ level: 'info', text: 'The nose is shorter than one calibre: slender-body theory loses accuracy for such blunt noses.' });
+    if (notCustom(v) && v.btLen > 0 && Math.atan(Math.abs(v.R - v.btR) / v.btLen) > (15 * Math.PI) / 180) warnings.push({ level: 'warn', text: 'The boat-tail is steeper than 15°: the flow will separate and slender-body theory overstates its (negative) lift.' });
+    if (!(o.CNa > 0)) warnings.push({ level: 'err', text: 'The total normal-force slope is not positive — this rocket has no restoring lift. Check the boat-tail and fin inputs.' });
     const results = {
       xcp: o.xcp, margin: o.margin, CNa: o.CNa, CNaBody: o.body.CNa, xcpBody: o.body.mom / o.body.CNa, CNaTail: o.fin.CNa, xcpTail: o.fin.xcp,
       CNaFins: o.fin.CNaFins, KWB: o.fin.KWB, KBW: o.fin.KBW, xcpFin: o.fin.xcpFin, xcpBW: o.fin.xcpBW, AR: o.fin.AR, sweep: (o.fin.sweepC4 * 180) / Math.PI,

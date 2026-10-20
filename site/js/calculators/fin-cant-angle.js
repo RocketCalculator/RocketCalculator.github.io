@@ -1,6 +1,6 @@
 // Fin Cant Angle & Roll Rate — UI definition.
 import { derivatives, cantForRate, cantForCycles, cantWithLag } from '../calc/cantAngle.js';
-import { s, fmt, reducedMotion } from '../util.js';
+import { s, fmt, reducedMotion, InputError } from '../util.js';
 import { dim, path, text, finEndView } from '../ui/svg.js';
 
 const LEN = { dim: 'length', internal: 'in' };
@@ -96,7 +96,7 @@ export default {
   compute(v, { compat }) {
     const d = derivatives(v, { compat });
     const warnings = [];
-    if (v.b <= v.R) throw new Error('The fin tip radius b must be larger than the body radius R.');
+    if (v.b <= v.R) throw new InputError('The fin tip radius b must be larger than the body radius R.');
     let res, lag = null;
     if (v.mode === 'cycles') {
       res = cantForCycles(v, d, v);
@@ -106,7 +106,7 @@ export default {
       lag = cantWithLag(v, d, v);
     }
     if (Math.abs(res.deltaDeg) > 3) warnings.push({ level: 'warn', text: 'More than 3° of cant: strip theory and small-angle assumptions become questionable, and cant drag grows.' });
-    return { results: { ...d, ...res, deltaLagDeg: lag?.deltaDeg, pV: res.pV ? res.pV * 12 : undefined }, warnings, d, res, lag };
+    return { results: { ...d, ...res, deltaLagDeg: lag?.deltaDeg, pV: res.pV != null ? res.pV * 12 : undefined }, warnings, d, res, lag };
   },
   plots: [
     {

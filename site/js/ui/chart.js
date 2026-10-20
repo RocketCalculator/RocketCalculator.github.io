@@ -6,20 +6,26 @@ import { exportMenu, exportFigure } from './export.js';
 // series names are bare TeX ('X_{CP}'), plain text, or text with $…$ maths ('Flutter Mach $M_f$')
 const nameHTML = (n) => (String(n).includes('$') ? rich(n) : hasTeX(n) ? texHTML(n) : String(n).replace(/[&<]/g, (c) => (c === '&' ? '&amp;' : '&lt;')));
 
+/** True when [a, b] is wide enough to draw: a range within ~1e-9 of its magnitude (a flat curve) is widened. */
+const wideEnough = (a, b) => b - a > Math.max(Math.abs(a), Math.abs(b)) * 1e-9;
+
 export function niceTicks(min, max, count = 6) {
   if (!(Number.isFinite(min) && Number.isFinite(max))) return [];
-  if (min === max) { const d = Math.abs(min) || 1; min -= d * 0.5; max += d * 0.5; }
+  if (!wideEnough(min, max)) { const d = Math.max(Math.abs(min), Math.abs(max)) || 1; min -= d * 0.5; max += d * 0.5; }
   const span = max - min;
   const step0 = span / Math.max(1, count);
   const mag = 10 ** Math.floor(Math.log10(step0));
   const err = step0 / mag;
   const step = (err >= 7.5 ? 10 : err >= 3.5 ? 5 : err >= 1.5 ? 2 : 1) * mag;
   const start = Math.ceil(min / step - 1e-9) * step, out = [];
-  for (let v = start; v <= max + step * 1e-9; v += step) out.push(Math.abs(v) < step * 1e-9 ? 0 : +v.toPrecision(12));
-  return out;
+  // a span below the float resolution of the values (e.g. 52 ± 1e-12) would never advance: fall back to the ends
+  const n = Math.floor((max - start) / step + 1e-9);
+  if (!(n >= 0 && n <= 1000) || start + step === start) return [min, max].map((v) => +v.toPrecision(12));
+  for (let i = 0; i <= n; i++) { const v = start + i * step; out.push(Math.abs(v) < step * 1e-9 ? 0 : +v.toPrecision(12)); }
+  return [...new Set(out)];
 }
 function niceDomain([lo, hi], count) {
-  if (lo === hi) { const d = Math.abs(lo) || 1; lo -= d * 0.5; hi += d * 0.5; }
+  if (!wideEnough(lo, hi)) { const d = Math.max(Math.abs(lo), Math.abs(hi)) * 0.01 || 1; lo -= d; hi += d; }
   const t = niceTicks(lo, hi, count);
   const step = t.length > 1 ? t[1] - t[0] : (hi - lo);
   return [Math.min(lo, Math.floor(lo / step + 1e-9) * step), Math.max(hi, Math.ceil(hi / step - 1e-9) * step)];

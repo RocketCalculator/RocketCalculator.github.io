@@ -161,7 +161,14 @@ Purpose: students paste it into PDR/FDR documents.
 
 - WCAG AA contrast; visible focus rings; keyboard-operable drawer (Esc, focus trap), menus and drag handles (arrow keys).
 - No console errors; no horizontal overflow at 375 px; all internal links valid — run `scripts/smoke.mjs`.
-- Calculation changes need tests (`npm test`).
+- Calculation changes need tests (`npm test`). `tests/aggressive.test.js` runs every calculator through random inputs
+  across its limits, every field at its bounds, unit round-trips, report checks (no NaN/undefined, every formula
+  with symbols explains them) and physical trends; `scripts/uifuzz.mjs` types garbage into every field in a browser,
+  cycles every option, drags handles to extremes and checks the report tabs.
+- A design that cannot be evaluated throws `InputError` (from `js/util.js`) with one sentence saying what to change;
+  it is shown as an error notice and never logged. Anything else thrown is a bug. Results that become meaningless
+  must come with a warning — no silent NaN.
+- Loops sized by user input must be bounded (e.g. the ogive profile caps at 2 000 points).
 
 ## 12. Implementation map
 

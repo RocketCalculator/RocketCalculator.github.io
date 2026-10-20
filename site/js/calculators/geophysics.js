@@ -199,7 +199,7 @@ export default {
     g.append(text(x0 + 10, Y(o.hT) - 10, 'STRATOSPHERE (isothermal)', { cls: 'sc-dim-text', size: 10 }));
     // tropopause
     g.append(s('line', { x1: x0, x2: x1, y1: Y(o.hT), y2: Y(o.hT), class: 'sc-accent2', 'stroke-dasharray': '6 4', 'data-field': 'phi' }));
-    g.append(text(x1 - 6, Y(o.hT) - 6, `tropopause ${fmt(uh.v(o.hT), { digits: 4 })} ${uh.label}`, { anchor: 'end', field: 'phi', size: 11 }));
+    g.append(text(x1 - 18, Y(o.hT) - 6, `tropopause ${fmt(uh.v(o.hT), { digits: 4 })} ${uh.label}`, { anchor: 'end', field: 'phi', size: 11 }));
     // ground at launch site
     g.append(s('rect', { x: x0, y: Y(v.ho), width: x1 - x0, height: Math.max(0, yBot - Y(v.ho)), fill: 'var(--surface-3)', stroke: 'none', 'data-field': 'ho' }));
     g.append(s('line', { x1: x0, x2: x1, y1: Y(v.ho), y2: Y(v.ho), class: 'sc-line', 'data-field': 'ho' }));
@@ -210,11 +210,12 @@ export default {
     const XT = (T) => x0 + 30 + ((T - tmin) / (tmax - tmin)) * (x1 - x0 - 60);
     g.append(s('path', { d: path(out.prof.map((p) => [XT(p.T), Y(p.h)])), class: 'sc-accent', fill: 'none', 'data-field': 'To' }));
     g.append(text(XT(Ts[Ts.length - 1]) + 6, yTop + 14, 'T(h)', { cls: 'sc-label', size: 11 }));
-    // altitude axis ticks
-    const step = niceStep((hmax - hmin) / 6);
-    for (let hh = Math.ceil(hmin / step) * step; hh <= hmax; hh += step) {
+    // altitude axis ticks, round numbers in the displayed unit
+    const kd = uh.v(1), step = niceStep((kd * (hmax - hmin)) / 6);
+    for (let i = 0, dd = Math.ceil((kd * hmin) / step) * step; i < 40 && dd <= kd * hmax; i++, dd += step) {
+      const hh = dd / kd;
       g.append(s('line', { x1: x0 - 6, x2: x0, y1: Y(hh), y2: Y(hh), class: 'sc-thin' }));
-      g.append(text(x0 - 9, Y(hh) + 4, fmt(uh.v(hh), { digits: 3 }), { anchor: 'end', cls: 'sc-dim-text', size: 10 }));
+      g.append(text(x0 - 9, Y(hh) + 4, fmt(dd, { digits: 4 }), { anchor: 'end', cls: 'sc-dim-text', size: 10 }));
     }
     g.append(text(x0 - 9, yTop - 8, uh.label, { anchor: 'end', cls: 'sc-dim-text', size: 10 }));
     // altitude marker + readout
@@ -222,7 +223,8 @@ export default {
     g.append(s('line', { x1: x0, x2: x1, y1: yh, y2: yh, class: 'sc-line', 'stroke-width': 1.6, 'data-field': 'h' }));
     g.append(s('circle', { cx: XT(o.T), cy: yh, r: 4.5, class: 'sc-accent-fill' }));
     const box = s('g', { 'data-field': 'h' });
-    const bx = XT(o.T) > (x0 + x1) / 2 ? x0 + 12 : x1 - 192, by = Math.min(Math.max(yh - 60, yTop + 4), yBot - 74);
+    // above the altitude line when it fits, else below — never across it
+    const bx = XT(o.T) > (x0 + x1) / 2 ? x0 + 12 : x1 - 200, by = yh - 78 >= yTop + 4 ? yh - 78 : Math.min(yh + 10, yBot - 74);
     box.append(s('rect', { x: bx, y: by, width: 180, height: 68, rx: 6, fill: 'var(--surface)', stroke: 'var(--border-strong)' }));
     const rows = [
       `h  = ${fmt(uh.v(v.h), { digits: 5 })} ${uh.label}`,

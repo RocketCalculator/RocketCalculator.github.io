@@ -104,6 +104,11 @@ export async function copyText(text) {
 
 export const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+/** A design the calculator cannot evaluate, explained to the user in one sentence (not a bug: never logged). */
+export class InputError extends Error {
+  constructor(message) { super(message); this.name = 'InputError'; }
+}
+
 export const storage = {
   get(k, d = null) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch { return d; } },
   set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* private mode */ } },

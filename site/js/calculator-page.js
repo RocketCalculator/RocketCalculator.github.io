@@ -1,6 +1,6 @@
 // Generic calculator page: renders intro, form, key results, schematic, plots, results table, references.
 // A calculator is a definition module (js/calculators/<slug>.js) — see docs/PLAN.md for the API.
-import { h, url, fmt, num, debounce, toast, copyText, download, loadRegistry, loadReferences, storage, reveal } from './util.js';
+import { h, url, fmt, num, debounce, toast, copyText, download, loadRegistry, loadReferences, storage, reveal, InputError } from './util.js';
 import { initShell, ICONS } from './app.js';
 import { displayUnit, unitLabel, unitTex, toDisplay, getSystem } from './units.js';
 import { buildForm } from './ui/form.js';
@@ -10,7 +10,7 @@ import { frame } from './ui/svg.js';
 import { renderAll, loadKatex, texHTML, rich, texToPlain, hasTeX } from './math.js';
 import { exportMenu, exportFigure, exportData, DATA_FORMATS } from './ui/export.js';
 import { reportCard, symbolsIn } from './ui/report.js';
-import { pullShared, pushShared, designFile, parseDesignFile, fileSlug, delta } from './design.js';
+import { sharedLinks, pullShared, pushShared, designFile, parseDesignFile, fileSlug, delta } from './design.js';
 
 const ROCKET_KEY = 'rc-rocket', FLASH_KEY = 'rc-flash';
 const getRocket = () => ({ name: 'My rocket', values: {}, linked: true, ...(storage.get(ROCKET_KEY) || {}) });
@@ -106,7 +106,7 @@ export async function mountCalculator(def) {
   }), { label: 'shared rocket' });
   const designBar = h('div.design-bar', { role: 'region', 'aria-label': 'Rocket design' },
     h('div.db-rocket', h('span.db-eyebrow', 'Rocket'), nameInput),
-    h('div.db-share-wrap', h('label.db-share', h('span.switch', linkToggle, h('span')), h('span', 'Share dimensions across calculators')), designInfo),
+    !sharedLinks(def).length ? null : h('div.db-share-wrap', h('label.db-share', h('span.switch', linkToggle, h('span')), h('span', 'Share dimensions across calculators')), designInfo),
     h('span.spacer'), compareBox, saveBtn, openBtn, fileInput);
 
   function renderCompare() {
@@ -349,8 +349,8 @@ export async function mountCalculator(def) {
     try {
       out = def.compute(state.values, { compat: !!state.values.__compat });
     } catch (err) {
-      console.error(err);
-      warnBox.append(h('div.notice.err', `Could not compute: ${err.message}`));
+      if (!(err instanceof InputError)) console.error(err);
+      warnBox.append(h('div.notice.err', err instanceof InputError ? err.message : `Could not compute: ${err.message}`));
       keyBox.style.opacity = 0.45;
       return;
     }

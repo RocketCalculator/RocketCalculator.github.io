@@ -56,7 +56,7 @@ export function drag(p, { compat = false } = {}) {
   const xTr = xNat > p.trip ? p.trip : xNat;                     // S4
   const Slam = Math.min(interpArea(curve, 12 * xTr), Swet);      // T4, in²
   const lamFrac = Slam / Swet;
-  const CfBody = (1.328 * lamFrac) / Math.sqrt(E * M * xTr) + (0.427 * (1 - lamFrac) * (1 + 0.15 * M * M) ** -0.58) / (LOG10(E * M * Lft) - 0.407) ** 2.64;  // U4
+  const CfBody = (xTr > 0 ? (1.328 * lamFrac) / Math.sqrt(E * M * xTr) : 0) + (lamFrac < 1 ? (0.427 * (1 - lamFrac) * (1 + 0.15 * M * M) ** -0.58) / (LOG10(E * M * Lft) - 0.407) ** 2.64 : 0);  // U4 (no turbulent term on an all-laminar body)
   const comp = 1 - 0.09 * M * M;                                 // workbook factor
   const CDfBody = (CfBody * (Swet / 144) * comp) / Sref;        // W4
   // --- fins
@@ -95,7 +95,7 @@ export function drag(p, { compat = false } = {}) {
   const Mlim = Math.sqrt(1.3 / (gamma * CPBtr));                 // U16
   const Sbase = (Math.PI * (d / 12) ** 2) / 4;
   const CDbOff = (M < 1 ? CPBsub : M < Mlim ? CPBtr : 1.3 / (gamma * M * M)) * (Sbase / Sref);  // V16
-  const CDbOn = (compat ? 1 : 1.5) * (1 - Sex / Sref) * CDbOff;  // V20 (memo eq. 14 has the factor 1.5)
+  const CDbOn = (compat ? 1 : 1.5) * Math.max(0, 1 - Sex / Sref) * CDbOff;  // V20 (memo eq. 14 has the factor 1.5)
   // --- flat-faced nose
   const Aface = (Math.PI * p.flatD ** 2) / (4 * 144);
   const CDflat = !p.flatNose ? 0 : M > 1 ? (Aface * Cpt0) / Sref

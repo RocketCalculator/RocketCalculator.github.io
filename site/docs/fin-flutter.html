@@ -47,7 +47,7 @@
         <h3>Pressure ratio</h3>
         <p>The workbook evaluates the pressure ratio with a single-layer tropospheric law:</p>
         <div class="eq"><div class="tex-display">\frac{p}{p_0}=\left(1-\frac{0.0035662\,h}{T_{SL}}\right)^{32.174/(1716\times0.0035662)}=\left(1-\frac{0.0035662\,h}{T_{SL}}\right)^{5.2575},</div></div>
-        <p>with altitude <span class="tex">h</span> in feet above sea level and <span class="tex">T_{SL}=551.8</span> °R (about 92 °F, a hot day). The calculator exposes <span class="tex">T_{SL}</span> as an input so a standard day (518.67 °R) can be used. The law is valid in the troposphere; above the tropopause it under-predicts the pressure ratio slightly.</p>
+        <p>with altitude <span class="tex">h</span> in feet above sea level and <span class="tex">T_{SL}=551.8</span> °R (about 92 °F, a hot day). The calculator exposes <span class="tex">T_{SL}</span> as an input so a standard day (518.67 °R) can be used. The law holds in the troposphere. Above the tropopause (36 089 ft) the calculator continues it as an isothermal layer, <span class="tex">p/p_0=(p/p_0)_T\,e^{-g(h-h_T)/(RT_T)}</span>, matching the standard atmosphere; the single-layer law alone would turn negative near 120 000–155 000 ft.</p>
       </section>
 
       <section id="margin">

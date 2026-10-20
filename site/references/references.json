@@ -1,632 +1,1046 @@
 [
  {
+  "id": "a-new-wind-sensor-for-rockets-orig",
+  "title": "A New Wind Sensor for Rocket Launches",
+  "authors": "M. F. Buharie, S. Mohamed",
+  "venue": "AIAA student paper, 2008",
+  "kind": "original",
   "file": "references/original/A New Wind Sensor for Rockets.pdf",
-  "kind": "original PDF",
   "sourceFile": "A New Wind Sensor for Rockets.pdf",
+  "sourceUrl": "http://www.rsandt.com/media/A%20New%20Wind%20Sensor%20for%20Rockets.pdf",
   "topics": [
-   "Wind Measurement"
+   "wind-measurement"
   ],
-  "sizeKB": 370
+  "sizeKB": 370,
+  "pages": 6
  },
  {
+  "id": "aerobee-hi-aj11-6-fin-airloads-orig",
+  "title": "Aerobee-Hi (AJ11-6) Fin Airloads",
+  "authors": "W. C. House",
+  "venue": "Aerojet-General memo, 1954",
+  "kind": "original",
   "file": "references/original/Aerobee-Hi AJ11-6 Fin Airloads.pdf",
-  "kind": "original PDF",
   "sourceFile": "Aerobee-Hi AJ11-6 Fin Airloads.pdf",
+  "sourceUrl": "http://www.rsandt.com/media/Aerobee-Hi%20AJ11-6%20Fin%20Airloads.pdf",
   "topics": [
-   "Barrowman Equations"
+   "barrowman-equations"
   ],
-  "sizeKB": 849
+  "sizeKB": 849,
+  "pages": 10
  },
  {
+  "id": "analysis-of-the-motion-of-liquids-in-a-partially-filled-enclosure-orig",
+  "title": "An Analysis of the Motion of Liquids in a Partially-Filled Enclosure (R-222)",
+  "authors": "C. P. Hoult",
+  "venue": "MIT Instrumentation Laboratory",
+  "kind": "original",
   "file": "references/original/Analysis of the Motion of Liquids in A Partially-Filled Enclosure.pdf",
-  "kind": "original PDF",
   "sourceFile": "Analysis of the Motion of Liquids in A Partially-Filled Enclosure.pdf",
+  "sourceUrl": "http://www.rsandt.com/media/Analysis%20of%20the%20Motion%20of%20Liquids%20in%20A%20Partially-Filled%20Enclosure.pdf",
   "topics": [
-   "Propellant Sloshing"
+   "propellant-sloshing"
   ],
-  "sizeKB": 581
+  "sizeKB": 581,
+  "pages": 36
  },
  {
+  "id": "barrowmanthesis-orig",
+  "title": "The Practical Calculation of the Aerodynamic Characteristics of Slender Finned Vehicles",
+  "authors": "J. S. Barrowman",
+  "venue": "M.S. thesis, Catholic University of America, 1967",
+  "kind": "original",
   "file": "references/original/BarrowmanThesis.pdf",
-  "kind": "original PDF",
   "sourceFile": "BarrowmanThesis.pdf",
+  "sourceUrl": "http://www.rsandt.com/media/BarrowmanThesis.pdf",
   "topics": [
-   "Barrowman Equations"
+   "barrowman-equations"
   ],
-  "sizeKB": 4151
+  "sizeKB": 4151,
+  "pages": 105
  },
  {
+  "id": "enhanced-igniters-orig",
+  "title": "Enhanced Igniters",
+  "authors": "S. Khalighi, J. D. Wells",
+  "venue": "CSULA senior project",
+  "kind": "original",
   "file": "references/original/Enhanced_Igniters.pdf",
-  "kind": "original PDF",
   "sourceFile": "Enhanced_Igniters.pdf",
+  "sourceUrl": "http://www.rsandt.com/media/Enhanced_Igniters.pdf",
   "topics": [
-   "Igniters"
+   "igniters"
   ],
-  "sizeKB": 371
+  "sizeKB": 371,
+  "pages": 3
  },
  {
+  "id": "finite-inertia-corrections-orig",
+  "title": "Finite Inertia Corrections to the Lewis Model Wind Response",
+  "authors": "C. P. Hoult",
+  "venue": "The Aerospace Corporation, 1979",
+  "kind": "original",
   "file": "references/original/Finite Inertia Corrections.pdf",
-  "kind": "original PDF",
   "sourceFile": "Finite Inertia Corrections.pdf",
+  "sourceUrl": "http://www.rsandt.com/media/Finite%20Inertia%20Corrections.pdf",
   "topics": [
-   "Trajectory Simulation"
+   "trajectory-simulation"
   ],
-  "sizeKB": 3356
+  "sizeKB": 3356,
+  "pages": 28
  },
  {
+  "id": "launcher-length-for-sounding-rocket-point-mass-traj-sim-orig",
+  "title": "Launcher Length for Sounding-Rocket Point-Mass Trajectory Simulations",
+  "authors": "C. P. Hoult",
+  "venue": "J. Spacecraft & Rockets 13(12), 1976",
+  "kind": "original",
   "file": "references/original/Launcher Length for Sounding-Rocket Point-Mass Traj. Sim.pdf",
-  "kind": "original PDF",
   "sourceFile": "Launcher Length for Sounding-Rocket Point-Mass Traj. Sim.pdf",
+  "sourceUrl": "http://www.rsandt.com/media/Launcher%20Length%20for%20Sounding-Rocket%20Point-Mass%20Traj.%20Sim.pdf",
   "topics": [
-   "Trajectory Simulation"
+   "trajectory-simulation"
   ],
-  "sizeKB": 409
+  "sizeKB": 409,
+  "pages": 2
  },
  {
+  "id": "optimum-thrust-programing-for-high-altitude-rockets-orig",
+  "title": "Optimum Thrust Programing for High-Altitude Rockets",
+  "authors": "G. Leitmann",
+  "venue": "U.S. Naval Ordnance Test Station",
+  "kind": "original",
   "file": "references/original/Optimum Thrust Programing for High-Altitude Rockets.pdf",
-  "kind": "original PDF",
   "sourceFile": "Optimum Thrust Programing for High-Altitude Rockets.pdf",
+  "sourceUrl": "http://www.rsandt.com/media/Optimum%20Thrust%20Programing%20for%20High-Altitude%20Rockets.pdf",
   "topics": [
-   "Optimum Weight Allocation"
+   "optimum-weight-allocation"
   ],
-  "sizeKB": 915
+  "sizeKB": 915,
+  "pages": 4
  },
  {
+  "id": "skyaeromanual-ver3-orig",
+  "title": "SKYAERO v7.6.1 User’s Manual",
+  "authors": "A. Fuentes, C. P. Hoult, H. Tran, M. Tong",
+  "venue": "2014",
+  "kind": "original",
   "file": "references/original/SKYAEROmanual_ver3.pdf",
-  "kind": "original PDF",
   "sourceFile": "SKYAEROmanual_ver3.pdf",
+  "sourceUrl": "http://www.rsandt.com/media/SKYAEROmanual_ver3.pdf",
   "topics": [
-   "Trajectory Simulation"
+   "trajectory-simulation"
   ],
-  "sizeKB": 1948
+  "sizeKB": 1948,
+  "pages": 19
  },
  {
+  "id": "sounding-rocket-fin-design-to-mitigate-roll-lock-in-orig",
+  "title": "Sounding Rocket Fin Design to Mitigate Roll Lock-In",
+  "authors": "C. P. Hoult, H. Tran",
+  "venue": "Conference paper",
+  "kind": "original",
   "file": "references/original/Sounding Rocket Fin Design to Mitigate Roll Lock-In.pdf",
-  "kind": "original PDF",
   "sourceFile": "Sounding Rocket Fin Design to Mitigate Roll Lock-In.pdf",
+  "sourceUrl": "http://www.rsandt.com/media/Sounding%20Rocket%20Fin%20Design%20to%20Mitigate%20Roll%20Lock-In.pdf",
   "topics": [
-   "Roll Lock-In"
+   "roll-lock-in"
   ],
-  "sizeKB": 848
+  "sizeKB": 848,
+  "pages": 12
  },
  {
+  "id": "standardized-perturbation-values-orig",
+  "title": "Standardized Perturbation Values for Several Sounding Rockets (Dispersion & Structural Loads)",
+  "authors": "R. L. Ammons, C. P. Hoult",
+  "venue": "Aerojet-General memo, 1970",
+  "kind": "original",
   "file": "references/original/Standardized Perturbation Values.pdf",
-  "kind": "original PDF",
   "sourceFile": "Standardized Perturbation Values.pdf",
+  "sourceUrl": "http://www.rsandt.com/media/Standardized%20Perturbation%20Values.pdf",
   "topics": [
-   "Dispersion",
-   "Structural Loads"
+   "dispersion",
+   "structural-loads"
   ],
-  "sizeKB": 1956
+  "sizeKB": 1956,
+  "pages": 15
  },
  {
+  "id": "the-effect-of-wind-and-rotation-of-the-earth-on-unguided-rockets-orig",
+  "title": "The Effect of Wind and Rotation of the Earth on Unguided Rockets",
+  "authors": "J. V. Lewis",
+  "venue": "BRL Report 685, 1949",
+  "kind": "original",
   "file": "references/original/The Effect of Wind and Rotation of the Earth on Unguided Rockets.pdf",
-  "kind": "original PDF",
   "sourceFile": "The Effect of Wind and Rotation of the Earth on Unguided Rockets.pdf",
+  "sourceUrl": "http://www.rsandt.com/media/The%20Effect%20of%20Wind%20and%20Rotation%20of%20the%20Earth%20on%20Unguided%20Rockets.pdf",
   "topics": [
-   "Trajectory Simulation"
+   "trajectory-simulation"
   ],
-  "sizeKB": 2300
+  "sizeKB": 2300,
+  "pages": 21
  },
  {
+  "id": "thrust-misalignments-of-fixed-nozzle-solid-rocket-motors-orig",
+  "title": "Thrust Misalignments of Fixed-Nozzle Solid Rocket Motors",
+  "authors": "R. N. Knauber",
+  "venue": "J. Spacecraft & Rockets 33(6), 1996",
+  "kind": "original",
   "file": "references/original/Thrust Misalignments of Fixed-Nozzle Solid Rocket Motors.pdf",
-  "kind": "original PDF",
   "sourceFile": "Thrust Misalignments of Fixed-Nozzle Solid Rocket Motors.pdf",
+  "sourceUrl": "http://www.rsandt.com/media/Thrust%20Misalignments%20of%20Fixed-Nozzle%20Solid%20Rocket%20Motors.pdf",
   "topics": [
-   "Structural Loads"
+   "structural-loads"
   ],
-  "sizeKB": 429
+  "sizeKB": 429,
+  "pages": 6
  },
  {
+  "id": "van-der-hoven-orig",
+  "title": "Power Spectrum of Horizontal Wind Speed (0.0007 to 900 Cycles per Hour)",
+  "authors": "I. Van der Hoven",
+  "venue": "J. Meteorology 14, 1957",
+  "kind": "original",
   "file": "references/original/Van der Hoven.pdf",
-  "kind": "original PDF",
   "sourceFile": "Van der Hoven.pdf",
+  "sourceUrl": "http://www.rsandt.com/media/Van%20der%20Hoven.pdf",
   "topics": [
-   "Wind Compensation"
+   "wind-compensation"
   ],
-  "sizeKB": 417
+  "sizeKB": 417,
+  "pages": 5
  },
  {
+  "id": "wiringrules-orig",
+  "title": "Safety-critical Wiring Rules (Rev 1.0)",
+  "authors": "D. Sinclair",
+  "venue": "8th IREC, 2012",
+  "kind": "original",
   "file": "references/original/WiringRules.pdf",
-  "kind": "original PDF",
   "sourceFile": "WiringRules.pdf",
+  "sourceUrl": "http://www.rsandt.com/media/WiringRules.pdf",
   "topics": [
-   "Wiring Requirements"
+   "wiring-requirements"
   ],
-  "sizeKB": 58
+  "sizeKB": 58,
+  "pages": 5
  },
  {
+  "id": "1307-supplement-rev2",
+  "title": "NACA Report 1307 Supplement for Downwash-Dependent Fin-Fin Interference",
+  "authors": "C. P. Hoult",
+  "venue": "RS&T memo, 2014",
+  "kind": "word",
   "file": "references/from-word/1307 Supplement rev2.pdf",
-  "kind": "converted from Word",
   "sourceFile": "1307 Supplement rev2.doc",
+  "sourceUrl": "http://www.rsandt.com/media/1307%20Supplement%20rev2.doc",
   "topics": [
-   "Barrowman Equations"
+   "barrowman-equations"
   ],
-  "sizeKB": 644
+  "sizeKB": 644,
+  "pages": 7
  },
  {
+  "id": "a-new-launcher",
+  "title": "A New Launcher for University Sounding Rockets",
+  "authors": "F. Calderon, A. Al Chamas, T. Wilson, A. Vore, B. Vite",
+  "venue": "AIAA Region VI student paper, 2011",
+  "kind": "word",
   "file": "references/from-word/A New Launcher.pdf",
-  "kind": "converted from Word",
   "sourceFile": "A New Launcher.doc",
+  "sourceUrl": "http://www.rsandt.com/media/A%20New%20Launcher.doc",
   "topics": [
-   "New Launcher"
+   "new-launcher"
   ],
-  "sizeKB": 588
+  "sizeKB": 588,
+  "pages": 9
  },
  {
+  "id": "aiaafelkel3",
+  "title": "Effect of Different Nose Profiles on Subsonic Pressure Coefficients",
+  "authors": "R. J. Felkel",
+  "venue": "AIAA student paper",
+  "kind": "word",
   "file": "references/from-word/AIAAFelkel3.pdf",
-  "kind": "converted from Word",
   "sourceFile": "AIAAFelkel3.doc",
+  "sourceUrl": "http://www.rsandt.com/media/AIAAFelkel3.doc",
   "topics": [
-   "Nose Pressure Coefficient",
-   "Optimum Nose Shape"
+   "nose-pressure-coefficient",
+   "optimum-nose-shape"
   ],
-  "sizeKB": 413
+  "sizeKB": 413,
+  "pages": 11
  },
  {
+  "id": "air-launched-rocketrev1",
+  "title": "Rocket Launches from a Stabilization Parachute (rev. 1)",
+  "authors": "C. P. Hoult",
+  "venue": "RS&T memo, 2013",
+  "kind": "word",
   "file": "references/from-word/Air Launched Rocketrev1.pdf",
-  "kind": "converted from Word",
   "sourceFile": "Air Launched Rocketrev1.doc",
+  "sourceUrl": "http://www.rsandt.com/media/Air%20Launched%20Rocketrev1.doc",
   "topics": [
-   "Trajectory Simulation"
+   "trajectory-simulation"
   ],
-  "sizeKB": 229
+  "sizeKB": 229,
+  "pages": 7
  },
  {
+  "id": "airport-communications-lucerne-valley",
+  "title": "Airport Communications — Lucerne Valley",
+  "authors": "",
+  "venue": "Field-operations note",
+  "kind": "word",
   "file": "references/from-word/Airport_Communications_Lucerne_Valley.pdf",
-  "kind": "converted from Word",
   "sourceFile": "Airport_Communications_Lucerne_Valley.doc",
+  "sourceUrl": "http://www.rsandt.com/media/Airport_Communications_Lucerne_Valley.doc",
   "topics": [
-   "Wind Measurement"
+   "wind-measurement"
   ],
-  "sizeKB": 44
+  "sizeKB": 44,
+  "pages": 2
  },
  {
+  "id": "allowablediffpressure",
+  "title": "Sounding Rocket Allowable Differential Pressure",
+  "authors": "A. Espinoza, B. Vite, et al.",
+  "venue": "AIAA student paper",
+  "kind": "word",
   "file": "references/from-word/AllowableDiffPressure.pdf",
-  "kind": "converted from Word",
   "sourceFile": "AllowableDiffPressure.doc",
+  "sourceUrl": "http://www.rsandt.com/media/AllowableDiffPressure.doc",
   "topics": [
-   "Venting"
+   "venting"
   ],
-  "sizeKB": 242
+  "sizeKB": 242,
+  "pages": 5
  },
  {
+  "id": "apogee-roll-rate",
+  "title": "Small Sounding Rocket Apogee Roll Rate",
+  "authors": "C. P. Hoult",
+  "venue": "RS&T memo, 2013",
+  "kind": "word",
   "file": "references/from-word/Apogee Roll Rate.pdf",
-  "kind": "converted from Word",
   "sourceFile": "Apogee Roll Rate.doc",
+  "sourceUrl": "http://www.rsandt.com/media/Apogee%20Roll%20Rate.doc",
   "topics": [
-   "Roll Rate"
+   "roll-rate"
   ],
-  "sizeKB": 199
+  "sizeKB": 199,
+  "pages": 4
  },
  {
+  "id": "balloon-inflating-deployment-and-disassembly",
+  "title": "Balloon Inflating, Deployment and Disassembly",
+  "authors": "",
+  "venue": "Field-operations procedure",
+  "kind": "word",
   "file": "references/from-word/Balloon_Inflating_Deployment_and_Disassembly.pdf",
-  "kind": "converted from Word",
   "sourceFile": "Balloon_Inflating_Deployment_and_Disassembly.doc",
+  "sourceUrl": "http://www.rsandt.com/media/Balloon_Inflating_Deployment_and_Disassembly.doc",
   "topics": [
-   "Wind Measurement"
+   "wind-measurement"
   ],
-  "sizeKB": 47
+  "sizeKB": 47,
+  "pages": 2
  },
  {
+  "id": "barrowman-equations",
+  "title": "Barrowman Equations",
+  "authors": "C. P. Hoult",
+  "venue": "RS&T memo, 2010",
+  "kind": "word",
   "file": "references/from-word/Barrowman Equations.pdf",
-  "kind": "converted from Word",
   "sourceFile": "Barrowman Equations.doc",
+  "sourceUrl": "http://www.rsandt.com/media/Barrowman%20Equations.doc",
   "topics": [
-   "Barrowman Equations",
-   "Structural Loads"
+   "barrowman-equations",
+   "structural-loads"
   ],
-  "sizeKB": 46
+  "sizeKB": 46,
+  "pages": 2
  },
  {
+  "id": "bifilar-pendulum",
+  "title": "Moment of Inertia Measurement with a Bifilar Pendulum",
+  "authors": "C. P. Hoult",
+  "venue": "RS&T memo, 2009",
+  "kind": "word",
   "file": "references/from-word/Bifilar Pendulum.pdf",
-  "kind": "converted from Word",
   "sourceFile": "Bifilar Pendulum.doc",
+  "sourceUrl": "http://www.rsandt.com/media/Bifilar%20Pendulum.doc",
   "topics": [
-   "Bifilar Pendulum"
+   "bifilar-pendulum"
   ],
-  "sizeKB": 90
+  "sizeKB": 90,
+  "pages": 4
  },
  {
+  "id": "boost-phase-roll-rate2",
+  "title": "Small Sounding Rocket Boost Phase Roll Rate",
+  "authors": "C. P. Hoult",
+  "venue": "RS&T memo, 2013",
+  "kind": "word",
   "file": "references/from-word/Boost Phase Roll Rate2.pdf",
-  "kind": "converted from Word",
   "sourceFile": "Boost Phase Roll Rate2.doc",
+  "sourceUrl": "http://www.rsandt.com/media/Boost%20Phase%20Roll%20Rate2.doc",
   "topics": [
-   "Roll Rate"
+   "roll-rate"
   ],
-  "sizeKB": 322
+  "sizeKB": 322,
+  "pages": 5
  },
  {
+  "id": "csulbwindsensor",
+  "title": "A New Wind Sensor for Rocket Launches (CSULB report)",
+  "authors": "M. Samir, M. F. Buharie",
+  "venue": "CSULB",
+  "kind": "word",
   "file": "references/from-word/CSULBWindSensor.pdf",
-  "kind": "converted from Word",
   "sourceFile": "CSULBWindSensor.doc",
+  "sourceUrl": "http://www.rsandt.com/media/CSULBWindSensor.doc",
   "topics": [
-   "Wind Measurement"
+   "wind-measurement"
   ],
-  "sizeKB": 1316
+  "sizeKB": 1316,
+  "pages": 10
  },
  {
+  "id": "dpparachuterev2",
+  "title": "Dual Purpose Parachute Recovery System (rev. 2)",
+  "authors": "C. P. Hoult",
+  "venue": "RS&T memo, 2013",
+  "kind": "word",
   "file": "references/from-word/DPParachuterev2.pdf",
-  "kind": "converted from Word",
   "sourceFile": "DPParachuterev2.doc",
+  "sourceUrl": "http://www.rsandt.com/media/DPParachuterev2.doc",
   "topics": [
-   "Recovery"
+   "recovery"
   ],
-  "sizeKB": 271
+  "sizeKB": 271,
+  "pages": 6
  },
  {
+  "id": "door-failure",
+  "title": "Pressure Strength of Taped-On Doors",
+  "authors": "C. P. Hoult",
+  "venue": "RS&T memo, 2011",
+  "kind": "word",
   "file": "references/from-word/Door Failure.pdf",
-  "kind": "converted from Word",
   "sourceFile": "Door Failure.doc",
+  "sourceUrl": "http://www.rsandt.com/media/Door%20Failure.doc",
   "topics": [
-   "Venting"
+   "venting"
   ],
-  "sizeKB": 83
+  "sizeKB": 83,
+  "pages": 2
  },
  {
+  "id": "drag-coefficient3-4",
+  "title": "Drag Coefficient (rev. 3.4)",
+  "authors": "C. P. Hoult",
+  "venue": "RS&T memo, 2016",
+  "kind": "word",
   "file": "references/from-word/Drag Coefficient3.4.pdf",
-  "kind": "converted from Word",
   "sourceFile": "Drag Coefficient3.4.docx",
+  "sourceUrl": "http://www.rsandt.com/media/Drag%20Coefficient3.4.docx",
   "topics": [
-   "Drag Coefficient"
+   "drag-coefficient"
   ],
-  "sizeKB": 218
+  "sizeKB": 218,
+  "pages": 13
  },
  {
+  "id": "events-and-phases-rev3",
+  "title": "Events and Phases (rev. 3)",
+  "authors": "C. P. Hoult",
+  "venue": "RS&T memo, 2013",
+  "kind": "word",
   "file": "references/from-word/Events_and_Phases(rev3).pdf",
-  "kind": "converted from Word",
   "sourceFile": "Events_and_Phases(rev3).doc",
+  "sourceUrl": "http://www.rsandt.com/media/Events_and_Phases%28rev3%29.doc",
   "topics": [
-   "Trajectory Simulation"
+   "trajectory-simulation"
   ],
-  "sizeKB": 193
+  "sizeKB": 193,
+  "pages": 6
  },
  {
+  "id": "fin-aeroelasticity",
+  "title": "Effects of Fin Static Aeroelasticity on Roll Rate",
+  "authors": "C. P. Hoult",
+  "venue": "RS&T memo, 2013",
+  "kind": "word",
   "file": "references/from-word/Fin Aeroelasticity.pdf",
-  "kind": "converted from Word",
   "sourceFile": "Fin Aeroelasticity.doc",
+  "sourceUrl": "http://www.rsandt.com/media/Fin%20Aeroelasticity.doc",
   "topics": [
-   "Fin Aeroelasticity"
+   "fin-aeroelasticity"
   ],
-  "sizeKB": 444
+  "sizeKB": 444,
+  "pages": 9
  },
  {
+  "id": "fin-setting-theory-3",
+  "title": "Strip Theory for Setting Fin Angles (rev. 3)",
+  "authors": "C. P. Hoult",
+  "venue": "RS&T memo, 2014",
+  "kind": "word",
   "file": "references/from-word/Fin Setting Theory[3].pdf",
-  "kind": "converted from Word",
   "sourceFile": "Fin Setting Theory[3].doc",
+  "sourceUrl": "http://www.rsandt.com/media/Fin%20Setting%20Theory%5B3%5D.doc",
   "topics": [
-   "Fin Setting"
+   "fin-setting"
   ],
-  "sizeKB": 436
+  "sizeKB": 436,
+  "pages": 6
  },
  {
+  "id": "final-2013-rocketsafetyreport",
+  "title": "Safety Report — 8th Intercollegiate Rocket Engineering Competition",
+  "authors": "",
+  "venue": "IREC, 2013",
+  "kind": "word",
   "file": "references/from-word/Final 2013 RocketSafetyReport.pdf",
-  "kind": "converted from Word",
   "sourceFile": "Final 2013 RocketSafetyReport.doc",
+  "sourceUrl": "http://www.rsandt.com/media/Final%202013%20RocketSafetyReport.doc",
   "topics": [
-   "Safety"
+   "safety"
   ],
-  "sizeKB": 267
+  "sizeKB": 267,
+  "pages": 16
  },
  {
+  "id": "flt-path-angl-dispersions",
+  "title": "Flight Path Angle Dispersions (rev. 1)",
+  "authors": "C. P. Hoult",
+  "venue": "RS&T memo, 2011",
+  "kind": "word",
   "file": "references/from-word/Flt Path Angl Dispersions.pdf",
-  "kind": "converted from Word",
   "sourceFile": "Flt Path Angl Dispersions.doc",
+  "sourceUrl": "http://www.rsandt.com/media/Flt%20Path%20Angl%20Dispersions.doc",
   "topics": [
-   "Dispersion"
+   "dispersion"
   ],
-  "sizeKB": 360
+  "sizeKB": 360,
+  "pages": 10
  },
  {
+  "id": "geophysics",
+  "title": "Sounding Rocket Geophysical Environment",
+  "authors": "C. P. Hoult",
+  "venue": "RS&T memo, 2010",
+  "kind": "word",
   "file": "references/from-word/Geophysics.pdf",
-  "kind": "converted from Word",
   "sourceFile": "Geophysics.doc",
+  "sourceUrl": "http://www.rsandt.com/media/Geophysics.doc",
   "topics": [
-   "Geophysics",
-   "Trajectory Simulation"
+   "geophysics",
+   "trajectory-simulation"
   ],
-  "sizeKB": 103
+  "sizeKB": 103,
+  "pages": 5
  },
  {
+  "id": "ground-handling-loads",
+  "title": "Ground Handling Loads",
+  "authors": "C. P. Hoult",
+  "venue": "RS&T memo, 2014",
+  "kind": "word",
   "file": "references/from-word/Ground Handling Loads.pdf",
-  "kind": "converted from Word",
   "sourceFile": "Ground Handling Loads.doc",
+  "sourceUrl": "http://www.rsandt.com/media/Ground%20Handling%20Loads.doc",
   "topics": [
-   "Structural Loads"
+   "structural-loads"
   ],
-  "sizeKB": 216
+  "sizeKB": 216,
+  "pages": 6
  },
  {
+  "id": "hemisphere",
+  "title": "Normal Force Acting on a Hemispherical Nose Tip",
+  "authors": "C. P. Hoult",
+  "venue": "RS&T memo, 2010",
+  "kind": "word",
   "file": "references/from-word/Hemisphere.pdf",
-  "kind": "converted from Word",
   "sourceFile": "Hemisphere.doc",
+  "sourceUrl": "http://www.rsandt.com/media/Hemisphere.doc",
   "topics": [
-   "Barrowman Equations"
+   "barrowman-equations"
   ],
-  "sizeKB": 115
+  "sizeKB": 115,
+  "pages": 5
  },
  {
+  "id": "hi-alfa-body-aero",
+  "title": "Body of Revolution High Alpha Aerodynamics",
+  "authors": "C. P. Hoult",
+  "venue": "RS&T memo, 2013",
+  "kind": "word",
   "file": "references/from-word/Hi Alfa Body Aero.pdf",
-  "kind": "converted from Word",
   "sourceFile": "Hi Alfa Body Aero.doc",
+  "sourceUrl": "http://www.rsandt.com/media/Hi%20Alfa%20Body%20Aero.doc",
   "topics": [
-   "Recovery"
+   "recovery"
   ],
-  "sizeKB": 619
+  "sizeKB": 619,
+  "pages": 10
  },
  {
+  "id": "launcher-tipoff-deflection",
+  "title": "Launcher Tipoff Deflection",
+  "authors": "C. P. Hoult",
+  "venue": "RS&T memo, 2010",
+  "kind": "word",
   "file": "references/from-word/Launcher Tipoff Deflection.pdf",
-  "kind": "converted from Word",
   "sourceFile": "Launcher Tipoff Deflection.doc",
+  "sourceUrl": "http://www.rsandt.com/media/Launcher%20Tipoff%20Deflection.doc",
   "topics": [
-   "New Launcher"
+   "new-launcher"
   ],
-  "sizeKB": 90
+  "sizeKB": 90,
+  "pages": 4
  },
  {
+  "id": "launcher-tipoff-errors",
+  "title": "Launcher Tipoff Errors",
+  "authors": "C. P. Hoult",
+  "venue": "RS&T memo, 2008",
+  "kind": "word",
   "file": "references/from-word/Launcher Tipoff Errors.pdf",
-  "kind": "converted from Word",
   "sourceFile": "Launcher Tipoff Errors.doc",
+  "sourceUrl": "http://www.rsandt.com/media/Launcher%20Tipoff%20Errors.doc",
   "topics": [
-   "Dispersion"
+   "dispersion"
   ],
-  "sizeKB": 68
+  "sizeKB": 68,
+  "pages": 4
  },
  {
+  "id": "local-sonic-flow",
+  "title": "Compressibility Effects on a Minimum Pressure Gradient Nose",
+  "authors": "C. P. Hoult",
+  "venue": "RS&T memo, 2010",
+  "kind": "word",
   "file": "references/from-word/Local Sonic Flow.pdf",
-  "kind": "converted from Word",
   "sourceFile": "Local Sonic Flow.doc",
+  "sourceUrl": "http://www.rsandt.com/media/Local%20Sonic%20Flow.doc",
   "topics": [
-   "Optimum Nose Shape"
+   "optimum-nose-shape"
   ],
-  "sizeKB": 70
+  "sizeKB": 70,
+  "pages": 3
  },
  {
+  "id": "longeron-bending",
+  "title": "Design Bending Loads for a Multiple Longeron Structure",
+  "authors": "C. P. Hoult",
+  "venue": "RS&T memo, 2013",
+  "kind": "word",
   "file": "references/from-word/Longeron Bending.pdf",
-  "kind": "converted from Word",
   "sourceFile": "Longeron Bending.doc",
+  "sourceUrl": "http://www.rsandt.com/media/Longeron%20Bending.doc",
   "topics": [
-   "Structural Loads"
+   "structural-loads"
   ],
-  "sizeKB": 151
+  "sizeKB": 151,
+  "pages": 3
  },
  {
+  "id": "longitudinal-body-bending-dynamics",
+  "title": "Longitudinal Body Bending Dynamics",
+  "authors": "C. P. Hoult",
+  "venue": "RS&T memo, 2013",
+  "kind": "word",
   "file": "references/from-word/Longitudinal Body Bending Dynamics.pdf",
-  "kind": "converted from Word",
   "sourceFile": "Longitudinal Body Bending Dynamics.doc",
+  "sourceUrl": "http://www.rsandt.com/media/Longitudinal%20Body%20Bending%20Dynamics.doc",
   "topics": [
-   "Body Bending Dynamics"
+   "body-bending-dynamics"
   ],
-  "sizeKB": 650
+  "sizeKB": 650,
+  "pages": 8
  },
  {
+  "id": "modified-newtonian-aero4",
+  "title": "Modified Newtonian Aerodynamics (rev. 4)",
+  "authors": "C. P. Hoult",
+  "venue": "RS&T memo, 2016",
+  "kind": "word",
   "file": "references/from-word/Modified Newtonian Aero4.pdf",
-  "kind": "converted from Word",
   "sourceFile": "Modified Newtonian Aero4.docx",
+  "sourceUrl": "http://www.rsandt.com/media/Modified%20Newtonian%20Aero4.docx",
   "topics": [
-   "Drag Coefficient",
-   "Modified Newtonian Drag"
+   "drag-coefficient",
+   "modified-newtonian-drag"
   ],
-  "sizeKB": 216
+  "sizeKB": 216,
+  "pages": 11
  },
  {
+  "id": "mojave-winds",
+  "title": "Mojave Winds — Tether and Winch Calibration Remarks",
+  "authors": "C. P. Hoult",
+  "venue": "Correspondence",
+  "kind": "word",
   "file": "references/from-word/Mojave Winds.pdf",
-  "kind": "converted from Word",
   "sourceFile": "Mojave Winds.doc",
+  "sourceUrl": "http://www.rsandt.com/media/Mojave%20Winds.doc",
   "topics": [
-   "Wind Measurement"
+   "wind-measurement"
   ],
-  "sizeKB": 43
+  "sizeKB": 43,
+  "pages": 1
  },
  {
+  "id": "non-vertical-launch-effects",
+  "title": "Non-Vertical Launch Effects (rev. 1)",
+  "authors": "C. P. Hoult",
+  "venue": "RS&T memo, 2012",
+  "kind": "word",
   "file": "references/from-word/Non-Vertical Launch Effects.pdf",
-  "kind": "converted from Word",
   "sourceFile": "Non-Vertical Launch Effects.doc",
+  "sourceUrl": "http://www.rsandt.com/media/Non-Vertical%20Launch%20Effects.doc",
   "topics": [
-   "Trajectory Simulation"
+   "trajectory-simulation"
   ],
-  "sizeKB": 133
+  "sizeKB": 133,
+  "pages": 7
  },
  {
+  "id": "nose-pressure-distro4",
+  "title": "Nose Pressure Distribution (rev. 4)",
+  "authors": "C. P. Hoult",
+  "venue": "RS&T memo, 2012",
+  "kind": "word",
   "file": "references/from-word/Nose Pressure Distro4.pdf",
-  "kind": "converted from Word",
   "sourceFile": "Nose Pressure Distro4.doc",
+  "sourceUrl": "http://www.rsandt.com/media/Nose%20Pressure%20Distro4.doc",
   "topics": [
-   "Nose Pressure Coefficient",
-   "Structural Loads"
+   "nose-pressure-coefficient",
+   "structural-loads"
   ],
-  "sizeKB": 281
+  "sizeKB": 281,
+  "pages": 11
  },
  {
+  "id": "ogive-nose",
+  "title": "Ogive Nose",
+  "authors": "C. P. Hoult",
+  "venue": "RS&T memo, 2011",
+  "kind": "word",
   "file": "references/from-word/Ogive Nose.pdf",
-  "kind": "converted from Word",
   "sourceFile": "Ogive Nose.doc",
+  "sourceUrl": "http://www.rsandt.com/media/Ogive%20Nose.doc",
   "topics": [
-   "Ogive Nose"
+   "ogive-nose"
   ],
-  "sizeKB": 157
+  "sizeKB": 157,
+  "pages": 3
  },
  {
+  "id": "parachute-reefing",
+  "title": "Parachute Reefing",
+  "authors": "C. P. Hoult",
+  "venue": "RS&T memo, 2013",
+  "kind": "word",
   "file": "references/from-word/Parachute Reefing.pdf",
-  "kind": "converted from Word",
   "sourceFile": "Parachute Reefing.doc",
+  "sourceUrl": "http://www.rsandt.com/media/Parachute%20Reefing.doc",
   "topics": [
-   "Recovery"
+   "recovery"
   ],
-  "sizeKB": 105
+  "sizeKB": 105,
+  "pages": 3
  },
  {
+  "id": "payload-venting2",
+  "title": "Payload Bay Venting in Flight (rev. 2)",
+  "authors": "C. P. Hoult",
+  "venue": "RS&T memo, 2012",
+  "kind": "word",
   "file": "references/from-word/Payload Venting2.pdf",
-  "kind": "converted from Word",
   "sourceFile": "Payload Venting2.doc",
+  "sourceUrl": "http://www.rsandt.com/media/Payload%20Venting2.doc",
   "topics": [
-   "Structural Loads",
-   "Venting"
+   "structural-loads",
+   "venting"
   ],
-  "sizeKB": 331
+  "sizeKB": 331,
+  "pages": 7
  },
  {
+  "id": "reliability-growth",
+  "title": "Reliability Growth During Flight Test",
+  "authors": "C. P. Hoult",
+  "venue": "RS&T memo, 2013",
+  "kind": "word",
   "file": "references/from-word/Reliability Growth.pdf",
-  "kind": "converted from Word",
   "sourceFile": "Reliability Growth.doc",
+  "sourceUrl": "http://www.rsandt.com/media/Reliability%20Growth.doc",
   "topics": [
-   "Reliability"
+   "reliability"
   ],
-  "sizeKB": 86
+  "sizeKB": 86,
+  "pages": 3
  },
  {
+  "id": "rocket-engine-ignition-structural-shock",
+  "title": "Rocket Engine Ignition Structural Shock",
+  "authors": "C. P. Hoult",
+  "venue": "RS&T memo, 2014",
+  "kind": "word",
   "file": "references/from-word/Rocket Engine Ignition Structural Shock.pdf",
-  "kind": "converted from Word",
   "sourceFile": "Rocket Engine Ignition Structural Shock.doc",
+  "sourceUrl": "http://www.rsandt.com/media/Rocket%20Engine%20Ignition%20Structural%20Shock.doc",
   "topics": [
-   "Structural Loads"
+   "structural-loads"
   ],
-  "sizeKB": 630
+  "sizeKB": 630,
+  "pages": 8
  },
  {
+  "id": "sosx-breakdwn",
+  "title": "When Second Order Shock Expansion Theory Breaks Down",
+  "authors": "C. P. Hoult",
+  "venue": "RS&T memo, 2013",
+  "kind": "word",
   "file": "references/from-word/SOSX Breakdwn.pdf",
-  "kind": "converted from Word",
   "sourceFile": "SOSX Breakdwn.doc",
+  "sourceUrl": "http://www.rsandt.com/media/SOSX%20Breakdwn.doc",
   "topics": [
-   "Barrowman Equations"
+   "barrowman-equations"
   ],
-  "sizeKB": 149
+  "sizeKB": 149,
+  "pages": 3
  },
  {
+  "id": "single-wedge-airfoil",
+  "title": "Supersonic Single Wedge Airfoil",
+  "authors": "C. P. Hoult",
+  "venue": "RS&T memo, 2013",
+  "kind": "word",
   "file": "references/from-word/Single Wedge Airfoil.pdf",
-  "kind": "converted from Word",
   "sourceFile": "Single Wedge Airfoil.doc",
+  "sourceUrl": "http://www.rsandt.com/media/Single%20Wedge%20Airfoil.doc",
   "topics": [
-   "Single Wedge Airfoil"
+   "single-wedge-airfoil"
   ],
-  "sizeKB": 160
+  "sizeKB": 160,
+  "pages": 3
  },
  {
+  "id": "single-wedge",
+  "title": "Supersonic Single Wedge Airfoil (normal-force slope)",
+  "authors": "C. P. Hoult",
+  "venue": "RS&T memo, 2013",
+  "kind": "word",
   "file": "references/from-word/Single Wedge.pdf",
-  "kind": "converted from Word",
   "sourceFile": "Single Wedge.doc",
+  "sourceUrl": "http://www.rsandt.com/media/Single%20Wedge.doc",
   "topics": [
-   "Barrowman Equations"
+   "barrowman-equations"
   ],
-  "sizeKB": 261
+  "sizeKB": 261,
+  "pages": 5
  },
  {
+  "id": "sloshing-errata",
+  "title": "Errata for “An Analysis of the Motion of Liquids in a Partially-Filled Enclosure”",
+  "authors": "C. P. Hoult",
+  "venue": "RS&T memo",
+  "kind": "word",
   "file": "references/from-word/Sloshing Errata.pdf",
-  "kind": "converted from Word",
   "sourceFile": "Sloshing Errata.doc",
+  "sourceUrl": "http://www.rsandt.com/media/Sloshing%20Errata.doc",
   "topics": [
-   "Propellant Sloshing"
+   "propellant-sloshing"
   ],
-  "sizeKB": 90
+  "sizeKB": 90,
+  "pages": 1
  },
  {
+  "id": "sounding-rocket-structural-design-loads10",
+  "title": "Sounding Rocket Structural Design Loads (rev. 9)",
+  "authors": "C. P. Hoult",
+  "venue": "RS&T memo",
+  "kind": "word",
   "file": "references/from-word/Sounding Rocket Structural Design Loads10.pdf",
-  "kind": "converted from Word",
   "sourceFile": "Sounding Rocket Structural Design Loads10.doc",
+  "sourceUrl": "http://www.rsandt.com/media/Sounding%20Rocket%20Structural%20Design%20Loads10.doc",
   "topics": [
-   "Structural Loads"
+   "structural-loads"
   ],
-  "sizeKB": 2275
+  "sizeKB": 2275,
+  "pages": 36
  },
  {
+  "id": "spin-wedges",
+  "title": "Static Aeroelastic Effects on Fins with Spin Wedges",
+  "authors": "C. P. Hoult",
+  "venue": "RS&T memo, 2013",
+  "kind": "word",
   "file": "references/from-word/Spin Wedges.pdf",
-  "kind": "converted from Word",
   "sourceFile": "Spin Wedges.doc",
+  "sourceUrl": "http://www.rsandt.com/media/Spin%20Wedges.doc",
   "topics": [
-   "Fin Setting"
+   "fin-setting"
   ],
-  "sizeKB": 302
+  "sizeKB": 302,
+  "pages": 5
  },
  {
+  "id": "supersonic-le-fins",
+  "title": "Normal Force and Center of Pressure of a Clipped Delta Fin with Supersonic Leading Edges",
+  "authors": "C. P. Hoult",
+  "venue": "RS&T memo, 2013",
+  "kind": "word",
   "file": "references/from-word/Supersonic LE Fins.pdf",
-  "kind": "converted from Word",
   "sourceFile": "Supersonic LE Fins.doc",
+  "sourceUrl": "http://www.rsandt.com/media/Supersonic%20LE%20Fins.doc",
   "topics": [
-   "Barrowman Equations"
+   "barrowman-equations"
   ],
-  "sizeKB": 404
+  "sizeKB": 404,
+  "pages": 6
  },
  {
+  "id": "tpb-bias-errors",
+  "title": "Tethered Pilot Balloon Bias Errors (rev. 1)",
+  "authors": "C. P. Hoult",
+  "venue": "RS&T memo, 2013",
+  "kind": "word",
   "file": "references/from-word/TPB Bias Errors.pdf",
-  "kind": "converted from Word",
   "sourceFile": "TPB Bias Errors.doc",
+  "sourceUrl": "http://www.rsandt.com/media/TPB%20Bias%20Errors.doc",
   "topics": [
-   "Wind Measurement"
+   "wind-measurement"
   ],
-  "sizeKB": 304
+  "sizeKB": 304,
+  "pages": 5
  },
  {
+  "id": "tether-catenary",
+  "title": "Kite Catenary",
+  "authors": "C. P. Hoult",
+  "venue": "RS&T memo, 2006",
+  "kind": "word",
   "file": "references/from-word/Tether Catenary.pdf",
-  "kind": "converted from Word",
   "sourceFile": "Tether Catenary.doc",
+  "sourceUrl": "http://www.rsandt.com/media/Tether%20Catenary.doc",
   "topics": [
-   "Wind Measurement"
+   "wind-measurement"
   ],
-  "sizeKB": 122
+  "sizeKB": 122,
+  "pages": 6
  },
  {
+  "id": "the-pitch-yaw-wave-number3",
+  "title": "The Pitch-Yaw Wave Number (rev. 3)",
+  "authors": "C. P. Hoult",
+  "venue": "RS&T memo, 2013",
+  "kind": "word",
   "file": "references/from-word/The Pitch-Yaw Wave Number3.pdf",
-  "kind": "converted from Word",
   "sourceFile": "The Pitch-Yaw Wave Number3.doc",
+  "sourceUrl": "http://www.rsandt.com/media/The%20Pitch-Yaw%20Wave%20Number3.doc",
   "topics": [
-   "Pitch-Yaw Wavenumber",
-   "Trajectory Simulation"
+   "pitch-yaw-wavenumber",
+   "trajectory-simulation"
   ],
-  "sizeKB": 124
+  "sizeKB": 124,
+  "pages": 3
  },
  {
+  "id": "theory-behind-dispersion",
+  "title": "The Theory Behind DISPERSION",
+  "authors": "C. P. Hoult",
+  "venue": "RS&T memo, 2007",
+  "kind": "word",
   "file": "references/from-word/Theory Behind DISPERSION.pdf",
-  "kind": "converted from Word",
   "sourceFile": "Theory Behind DISPERSION.doc",
+  "sourceUrl": "http://www.rsandt.com/media/Theory%20Behind%20DISPERSION.doc",
   "topics": [
-   "Dispersion"
+   "dispersion"
   ],
-  "sizeKB": 117
+  "sizeKB": 117,
+  "pages": 7
  },
  {
+  "id": "thrust-misalignment",
+  "title": "Thrust Misalignment Response",
+  "authors": "C. P. Hoult",
+  "venue": "RS&T memo, 2010",
+  "kind": "word",
   "file": "references/from-word/Thrust Misalignment.pdf",
-  "kind": "converted from Word",
   "sourceFile": "Thrust Misalignment.doc",
+  "sourceUrl": "http://www.rsandt.com/media/Thrust%20Misalignment.doc",
   "topics": [
-   "Structural Loads"
+   "structural-loads"
   ],
-  "sizeKB": 172
+  "sizeKB": 172,
+  "pages": 9
  },
  {
+  "id": "trajectory-contraints",
+  "title": "Trajectory Constraint Solution Algorithm",
+  "authors": "C. P. Hoult",
+  "venue": "RS&T memo, 2014",
+  "kind": "word",
   "file": "references/from-word/Trajectory Contraints.pdf",
-  "kind": "converted from Word",
   "sourceFile": "Trajectory Contraints.doc",
+  "sourceUrl": "http://www.rsandt.com/media/Trajectory%20Contraints.doc",
   "topics": [
-   "Trajectory Simulation"
+   "trajectory-simulation"
   ],
-  "sizeKB": 215
+  "sizeKB": 215,
+  "pages": 4
  },
  {
+  "id": "two-stage-weights-rev1",
+  "title": "Optimum Allocation of Weight Between Two Stages (rev. 1)",
+  "authors": "C. P. Hoult",
+  "venue": "RS&T memo, 2015",
+  "kind": "word",
   "file": "references/from-word/Two Stage Weights rev1.pdf",
-  "kind": "converted from Word",
   "sourceFile": "Two Stage Weights rev1.doc",
+  "sourceUrl": "http://www.rsandt.com/media/Two%20Stage%20Weights%20rev1.doc",
   "topics": [
-   "Optimum Weight Allocation"
+   "optimum-weight-allocation"
   ],
-  "sizeKB": 496
+  "sizeKB": 496,
+  "pages": 7
  },
  {
+  "id": "upper-stage-bending-influence-on-static-stability3",
+  "title": "Upper Stage Bending Influence on Static Stability (rev. 3)",
+  "authors": "C. P. Hoult",
+  "venue": "RS&T memo, 2012",
+  "kind": "word",
   "file": "references/from-word/Upper Stage Bending Influence on Static Stability3.pdf",
-  "kind": "converted from Word",
   "sourceFile": "Upper Stage Bending Influence on Static Stability3.doc",
+  "sourceUrl": "http://www.rsandt.com/media/Upper%20Stage%20Bending%20Influence%20on%20Static%20Stability3.doc",
   "topics": [
-   "Body Aerolasticity",
-   "Structural Loads"
+   "body-aeroelasticity",
+   "structural-loads"
   ],
-  "sizeKB": 122
+  "sizeKB": 122,
+  "pages": 5
  },
  {
+  "id": "winch-equations",
+  "title": "Winch Equations",
+  "authors": "C. P. Hoult",
+  "venue": "RS&T memo, 2008",
+  "kind": "word",
   "file": "references/from-word/Winch Equations.pdf",
-  "kind": "converted from Word",
   "sourceFile": "Winch Equations.doc",
+  "sourceUrl": "http://www.rsandt.com/media/Winch%20Equations.doc",
   "topics": [
-   "Wind Measurement"
+   "wind-measurement"
   ],
-  "sizeKB": 72
+  "sizeKB": 72,
+  "pages": 3
  }
 ]

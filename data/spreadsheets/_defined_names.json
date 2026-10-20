@@ -1,0 +1,844 @@
+{
+ "25KDSCNT": {},
+ "BENDIT7": {},
+ "BLOWDOWN2": {
+  "a": {
+   "ref": "Blowdown!$AM$5",
+   "value": "#VALUE!"
+  },
+  "alfa": {
+   "ref": "Blowdown!$E$9",
+   "value": -0.00357448
+  },
+  "ARE": {
+   "ref": "20925597.9",
+   "value": null
+  },
+  "AT": {
+   "ref": "Blowdown!$I$9",
+   "value": 8.6e-05
+  },
+  "ATR": {
+   "ref": "52500",
+   "value": null
+  },
+  "BRE": {
+   "ref": "20855437.3",
+   "value": null
+  },
+  "BTR": {
+   "ref": "27900",
+   "value": null
+  },
+  "CINC": {
+   "ref": "Blowdown!$J$9",
+   "value": 0.65
+  },
+  "CNOZ": {
+   "ref": "Blowdown!$AA$5:$AA$4000",
+   "value": "AA5:AA4000"
+  },
+  "CNOZ2": {
+   "ref": "Blowdown!$AN$5:$AN$4000",
+   "value": "AN5:AN4000"
+  },
+  "CNOZ3": {
+   "ref": "Blowdown!$BA$5:$BA$4000",
+   "value": "BA5:BA4000"
+  },
+  "CNOZ4": {
+   "ref": "Blowdown!$BN$5:$BN$4000",
+   "value": "BN5:BN4000"
+  },
+  "Constant": {
+   "ref": "Blowdown!$O$5",
+   "value": -0.206096192454621
+  },
+  "Cp0": {
+   "ref": "Blowdown!$L$9",
+   "value": -0.0343132
+  },
+  "Cpx": {
+   "ref": "Blowdown!$X$5:$X$4000",
+   "value": "X5:X4000"
+  },
+  "Cpx2": {
+   "ref": "Blowdown!$AK$5:$AK$4000",
+   "value": "AK5:AK4000"
+  },
+  "Cpx3": {
+   "ref": "Blowdown!$AX$5:$AX$4000",
+   "value": "AX5:AX4000"
+  },
+  "Cpx4": {
+   "ref": "Blowdown!$BK$5:$BK$4000",
+   "value": "BK5:BK4000"
+  },
+  "CSON": {
+   "ref": "Blowdown!$K$9",
+   "value": 0.95
+  },
+  "D2R": {
+   "ref": "PI()/180",
+   "value": null
+  },
+  "deltaT": {
+   "ref": "Blowdown!$G$9",
+   "value": 0.01
+  },
+  "gamma": {
+   "ref": "Blowdown!$D$9",
+   "value": 1.4
+  },
+  "go": {
+   "ref": "Blowdown!$K$5",
+   "value": 32.1392239366819
+  },
+  "h": {
+   "ref": "Blowdown!$E$5",
+   "value": 2116.217
+  },
+  "hALT": {
+   "ref": "Blowdown!$S$5:$S$4000",
+   "value": "S5:S4000"
+  },
+  "hALT2": {
+   "ref": "Blowdown!$AF$5:$AF$4000",
+   "value": "AF5:AF4000"
+  },
+  "hALT3": {
+   "ref": "Blowdown!$AS$5:$AS$4000",
+   "value": "AS5:AS4000"
+  },
+  "hALT4": {
+   "ref": "Blowdown!$BF$5:$BF$4000",
+   "value": "BF5:BF4000"
+  },
+  "ho": {
+   "ref": "Blowdown!$F$5",
+   "value": 1898
+  },
+  "hT": {
+   "ref": "Blowdown!$J$5",
+   "value": 39190.8679976605
+  },
+  "Mach": {
+   "ref": "Blowdown!$W$5:$W$4000",
+   "value": "W5:W4000"
+  },
+  "Mach2": {
+   "ref": "Blowdown!$AJ$5:$AJ$4000",
+   "value": "AJ5:AJ4000"
+  },
+  "Mach3": {
+   "ref": "Blowdown!$AW$5:$AW$4000",
+   "value": "AW5:AW4000"
+  },
+  "Mach4": {
+   "ref": "Blowdown!$BJ$5:$BJ$4000",
+   "value": "BJ5:BJ4000"
+  },
+  "Mcr": {
+   "ref": "Blowdown!$N$9",
+   "value": 0.9487
+  },
+  "MT": {
+   "ref": "Blowdown!$Z$5:$Z$4000",
+   "value": "Z5:Z4000"
+  },
+  "MT2": {
+   "ref": "Blowdown!$AM$5:$AM$4000",
+   "value": "AM5:AM4000"
+  },
+  "MT3": {
+   "ref": "Blowdown!$AZ$5:$AZ$4000",
+   "value": "AZ5:AZ4000"
+  },
+  "MT4": {
+   "ref": "Blowdown!$BM$5:$BM$4000",
+   "value": "BM5:BM4000"
+  },
+  "OmgaE": {
+   "ref": "2*PI()/86164.09",
+   "value": null
+  },
+  "p": {
+   "ref": "#REF!",
+   "value": null
+  },
+  "pa": {
+   "ref": "Blowdown!$V$5:$V$4000",
+   "value": "V5:V4000"
+  },
+  "pa2": {
+   "ref": "Blowdown!$AI$5:$AI$4000",
+   "value": "AI5:AI4000"
+  },
+  "pa3": {
+   "ref": "Blowdown!$AV$5:$AV$4000",
+   "value": "AV5:AV4000"
+  },
+  "pa4": {
+   "ref": "Blowdown!$BI$5:$BI$4000",
+   "value": "BI5:BI4000"
+  },
+  "pC": {
+   "ref": "Blowdown!$R$5:$R$4000",
+   "value": "R5:R4000"
+  },
+  "pC2": {
+   "ref": "Blowdown!$AE$5:$AE$4000",
+   "value": "AE5:AE4000"
+  },
+  "pC3": {
+   "ref": "Blowdown!$AR$5:$AR$4000",
+   "value": "AR5:AR4000"
+  },
+  "pC4": {
+   "ref": "Blowdown!$BE$5:$BE$4000",
+   "value": "BE5:BE4000"
+  },
+  "pdot": {
+   "ref": "Blowdown!$AB$5:$AB$4000",
+   "value": "AB5:AB4000"
+  },
+  "pdot2": {
+   "ref": "Blowdown!$AO$5:$AO$4000",
+   "value": "AO5:AO4000"
+  },
+  "pdot3": {
+   "ref": "Blowdown!$BB$5:$BB$4000",
+   "value": "BB5:BB4000"
+  },
+  "pdot4": {
+   "ref": "Blowdown!$BO$5:$BO$4000",
+   "value": "BO5:BO4000"
+  },
+  "Phi": {
+   "ref": "Blowdown!$I$5",
+   "value": 0.593411945678072
+  },
+  "po": {
+   "ref": "Blowdown!$N$5",
+   "value": 1984.58714715293
+  },
+  "Prot": {
+   "ref": "86164.09",
+   "value": null
+  },
+  "pSL": {
+   "ref": "Blowdown!$E$5",
+   "value": 2116.217
+  },
+  "pT": {
+   "ref": "Blowdown!$M$5",
+   "value": 494.465620176602
+  },
+  "pX": {
+   "ref": "Blowdown!$Y$5:$Y$4000",
+   "value": "Y5:Y4000"
+  },
+  "pX2": {
+   "ref": "Blowdown!$AL$5:$AL$4000",
+   "value": "AL5:AL4000"
+  },
+  "pX3": {
+   "ref": "Blowdown!$AY$5:$AY$4000",
+   "value": "AY5:AY4000"
+  },
+  "pX4": {
+   "ref": "Blowdown!$BL$5:$BL$4000",
+   "value": "BL5:BL4000"
+  },
+  "qDYNP": {
+   "ref": "#REF!",
+   "value": null
+  },
+  "qDYNP2": {
+   "ref": "#REF!",
+   "value": null
+  },
+  "qDYNP3": {
+   "ref": "#REF!",
+   "value": null
+  },
+  "qDYNP4": {
+   "ref": "#REF!",
+   "value": null
+  },
+  "Rair": {
+   "ref": "Blowdown!$F$9",
+   "value": 1716.4827
+  },
+  "RE": {
+   "ref": "#REF!",
+   "value": null
+  },
+  "rho": {
+   "ref": "Blowdown!$AL$5",
+   "value": "#VALUE!"
+  },
+  "T": {
+   "ref": "Blowdown!$AK$5",
+   "value": "#VALUE!"
+  },
+  "T0": {
+   "ref": "Blowdown!$G$4",
+   "value": "T0"
+  },
+  "Ta": {
+   "ref": "Blowdown!$U$5:$U$4000",
+   "value": "U5:U4000"
+  },
+  "Ta2": {
+   "ref": "Blowdown!$AH$5:$AH$4000",
+   "value": "AH5:AH4000"
+  },
+  "Ta3": {
+   "ref": "Blowdown!$AU$5:$AU$4000",
+   "value": "AU5:AU4000"
+  },
+  "Ta4": {
+   "ref": "Blowdown!$BH$5:$BH$4000",
+   "value": "BH5:BH4000"
+  },
+  "To": {
+   "ref": "Blowdown!$G$4",
+   "value": "T0"
+  },
+  "TT": {
+   "ref": "Blowdown!$L$5",
+   "value": 416.697389199723
+  },
+  "Tyme": {
+   "ref": "Blowdown!$Q$5:$Q$4000",
+   "value": "Q5:Q4000"
+  },
+  "Tyme2": {
+   "ref": "Blowdown!$AD$5:$AD$4000",
+   "value": "AD5:AD4000"
+  },
+  "Tyme3": {
+   "ref": "Blowdown!$AQ$5:$AQ$4000",
+   "value": "AQ5:AQ4000"
+  },
+  "Tyme4": {
+   "ref": "Blowdown!$BD$5:$BD$4000",
+   "value": "BD5:BD4000"
+  },
+  "Vel": {
+   "ref": "Blowdown!$T$5:$T$4000",
+   "value": "T5:T4000"
+  },
+  "Vel2": {
+   "ref": "Blowdown!$AG$5:$AG$4000",
+   "value": "AG5:AG4000"
+  },
+  "Vel3": {
+   "ref": "Blowdown!$AT$5:$AT$4000",
+   "value": "AT5:AT4000"
+  },
+  "Vel4": {
+   "ref": "Blowdown!$BG$5:$BG$4000",
+   "value": "BG5:BG4000"
+  },
+  "Vol": {
+   "ref": "Blowdown!$H$9",
+   "value": 0.227
+  }
+ },
+ "CANT ANGLE3": {},
+ "CRITICAL MACH NUMBER": {},
+ "DISPERSION": {},
+ "DIVERGENCE": {},
+ "DRAG_COEFFICIENT3.4": {
+  "gamma": {
+   "ref": "Sheet1!$I$16",
+   "value": 1.4
+  },
+  "M": {
+   "ref": "Sheet1!$P$4",
+   "value": 0.9
+  }
+ },
+ "Descending Rocket on Rail": {},
+ "FIN WEDGE": {},
+ "FLEXIT(Aries)": {},
+ "FLUTTER MARGIN1": {},
+ "GEOPHYSICS": {
+  "a": {
+   "ref": "Sheet1!$P$5",
+   "value": 1009.51690280753
+  },
+  "alfa": {
+   "ref": "-0.00357448",
+   "value": null
+  },
+  "ARE": {
+   "ref": "20925597.9",
+   "value": null
+  },
+  "ATR": {
+   "ref": "52500",
+   "value": null
+  },
+  "BRE": {
+   "ref": "20855437.3",
+   "value": null
+  },
+  "BTR": {
+   "ref": "27900",
+   "value": null
+  },
+  "D2R": {
+   "ref": "PI()/180",
+   "value": null
+  },
+  "gamma": {
+   "ref": "1.4",
+   "value": null
+  },
+  "go": {
+   "ref": "Sheet1!$I$5",
+   "value": 32.1392239366819
+  },
+  "h": {
+   "ref": "Sheet1!$C$5",
+   "value": 40000
+  },
+  "ho": {
+   "ref": "Sheet1!$D$5",
+   "value": 4000
+  },
+  "hT": {
+   "ref": "Sheet1!$H$5",
+   "value": 39190.8679976605
+  },
+  "OmgaE": {
+   "ref": "2*PI()/86164.09",
+   "value": null
+  },
+  "p": {
+   "ref": "Sheet1!$N$5",
+   "value": 457.835336128084
+  },
+  "Phi": {
+   "ref": "Sheet1!$G$5",
+   "value": 0.593411945678072
+  },
+  "po": {
+   "ref": "2116.217",
+   "value": null
+  },
+  "Prot": {
+   "ref": "86164.09",
+   "value": null
+  },
+  "pT": {
+   "ref": "Sheet1!$L$5",
+   "value": 474.486527032096
+  },
+  "Rair": {
+   "ref": "1716",
+   "value": null
+  },
+  "RE": {
+   "ref": "Sheet1!$J$5",
+   "value": 20903785.3087302
+  },
+  "rho": {
+   "ref": "Sheet1!$O$5",
+   "value": 0.000628941358887033
+  },
+  "T": {
+   "ref": "Sheet1!$M$5",
+   "value": 424.210946159723
+  },
+  "To": {
+   "ref": "Sheet1!$E$5",
+   "value": 550
+  },
+  "TT": {
+   "ref": "Sheet1!$K$5",
+   "value": 424.210946159723
+  }
+ },
+ "High Alfa Roll Lock-In_rev1": {
+  "Alpha": {
+   "ref": "Sheet1!$O$7",
+   "value": 0.15707963267949
+  },
+  "b": {
+   "ref": "Sheet1!$D$7",
+   "value": 6
+  },
+  "Caplam": {
+   "ref": "Sheet1!$D$32",
+   "value": 60
+  },
+  "CDaa": {
+   "ref": "Sheet1!$C$27",
+   "value": 0.2
+  },
+  "Chrd1": {
+   "ref": "Sheet1!$Y$7",
+   "value": 1.35
+  },
+  "Chrd2": {
+   "ref": "Sheet1!$Z$7",
+   "value": -0.116666666666667
+  },
+  "CLin": {
+   "ref": "Sheet1!$AS$7",
+   "value": "#VALUE!"
+  },
+  "CLp": {
+   "ref": "Sheet1!$AF$7",
+   "value": -314.411029407752
+  },
+  "CMa": {
+   "ref": "Sheet1!$AC$7",
+   "value": -552
+  },
+  "CNaa": {
+   "ref": "Sheet1!$W$7",
+   "value": 4
+  },
+  "CNaf": {
+   "ref": "Sheet1!$V$7",
+   "value": 136
+  },
+  "CNan": {
+   "ref": "Sheet1!$M$7",
+   "value": 2
+  },
+  "CNpa": {
+   "ref": "Sheet1!$AE$7",
+   "value": -0.948408166650163
+  },
+  "CNr": {
+   "ref": "Sheet1!$AD$7",
+   "value": -4937.33333333333
+  },
+  "Cr": {
+   "ref": "Sheet1!$AA$7",
+   "value": 78.8099505474733
+  },
+  "Ct": {
+   "ref": "Sheet1!$AB$7",
+   "value": 23.642985164242
+  },
+  "deltaT": {
+   "ref": "#REF!",
+   "value": null
+  },
+  "Gamma": {
+   "ref": "Sheet1!$P$7",
+   "value": 35569.9726364264
+  },
+  "Ip": {
+   "ref": "Sheet1!$J$7",
+   "value": 27734.1614906832
+  },
+  "L": {
+   "ref": "Sheet1!$H$7",
+   "value": 122
+  },
+  "lambda": {
+   "ref": "Sheet1!$X$7",
+   "value": 0.3
+  },
+  "lref": {
+   "ref": "2*Sheet1!$E$7",
+   "value": null
+  },
+  "LT": {
+   "ref": "#REF!",
+   "value": null
+  },
+  "N": {
+   "ref": "Sheet1!$T$7",
+   "value": 4
+  },
+  "Omega": {
+   "ref": "Sheet1!$AI$7",
+   "value": -0.0362342149145928
+  },
+  "OmegaCap": {
+   "ref": "#REF!",
+   "value": null
+  },
+  "OmegaN": {
+   "ref": "Sheet1!$AH$7",
+   "value": 3.67505489635242
+  },
+  "Phi": {
+   "ref": "Sheet1!$U$7",
+   "value": 1.19833881308294
+  },
+  "PhiV": {
+   "ref": "Sheet1!$S$7",
+   "value": 0.372458720768089
+  },
+  "q": {
+   "ref": "Sheet1!$AG$7",
+   "value": 4
+  },
+  "Rad": {
+   "ref": "Sheet1!$E$7",
+   "value": 3
+  },
+  "rV": {
+   "ref": "Sheet1!$Q$7",
+   "value": 6.34595267379176
+  },
+  "sI": {
+   "ref": "Sheet1!$R$7",
+   "value": 1.41822677581086
+  },
+  "SM": {
+   "ref": "Sheet1!$L$7",
+   "value": 24
+  },
+  "Sref": {
+   "ref": "Sheet1!$AJ$7",
+   "value": 28.2743338823081
+  },
+  "T": {
+   "ref": "#REF!",
+   "value": null
+  },
+  "U": {
+   "ref": "Sheet1!$C$7",
+   "value": 10000
+  },
+  "W": {
+   "ref": "Sheet1!$I$7",
+   "value": 60
+  },
+  "X": {
+   "ref": "Sheet1!$F$7",
+   "value": 108
+  },
+  "Xcg": {
+   "ref": "Sheet1!$K$7",
+   "value": 83
+  },
+  "Xcpf": {
+   "ref": "Sheet1!$F$7",
+   "value": 108
+  },
+  "Xcpn": {
+   "ref": "Sheet1!$G$7",
+   "value": 39
+  },
+  "XS": {
+   "ref": "Sheet1!$N$7",
+   "value": 36
+  },
+  "Sheet1!solver_adj": {
+   "ref": "Sheet1!$D$7"
+  },
+  "Sheet1!solver_cvg": {
+   "ref": "0.0001"
+  },
+  "Sheet1!solver_drv": {
+   "ref": "1"
+  },
+  "Sheet1!solver_est": {
+   "ref": "1"
+  },
+  "Sheet1!solver_itr": {
+   "ref": "100"
+  },
+  "Sheet1!solver_lhs1": {
+   "ref": "Sheet1!$AJ$7"
+  },
+  "Sheet1!solver_lhs2": {
+   "ref": "Sheet1!$AJ$7"
+  },
+  "Sheet1!solver_lin": {
+   "ref": "2"
+  },
+  "Sheet1!solver_neg": {
+   "ref": "2"
+  },
+  "Sheet1!solver_num": {
+   "ref": "1"
+  },
+  "Sheet1!solver_nwt": {
+   "ref": "1"
+  },
+  "Sheet1!solver_opt": {
+   "ref": "#REF!"
+  },
+  "Sheet1!solver_pre": {
+   "ref": "0.000001"
+  },
+  "Sheet1!solver_rel1": {
+   "ref": "2"
+  },
+  "Sheet1!solver_rel2": {
+   "ref": "1"
+  },
+  "Sheet1!solver_rhs1": {
+   "ref": "2.85"
+  },
+  "Sheet1!solver_rhs2": {
+   "ref": "Sref=2.85"
+  },
+  "Sheet1!solver_scl": {
+   "ref": "2"
+  },
+  "Sheet1!solver_sho": {
+   "ref": "2"
+  },
+  "Sheet1!solver_tim": {
+   "ref": "100"
+  },
+  "Sheet1!solver_tol": {
+   "ref": "0.05"
+  },
+  "Sheet1!solver_typ": {
+   "ref": "2"
+  },
+  "Sheet1!solver_val": {
+   "ref": "0"
+  }
+ },
+ "JORGENSN": {},
+ "LAUNCHER ANGLES": {},
+ "MUNKSHIP2": {},
+ "NEWTON": {
+  "CpNstag": {
+   "ref": "Sheet1!$O$5:$O$35",
+   "value": "O5:O35"
+  },
+  "Cpstag": {
+   "ref": "Sheet1!$E$5:$E$35",
+   "value": "E5:E35"
+  },
+  "d2r": {
+   "ref": "Sheet1!$A$5",
+   "value": 0.0174532925199433
+  },
+  "gamma": {
+   "ref": "Sheet1!$C$5",
+   "value": 1.4
+  },
+  "l": {
+   "ref": "Sheet1!$L$5",
+   "value": 1.25
+  },
+  "Lambda": {
+   "ref": "Sheet1!$K$5",
+   "value": 30
+  },
+  "M1_": {
+   "ref": "Sheet1!$D$5:$D$35",
+   "value": "D5:D35"
+  },
+  "Mach1": {
+   "ref": "Sheet1!$D$5:$D$35",
+   "value": "D5:D35"
+  },
+  "MachN": {
+   "ref": "Sheet1!$N$5:$N$35",
+   "value": "N5:N35"
+  },
+  "Rad": {
+   "ref": "Sheet1!$F$5",
+   "value": 0.1
+  },
+  "RLE": {
+   "ref": "Sheet1!$M$5",
+   "value": 0.005208
+  },
+  "R_": {
+   "ref": "Sheet1!$F$5",
+   "value": 0.1
+  },
+  "ThetaM": {
+   "ref": "Sheet1!$G$5",
+   "value": 80
+  }
+ },
+ "Normal Force Multiplier": {},
+ "ONECHUTE": {},
+ "OPT2STGE": {},
+ "Ogive Profile": {},
+ "RELGRWTH": {},
+ "SKYAERO7.6.2": {
+  "g": {
+   "ref": "#REF!",
+   "value": null
+  },
+  "solution!dimensions": {
+   "ref": "solution!$D$1066:$D$1080"
+  },
+  "solution!motor_thrust": {
+   "ref": "solution!$A$8:$F$33"
+  }
+ },
+ "SLOSHIT": {},
+ "SUBSONIC BARROWMAN EQUATIONS2.4": {},
+ "SUPERDELTA": {},
+ "SUPERSONICBARROWMANEQUATIONS3.5": {
+  "_xlfn_IFERROR": {
+   "ref": "#NAME?",
+   "value": null
+  }
+ },
+ "THRUSTCF": {
+  "Sheet1!solver_cvg": {
+   "ref": "0.0001"
+  },
+  "Sheet1!solver_drv": {
+   "ref": "1"
+  },
+  "Sheet1!solver_est": {
+   "ref": "1"
+  },
+  "Sheet1!solver_itr": {
+   "ref": "100"
+  },
+  "Sheet1!solver_lin": {
+   "ref": "2"
+  },
+  "Sheet1!solver_neg": {
+   "ref": "2"
+  },
+  "Sheet1!solver_num": {
+   "ref": "0"
+  },
+  "Sheet1!solver_nwt": {
+   "ref": "1"
+  },
+  "Sheet1!solver_pre": {
+   "ref": "0.000001"
+  },
+  "Sheet1!solver_scl": {
+   "ref": "2"
+  },
+  "Sheet1!solver_sho": {
+   "ref": "2"
+  },
+  "Sheet1!solver_tim": {
+   "ref": "100"
+  },
+  "Sheet1!solver_tol": {
+   "ref": "0.05"
+  },
+  "Sheet1!solver_typ": {
+   "ref": "1"
+  },
+  "Sheet1!solver_val": {
+   "ref": "0"
+  }
+ },
+ "TRAJCON": {},
+ "TRANSONIC BARROWMAN EQUATIONS": {},
+ "TWISTIT": {},
+ "UNBUTTON": {},
+ "YO-YO DSP": {}
+}

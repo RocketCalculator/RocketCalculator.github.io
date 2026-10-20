@@ -191,7 +191,7 @@ export default {
     m: 'mass of the suspended hardware', x_1: 'horizontal distance from the CG to the forward wire', x_2: 'horizontal distance from the CG to the aft wire',
     l: 'length of each suspension wire', g: 'local acceleration of gravity', P_Y: 'measured period of the yaw (twisting) oscillation', P_G: 'measured period of the sideways (Galilean) swing',
     I: 'pitch/yaw moment of inertia about the CG', I_l: 'moment of inertia from the wire-length formula (cross-check)', T_1: 'tension in the forward wire', T_2: 'tension in the aft wire',
-    k: 'radius of gyration, $\\sqrt{I/m}$', '\\omega_Y': 'yaw natural frequency', '\\omega_G': 'swing natural frequency', '\\psi': 'small yaw angle', L: 'overall length of the rocket',
+    k: 'radius of gyration ($\\sqrt{I/m}$)', '\\omega_Y': 'yaw natural frequency', '\\omega_G': 'swing natural frequency', '\\psi': 'small yaw angle', L: 'overall length of the rocket',
   },
   report(v, out, R) {
     const o = out.o, n = R.n;

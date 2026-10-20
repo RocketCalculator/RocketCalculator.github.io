@@ -52,8 +52,8 @@ Single accent, ink and greys — no second accent colour.
 - Buttons and chips: **pills** (60 px radius buttons, 32 px chips). Primary = red fill; secondary = 1 px ink outline;
   tertiary = ghost. No square buttons.
 - Cards: 6 px radius, **flat** (`--surface` on `--bg`), no drop shadows. Depth comes from surface contrast.
-- Dark bands (ink) for header, home hero and footer; white content bands in between. Below the footer the page
-  background is ink, so no white gap appears.
+- Dark bands (ink) for header and home hero; white content bands in between. The **footer is a slim strip**
+  (one credit line + inline links, ~80 px) — never a tall multi-column block. Below the footer the page background is ink.
 - Container max 1400 px, 32 px gutters (16 px on phones). Must work at 360–375 px with no horizontal scroll.
 - Calculator layout: inputs card left (sticky on desktop), outputs right; one column on tablets/phones.
 
@@ -70,7 +70,8 @@ Single accent, ink and greys — no second accent colour.
 5. **Key results**: 3–4 cards, **light** (`--surface-2`, dark surface in dark mode) with a 1 px border and a 4 px
    coloured **left edge** (red; green/amber when status applies). Never solid black blocks.
 6. **Drawing** (schematic) card, to scale, linked to inputs (hover/focus highlights both ways, drag handles edit
-   inputs). Must show every input that changes the geometry — e.g. a **rear view with the actual number of fins**.
+   inputs). Must show every input that changes the geometry — e.g. a **rear view with the actual number of fins**,
+   and a visible **joint line where the nose cone meets the body tube**.
    Card header: title, ⓘ (how to use the drawing), pause/play (if animated), Export.
 7. Plots (each with ⓘ and Export).
 8. All results table (copy / CSV).
@@ -119,10 +120,15 @@ Purpose: students paste it into PDR/FDR documents.
 - Title “**Export report**” (no “PDR/FDR” wording on the page).
 - Tabs: Preview · Markdown · LaTeX. Buttons: Copy, Download (.md/.tex), **Copy for Word / Google Docs** (rich HTML +
   MathML), Print / save as PDF. No Word .doc download.
-- Content order: title & “Based on: <reference>” · **Symbols and inputs** (every symbol introduced with meaning,
-  inputs with value and unit, derived quantities, constants with values in the chosen unit system, results) ·
-  Theory paragraph · step-by-step calculations (symbolic → numbers substituted → result with unit) · Results table ·
-  Notes · References.
+- Content order: title & “Based on: <reference>” · **Inputs and constants** table (only rows that have a value and
+  unit) · Theory paragraph · calculation steps · Results table · Notes · References.
+- **Every calculation step follows this procedure**:
+  1. introduce the formula (display equation);
+  2. a sentence explaining each symbol in it, comma-separated — “where $R$ is the base radius, $L$ is … and $a$ is …”
+     (descriptions come from the `symbols` dictionary and must not contain commas);
+  3. a sentence giving the values you have — “With $R=76.2\,\mathrm{mm}$, … and $L=762\,\mathrm{mm}$:” (inputs,
+     constants and results of earlier steps);
+  4. the substitution and the result with its unit.
 - **Everything in the selected unit system**, including substituted numbers and converted constants
   (e.g. 39.3 psi ↔ 270 964 Pa, 1716 ft·lbf/(slug·°R) ↔ 286.96 J/(kg·K)). Switching SI/US regenerates the report.
 - LaTeX output must compile with `pdflatex` (escape Unicode in text; keep maths in `$…$`).

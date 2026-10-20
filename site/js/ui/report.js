@@ -94,9 +94,33 @@ function buildModel({ def, state, refList, getSystem }) {
   const nom = [], seen = new Set();
   for (const i of inputs) if (i.sym && !seen.has(i.sym)) { seen.add(i.sym); nom.push({ sym: i.sym, desc: i.label, kind: 'input', value: i.value, unit: i.unit }); }
   const allEq = sections.flatMap((s) => (s.steps || []).flatMap((st) => [st.lhs, st.eq].filter(Boolean)));
-  for (const s of symbolsIn(allEq, def.symbols)) if (!seen.has(s.sym)) { seen.add(s.sym); nom.push({ sym: s.sym, desc: s.desc.charAt(0).toUpperCase() + s.desc.slice(1), kind: 'derived' }); }
-  for (const r of results) if (r.sym && !seen.has(r.sym)) { seen.add(r.sym); nom.push({ sym: r.sym, desc: r.label, kind: 'result' }); }
+  void allEq;
   for (const c of def.constants || []) nom.push({ sym: c.sym, desc: c.desc, kind: 'constant', value: texNum(sys === 'us' ? c.us[0] : c.si[0], 7), unit: sys === 'us' ? c.us[1] : c.si[1] });
+  // per-step procedure: formula → symbol meanings → known values → substitution and result
+  const lc = (s) => (/^[A-Z][a-z]/.test(s) ? s.charAt(0).toLowerCase() + s.slice(1) : s);
+  const dict = { ...(def.symbols || {}) };
+  for (const i of inputs) if (i.sym && !dict[i.sym]) dict[i.sym] = lc(i.label);
+  for (const r of results) if (r.sym && !dict[r.sym]) dict[r.sym] = lc(r.label);
+  for (const c of def.constants || []) if (!dict[c.sym]) dict[c.sym] = c.desc;
+  const known = new Map();
+  for (const s of nom) known.set(s.sym, `${s.value}${s.unit ? `\\,${s.unit}` : ''}`);
+  const mainValue = (res) => String(res).split(/,?\\qquad|\\quad\(|,\\quad/)[0].replace(/,\s*$/, '');
+  for (const sec of sections) for (const st of sec.steps || []) {
+    if (st.eq) {
+      st.formula = st.lhs ? `${st.lhs}=${st.eq}` : st.eq;
+      const syms = symbolsIn(st.eq, dict).filter((x) => x.sym !== st.lhs);
+      if (syms.length) {
+        const parts = syms.map((x) => `$${x.sym}$ is the ${lc(typeof x.desc === 'string' ? x.desc : x.desc.d)}`.replace(/is the (the|a|an) /, 'is $1 ').replace(/is the ([a-z]+ of )/, 'is the $1'));
+        st.where = `where ${parts.length > 1 ? parts.slice(0, -1).join(', ') + ' and ' + parts[parts.length - 1] : parts[0]}.`;
+      }
+      const vals = syms.filter((x) => known.has(x.sym)).map((x) => `$${x.sym}=${known.get(x.sym)}$`);
+      if (vals.length && (st.sub || st.res)) st.values = `With ${vals.length > 1 ? vals.slice(0, -1).join(', ') + ' and ' + vals[vals.length - 1] : vals[0]}:`;
+    }
+    if (st.lhs && st.res) {
+      st.calc = st.sub ? `\\begin{aligned}${st.lhs} &= ${st.sub} \\\\ &= ${st.res}\\end{aligned}` : `${st.lhs}=${st.res}`;
+      known.set(st.lhs, mainValue(st.res));
+    } else if (!st.lhs && st.res) st.calc = st.res;
+  }
   for (const w of out?.warnings || []) notes.push(`Warning: ${w.text.replace(/<[^>]+>/g, '')}`);
   return {
     nom, title: def.title, source: refList[0] ? refList[0].title + (refList[0].authors ? ` (${refList[0].authors})` : '') : def.title, date: new Date().toISOString().slice(0, 10), units: sys === 'si' ? 'SI' : 'US customary',
@@ -105,19 +129,13 @@ function buildModel({ def, state, refList, getSystem }) {
     site: location.href.split('#')[0],
   };
 }
-const stepTex = (st) => {
-  const lhs = st.lhs ? `${st.lhs} ` : '';
-  const parts = [st.eq, st.sub, st.res].filter(Boolean);
-  if (parts.length === 1) return `${lhs}${st.lhs ? '= ' : ''}${parts[0]}`;
-  return `\\begin{aligned}${st.lhs || ''} &= ${parts.join(' \\\\ &= ')}\\end{aligned}`;
-};
 
 /* ---------- renderers ---------- */
 function toMarkdown(M) {
   const md = [];
   const cell = (s) => String(s).replace(/\|/g, '\\|');
   md.push(`# ${M.title}`, '', `*${M.summary}*`, '', `Based on: ${M.source}. Units: ${M.units}. Generated ${M.date} with Rocket Calculator (${M.site}).`, '');
-  md.push('## Symbols and inputs', '', 'Inputs are given with their values; derived quantities and results are evaluated below.', '', '| Symbol | Meaning | Value | Unit |', '|---|---|---:|---|');
+  md.push('## Inputs and constants', '', '| Symbol | Meaning | Value | Unit |', '|---|---|---:|---|');
   for (const s of M.nom) md.push(`| $${s.sym}$ | ${cell(s.desc)}${s.kind === 'constant' ? ' (constant)' : s.kind === 'result' ? ' (result)' : s.kind === 'derived' ? ' (derived)' : ''} | ${s.value ? `$${s.value}$` : ''} | ${s.unit ? `$${s.unit}$` : ''} |`);
   for (const i of M.inputs.filter((x) => !x.sym)) md.push(`| | ${cell(i.label)} | $${i.value}$ | ${i.unit ? `$${i.unit}$` : ''} |`);
   for (const t of M.tables) {
@@ -129,7 +147,10 @@ function toMarkdown(M) {
     if (s.text) md.push(s.text, '');
     for (const st of s.steps || []) {
       if (st.label) md.push(`**${st.label}**`, '');
-      md.push('$$', stepTex(st), '$$', '');
+      if (st.formula) md.push('$$', st.formula, '$$', '');
+      if (st.where) md.push(st.where, '');
+      if (st.values) md.push(st.values, '');
+      if (st.calc && st.calc !== st.formula) md.push('$$', st.calc, '$$', '');
       if (st.note) md.push(st.note, '');
     }
   }
@@ -150,7 +171,7 @@ function toLaTeX(M) {
   L.push('\\documentclass[11pt]{article}', '\\usepackage[margin=2.2cm]{geometry}', '\\usepackage{amsmath,amssymb,booktabs,longtable}', '\\usepackage[T1]{fontenc}', '\\usepackage{textcomp}', '',
     `\\title{${latexText(M.title)}}`, `\\date{${M.date}}`, '\\author{}', '\\begin{document}', '\\maketitle', '',
     `\\noindent\\emph{${latexText(M.summary)}}\\\\`, `Based on: ${latexText(M.source)}. Units: ${M.units}. Generated with Rocket Calculator (\\texttt{${latexText(M.site)}}).`, '');
-  L.push('\\section*{Symbols and inputs}', 'Inputs are given with their values; derived quantities and results are evaluated below.', '\\begin{longtable}{llrl}', '\\toprule Symbol & Meaning & Value & Unit\\\\ \\midrule');
+  L.push('\\section*{Inputs and constants}', '\\begin{longtable}{llrl}', '\\toprule Symbol & Meaning & Value & Unit\\\\ \\midrule');
   for (const s of M.nom) L.push(`$${s.sym}$ & ${latexText(s.desc)}${s.kind === 'constant' ? ' (constant)' : s.kind === 'result' ? ' (result)' : s.kind === 'derived' ? ' (derived)' : ''} & ${s.value ? `$${s.value}$` : ''} & ${s.unit ? `$${s.unit}$` : ''}\\\\`);
   for (const i of M.inputs.filter((x) => !x.sym)) L.push(` & ${latexText(i.label)} & $${i.value}$ & ${i.unit ? `$${i.unit}$` : ''}\\\\`);
   L.push('\\bottomrule', '\\end{longtable}');
@@ -164,7 +185,10 @@ function toLaTeX(M) {
     if (s.text) L.push(latexText(s.text), '');
     for (const st of s.steps || []) {
       if (st.label) L.push(`\\paragraph{${latexText(st.label)}}`);
-      L.push('\\[', stepTex(st), '\\]');
+      if (st.formula) L.push('\\[', st.formula, '\\]');
+      if (st.where) L.push(latexText(st.where), '');
+      if (st.values) L.push(latexText(st.values), '');
+      if (st.calc && st.calc !== st.formula) L.push('\\[', st.calc, '\\]');
       if (st.note) L.push(latexText(st.note), '');
     }
   }
@@ -184,7 +208,7 @@ function toHTML(M, mode = 'katex') {
   const inline = (s) => (mode === 'mathml' ? String(s).split(/(\$[^$]+\$)/g).map((p) => (p.startsWith('$') && p.length > 2 ? m(p.slice(1, -1)) : esc(p))).join('') : txt(s));
   const P = [];
   P.push(`<h1>${esc(M.title)}</h1>`, `<p><em>${esc(M.summary)}</em></p>`, `<p>Based on: ${esc(M.source)}. Units: ${M.units}. Generated ${M.date} with Rocket Calculator.</p>`);
-  P.push('<h2>Symbols and inputs</h2><p>Inputs are given with their values; derived quantities and results are evaluated below.</p><table><thead><tr><th>Symbol</th><th>Meaning</th><th>Value</th><th>Unit</th></tr></thead><tbody>');
+  P.push('<h2>Inputs and constants</h2><table><thead><tr><th>Symbol</th><th>Meaning</th><th>Value</th><th>Unit</th></tr></thead><tbody>');
   for (const s of M.nom) P.push(`<tr><td>${m(s.sym)}</td><td>${inline(s.desc)}${s.kind === 'constant' ? ' (constant)' : s.kind === 'result' ? ' (result)' : s.kind === 'derived' ? ' (derived)' : ''}</td><td>${s.value ? m(s.value) : ''}</td><td>${s.unit ? m(s.unit) : ''}</td></tr>`);
   for (const i of M.inputs.filter((x) => !x.sym)) P.push(`<tr><td></td><td>${inline(i.label)}</td><td>${m(i.value)}</td><td>${i.unit ? m(i.unit) : ''}</td></tr>`);
   P.push('</tbody></table>');
@@ -198,7 +222,10 @@ function toHTML(M, mode = 'katex') {
     if (s.text) P.push(`<p>${inline(s.text)}</p>`);
     for (const st of s.steps || []) {
       if (st.label) P.push(`<h3>${inline(st.label)}</h3>`);
-      P.push(`<div class="eqn">${m(stepTex(st), true)}</div>`);
+      if (st.formula) P.push(`<div class="eqn">${m(st.formula, true)}</div>`);
+      if (st.where) P.push(`<p>${inline(st.where)}</p>`);
+      if (st.values) P.push(`<p>${inline(st.values)}</p>`);
+      if (st.calc && st.calc !== st.formula) P.push(`<div class="eqn">${m(st.calc, true)}</div>`);
       if (st.note) P.push(`<p>${inline(st.note)}</p>`);
     }
   }

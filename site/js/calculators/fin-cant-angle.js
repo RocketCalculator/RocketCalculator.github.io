@@ -203,9 +203,9 @@ export default {
     });
   },
   symbols: {
-    R: 'body radius at the fins', b: 'fin tip radius, measured from the body centre line', c_R: 'root chord', c_T: 'tip chord', N: 'number of fin panels',
+    R: 'body radius at the fins', b: 'fin tip radius measured from the body centre line', c_R: 'root chord', c_T: 'tip chord', N: 'number of fin panels',
     'c_{N\\alpha}': 'normal-force slope of a fin strip (per radian)', y: 'radius of a strip from the body centre line', c: 'local chord at radius $y$',
-    A: 'chord-line intercept, $c=A-Cy$', C: 'chord-line slope', 'L_\\delta': 'first planform integral', M: 'second planform integral', 'Y_{CP}': 'spanwise position of the cant load',
+    A: 'chord-line intercept ($c=A-Cy$)', C: 'chord-line slope', 'L_\\delta': 'first planform integral', M: 'second planform integral', 'Y_{CP}': 'spanwise position of the cant load',
     'C_{L\\delta}': 'roll-driving derivative of one fin', 'C_{Lp}': 'roll-damping derivative of all fins', '\\delta': 'fin cant angle', p: 'roll rate', f: 'roll rate in revolutions per second',
     U: 'flight speed', q: 'dynamic pressure', 'I_{xx}': 'roll moment of inertia', '\\rho': 'air density', h: 'burnout altitude above the launcher', L: 'launcher length',
     J: 'roll-inertia lag factor', k: 'roll-lag length', D: 'effective roll distance', M_c: 'number of roll cycles to burnout',

@@ -213,6 +213,11 @@ export default {
       g.append(s('path', { class: 'sc-body', d: path(capPts, true), 'data-field': 'flatNose' }));
     }
     g.append(s('path', { class: 'sc-body', d: path([...top, ...bot], true), 'data-field': 'profile noseType noseL R bodyLen btLen btR k pow' }));
+    { // nose / body joint
+      const xs = v.noseType === 'custom' ? (prof.find((q) => q.r >= rmax * 0.999)?.x ?? 0) : v.noseL;
+      const rj = v.noseType === 'custom' ? rmax : v.R;
+      if (xs > 0) g.append(s('line', { x1: X(xs), x2: X(xs), y1: Y(rj), y2: Y(-rj), class: 'sc-line', 'data-field': 'noseL noseType' }));
+    }
     if (prof[0].r > 0 && v.flatNose) g.append(s('line', { x1: X(0), x2: X(0), y1: Y(prof[0].r), y2: Y(-prof[0].r), stroke: 'var(--series-5)', 'stroke-width': 3, 'data-field': 'flatNose' }));
     // fins
     const rr = o.fin.r, finTop = [[X(v.xLE), Y(rr)], [X(v.xTipLE), Y(rr + v.b)], [X(v.xTipLE + v.cT), Y(rr + v.b)], [X(v.xLE + v.cR), Y(rr)]];
@@ -256,13 +261,13 @@ export default {
   },
   reportNotes: ['Valid below the critical Mach number, at small angles of attack, for one fin set. Stations are measured aft of the nose tip.'],
   symbols: {
-    M: 'flight Mach number', 'X_{CG}': 'centre-of-gravity station', 'X_{CP}': 'centre-of-pressure station', d: 'reference (maximum body) diameter', 'S_{ref}': 'reference area, $\\pi d^2/4$',
+    M: 'flight Mach number', 'X_{CG}': 'centre-of-gravity station', 'X_{CP}': 'centre-of-pressure station', d: 'reference (maximum body) diameter', 'S_{ref}': 'reference area ($\\pi d^2/4$)',
     A_i: 'body cross-section area at profile point $i$', x_i: 'station of profile point $i$', V_i: 'volume of body segment $i$', 'C_{N\\alpha,i}': 'normal-force slope of body segment $i$', 'x_{cp,i}': 'centre of pressure of segment $i$',
     R_h: 'radius of the hemispherical cap', '\\theta_T': 'tangency angle of the cap', 'C_{N\\alpha,cap}': 'normal-force slope of the cap', 'C_{N\\alpha,body}': 'normal-force slope of the body', 'x_{body}': 'centre of pressure of the body',
     c_R: 'fin root chord', c_T: 'fin tip chord', b: 'fin exposed semispan', x_R: 'root leading-edge station', x_T: 'tip leading-edge station', N: 'number of fin panels', S: 'area of one fin panel',
-    '\\mathit{AR}': 'aspect ratio of a pair of panels', '\\Lambda_c': 'quarter-chord sweep', F: 'Diederich planform parameter', 'C_{N\\alpha,W}': 'lift slope of a panel pair on its own area', 'C_{N\\alpha,F}': 'fins alone, on the reference area',
-    '\\bar c': 'mean aerodynamic chord', x_F: 'fin centre of pressure', '\\tau': 'body radius over fin tip radius, $r/s$', r: 'body radius at the fins', s: 'fin tip radius from the centre line',
-    'K_{W(B)}': 'lift on the fins in the presence of the body, relative to fins alone', 'K_{B(W)}': 'lift carried over onto the body by the fins', '\\bar{x}_{B(W)}': 'centre of pressure of the carry-over lift',
+    '\\mathit{AR}': 'aspect ratio of a pair of panels', '\\Lambda_c': 'quarter-chord sweep', F: 'Diederich planform parameter', 'C_{N\\alpha,W}': 'lift slope of a panel pair on its own area', 'C_{N\\alpha,F}': 'normal-force slope of the fins alone on the reference area',
+    '\\bar c': 'mean aerodynamic chord', x_F: 'fin centre of pressure', '\\tau': 'ratio of body radius to fin tip radius ($r/s$)', r: 'body radius at the fins', s: 'fin tip radius from the centre line',
+    'K_{W(B)}': 'lift on the fins in the presence of the body relative to the fins alone', 'K_{B(W)}': 'lift carried over onto the body by the fins', '\\bar{x}_{B(W)}': 'centre of pressure of the carry-over lift',
     'C_{N\\alpha,tail}': 'fin set including interference', 'x_{tail}': 'centre of pressure of the fin set', 'C_{N\\alpha}': 'normal-force slope of the whole rocket', SM: 'static margin in calibres',
   },
   report(v, out, R) {

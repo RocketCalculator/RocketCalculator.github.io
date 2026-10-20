@@ -242,7 +242,7 @@ export default {
     h: 'altitude above mean sea level', 'h^*': 'launch-site altitude', 'T^*': 'launch-site air temperature', '\\varphi': 'geodetic latitude',
     h_T: 'tropopause altitude', a_T: 'equatorial tropopause altitude', b_T: 'polar tropopause altitude', T_T: 'tropopause (stratosphere) temperature', p_T: 'tropopause pressure',
     T: 'air temperature', p: 'air pressure', '\\rho': 'air density', a: 'speed of sound', '\\alpha': 'tropospheric temperature lapse rate', R: 'gas constant of air',
-    '\\gamma': 'ratio of specific heats of air', 'p_{SL}': 'sea-level pressure on the geoid', 'T_{SL}': 'sea-level temperature of the local profile, $T^*-\\alpha h^*$', g_0: 'gravity on the geoid at this latitude',
+    '\\gamma': 'ratio of specific heats of air', 'p_{SL}': 'sea-level pressure on the geoid', 'T_{SL}': 'sea-level temperature of the local profile ($T^*-\\alpha h^*$)', g_0: 'gravity on the geoid at this latitude',
     'g(h)': 'gravity at altitude', R_E: 'radius of the sphere tangent to the Earth at this latitude', a_E: 'equatorial Earth radius', b_E: 'polar Earth radius',
   },
   constants: [

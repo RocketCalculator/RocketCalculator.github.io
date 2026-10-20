@@ -158,10 +158,10 @@ export default {
     });
   },
   symbols: {
-    R: 'base radius of the nose (body-tube radius)', L: 'nose length, tip to base', a: 'radius of the circular arc that generates the ogive',
+    R: 'base radius of the nose (body-tube radius)', L: 'nose length from tip to base', a: 'radius of the circular arc that generates the ogive',
     x: 'axial distance measured forward from the base', r: 'local body radius', S: 'wetted (lateral) surface area of the nose',
-    M: 'first moment of the wetted area about the base', '\\bar{x}': 'centroid of the wetted area, measured aft of the nose tip',
-    '\\theta_{tip}': 'angle between the surface and the axis at the tip', D: 'base diameter, $2R$', t: 'shell wall thickness', '\\rho': 'shell material density', m: 'shell mass',
+    M: 'first moment of the wetted area about the base', '\\bar{x}': 'centroid of the wetted area measured aft of the nose tip',
+    '\\theta_{tip}': 'angle between the surface and the axis at the tip', D: 'base diameter ($2R$)', t: 'shell wall thickness', '\\rho': 'shell material density', m: 'shell mass',
   },
   report(v, out, R) {
     const o = out.o;

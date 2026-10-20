@@ -93,20 +93,14 @@ function header(active) {
 function footer() {
   return h('footer.site-footer',
     h('div.wrap',
-      h('div',
-        h('h4', 'About'),
-        h('p', 'Interactive calculators built from the rocket-engineering reports of ',
-          h('a', { href: 'http://www.rsandt.com/reports.html', rel: 'noopener' }, 'Rocket Science and Engineering Technologies (rsandt.com)'),
-          ' by C. P. Hoult and his students. Theory, equations and original documents belong to their authors; this site re-implements the published methods for educational use.'),
-        h('p.muted', 'Engineering estimates only — verify against your own analysis and test data before flight.')),
-      h('div', h('h4', 'Explore'),
-        h('ul', h('li', h('a', { href: url('index.html#calculators') }, 'All calculators')),
-          h('li', h('a', { href: url('references/index.html') }, 'Reference library')),
-          h('li', h('a', { href: url('index.html#guide') }, 'How to use this site')))),
-      h('div', h('h4', 'Source'),
-        h('ul', h('li', h('a', { href: 'http://www.rsandt.com/reports.html', rel: 'noopener' }, 'rsandt.com — Reports')),
-          h('li', h('a', { href: 'http://www.rsandt.com/bio.html', rel: 'noopener' }, 'About the author')),
-          h('li', h('span', 'Font: Inter (OFL) · Math: KaTeX (MIT)'))))));
+      h('p.credit', 'Built from the rocket-engineering reports of ',
+        h('a', { href: 'http://www.rsandt.com/reports.html', rel: 'noopener' }, 'Rocket Science and Engineering Technologies'),
+        ' (C. P. Hoult). Engineering estimates only — verify before flight.'),
+      h('nav.foot-links', { 'aria-label': 'Footer' },
+        h('a', { href: url('index.html#calculators') }, 'Calculators'),
+        h('a', { href: url('references/index.html') }, 'References'),
+        h('a', { href: url('index.html#guide') }, 'How to use'),
+        h('a', { href: 'http://www.rsandt.com/bio.html', rel: 'noopener' }, 'About the author'))));
 }
 
 /* ---------------- command palette ---------------- */

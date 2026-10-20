@@ -183,6 +183,7 @@ export default {
     for (let i = 0; i <= 60; i++) { const xs = xs0 + ((Ln - xs0) * i) / 60; top.push([X(xs), Y(rN(xs))]); bot.push([X(xs), Y(-rN(xs))]); }
     const body = [...top, [X(Lb), Y(R)], [X(Lb), Y(-R)], ...bot.reverse()];
     g.append(s('path', { class: 'sc-body', d: path(body, true), 'data-field': 'noseLength bodyRadius bodyLength ogive' }));
+    g.append(s('line', { x1: X(Ln), x2: X(Ln), y1: Y(R), y2: Y(-R), class: 'sc-line', 'data-field': 'noseLength' }));
     // laminar region overlay
     const xt = Math.min(12 * r.xTr, Lb);
     if (xt > xs0) {
@@ -244,12 +245,12 @@ export default {
   symbols: {
     M: 'flight Mach number', T: 'static air temperature', 'p_\\infty': 'static air pressure', '\\frac{\\rho a}{\\mu}': 'Reynolds number per unit length per unit Mach number', 'K_{Re}': 'constant of the Reynolds-number relation',
     Re_T: 'transition Reynolds number', l_T: 'laminar run length from the tip', 'x_{trip}': 'boundary-layer trip station', 'S_{wet}': 'body wetted area', 'S_{nose}': 'nose wetted area', 'lamS_{wet}': 'body wetted area ahead of transition',
-    R: 'body radius', L: 'overall length', L_n: 'nose length', Re_L: 'Reynolds number on the overall length', C_f: 'area-averaged body skin-friction coefficient', 'S_{ref}': 'reference area, $\\pi d^2/4$',
+    R: 'body radius', L: 'overall length', L_n: 'nose length', Re_L: 'Reynolds number on the overall length', C_f: 'area-averaged body skin-friction coefficient', 'S_{ref}': 'reference area ($\\pi d^2/4$)',
     'C_{D_f,body}': 'body skin-friction drag coefficient', '\\bar c': 'average fin chord', 'Re_{\\bar c}': 'fin chord Reynolds number', 'C_{f,fin}': 'fin skin-friction coefficient', N: 'number of fins', 'S_{fin}': 'area of one side of one fin',
     'C_{D_f,fins}': 'fin skin-friction drag coefficient', 'C_{PB}': 'subsonic base-pressure coefficient', 'M_{lim}': 'Mach number where the transonic base drag meets the quasi-vacuum law', '\\gamma': 'ratio of specific heats (1.4)',
     'C_{D_B}': 'body base drag coefficient (power-off)', 'C_{D_B,on}': 'body base drag coefficient (power-on)', 'S_{ex}': 'nozzle exit area', 'C_{DB,fins}': 'fin trailing-edge base drag coefficient', t: 'fin thickness', b: 'fin exposed semispan',
     'C_{PT}': 'stagnation-pressure coefficient', 'C_{D,LE}': 'fin leading-edge pressure drag coefficient', '\\Lambda': 'fin leading-edge sweep', 'C_{D,lugs}': 'launch-lug drag coefficient', 'n_{lug}': 'number of lugs', '2Rh': 'frontal area of one lug',
-    'C_{D,flat}': 'flat nose-face drag coefficient', d_f: 'flat-face diameter', 'C_{D,wave}': 'supersonic wave drag (input)', 'C_{D,off}': 'total drag coefficient, power-off', 'C_{D,on}': 'total drag coefficient, power-on',
+    'C_{D,flat}': 'flat nose-face drag coefficient', d_f: 'flat-face diameter', 'C_{D,wave}': 'supersonic wave drag (input)', 'C_{D,off}': 'total drag coefficient with the motor off', 'C_{D,on}': 'total drag coefficient with the motor burning',
   },
   report(v, out, R) {
     const r = out.r, n = R.n, M = v.M;

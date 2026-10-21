@@ -161,6 +161,7 @@ CALCULATORS = [
     ('parachute-recovery', 'Parachute Recovery', 'Reco', 'Descent time, wind drift and landing speeds of a two-piece rocket under one parachute, with optional reefing.'),
     ('upper-stage-divergence', 'Upper-Stage Divergence', 'BodyAero', 'Divergence dynamic pressure and load amplification of a flexible upper stage or payload joint, with the longest safe stage.'),
     ('launcher-deflection', 'Launcher Rail Deflection', 'NewLaun', 'Rail tip slope at tip-off from weight and thrust misalignment, and the longest acceptable rail on a tower truss.'),
+    ('tethered-pibal', 'Tethered Balloon Wind Sensor', 'WindMeas', 'Wind speed and direction from the elevation angle of a tethered pilot balloon, corrected for tether sag and drag.'),
     ('two-stage-weights', 'Two-Stage Weight Allocation', 'OptiWeigAllo', 'Lightest split of mass between two stages for a payload and a required ideal velocity (Vertregt).'),
 ]
 

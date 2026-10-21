@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tethered Balloon Wind Sensor — Theory & documentation — Rocket Calculator</title>
+<meta name="description" content="Measuring low-level winds with a tethered pilot balloon: force balance, tether sag and drag bias corrections, and wind components.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../css/site.css">
+<script>try{var t=JSON.parse(localStorage.getItem('rc-theme'));if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<main id="main">
+<div class="wrap">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Home</a><span class="sep">/</span><a href="../index.html#area-traj">Trajectory, Wind &amp; Launch</a><span class="sep">/</span><a href="../calculators/tethered-pibal.html">Tethered Balloon Wind Sensor</a><span class="sep">/</span><span>Documentation</span></nav>
+  <div class="calc-title"><h1>Tethered Balloon Wind Sensor — theory</h1></div>
+  <p class="calc-sub">Low-level winds from a tethered pilot balloon. Based on C. P. Hoult, <em>Tethered Pilot Balloon Bias Errors (rev. 1)</em>, 2013, <em>Kite Catenary</em>, 2006, and the CSULB wind-sensor reports of M. F. Buharie, S. Mohamed and M. Samir.</p>
+  <div class="calc-badges"><a class="btn small primary" href="../calculators/tethered-pibal.html">Open the calculator</a><a class="btn small" href="../references/index.html#tpb-bias-errors">Bias-error memo (PDF)</a></div>
+  <div class="doc-layout">
+    <nav class="doc-toc" aria-label="Contents"></nav>
+    <article class="doc">
+
+      <section id="overview">
+        <h2>Overview</h2>
+        <p>Wind compensation needs the wind profile at launch time. The classical method — free pilot balloons tracked by two theodolites — is beyond a student budget, and free balloons rise erratically. A cheaper way uses a single helium balloon on a thin tether: the wind pushes it downwind until the tether leans at an angle set by the ratio of the balloon’s lift to its drag. An elevation sensor (such as a SkyScout) at the winch reads that angle and the azimuth. This works up to about 1 km; above that, winds come from the forecast winds aloft. The measured and forecast winds, resolved north–south and east–west, go into the trajectory simulation for wind compensation.</p>
+      </section>
+
+      <section id="balance">
+        <h2>Force balance</h2>
+        <p>The balloon of diameter <span class="tex">D</span> has buoyancy <span class="tex">B=\rho g\pi D^3/6</span> in the air of density <span class="tex">\rho</span> at its height, and weight <span class="tex">W</span> (skin plus gas). The gas is filled on the ground, so its weight is <span class="tex">W_g=\frac{p_G}{R_gT_G}\,g\,\frac{\pi D^3}{6}</span>. In steady wind the tether lines up with the resultant of the net lift <span class="tex">B-W</span> and the drag <span class="tex">\tfrac12\rho V^2C_DS</span>, so</p>
+        <div class="eq"><div class="tex-display">\tan\Theta=\frac{B-W}{\tfrac12\rho V^2C_DS}\quad\Rightarrow\quad V=\sqrt{\frac{2(B-W)\cot\Theta}{\rho C_DS}}</div></div>
+        <p>where <span class="tex">S=\pi D^2/4</span>. The calculator takes the air density at the balloon from the standard troposphere at the site elevation plus the balloon height <span class="tex">h=d\sin\Theta</span>. The response curve (elevation against wind speed) shows why a 3 ft balloon suits winds up to about 7 m/s: smaller balloons are blown down at modest winds, larger ones barely lean in light air. The sphere’s drag coefficient falls from about 0.47 to 0.1–0.2 above the drag crisis (Reynolds number ≈ 3×10⁵), which a large balloon in strong wind can reach.</p>
+      </section>
+
+      <section id="bias">
+        <h2>Tether bias corrections</h2>
+        <p>Strictly, the angle in the force balance is the tether angle at the balloon, not the one measured at the winch. Gravity sags the tether and the wind bows it downwind; both make the angle at the winch steeper, so the raw formula overestimates the wind.</p>
+        <p><strong>Sag.</strong> The catenary solution for a flexible cable gives the change of angle between the ends, <span class="tex">\Delta\Theta=W_T\cos\Theta/2T</span>, with the tether weight <span class="tex">W_T</span> and tension <span class="tex">T=(B-W)\csc\Theta</span>:</p>
+        <div class="eq"><div class="tex-display">\Delta\Theta_W=\frac{W_T\sin2\Theta}{4(B-W)}</div></div>
+        <p><strong>Drag.</strong> The cross-flow component <span class="tex">V\sin\Theta</span> drags each element of tether of radius <span class="tex">r</span>; over a deployed length <span class="tex">d</span> in a uniform wind, <span class="tex">D_T=C_d\rho rdV^2\sin^2\Theta</span>, and</p>
+        <div class="eq"><div class="tex-display">\Delta\Theta_D=\frac{C_d\rho rdV^2\sin^3\Theta}{2(B-W)}</div></div>
+        <p>Both are small, so they add, and the cotangent in the force balance is corrected to first order:</p>
+        <div class="eq"><div class="tex-display">\cot(\Theta+\Delta\Theta)\simeq\cot\Theta\left[1-\frac{W_T+C_d\rho rdV^2\tan\Theta\sin\Theta}{2(B-W)}\right]=\cot\Theta\,(1-b-c)</div></div>
+        <p>The corrected speed is therefore <span class="tex">V_c=V\sqrt{1-b-c}</span>, with <span class="tex">V</span> from the uncorrected balance. The tether cross-flow drag coefficient is about 1.92 at the low Reynolds number (≈ 56) of a 0.011 in line.</p>
+      </section>
+
+      <section id="components">
+        <h2>Wind components</h2>
+        <p>The balloon drifts downwind, so its azimuth <span class="tex">\psi</span> from the winch is the direction the wind blows towards. The north and east components for the trajectory simulation are <span class="tex">V_N=V_c\cos\psi</span> and <span class="tex">V_E=V_c\sin\psi</span>.</p>
+      </section>
+
+      <section id="verification">
+        <h2>Verification</h2>
+        <p>The tests reproduce the field tool’s wind speeds, bias terms, corrected speeds and heights for both of its readings when given its own buoyancy, weights and densities. They also reproduce the memo’s worked example (3 ft balloon, 600 ft of tether at 56.44°, raw speed 10.708 ft/s, tether-weight term 0.01685), its helium weight of 0.15 lb, the component split and a sinking-balloon case.</p>
+      </section>
+
+      <section id="notes">
+        <h2>Notes on the method</h2>
+        <ul>
+          <li><strong>Tether-drag term of the memo’s example.</strong> The memo’s numerical example puts the normal velocity <span class="tex">V\sin\Theta</span> in place of <span class="tex">V</span> in eq. (5). Eq. (5) already contains the <span class="tex">\sin^2\Theta</span> of the normal velocity, so this counts it twice: the example quotes 0.0882 where eq. (5) gives 0.127. The calculator (like the field tool) uses eq. (5) as written; the example then overestimates the wind by about 7.5 %, not 5.4 %.</li>
+          <li><strong>Gas weight.</strong> The field tool computes the helium weight from pressure in pascals and volume in cubic feet in one formula, which roughly doubles it (0.31 lb instead of 0.15 lb for a 3 ft balloon). The calculator computes the gas mass consistently; the field tool’s numbers are reproduced in the tests only when its own weights are supplied.</li>
+          <li><strong>Tether length.</strong> Enter the tether paid out directly; the winch odometer calibration of the original field tool is specific to its winch.</li>
+          <li><strong>Steady, uniform wind.</strong> Gusts move the balloon; average several readings.</li>
+        </ul>
+      </section>
+
+      <section id="references">
+        <h2>References</h2>
+        <ol class="refs">
+          <li>C. P. Hoult, “Tethered Pilot Balloon Bias Errors (rev. 1),” RS&amp;T, 2013. <a href="../references/index.html#tpb-bias-errors">View in library</a></li>
+          <li>C. P. Hoult, “Kite Catenary,” RS&amp;T, 2006. <a href="../references/index.html#tether-catenary">View in library</a></li>
+          <li>C. P. Hoult, “Winch Equations,” RS&amp;T, 2008. <a href="../references/index.html#winch-equations">View in library</a></li>
+          <li>M. Samir and M. F. Buharie, “A New Wind Sensor for Rocket Launches,” CSULB. <a href="../references/index.html#csulbwindsensor">View in library</a></li>
+          <li>M. F. Buharie and S. Mohamed, “A New Wind Sensor for Rocket Launches,” AIAA student paper, 2008. <a href="../references/index.html#a-new-wind-sensor-for-rockets-orig">View in library</a></li>
+          <li>R. T. Jones, “Effects of Sweepback on Boundary Layer and Separation,” NACA Report 884, 1947.</li>
+          <li>S. F. Hoerner, <em>Fluid-Dynamic Drag</em>, 1965.</li>
+        </ol>
+      </section>
+    </article>
+  </div>
+</div>
+</main>
+<script type="module">
+import { mountDocs } from '../js/docs.js';
+mountDocs();
+</script>
+</body>
+</html>

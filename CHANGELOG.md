@@ -4,6 +4,14 @@ Every commit adds an entry here, newest first. Live site: https://darasamii.gith
 
 ## 2026-10-21
 
+### New calculator: Tethered Balloon Wind Sensor
+- Added: `calculators/tethered-pibal.html`. It gives the wind speed from the elevation angle of a tethered pilot balloon (force balance, eq. 1), corrected for tether sag and drag (eq. 5), with the balloon height and the north and east components.
+- The gas weight comes from the fill pressure and temperature, and the air density at the balloon from the standard troposphere.
+- Drawing: the tether line of sight and its sag, the balloon's lift and drag, the elevation angle and height, a draggable balloon, and a compass inset.
+- Plots: elevation against wind speed (response curves for three balloon sizes), the correction against tether length, and the two bias terms against angle.
+- Documented: the memo's worked example uses $V\sin\Theta$ in eq. (5), counting $\sin^2\Theta$ twice (0.0882 where the formula gives 0.127). The field tool's helium weight mixes pascals and cubic feet, roughly doubling it.
+- Tests: both field-tool readings reproduced with its own weights, the memo example, the helium weight, components, and random-input invariants.
+
 ### New calculator: Launcher Rail Deflection
 - Added: `calculators/launcher-deflection.html`. The launcher rail on a three-tube tower truss ($I=\pi Dt\,d^2/2$, or any $I$) is treated as a cantilever. The lateral load is the weight component plus $n_\sigma$ thrust misalignments.
 - Results: the tip slope in pitch and yaw with the memo's dynamic factor of 2, the tip deflection, and the longest acceptable rail.

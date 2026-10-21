@@ -158,6 +158,12 @@
    "description": "Rail tip slope at tip-off from weight and thrust misalignment, and the longest acceptable rail on a tower truss."
   },
   {
+   "slug": "tethered-pibal",
+   "title": "Tethered Balloon Wind Sensor",
+   "topic": "wind-measurement",
+   "description": "Wind speed and direction from the elevation angle of a tethered pilot balloon, corrected for tether sag and drag."
+  },
+  {
    "slug": "two-stage-weights",
    "title": "Two-Stage Weight Allocation",
    "topic": "optimum-weight-allocation",
@@ -984,9 +990,11 @@
    "area": "traj",
    "summary": "Measuring the wind profile with tethered pilot balloons.",
    "abstract": "For any rocket larger than the small hobby rockets sold by Estes, wind measurement and trajectory wind compensation by adjusting the launcher azimuth and elevation angles is essential to trouble free recovery operations. This is because uncompensated winds can move the impact point prodigious distances, often of the same order as apogee altitude. Without wind compensation, that implies a lot of cross country running over hot desert sands. The first step in wind compensation is measurement of the wind field that a rocket will fly through. We propose a simple wind measurement scheme. Use aviation weather for winds at higher altitudes, and a simple tethered pilot balloon (pibal) sensor to measure low altitude in situ winds near the launch site. Aviation winds aloft can be found by a telephone call to the FAA. Airport_Communications_Lucerne_Valley.doc is a data base developed by Faisal Buharie, a CSULB student and a private pilot, which provides voice links to the FAA for launches from the Lucerne Valley ROC launch site. Similar data bases can be developed for other launch sites. The tethered pibal wind sensor is described in CSULBWindSensor.doc and a slightly later version of the same paper, A New Wind Sensor for Rockets.pdf . These documents, and all the fabrication and testing described were done by four CSULB undergraduate students, Faisal Buharie, Samir Mohammed, Oscar Mejia and Anusha Prabhakar. There are several key tricks needed to implement what would otherwise be a simple scheme: 1. Be sure to include the effects of Reynolds number on balloon drag as it influences boundary layer transition. 2. The assumption of a straight line tether is valid to first order. However, bias errors due to gravity and aerodynamic drag acting on the tether should be reflected in the data processing. See TPB Bias Errors.doc for a description of these effects. 3. Nonlinearities in the winch tether deployed vs. winch revolutions should be modeled. 4. The importance of using a SkyScout™ to measure azimuth and elevation angle of the line of sight to the pibal cannot be overestimated Some of these details are described in Tether Catenary.doc , Winch Equations.doc , Winch Concept.ppt and Balloon_Inflating_Deployment_and Disassembly.doc by Faisal Buharie. Some wind data, obtained while a cold front was moving through the test area, can be found in Mojave Winds.doc .",
-   "status": "soon",
-   "calculators": [],
-   "wasSoon": false,
+   "status": "available",
+   "calculators": [
+    "tethered-pibal"
+   ],
+   "wasSoon": true,
    "references": [
     "airport-communications-lucerne-valley",
     "csulbwindsensor",

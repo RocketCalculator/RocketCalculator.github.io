@@ -158,6 +158,7 @@ CALCULATORS = [
     ('wind-compensation', 'Wind Compensation', 'WindComp', 'Launcher quadrant elevation and azimuth that cancel the wind drift and place the impact point where you want it.'),
     ('pitch-yaw-wavenumber', 'Pitch-Yaw Wave Number', 'PitcWave', 'Pitch/yaw wavelength, wave number and natural frequency of a statically stable rocket.'),
     ('roll-rate-history', 'Roll Rate History', 'RollRate', 'Roll rate from launcher exit to burnout with roll inertia, roll turns during boost, and the roll rate at apogee.'),
+    ('parachute-recovery', 'Parachute Recovery', 'Reco', 'Descent time, wind drift and landing speeds of a two-piece rocket under one parachute, with optional reefing.'),
     ('two-stage-weights', 'Two-Stage Weight Allocation', 'OptiWeigAllo', 'Lightest split of mass between two stages for a payload and a required ideal velocity (Vertregt).'),
 ]
 

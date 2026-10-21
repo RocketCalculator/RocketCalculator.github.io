@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Parachute Recovery — Theory & documentation — Rocket Calculator</title>
+<meta name="description" content="Descent time, wind drift and landing speeds of a two-piece sounding rocket under a single, optionally reefed, parachute.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../css/site.css">
+<script>try{var t=JSON.parse(localStorage.getItem('rc-theme'));if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<main id="main">
+<div class="wrap">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Home</a><span class="sep">/</span><a href="../index.html#area-recovery">Recovery</a><span class="sep">/</span><a href="../calculators/parachute-recovery.html">Parachute Recovery</a><span class="sep">/</span><span>Documentation</span></nav>
+  <div class="calc-title"><h1>Parachute Recovery — theory</h1></div>
+  <p class="calc-sub">One parachute for a two-piece rocket. Based on C. P. Hoult, <em>Dual Purpose Parachute Recovery System (rev. 2)</em> and <em>Parachute Reefing</em>, 2013, with reefing data from T. W. Knacke, <em>Reefing of Parachutes</em>, 1976.</p>
+  <div class="calc-badges"><a class="btn small primary" href="../calculators/parachute-recovery.html">Open the calculator</a><a class="btn small" href="../references/index.html#dpparachuterev2">Recovery memo (PDF)</a><a class="btn small" href="../references/index.html#parachute-reefing">Reefing memo (PDF)</a></div>
+  <div class="doc-layout">
+    <nav class="doc-toc" aria-label="Contents"></nav>
+    <article class="doc">
+
+      <section id="overview">
+        <h2>Overview</h2>
+        <p>Recovering every piece of a student rocket intact is harder than it sounds. The usual scheme deploys a drogue high up to bring the dynamic pressure down, then a main parachute low down. The scheme analysed here, suggested by Adam Vore, uses a single parachute instead.</p>
+        <p>Just below apogee the rocket separates into a heavy, solid nose (payload or ballast) and a lighter aft body that carries the electronics. A small charge pushes the parachute out; the nose pulls out a tether coiled round an arbor, and the tether extracts the parachute. The parachute deploys reefed — held partly closed by a cord round its skirt — so the rocket descends fast and drifts little. Near the ground the reefing line is cut, the canopy opens fully and the descent slows. At landing the heavy nose touches down first; the tether goes slack and the aft body, now carried by the whole parachute, slows further before it lands.</p>
+      </section>
+
+      <section id="descent">
+        <h2>Descent through the troposphere</h2>
+        <p>In steady descent the drag balances the weight of everything under the parachute, <span class="tex">M=m_1+m_2</span>:</p>
+        <div class="eq"><div class="tex-display">Mg=\tfrac12C_D\rho SV^2,\qquad V=-\frac{dh}{dt}=\sqrt{\frac{2Mg}{C_D\rho S}}</div></div>
+        <p>where <span class="tex">S=\pi D_0^2/4</span> is the flat area of the canopy. In the troposphere the temperature falls linearly, <span class="tex">T=T_0\tau</span> with <span class="tex">\tau=1+\alpha h/T_0</span>, and the density follows</p>
+        <div class="eq"><div class="tex-display">\rho=\rho_0\tau^m,\qquad m=-\frac{g}{\alpha R}-1\approx4.256</div></div>
+        <p>so <span class="tex">V=V_0\tau^{-m/2}</span>, where <span class="tex">V_0</span> is the sea-level descent speed. Integrating <span class="tex">dt=-dh/V</span> between two altitudes gives the time in closed form:</p>
+        <div class="eq"><div class="tex-display">t=\frac{T_0\left(\tau_a^{\,e}-\tau_b^{\,e}\right)}{\alpha V_0\,e},\qquad e=\frac m2+1</div></div>
+        <p>With reefing the descent has two parts: from deployment to disreef with the reefed drag, then from disreef to the ground with the full drag. The total time sets the wind drift, <span class="tex">x_w=w\,t</span> for a mean wind <span class="tex">w</span>. Altitudes in the model are above sea level, so the landing area’s elevation matters: thinner air at a high desert site means a faster landing.</p>
+      </section>
+
+      <section id="reefing">
+        <h2>Reefing</h2>
+        <p>An open flat circular canopy has a mouth about 0.62 of its flat diameter. Constricting it with a reefing line of diameter <span class="tex">D_R</span> reduces the drag as Knacke’s measurements show (the “Reefed drag” plot, digitised from the reefing memo). A larger reefing ratio means more drag, a slower descent and more drift; a smaller one means a faster descent but a higher speed at disreef. For small parachutes keep <span class="tex">D_R/D_0</span> above about 0.2 (0.06 for canopies over 4 m), or the canopy may be unstable.</p>
+        <p>The reefing line must hold the canopy at deployment. Dimensional analysis and Knacke’s data for a 28 ft canopy suggest</p>
+        <div class="eq"><div class="tex-display">S_R\ge q_D\,\frac\pi4D_0^2\,C_S,\qquad C_S\approx0.02\ \ (D_R\ge0.06D_0)</div></div>
+        <p>where <span class="tex">q_D</span> is the dynamic pressure just before deployment.</p>
+      </section>
+
+      <section id="impact">
+        <h2>Landing</h2>
+        <p>The nose lands at the steady descent speed at ground level, <span class="tex">V_I</span>. From then on the parachute carries only the aft body, which decelerates:</p>
+        <div class="eq"><div class="tex-display">m_2\frac{dV}{dt}=m_2g-\tfrac12C_D\rho SV^2\quad\Rightarrow\quad-\tfrac12m_2\frac{dV^2}{dh}=m_2g-\tfrac12C_D\rho SV^2</div></div>
+        <p>Starting from <span class="tex">V_I</span> when the aft body is a tether length <span class="tex">L</span> above the ground, it lands at</p>
+        <div class="eq"><div class="tex-display">V_{aft}^2=\frac{2m_2g}{C_D\rho S}+\frac{2m_1g}{C_D\rho S}\exp\left(-\frac{C_D\rho SL}{m_2}\right)</div></div>
+        <p>The speed falls from the nose speed towards <span class="tex">\sqrt{2m_2g/(C_D\rho S)}</span> over a distance of order <span class="tex">m_2/(C_D\rho S)</span>; a tether several times longer than that gains little more. The memo’s example uses a 33 ft tether, which a 2 in spool of 1/8 in nylon cord can hold.</p>
+      </section>
+
+      <section id="drift">
+        <h2>Wind drift</h2>
+        <p>The parachute drifts with the wind for the whole descent. The calculator uses a single mean wind speed; winds aloft are usually stronger than at the ground, so take a representative value from the forecast winds aloft. The drift grows with the descent time, which is why reefing high up — to come down fast — helps keep the rocket on the range.</p>
+      </section>
+
+      <section id="verification">
+        <h2>Verification</h2>
+        <p>The tests compare the closed-form descent time with direct numerical integration of <span class="tex">dt=dh/V</span>, the landing formula with an integration of the aft body’s equation of motion over the tether, and the constant-density case with the 25 000 ft dart-descent table. The field tool’s cells are reproduced exactly when its own density exponent is used (see below). The reefing curve is checked to be monotone and to give the memo’s reefed descent speed (≈ 61 ft/s at sea level) within 2 ft/s.</p>
+      </section>
+
+      <section id="notes">
+        <h2>Notes on the method</h2>
+        <ul>
+          <li><strong>Density exponent.</strong> The original field tool writes the troposphere density as <span class="tex">\rho_0\tau^{-1/(\alpha R)-1}</span> with <span class="tex">R=1716\ \mathrm{ft^2\,s^{-2}\,{}^\circ R^{-1}}</span>, which omits <span class="tex">g</span> (the exponent needs <span class="tex">R/g=53.3\ \mathrm{ft\,{}^\circ R^{-1}}</span>). Its density then barely changes with altitude, and its descent speed even falls with height. The calculator uses the standard exponent <span class="tex">-g/(\alpha R)-1</span>. For the tool’s example (25 000 ft to 3 400 ft) the descent takes 257 s instead of the tool’s 334 s, and the landing speeds use the actual density at the ground.</li>
+          <li><strong>Steady descent.</strong> Deployment transients and opening shock are not modelled; use an opening-shock tool (such as OSCALC) for the loads.</li>
+          <li><strong>Troposphere.</strong> Deployment must be below the tropopause (about 36 000 ft).</li>
+        </ul>
+      </section>
+
+      <section id="references">
+        <h2>References</h2>
+        <ol class="refs">
+          <li>C. P. Hoult, “Dual Purpose Parachute Recovery System (rev. 2),” RS&amp;T, 2 May 2013. <a href="../references/index.html#dpparachuterev2">View in library</a></li>
+          <li>C. P. Hoult, “Parachute Reefing,” RS&amp;T, 25 July 2013. <a href="../references/index.html#parachute-reefing">View in library</a></li>
+          <li>T. W. Knacke, “Reefing of Parachutes,” U.S. Air Force Aeronautical Systems Division, AD-A036 497, 1976.</li>
+          <li>G. Peek and J. Potvin, “OSCALC — Opening Shock Calculator, Version 1.01, User’s Manual,” Parks College Parachute Research Group, Saint Louis University.</li>
+        </ol>
+      </section>
+    </article>
+  </div>
+</div>
+</main>
+<script type="module">
+import { mountDocs } from '../js/docs.js';
+mountDocs();
+</script>
+</body>
+</html>

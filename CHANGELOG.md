@@ -4,6 +4,14 @@ Every commit adds an entry here, newest first. Live site: https://darasamii.gith
 
 ## 2026-10-21
 
+### New calculator: Parachute Recovery
+- Added: `calculators/parachute-recovery.html`. It covers a two-piece rocket under one parachute with optional reefing: descent time in closed form through the troposphere, wind drift, the descent speeds at deployment and disreef, the nose and aft-body landing speeds (memo eq. 7), and the reefing-line strength.
+- The reefed drag comes from Knacke's data for flat circular canopies, digitised from the reefing memo.
+- Drawing: the descent path with drift, the parachute reefed then open, and the landing sequence with the tether.
+- Plots: descent speed against altitude, height against time, aft impact speed against tether length, and the reefing curve.
+- The original field tool's density exponent omits $g$ (it uses $R=1716$ where $R/g$ is needed). The calculator uses the standard troposphere; for the tool's example the descent takes 257 s, not 334 s. This is documented.
+- Tests: the field tool reproduced exactly with its own exponent, the 25 000 ft dart table, quadrature of the descent time, an ODE check of the landing formula, the memo's reefed descent speed, and random-input invariants.
+
 ### New calculator: Roll Rate History
 - Added: `calculators/roll-rate-history.html`. Given the fin set and its cant, it gives the roll rate from launcher exit to burnout including roll inertia, the roll turns during boost, and the roll rate at apogee.
 - Roll derivatives come from strip theory, shared with Fin Cant Angle, and the fin geometry is shared too.

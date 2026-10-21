@@ -93,6 +93,7 @@ const REPAIR = {
   'nozzle-thrust': (v, r) => { if (r() < 0.8) v.pa = Math.min(v.pa, 0.45 * r() * v.pc); },
   'wind-compensation': (v, r) => { for (const k of ['WI', 'WC', 'R']) if (Math.abs(v[k]) > 5500) v[k] = Math.sign(v[k]) * 5500 * r(); },
   'roll-rate-history': (v, r) => { if (v.b <= v.R) v.b = v.R * (1.1 + r()); if (v.hB <= v.L) v.hB = v.L * (2 + 20 * r()); },
+  'parachute-recovery': (v, r) => { if (v.hG + v.hD > 36000) { v.hG = 6000 * r(); v.hD = 1000 + 25000 * r(); } if (v.reef && v.hR >= v.hD) v.hR = v.hD * r(); },
   'two-stage-weights': (v, r) => { const lim = 32.174 * (-v.Isp1 * Math.log(v.s1) - v.Isp2 * Math.log(v.s2)); if (v.dv >= lim) v.dv = lim * (0.02 + 0.93 * r()); },
 };
 
@@ -112,6 +113,7 @@ const INVARIANTS = {
   'wind-compensation': (v, R) => [R.QE > 0 && R.QE <= 90, R.AZT >= 0 && R.AZT < 360, Math.abs(Math.hypot(R.tiltI, R.tiltC) - R.tilt) <= 1e-9 * Math.max(1, R.tilt), Math.abs(R.QE + R.tilt - 90) < 1e-9, R.offAxis >= 0 && R.offAxis <= 90],
   'pitch-yaw-wavenumber': (v, R) => [R.L > 0, Math.abs(R.L * R.lam - 2 * Math.PI) < 1e-9, R.f > 0, Math.abs(R.P * R.f - 1) < 1e-9, R.Cma < 0, R.I > 0],
   'roll-rate-history': (v, R) => [R.fB * Math.sign(v.delta || 1) >= -1e-12, Math.abs(R.fB) <= Math.abs(R.fB0) * (1 + 1e-9) + 1e-12, Math.abs(R.fA) <= Math.abs(R.fB0) * (1 + 1e-9) + 1e-12, R.JB <= 0, R.k <= 0, R.X >= 0, R.CLp < 0],
+  'parachute-recovery': (v, R) => [R.t > 0, R.drift >= 0, R.vAft <= R.vNose * (1 + 1e-12), R.vAft >= R.vAftMin * (1 - 1e-12), R.vDeploy > 0, !v.reef || (R.k > 0 && R.k <= 1 && R.tReefed > 0)],
   'two-stage-weights': (v, R) => [R.M01 >= v.Mpl, R.m1 >= 0 && R.m2 >= 0, Math.abs(R.M01 - v.Mpl - R.m1 - R.m2) <= 1e-9 * R.M01, Math.abs(R.dv1 + R.dv2 - v.dv) <= 1e-6 * v.dv, R.payloadPct > 0 && R.payloadPct <= 100, R.lam > 0],
   'ogive-nose': (v, R) => [R.S > 0, R.xbar > 0 && R.xbar < v.L, R.fineness > 0, R.tipHalfAngle > 0 && R.tipHalfAngle <= 90],
   'subsonic-cp': (v, R, warned) => [R.CNa > 0 || warned, R.CNaFins >= 0, Number.isFinite(R.xcp), R.d > 0],
@@ -315,4 +317,11 @@ test('Roll rate history: more cant spins faster; more inertia lags more; thinner
   increasing([0.0023, 0.0015, 0.0008].map((rhoA) => run('roll-rate-history', { rhoA }).fA), 'p_A vs thinner apogee air');
   const r = run('roll-rate-history', { delta: -0.2 }), f = run('roll-rate-history', { delta: 0.2 });
   assert.ok(Math.abs(r.fB + f.fB) < 1e-9 && Math.abs(r.turns + f.turns) < 1e-9, 'cant sign flips the spin');
+});
+
+test('Parachute recovery: a bigger canopy descends slower; a longer tether lands the aft body softer; reefing shortens the descent', () => {
+  increasing([3, 5, 7, 10].map((D0) => run('parachute-recovery', { D0 }).t), 'time vs bigger canopy');
+  increasing([100, 60, 30, 10, 0].map((L) => run('parachute-recovery', { L }).vAft), 'aft speed vs shorter tether');
+  assert.ok(run('parachute-recovery', { reef: true }).t < run('parachute-recovery', { reef: false }).t, 'reefing descends faster');
+  increasing([0, 3000, 6000].map((hG) => run('parachute-recovery', { hG }).vNose), 'landing speed vs ground elevation');
 });

@@ -140,6 +140,12 @@
    "description": "Roll rate from launcher exit to burnout with roll inertia, roll turns during boost, and the roll rate at apogee."
   },
   {
+   "slug": "parachute-recovery",
+   "title": "Parachute Recovery",
+   "topic": "recovery",
+   "description": "Descent time, wind drift and landing speeds of a two-piece rocket under one parachute, with optional reefing."
+  },
+  {
    "slug": "two-stage-weights",
    "title": "Two-Stage Weight Allocation",
    "topic": "optimum-weight-allocation",
@@ -614,9 +620,11 @@
    "area": "recovery",
    "summary": "Single-parachute dual-purpose recovery, reefing and descent rates.",
    "abstract": "These files address the common need to recover flight hardware intact. First, the use of a single parachute to both provide a rapid descent and a soft landing by splitting the recovered body in two is described in \"Dual Purpose Parachute Recovery System, rev.2\" by C. P. Hoult, RST memo, 2013. It is filed as DPParachute2.doc . For this scheme the two parts are connected by a lanyard. The first part to hit must be robust because it will hit hard. After its impact the parachute will slow down so that the second part has a much gentler impact. The file implementing this is ONECHUTE.xls . An example file is 25KDSCNT.xls . This scheme requires a reefed parachute as described in Parachute Reefing.doc by C. P. Hoult, RST memo, 26 July 2013. For rockets with apogees > 25 km, or so, the dynamic pressure naturally occurring during reentry precludes deployment of a drogue parachute. The customary engineering solution is to separate the body from the fins while still above most of the atmosphere, and let reentry drag slow the body to subsonic speed at low altitude. For this to work, the body must be carefully ballasted to place the longitudinal center of pressure where a high angle of attack and high drag coefficient occur. The theory is described in Hi Alfa Body Aerodynamics.doc , by C. P. Hoult, RST memo, 25 July 2013, which is implemented in JORGENSN.xls . JORGENSN.xls generates the trim angle of attack and drag coefficient as a function of flight condition. The trim drag coefficient must then be entered in a trajectory code to describe the reentry dynamics",
-   "status": "soon",
-   "calculators": [],
-   "wasSoon": false,
+   "status": "available",
+   "calculators": [
+    "parachute-recovery"
+   ],
+   "wasSoon": true,
    "references": [
     "dpparachuterev2",
     "parachute-reefing",

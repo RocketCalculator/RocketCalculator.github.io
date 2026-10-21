@@ -4,6 +4,15 @@ Every commit adds an entry here, newest first. Live site: https://darasamii.gith
 
 ## 2026-10-21
 
+### New calculator: Optimum Nose Shape
+- Added: `calculators/optimum-nose.html`. It compares cone, tangent-ogive, Von Kármán and superellipse noses of your length and radius by minimum pressure behind the shoulder and by critical Mach number, and finds the superellipse exponent with the smallest suction peak.
+- Reuses the Nose Pressure Distribution solver. The optimum is a scan followed by a golden-section refinement of the kink where two suction peaks are equal.
+- Results: the optimum exponent is about 1.75 at $L_n/D=3$ and 1.85 at 6. The original notes' 1.6 is slightly blunt-shouldered.
+- Drawing: the profiles overlaid (radius exaggerated), with a draggable shoulder.
+- Plots: pressure along the nose, minimum pressure against exponent, and critical Mach against fineness (Felkel's Figure 11).
+- Nose Pressure Distribution: the source sum is about 6× faster ($q\sqrt q$ in place of `** 1.5`).
+- Tests: Felkel's Table 1 (cone within 5 %, ogive within 3 %, $M_{cr}$ within 0.006, his optimum matched at $L_n/D=6$), the superellipse limits, local optimality, and random-input invariants.
+
 ### New calculator: Nose Pressure Distribution
 - Added: `calculators/nose-pressure.html`. It computes subsonic surface pressure along any nose shape (shared with the other calculators, or a custom profile) and body, using Munk's line-source sum exactly as in the field tool's VBA. A wake from impulse–momentum and Bernoulli closes the body.
 - Compressibility: the Kármán–Tsien correction, and the critical Mach number solved against the sonic $C_p^*$ (bracketed below the Kármán–Tsien singularity).

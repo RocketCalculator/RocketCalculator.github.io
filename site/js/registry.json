@@ -170,6 +170,12 @@
    "description": "Subsonic surface pressure along a nose and body by line sources, critical Mach number and adverse pressure gradient."
   },
   {
+   "slug": "optimum-nose",
+   "title": "Optimum Nose Shape",
+   "topic": "optimum-nose-shape",
+   "description": "Subsonic nose shape with the smallest suction peak: cone, ogive, Von Kármán and the optimum superellipse compared."
+  },
+  {
    "slug": "two-stage-weights",
    "title": "Two-Stage Weight Allocation",
    "topic": "optimum-weight-allocation",
@@ -558,9 +564,11 @@
    "area": "aero",
    "summary": "Subsonic nose shaping to delay vortex separation and roll lock-in.",
    "abstract": "These files support the design of a “smooth” body of revolution in subsonic flow. “Smooth” means the radial profile has no step changes, although the body radial profile may have slope discontinuities. This process can used to design a nose shape that will inhibit separation of vortices from the forward parts of the body, and thus delay the onset of roll-lockin. This model will generate the subsonic zero angle of attack pressure distribution over any body of revolution lacking significant separated flow regions. The theory used – superposition of sources – used to compute the incompressible surface pressure distribution, and the Karman-Tsien correction for subsonic Mach numbers are described in “ Effect of Different Nose Profiles on Subsonic Pressure Coefficients ” by R. J. Felkel, Region VI AIAA Student Research Conference, San Diego, 2011. This paper may be found in AIAAFelkel3.doc . The associated briefing charts are in AIAAFelkel2.pptx . An EXCEL spreadsheet implementing the incompressible source superposition theory is MUNKSHIP2.xls . Although it was discovered too late for inclusion in the Felkel paper, it turns out that a superellipse with an exponent of 1.6 provides an excellent match to the optimum nose shape. A superellipse is an ordinary ellipse with the exponent 2 replaced with one having a different value. Felkel's work showed that a tangent ogive nose profile performs almost as well as the optimum, and is therefore a good practical shape. Also, Felkel calculated the critical Mach numbers for a variety of nose shapes. See Local Sonic Flow.doc .",
-   "status": "soon",
-   "calculators": [],
-   "wasSoon": false,
+   "status": "available",
+   "calculators": [
+    "optimum-nose"
+   ],
+   "wasSoon": true,
    "references": [
     "aiaafelkel3",
     "local-sonic-flow"

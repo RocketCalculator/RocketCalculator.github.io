@@ -43,8 +43,8 @@ export function sourceCp(r, dz) {
     let s = 0;
     for (let i = 1; i <= n; i++) {
       if (!w[i]) continue;
-      const dzp = (p - i) * dz;
-      s += (dzp * w[i]) / (dzp * dzp + r[i] * r[i]) ** 1.5;
+      const dzp = (p - i) * dz, q = dzp * dzp + r[i] * r[i];
+      s += (dzp * w[i]) / (q * Math.sqrt(q));
     }
     cp[p] = -s;
   }

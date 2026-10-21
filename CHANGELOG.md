@@ -4,6 +4,14 @@ Every commit adds an entry here, newest first. Live site: https://darasamii.gith
 
 ## 2026-10-21
 
+### New calculator: Launcher Rail Deflection
+- Added: `calculators/launcher-deflection.html`. The launcher rail on a three-tube tower truss ($I=\pi Dt\,d^2/2$, or any $I$) is treated as a cantilever. The lateral load is the weight component plus $n_\sigma$ thrust misalignments.
+- Results: the tip slope in pitch and yaw with the memo's dynamic factor of 2, the tip deflection, and the longest acceptable rail.
+- Drawing: the inclined truss with the rocket at the tip, the bent rail (exaggerated), the load arrow and a draggable rail tip, plus the tower cross-section.
+- Plots: tip slope against rail length (as in the memo), slope against elevation, and the longest rail against rocket weight.
+- New unit: second moment of area (cm⁴, in⁴).
+- Tests: the memo's Gold Rush II loads, its tip-angle plot (0.053° at 240 in and 0.21° at 480 in for QE 80°), $I$ against an exact parallel-axis sum, the beam integration, and random-input invariants.
+
 ### New calculator: Upper-Stage Divergence
 - Added: `calculators/upper-stage-divergence.html`. It covers the static aeroelastic divergence of a flexible upper stage, $q_D=2EI/(SC_{NN\alpha}l^2)$ with $EI\approx E\pi R^3t$, or of a flexible joint, $q_D=1/(SC_{NN\alpha}Cx_j)$.
 - Results: the divergence margin, the nose-load amplification $q_D/(q_D-q)$, and the longest safe stage $l_{max}$. An optional whole-rocket trim adds the angle-of-attack amplifications of memo eqs. (1) and (2), including loss of static stability.

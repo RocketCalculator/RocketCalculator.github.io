@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Launcher Rail Deflection — Theory & documentation — Rocket Calculator</title>
+<meta name="description" content="Tip slope of a cantilevered launcher rail at tip-off from the rocket weight component and thrust misalignment, and the longest acceptable rail.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../css/site.css">
+<script>try{var t=JSON.parse(localStorage.getItem('rc-theme'));if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<main id="main">
+<div class="wrap">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Home</a><span class="sep">/</span><a href="../index.html#area-traj">Trajectory, Wind &amp; Launch</a><span class="sep">/</span><a href="../calculators/launcher-deflection.html">Launcher Rail Deflection</a><span class="sep">/</span><span>Documentation</span></nav>
+  <div class="calc-title"><h1>Launcher Rail Deflection — theory</h1></div>
+  <p class="calc-sub">How stiff a launcher rail must be. Based on C. P. Hoult, <em>Launcher Tipoff Deflection</em>, 2010, written for the CSULB launcher described by F. Calderon et al., <em>A New Launcher for University Sounding Rockets</em>, 2011.</p>
+  <div class="calc-badges"><a class="btn small primary" href="../calculators/launcher-deflection.html">Open the calculator</a><a class="btn small" href="../references/index.html#launcher-tipoff-deflection">Original memo (PDF)</a><a class="btn small" href="../references/index.html#a-new-launcher">Launcher paper (PDF)</a></div>
+  <div class="doc-layout">
+    <nav class="doc-toc" aria-label="Contents"></nav>
+    <article class="doc">
+
+      <section id="overview">
+        <h2>Overview</h2>
+        <p>A university sounding rocket that reaches several kilometres can land far from its launcher unless the launcher is set for the winds. The CSULB launcher was built to be adjustable in azimuth (a turntable) and elevation (a scissor jack), transportable, and stiff: its rail rides on a ham-radio tower truss. Its requirements included a rail bending deflection of no more than 0.05° at a quadrant elevation of 80°; Hoult’s memo takes 0.1° as a good general upper bound.</p>
+        <p>The rail must also not rotate as a rigid body when the rocket launches, and its lugs should drop free together (a “zero tip-off” rail-and-lug design, first developed at NACA Wallops). This calculator addresses the bending.</p>
+      </section>
+
+      <section id="beam">
+        <h2>The rail as a cantilever</h2>
+        <p>The rail is cantilevered from its base. The bending is largest just before the rocket leaves, when the greatest moment acts over the greatest length, with the transverse load <span class="tex">F</span> at the tip:</p>
+        <div class="eq"><div class="tex-display">EI\frac{d^2y}{dx^2}=F(L-x)\quad\Rightarrow\quad\frac{dy}{dx}(L)=\frac{FL^2}{2EI},\qquad y(L)=\frac{FL^3}{3EI}</div></div>
+        <p>where <span class="tex">E</span> is the Young’s modulus, <span class="tex">I</span> the second moment of area, <span class="tex">x</span> the distance from the base and <span class="tex">L</span> the rail length. The rocket takes about as long to run up the rail as the rail’s own bending period, so the load is effectively applied suddenly and the rail overshoots: the memo doubles the static slope (dynamic factor <span class="tex">k_d=2</span>). The tip slope is, in effect, a change in quadrant elevation at launch.</p>
+        <p>Solving for the length at which the slope reaches the allowance <span class="tex">\theta_{max}</span> gives the longest acceptable rail, <span class="tex">L_{max}=\sqrt{2EI\theta_{max}/(k_dF)}</span>.</p>
+      </section>
+
+      <section id="loads">
+        <h2>Lateral loads</h2>
+        <p>In the pitch plane the load is the weight component across the rail plus the thrust misalignment:</p>
+        <div class="eq"><div class="tex-display">F_{pitch}=W\cos QE+n_\sigma T\sigma_\delta,\qquad F_{yaw}=n_\sigma T\sigma_\delta</div></div>
+        <p>The weight component is fixed; the misalignment is random, so it is taken at <span class="tex">n_\sigma</span> standard deviations (Ammons and Hoult give standard values; 0.1° is typical). For Gold Rush II (55 lb, 400 lb thrust, QE 80°) the weight component is 9.55 lb while a 3σ misalignment gives only 2.09 lb: the weight dominates.</p>
+      </section>
+
+      <section id="section">
+        <h2>Tower truss stiffness</h2>
+        <p>A ham-radio tower is three steel tubes at the corners of an equilateral triangle of face width <span class="tex">d</span>, tied by welded zig-zag rods that add little bending stiffness. The neutral axis passes through the centroid, twice as far from the single tube as from the pair, so</p>
+        <div class="eq"><div class="tex-display">I=\frac{Ad^2}{2},\qquad A=\pi Dt\quad\Rightarrow\quad I=\frac{\pi Dt\,d^2}{2}</div></div>
+        <p>for tubes of outside diameter <span class="tex">D</span> and wall <span class="tex">t</span>; the second moment about the perpendicular axis is the same, so pitch and yaw are equally stiff. The tip slope before the overshoot factor is then <span class="tex">FL^2/(\pi EDt\,d^2)</span>. For other supports, enter <span class="tex">I</span> directly.</p>
+      </section>
+
+      <section id="verification">
+        <h2>Verification</h2>
+        <p>The tests check the memo’s Gold Rush II load comparison, the truss second moment against an exact parallel-axis sum in both planes, and the slope and deflection against numerical integration of the beam equation. They also reproduce the memo’s plot of tip angle against rail length (weight load only, with the factor 2): about 0.053° at 240 in and 0.21° at 480 in for QE 80°, and 0.027° at 240 in for QE 85°. This confirms the memo’s recommendation that a 20 ft rail keeps the tip-off error below about 0.1°.</p>
+      </section>
+
+      <section id="references">
+        <h2>References</h2>
+        <ol class="refs">
+          <li>C. P. Hoult, “Launcher Tipoff Deflection,” RS&amp;T, 28 August 2010. <a href="../references/index.html#launcher-tipoff-deflection">View in library</a></li>
+          <li>F. Calderon, A. Al Chamas, T. Wilson, A. Vore and B. Vite, “A New Launcher for University Sounding Rockets,” AIAA Region VI student paper, 2011. <a href="../references/index.html#a-new-launcher">View in library</a></li>
+          <li>R. L. Ammons and C. P. Hoult, “Standardized Perturbation Values for Several Sounding Rockets to be Used in the Calculation of Dispersion and Structural Loads,” Aerojet-General memo 8110:M0658:ak, 1970. <a href="../references/index.html#standardized-perturbation-values-orig">View in library</a></li>
+        </ol>
+      </section>
+    </article>
+  </div>
+</div>
+</main>
+<script type="module">
+import { mountDocs } from '../js/docs.js';
+mountDocs();
+</script>
+</body>
+</html>

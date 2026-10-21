@@ -94,6 +94,7 @@ const REPAIR = {
   'wind-compensation': (v, r) => { for (const k of ['WI', 'WC', 'R']) if (Math.abs(v[k]) > 5500) v[k] = Math.sign(v[k]) * 5500 * r(); },
   'roll-rate-history': (v, r) => { if (v.b <= v.R) v.b = v.R * (1.1 + r()); if (v.hB <= v.L) v.hB = v.L * (2 + 20 * r()); },
   'parachute-recovery': (v, r) => { if (v.hG + v.hD > 36000) { v.hG = 6000 * r(); v.hD = 1000 + 25000 * r(); } if (v.reef && v.hR >= v.hD) v.hR = v.hD * r(); },
+  'launcher-deflection': (v, r) => { if (v.D <= 2 * v.t) v.t = v.D * 0.4 * r(); if (v.d <= v.D) v.d = v.D * (1.5 + 10 * r()); },
   'two-stage-weights': (v, r) => { const lim = 32.174 * (-v.Isp1 * Math.log(v.s1) - v.Isp2 * Math.log(v.s2)); if (v.dv >= lim) v.dv = lim * (0.02 + 0.93 * r()); },
 };
 
@@ -115,6 +116,7 @@ const INVARIANTS = {
   'roll-rate-history': (v, R) => [R.fB * Math.sign(v.delta || 1) >= -1e-12, Math.abs(R.fB) <= Math.abs(R.fB0) * (1 + 1e-9) + 1e-12, Math.abs(R.fA) <= Math.abs(R.fB0) * (1 + 1e-9) + 1e-12, R.JB <= 0, R.k <= 0, R.X >= 0, R.CLp < 0],
   'parachute-recovery': (v, R) => [R.t > 0, R.drift >= 0, R.vAft <= R.vNose * (1 + 1e-12), R.vAft >= R.vAftMin * (1 - 1e-12), R.vDeploy > 0, !v.reef || (R.k > 0 && R.k <= 1 && R.tReefed > 0)],
   'upper-stage-divergence': (v, R) => [R.qD > 0, typeof R.amp !== 'number' || R.amp >= 1, typeof R.margin !== 'number' || Math.abs(R.margin - R.qD / v.q) <= 1e-9 * R.margin, v.mode !== 'tube' || Math.abs(R.lmax - v.l * Math.sqrt(R.qD / v.q)) <= 1e-9 * R.lmax],
+  'launcher-deflection': (v, R) => [R.pitchDeg >= R.yawDeg - 1e-12, R.yawDeg >= 0, R.Fp >= R.Ft - 1e-12, R.I > 0, R.Lmax === 'no limit' || Math.abs(v.factor * R.Fp * R.Lmax ** 2 / (2 * R.EI) * 180 / Math.PI - v.allow) <= 1e-9 * v.allow],
   'two-stage-weights': (v, R) => [R.M01 >= v.Mpl, R.m1 >= 0 && R.m2 >= 0, Math.abs(R.M01 - v.Mpl - R.m1 - R.m2) <= 1e-9 * R.M01, Math.abs(R.dv1 + R.dv2 - v.dv) <= 1e-6 * v.dv, R.payloadPct > 0 && R.payloadPct <= 100, R.lam > 0],
   'ogive-nose': (v, R) => [R.S > 0, R.xbar > 0 && R.xbar < v.L, R.fineness > 0, R.tipHalfAngle > 0 && R.tipHalfAngle <= 90],
   'subsonic-cp': (v, R, warned) => [R.CNa > 0 || warned, R.CNaFins >= 0, Number.isFinite(R.xcp), R.d > 0],
@@ -332,4 +334,11 @@ test('Upper-stage divergence: longer or softer stages diverge sooner; loads grow
   increasing([0.05, 0.1, 0.2].map((t) => run('upper-stage-divergence', { t }).qD), 'q_D vs thicker wall');
   increasing([0, 4000, 8000, 12000].map((q) => run('upper-stage-divergence', { q }).amp), 'amplification vs q');
   assert.equal(run('upper-stage-divergence', { q: 1e6 }).amp, 'diverges');
+});
+
+test('Launcher deflection: longer rails and heavier rockets bend more; steeper rails less', () => {
+  increasing([60, 120, 240, 480].map((L) => run('launcher-deflection', { L }).pitchDeg), 'slope vs length');
+  increasing([20, 55, 100].map((W) => run('launcher-deflection', { W }).pitchDeg), 'slope vs weight');
+  increasing([88, 85, 80, 70].map((QE) => run('launcher-deflection', { QE }).pitchDeg), 'slope vs flatter rail');
+  increasing([0.04, 0.065, 0.12].map((t) => run('launcher-deflection', { t }).Lmax), 'L_max vs thicker tubes');
 });

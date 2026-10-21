@@ -45,6 +45,7 @@ export const UNITS = {
   // structural: joint compliance and bending stiffness
   radpernm: { label: 'rad/(N·m)', ...lin(1) }, radperlbin: { label: 'rad/(lbf·in)', ...lin(1 / (LBF * IN)) },
   Nm2: { label: 'N·m²', ...lin(1) }, lbfin2: { label: 'lbf·in²', ...lin(LBF * IN * IN) },
+  cm4: { label: 'cm⁴', ...lin(1e-8) }, in4: { label: 'in⁴', ...lin(IN ** 4) },
 };
 
 /** Default display unit per dimension and system. Fields may override with `units: {si, us}`. */
@@ -79,6 +80,7 @@ export const DIMS = {
   percent: { si: 'pct', us: 'pct' },
   compliance: { si: 'radpernm', us: 'radperlbin' },
   stiffness: { si: 'Nm2', us: 'lbfin2' },
+  areaInertia: { si: 'cm4', us: 'in4' },     // second moment of area
   none: { si: 'none', us: 'none' },
 };
 
@@ -124,7 +126,7 @@ export const UNIT_TEX = {
   kgm2: '\\mathrm{kg\\,m^{2}}', slugft2: '\\mathrm{slug\\,ft^{2}}', lbmin2: '\\mathrm{lb\\,in^{2}}',
   gpm: '\\mathrm{g\\,m^{-1}}', kgpm: '\\mathrm{kg\\,m^{-1}}', lbpin: '\\mathrm{lb\\,in^{-1}}', lbpft: '\\mathrm{lb\\,ft^{-1}}',
   s: '\\mathrm{s}', deg: '{}^{\\circ}', rad: '\\mathrm{rad}', perrad: '\\mathrm{rad^{-1}}', perdeg: '{}^{\\circ\\,-1}',
-  radpernm: '\\mathrm{rad\\,N^{-1}\\,m^{-1}}', radperlbin: '\\mathrm{rad\\,lbf^{-1}\\,in^{-1}}', Nm2: '\\mathrm{N\\,m^{2}}', lbfin2: '\\mathrm{lbf\\,in^{2}}',
+  radpernm: '\\mathrm{rad\\,N^{-1}\\,m^{-1}}', radperlbin: '\\mathrm{rad\\,lbf^{-1}\\,in^{-1}}', Nm2: '\\mathrm{N\\,m^{2}}', lbfin2: '\\mathrm{lbf\\,in^{2}}', cm4: '\\mathrm{cm^{4}}', in4: '\\mathrm{in^{4}}',
   perm: '\\mathrm{m^{-1}}', perft: '\\mathrm{ft^{-1}}', pct: '\\%', none: '',
 };
 export const unitTex = (key) => UNIT_TEX[key] ?? `\\mathrm{${key}}`;

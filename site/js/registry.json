@@ -152,6 +152,12 @@
    "description": "Divergence dynamic pressure and load amplification of a flexible upper stage or payload joint, with the longest safe stage."
   },
   {
+   "slug": "launcher-deflection",
+   "title": "Launcher Rail Deflection",
+   "topic": "new-launcher",
+   "description": "Rail tip slope at tip-off from weight and thrust misalignment, and the longest acceptable rail on a tower truss."
+  },
+  {
    "slug": "two-stage-weights",
    "title": "Two-Stage Weight Allocation",
    "topic": "optimum-weight-allocation",
@@ -433,9 +439,11 @@
    "area": "traj",
    "summary": "Design of a university sounding-rocket launcher and rail deflection.",
    "abstract": "A new launcher for ESRA sounding rockets was developed during the 2010-2011 academic year. A New Launcher.doc contains the overview description, “ A New Launcher for University Sounding Rockets ”, by Fernando Calderon, Abd Al Chamas, Thomas Wilson, Adam Vore & Berton Vite, AIAA Region VI Student Reseach paper, 2011. The presentation charts used in the conference are in New Launcher.pptx . Briefing title and authors are the same as above. Launcher fixed part.pp t is a conceptual sketch of the fixed base. Launcher Tipoff Deflection.doc estimates static bending deflections of the launcher rail during a launch.",
-   "status": "soon",
-   "calculators": [],
-   "wasSoon": false,
+   "status": "available",
+   "calculators": [
+    "launcher-deflection"
+   ],
+   "wasSoon": true,
    "references": [
     "a-new-launcher",
     "launcher-tipoff-deflection"

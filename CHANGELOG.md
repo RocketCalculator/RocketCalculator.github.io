@@ -4,6 +4,11 @@ Every commit adds an entry here, newest first. Live site: https://darasamii.gith
 
 ## 2026-10-20 (continued)
 
+### Two-Stage Weight Allocation: rocket drawing and sliders
+- New drawing: a two-stage rocket (nozzle, fins, interstage, payload bay and nose). Section lengths are proportional to mass. Each motor shows its propellant grain, sized by $1-\sigma$.
+- A stage that the optimum leaves out is drawn as a dashed ghost. This also fixes the old drawing, which labelled the wrong stage as the one carrying everything.
+- Sliders for the specific impulses (100–320 s) and the structural fractions (0.03–0.5).
+
 ### Nozzle Thrust Coefficient: new nozzle drawing
 - Half-section drawing with wall thickness: the cut chamber, the convergent section with a rounded throat entry, and the diverging cone (throat and cone to scale).
 - The gas is shaded by static pressure: the cone uses the Mach number of its local area ratio.

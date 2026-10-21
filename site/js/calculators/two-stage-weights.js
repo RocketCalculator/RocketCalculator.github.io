@@ -7,7 +7,8 @@ import { toDisplay, displayUnit, unitLabel } from '../units.js';
 const SPEED = { dim: 'speed', internal: 'fts' };
 const MASS = { dim: 'mass', internal: 'lbm' };
 const ISP = { dim: 'time', internal: 's' };
-const FRAC = { dim: 'none', min: 0, max: 1, minExclusive: true, maxExclusive: true, step: 0.01 };
+const FRAC = { dim: 'none', min: 0, max: 1, minExclusive: true, maxExclusive: true, step: 0.01, slider: { min: 0.03, max: 0.5, step: 0.01 } };
+const ISP_SLIDER = { slider: { min: 100, max: 320, step: 1 } };
 
 // internal → the exhaust velocities and structural efficiencies the optimum uses
 const stagesOf = (v) => ({ c1: G0 * v.Isp1, c2: G0 * v.Isp2, s1: v.s1, s2: v.s2 });
@@ -53,7 +54,7 @@ export default {
     {
       id: 'stage1', title: 'Stage 1 (lower)',
       fields: [
-        { id: 'Isp1', label: 'Stage 1 specific impulse', sym: 'I_{SP1}', ...ISP, default: 210, min: 0, minExclusive: true, info: { text: 'Delivered specific impulse of the first-stage motor. Exhaust velocity is $c_1=g_0I_{SP1}$.', range: 'Amateur solid motors 150–240 s; hybrids 180–250 s.', doc: 'optimum' } },
+        { id: 'Isp1', label: 'Stage 1 specific impulse', sym: 'I_{SP1}', ...ISP, ...ISP_SLIDER, default: 210, min: 0, minExclusive: true, info: { text: 'Delivered specific impulse of the first-stage motor. Exhaust velocity is $c_1=g_0I_{SP1}$.', range: 'Amateur solid motors 150–240 s; hybrids 180–250 s.', doc: 'optimum' } },
         { id: 's1', label: 'Stage 1 structural fraction', sym: '\\sigma_1', ...FRAC, default: 0.15,
           info: { text: 'Inert mass of the stage (case, nozzle, fins, interstage, unburnt propellant) divided by its loaded mass: $\\sigma_1=M_{ST1}/(M_{ST1}+M_{PR1})$. Also called structural efficiency; smaller is better.', range: 'Large solid stages 0.08–0.15; amateur stages 0.2–0.5.', doc: 'optimum' } },
       ],
@@ -61,7 +62,7 @@ export default {
     {
       id: 'stage2', title: 'Stage 2 (upper)',
       fields: [
-        { id: 'Isp2', label: 'Stage 2 specific impulse', sym: 'I_{SP2}', ...ISP, default: 210, min: 0, minExclusive: true, info: { text: 'Delivered specific impulse of the second-stage motor; it may differ from the first stage’s.', doc: 'optimum' } },
+        { id: 'Isp2', label: 'Stage 2 specific impulse', sym: 'I_{SP2}', ...ISP, ...ISP_SLIDER, default: 210, min: 0, minExclusive: true, info: { text: 'Delivered specific impulse of the second-stage motor; it may differ from the first stage’s.', doc: 'optimum' } },
         { id: 's2', label: 'Stage 2 structural fraction', sym: '\\sigma_2', ...FRAC, default: 0.14, info: { text: 'Inert mass of the second stage divided by its loaded mass, $\\sigma_2=M_{ST2}/(M_{ST2}+M_{PR2})$.', doc: 'optimum' } },
       ],
     },
@@ -148,47 +149,68 @@ export default {
       },
     },
   ],
-  schematicTitle: 'Stage masses (areas to scale)',
-  schematicHint: 'Each section’s area is proportional to its mass; shading is propellant. The bar below splits the ideal velocity between the stages',
+  schematicTitle: 'Stage masses (lengths to scale)',
+  schematicHint: 'Each section’s length is proportional to its mass (equal density), red is propellant, and a stage the optimum leaves out is drawn dashed. The bar below splits the ideal velocity between the stages',
   schematic(ctx, v, out) {
-    const W = 760, H = 320, o = out.o;
-    const fr = ctx.frame({ width: W, height: H, label: 'Two-stage rocket drawn with areas proportional to mass' });
+    const W = 760, H = 330, o = out.o;
+    const fr = ctx.frame({ width: W, height: H, label: 'Two-stage rocket with section lengths proportional to mass' });
     const g = fr.layer('main'); g.replaceChildren();
-    const um = ctx.U(MASS), us = ctx.U(SPEED), M = (x) => `${fmt(um.v(x), { digits: 4 })} ${um.label}`;
-    const x0 = 60, len = 640, cy = 120, h1 = 80, h2 = 58;
-    const m1 = o.stage1.loaded, m2 = o.stage2.loaded, mp = v.Mpl;
-    const k = len / (m1 / h1 + m2 / h2 + (2 * mp) / h2);       // px² per unit mass
-    const L1 = (k * m1) / h1, L2 = (k * m2) / h2, Lp = (2 * k * mp) / h2;
-    const sec = (x, L, h, sig, field, cls) => {
-      if (L < 0.5) return;
-      g.append(s('rect', { x, y: cy - h / 2, width: L, height: h, class: cls, 'data-field': field }));
-      g.append(s('rect', { x, y: cy - h / 2, width: L * (1 - sig), height: h, fill: 'var(--series-1)', 'fill-opacity': 0.22, stroke: 'none', 'data-field': field }));
-      g.append(s('line', { x1: x + L * (1 - sig), x2: x + L * (1 - sig), y1: cy - h / 2, y2: cy + h / 2, class: 'sc-thin', 'stroke-dasharray': '3 3' }));
+    const um = ctx.U(MASS), us = ctx.U(SPEED), M = (x) => `${fmt(um.v(x), { digits: 4 })} ${um.label}`, V = (x) => `${fmt(us.v(x), { digits: 4 })} ${us.label}`;
+    // flight to the right: nozzle | stage 1 | stage 2 | payload | nose. Lengths ∝ mass / diameter (equal density);
+    // a stage left out by the optimum is drawn as a dashed ghost of fixed length
+    const cy = 128, h1 = 66, h2 = 48, x0 = 74, xn = 666, nose = 1.7 * h2, GHOST = 70;
+    const m1 = o.stage1.loaded, m2 = o.stage2.loaded, mp = v.Mpl, out1 = o.single === 2, out2 = o.single === 1;
+    const fixed = (out1 ? GHOST : 0) + (out2 ? GHOST : 0);
+    const k = (xn - nose - x0 - fixed) / ((out1 ? 0 : m1 / h1) + (out2 ? 0 : m2 / h2) + mp / h2);
+    const L1 = out1 ? GHOST : Math.max(3, (k * m1) / h1), L2 = out2 ? GHOST : Math.max(3, (k * m2) / h2), Lp = Math.max(10, (k * mp) / h2);
+    const xs1 = x0, xs2 = xs1 + L1, xp = xs2 + L2, xnose = xp + Lp;
+    const ghost = { fill: 'none', stroke: 'var(--schem-dim)', 'stroke-dasharray': '4 3' };
+    // a motor: case, propellant grain (share 1 − σ of the length) with its bore, aft and forward closures
+    const motor = (x, L, h, sig, field, gone) => {
+      if (gone) { g.append(s('rect', { x, y: cy - h / 2, width: L, height: h, ...ghost, 'data-field': field })); return; }
+      g.append(s('rect', { x, y: cy - h / 2, width: L, height: h, class: 'sc-body', 'data-field': field }));
+      const Lg = L * (1 - sig), xg = x + (L - Lg) * 0.6, hg = h * 0.72;
+      if (Lg > 1) {
+        g.append(s('rect', { x: xg, y: cy - hg / 2, width: Lg, height: hg, rx: Math.min(4, Lg / 4), fill: 'var(--red)', 'fill-opacity': 0.28, stroke: 'var(--red)', 'stroke-opacity': 0.5, 'data-field': field }));
+        g.append(s('line', { x1: xg + 2, x2: xg + Lg - 2, y1: cy, y2: cy, stroke: 'var(--red)', 'stroke-opacity': 0.6, 'stroke-dasharray': '5 3' }));
+      }
     };
-    // nozzle (not to scale)
-    if (L1 >= 0.5) g.append(s('path', { d: `M${x0},${cy - h1 * 0.28} L${x0 - 18},${cy - h1 * 0.4} L${x0 - 18},${cy + h1 * 0.4} L${x0},${cy + h1 * 0.28}`, class: 'sc-line' }));
-    sec(x0, L1, h1, v.s1, 'Isp1 s1', 'sc-body');
-    sec(x0 + L1, L2, h2, v.s2, 'Isp2 s2', 'sc-body-2');
-    const xp = x0 + L1 + L2;
-    g.append(s('path', { d: `M${xp},${cy - h2 / 2} L${xp + Lp},${cy} L${xp},${cy + h2 / 2} Z`, class: 'sc-body-2', 'data-field': 'Mpl' }));
-    // labels: stage 1 above (left), payload above (right), stage 2 below
-    g.append(text(x0, cy - h1 / 2 - 26, 'Stage 1', { size: 12, field: 'Isp1 s1' }));
-    g.append(text(x0, cy - h1 / 2 - 10, o.single === 2 ? `${M(m1)} (carries everything)` : o.single === 1 ? 'left out' : M(m1), { cls: 'sc-dim-text', size: 11, field: 'Isp1 s1' }));
-    g.append(text(x0 + len, cy - h2 / 2 - 26, 'Payload', { anchor: 'end', size: 12, field: 'Mpl' }));
-    g.append(text(x0 + len, cy - h2 / 2 - 10, M(mp), { anchor: 'end', cls: 'sc-dim-text', size: 11, field: 'Mpl' }));
-    const x2 = Math.min(Math.max(x0 + L1 + L2 / 2, x0 + 90), x0 + len - 90);
-    g.append(text(x2, cy + h1 / 2 + 20, 'Stage 2', { anchor: 'middle', size: 12, field: 'Isp2 s2' }));
-    g.append(text(x2, cy + h1 / 2 + 36, o.single === 1 ? `${M(m2)} (carries everything)` : o.single === 2 ? 'left out' : M(m2), { anchor: 'middle', cls: 'sc-dim-text', size: 11, field: 'Isp2 s2' }));
-    g.append(text(20, 22, `liftoff mass M_{01} = ${M(o.M01)} · ${fmt(o.M01 / mp, { digits: 4 })} × payload`, { size: 11 }));
-    // ideal-velocity bar
-    const yb = 250, bh = 16, f1 = o.dv1 / (o.dv1 + o.dv2), B1 = len * f1;
+    // nozzle and fins of the first stage (shape only)
+    const hf = out1 ? h2 : h1, xa = out1 ? xs2 : xs1;
+    g.append(s('path', { d: `M${xa},${cy - hf * 0.2}L${xa - 14},${cy - hf * 0.32}V${cy + hf * 0.32}L${xa},${cy + hf * 0.2}`, class: 'sc-body-2' }));
+    if (!out1) for (const sg of [-1, 1]) g.append(s('path', { d: `M${xs1 + 2},${cy + sg * h1 / 2}L${xs1 - 6},${cy + sg * (h1 / 2 + 26)}L${xs1 + Math.min(42, L1 * 0.45)},${cy + sg * (h1 / 2 + 26)}L${xs1 + Math.min(62, L1 * 0.7)},${cy + sg * h1 / 2}`, class: 'sc-body-2', 'data-field': 'Isp1 s1' }));
+    motor(xs1, L1, h1, v.s1, 'Isp1 s1', out1);
+    // interstage taper, then the second stage
+    if (!out1) g.append(s('path', { d: `M${xs2 - 10},${cy - h1 / 2}L${xs2},${cy - h2 / 2}V${cy + h2 / 2}L${xs2 - 10},${cy + h1 / 2}`, class: 'sc-body-2' }));
+    motor(xs2, L2, h2, v.s2, 'Isp2 s2', out2);
+    // payload bay and nose cone
+    g.append(s('rect', { x: xp, y: cy - h2 / 2, width: Lp, height: h2, class: 'sc-body-2', 'data-field': 'Mpl' }));
+    g.append(s('path', { d: `M${xnose},${cy - h2 / 2}Q${xnose + nose * 0.55},${cy - h2 / 2} ${xnose + nose},${cy}Q${xnose + nose * 0.55},${cy + h2 / 2} ${xnose},${cy + h2 / 2}Z`, class: 'sc-body-2', 'data-field': 'Mpl' }));
+    // separation planes
+    for (const x of [xs2, xp]) g.append(s('line', { x1: x, x2: x, y1: cy - h1 / 2 - 6, y2: cy + h1 / 2 + 6, class: 'sc-thin', 'stroke-dasharray': '2 3' }));
+    g.append(s('line', { x1: x0 - 30, x2: xn + 24, y1: cy, y2: cy, class: 'sc-thin', 'stroke-dasharray': '10 4 2 4', opacity: 0.5 }));
+    // labels over each section, pushed apart (≥ 150 px) and joined to their section by a leader
+    const lab = [
+      { x: xs1 + L1 / 2, h: out1 ? h2 : h1, field: 'Isp1 s1', t: ['Stage 1', out1 ? 'left out' : M(m1), out1 ? '' : `propellant ${M(o.stage1.pr)}`] },
+      { x: xs2 + L2 / 2, h: h2, field: 'Isp2 s2', t: ['Stage 2', out2 ? 'left out' : M(m2), out2 ? '' : `propellant ${M(o.stage2.pr)}`] },
+      { x: xp + (Lp + nose) / 2, h: h2, field: 'Mpl', t: ['Payload', M(mp), ''] },
+    ];
+    lab[0].lx = Math.max(70, lab[0].x); lab[1].lx = Math.max(lab[1].x, lab[0].lx + 150); lab[2].lx = Math.max(lab[2].x, lab[1].lx + 150);
+    for (let i = 2; i > 0; i--) if (lab[i].lx > W - 70) { lab[i].lx = W - 70; lab[i - 1].lx = Math.min(lab[i - 1].lx, lab[i].lx - 150); }
+    for (const l of lab) {
+      const yTop = cy - l.h / 2 - (l === lab[0] && !out1 ? 0 : 0);
+      g.append(s('path', { d: `M${l.lx},${44}V${50}L${l.x},${Math.min(yTop - 4, 64)}V${yTop - 2}`, class: 'sc-thin', fill: 'none', opacity: 0.6, 'data-field': l.field }));
+      l.t.forEach((t, i) => t && g.append(text(l.lx, 8 + (i + 1) * 13 - (i ? 0 : 0), t, { anchor: 'middle', size: i ? 10.5 : 11.5, cls: i ? 'sc-dim-text' : 'sc-label', field: l.field })));
+    }
+    g.append(text(xn + 24, cy + h1 / 2 + 46, `liftoff mass M_{01} = ${M(o.M01)} · ${fmt(o.M01 / mp, { digits: 4 })} × payload`, { anchor: 'end', size: 11 }));
+    // ideal velocity contributed by each stage
+    const yb = 252, bh = 18, bl = xn + 24 - x0, B1 = bl * (o.dv1 / (o.dv1 + o.dv2 || 1));
     g.append(s('rect', { x: x0, y: yb, width: B1, height: bh, class: 'sc-body', 'data-field': 'dv' }));
-    g.append(s('rect', { x: x0 + B1, y: yb, width: len - B1, height: bh, class: 'sc-body-2', 'data-field': 'dv' }));
-    const V = (x) => `${fmt(us.v(x), { digits: 4 })} ${us.label}`;
-    g.append(text(x0, yb - 8, `\\Delta V_1 = ${V(o.dv1)}`, { size: 11, field: 'dv' }));
-    g.append(text(x0 + len, yb - 8, `\\Delta V_2 = ${V(o.dv2)}`, { anchor: 'end', size: 11, field: 'dv' }));
-    g.append(text(x0 + len / 2, yb + bh + 18, `ideal velocity ${V(v.dv)}, split between the stages`, { anchor: 'middle', cls: 'sc-dim-text', size: 10, field: 'dv' }));
-    g.append(text(20, H - 10, 'areas proportional to mass · shaded: propellant · nozzle not to scale', { cls: 'sc-dim-text', size: 10 }));
+    g.append(s('rect', { x: x0 + B1, y: yb, width: bl - B1, height: bh, class: 'sc-body-2', 'data-field': 'dv' }));
+    g.append(text(x0, yb - 7, `stage 1: \\Delta V_1 = ${V(o.dv1)}`, { size: 11, field: 'dv' }));
+    g.append(text(x0 + bl, yb - 7, `stage 2: \\Delta V_2 = ${V(o.dv2)}`, { anchor: 'end', size: 11, field: 'dv' }));
+    g.append(text(x0 + bl / 2, yb + bh + 16, `required ideal velocity \\Delta V_{ID} = ${V(v.dv)}`, { anchor: 'middle', cls: 'sc-dim-text', size: 10.5, field: 'dv' }));
+    g.append(text(20, H - 10, 'section lengths proportional to mass · red: propellant · nozzle, fins and nose cone drawn for shape', { cls: 'sc-dim-text', size: 10 }));
   },
   symbols: {
     '\\Delta V_{ID}': 'required ideal velocity', 'M_{PL}': 'payload mass', 'I_{SP1}': 'first-stage specific impulse', 'I_{SP2}': 'second-stage specific impulse',

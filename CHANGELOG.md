@@ -4,6 +4,14 @@ Every commit adds an entry here, newest first. Live site: https://darasamii.gith
 
 ## 2026-10-21
 
+### New calculator: Upper-Stage Divergence
+- Added: `calculators/upper-stage-divergence.html`. It covers the static aeroelastic divergence of a flexible upper stage, $q_D=2EI/(SC_{NN\alpha}l^2)$ with $EI\approx E\pi R^3t$, or of a flexible joint, $q_D=1/(SC_{NN\alpha}Cx_j)$.
+- Results: the divergence margin, the nose-load amplification $q_D/(q_D-q)$, and the longest safe stage $l_{max}$. An optional whole-rocket trim adds the angle-of-attack amplifications of memo eqs. (1) and (2), including loss of static stability.
+- Drawing: the upper stage bending as a cantilever (exaggerated by the amplification), the nose load, and a dynamic-pressure gauge with a draggable $q$.
+- Plots: amplification against $q/q_D$, $q_D$ against length, and the trim amplifications against $q$.
+- New units: joint compliance (rad/(N·m), rad/(lbf·in)) and bending stiffness (N·m², lbf·in²).
+- Tests: every $q_D$ and amplification cell of the field tool, eqs. (1) and (2) against a direct solution of the coupled equations, scalings, the joint formula, and random-input invariants.
+
 ### New calculator: Parachute Recovery
 - Added: `calculators/parachute-recovery.html`. It covers a two-piece rocket under one parachute with optional reefing: descent time in closed form through the troposphere, wind drift, the descent speeds at deployment and disreef, the nose and aft-body landing speeds (memo eq. 7), and the reefing-line strength.
 - The reefed drag comes from Knacke's data for flat circular canopies, digitised from the reefing memo.

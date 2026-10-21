@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Upper-Stage Divergence — Theory & documentation — Rocket Calculator</title>
+<meta name="description" content="Static aeroelastic divergence of a flexible upper stage or payload joint: divergence dynamic pressure, load amplification and the effect on trim.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../css/site.css">
+<script>try{var t=JSON.parse(localStorage.getItem('rc-theme'));if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<main id="main">
+<div class="wrap">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Home</a><span class="sep">/</span><a href="../index.html#area-struct">Structures &amp; Aeroelasticity</a><span class="sep">/</span><a href="../calculators/upper-stage-divergence.html">Upper-Stage Divergence</a><span class="sep">/</span><span>Documentation</span></nav>
+  <div class="calc-title"><h1>Upper-Stage Divergence — theory</h1></div>
+  <p class="calc-sub">When a long upper stage bends under its own nose load. Based on C. P. Hoult, <em>Upper Stage Bending Influence on Static Stability (rev. 3)</em>, 2012.</p>
+  <div class="calc-badges"><a class="btn small primary" href="../calculators/upper-stage-divergence.html">Open the calculator</a><a class="btn small" href="../references/index.html#upper-stage-bending-influence-on-static-stability3">Original memo (PDF)</a></div>
+  <div class="doc-layout">
+    <nav class="doc-toc" aria-label="Contents"></nav>
+    <article class="doc">
+
+      <section id="overview">
+        <h2>Overview: the Nike-Cajun problem</h2>
+        <p>The Nike-Cajun entered service in 1956 as a small, inexpensive sounding rocket. Flown with a long, heavy payload, it would often break up just before first-stage burnout: camera records showed the second stage bending more and more until the payload snapped off. Beefing up the payload joint helped only a little. The cause, later established by analysis, was static aeroelasticity.</p>
+        <p>The nose normal force bends the flexible upper stage. The bending tilts the nose further into the wind, which raises its normal force, which bends the stage further. Below a critical dynamic pressure this loop converges to a larger, but finite, load; at the <em>divergence dynamic pressure</em> <span class="tex">q_D</span> it runs away.</p>
+      </section>
+
+      <section id="tube">
+        <h2>Flexible upper stage</h2>
+        <p>Take the booster as rigid, so the upper stage is a cantilever from it, loaded at the nose centre of pressure, a distance <span class="tex">l</span> from the root. With the bending slope added to the angle of attack, the nose force is</p>
+        <div class="eq"><div class="tex-display">N_N=qSC_{NN\alpha}\left(\alpha+\frac{dy}{dx}\right)</div></div>
+        <p>Neglecting inertia loads, the beam equation is <span class="tex">N_N(l-x)=EI\,d^2y/dx^2</span>. Integrating once, the slope at the nose is <span class="tex">dy/dx=N_Nl^2/2EI</span>, and solving for it,</p>
+        <div class="eq"><div class="tex-display">\frac{dy}{dx}=\frac{qSC_{NN\alpha}\,\alpha\,l^2}{2EI-qSC_{NN\alpha}l^2}=\frac{q\,\alpha}{q_D-q},\qquad q_D=\frac{2EI}{SC_{NN\alpha}l^2}</div></div>
+        <p>For a thin-walled tube of radius <span class="tex">R</span> and wall <span class="tex">t</span>, <span class="tex">EI\approx E\pi R^3t</span>. The nose force becomes</p>
+        <div class="eq"><div class="tex-display">N_N=qSC_{NN\alpha}\,\alpha\,\frac{q_D}{q_D-q}</div></div>
+        <p>so all nose and bending loads are amplified by <span class="tex">q_D/(q_D-q)</span>: by 1.25 at <span class="tex">q=0.2q_D</span>, by 2 at half of <span class="tex">q_D</span>, by 10 at 90 %. The longest stage that stays below divergence at a flight dynamic pressure <span class="tex">q</span> is</p>
+        <div class="eq"><div class="tex-display">l_{max}=\sqrt{\frac{2EI}{SC_{NN\alpha}\,q}}</div></div>
+        <p>Because <span class="tex">q_D\propto1/l^2</span>, a 20 % longer payload lowers the divergence dynamic pressure by 30 %. Stiffness helps linearly: double the wall thickness or use a material twice as stiff and <span class="tex">q_D</span> doubles.</p>
+      </section>
+
+      <section id="joint">
+        <h2>Flexible joint</h2>
+        <p>A variation is a vehicle that is rigid except for a single joint — for example where the payload attaches to the body. The joint rotates by <span class="tex">\varphi=CM</span> under bending moment <span class="tex">M</span>, where <span class="tex">C</span> is its compliance. With the joint a distance <span class="tex">x_j</span> behind the nose centre of pressure, <span class="tex">N_N=qSC_{NN\alpha}(\alpha+CN_Nx_j)</span>, so</p>
+        <div class="eq"><div class="tex-display">N_N=\frac{qSC_{NN\alpha}\,\alpha}{1-qSC_{NN\alpha}Cx_j}=qSC_{NN\alpha}\,\alpha\,\frac{q_D}{q_D-q},\qquad q_D=\frac{1}{SC_{NN\alpha}Cx_j}</div></div>
+        <p>The amplification law is the same as for the flexible tube. The compliance of a joint is best measured: load the assembled joint as a cantilever and record its rotation.</p>
+      </section>
+
+      <section id="trim">
+        <h2>Effect on the trimmed rocket</h2>
+        <p>Suppose a thrust misalignment <span class="tex">\delta</span> trims the rocket at a steady angle of attack. With the first-stage tail, the second-stage tail and interstage, and the nose at arms <span class="tex">x_1</span>, <span class="tex">x_2</span> and <span class="tex">x_3</span> from the centre of gravity, the moment balance is</p>
+        <div class="eq"><div class="tex-display">qS\alpha\left[x_1C_{N1\alpha}-x_2C_{N2\alpha}-x_3C_{NN\alpha}\frac{q_D}{q_D-q}\right]=x_4T\delta</div></div>
+        <p>Compared with a rigid rocket, the angle of attack of every element grows by (memo eq. 1)</p>
+        <div class="eq"><div class="tex-display">\frac{\alpha}{\alpha_{rigid}}=\frac{x_1C_{N1\alpha}-x_2C_{N2\alpha}-x_3C_{NN\alpha}}{x_1C_{N1\alpha}-x_2C_{N2\alpha}-x_3C_{NN\alpha}\,q_D/(q_D-q)}</div></div>
+        <p>and the nose, which also carries its bending slope, by (eq. 2)</p>
+        <div class="eq"><div class="tex-display">\frac{\alpha_N}{\alpha_{rigid}}=\frac{q_D\left(x_1C_{N1\alpha}-x_2C_{N2\alpha}-x_3C_{NN\alpha}\right)}{\left(x_1C_{N1\alpha}-x_2C_{N2\alpha}\right)(q_D-q)-x_3C_{NN\alpha}q_D}</div></div>
+        <p>The denominator of eq. (1) can reach zero before <span class="tex">q_D</span>: the flexibility of the nose erodes the static margin until the rocket is no longer stable. The calculator reports this case as “unstable”. To apply these factors in a loads analysis, increase the angle of attack of every element except the nose by eq. (1), and that of the nose by eq. (2).</p>
+      </section>
+
+      <section id="verification">
+        <h2>Verification</h2>
+        <p>The tests reproduce the field tool’s divergence dynamic pressures for upper-stage lengths from 140 to 220 in, and its load-amplification column. The two trim amplifications are checked against a direct solution of the coupled moment balance and beam equations. The tests also confirm <span class="tex">q_D(l_{max})=q</span>, the <span class="tex">1/l^2</span> and <span class="tex">t</span> scalings, and the flexible-joint formula.</p>
+      </section>
+
+      <section id="notes">
+        <h2>Notes on the method</h2>
+        <ul>
+          <li><strong>Rigid booster.</strong> The booster is assumed far stiffer than the upper stage. If it is not, its bending lowers <span class="tex">q_D</span> further.</li>
+          <li><strong>Thin wall.</strong> <span class="tex">EI\approx E\pi R^3t</span> holds for <span class="tex">t\ll R</span>. Joints, cut-outs and doors reduce the effective stiffness; the calculator warns when the wall is thick.</li>
+          <li><strong>Static only.</strong> Inertia loads and the dynamics of bending (flutter-like interactions with the pitch motion) are not included; see the bending-dynamics and loads topics.</li>
+        </ul>
+      </section>
+
+      <section id="references">
+        <h2>References</h2>
+        <ol class="refs">
+          <li>C. P. Hoult, “Upper Stage Bending Influence on Static Stability (rev. 3),” RS&amp;T, 18 April 2012. <a href="../references/index.html#upper-stage-bending-influence-on-static-stability3">View in library</a></li>
+          <li>C. P. Hoult, “Design Bending Loads for a Multiple Longeron Structure,” RS&amp;T, 2013. <a href="../references/index.html#longeron-bending">View in library</a></li>
+        </ol>
+      </section>
+    </article>
+  </div>
+</div>
+</main>
+<script type="module">
+import { mountDocs } from '../js/docs.js';
+mountDocs();
+</script>
+</body>
+</html>

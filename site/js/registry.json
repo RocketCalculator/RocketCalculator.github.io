@@ -146,6 +146,12 @@
    "description": "Descent time, wind drift and landing speeds of a two-piece rocket under one parachute, with optional reefing."
   },
   {
+   "slug": "upper-stage-divergence",
+   "title": "Upper-Stage Divergence",
+   "topic": "body-aeroelasticity",
+   "description": "Divergence dynamic pressure and load amplification of a flexible upper stage or payload joint, with the longest safe stage."
+  },
+  {
    "slug": "two-stage-weights",
    "title": "Two-Stage Weight Allocation",
    "topic": "optimum-weight-allocation",
@@ -222,9 +228,11 @@
    "area": "struct",
    "summary": "How a long, flexible upper stage can bend under nose loads until it diverges or loses stability.",
    "abstract": "Body Aeroelasticity These files describe the structural responses of a long, supple upper stage during vigorous first stage thrusting. A static aeroelastic instability can occur in which the nose tip is slightly bent. This resulting aerodynamic normal force on the tip causes further bending, etc, until structural failure occurs. Alternatively, the increased nose normal force can move the vehicle center of pressure aft until the entire rocket becomes statically unstable. Upper Stage Bending Influence on Static Stability3.doc provides the analysis background. DIVERGENCE.xls implements the math in a spread sheet.",
-   "status": "soon",
-   "calculators": [],
-   "wasSoon": false,
+   "status": "available",
+   "calculators": [
+    "upper-stage-divergence"
+   ],
+   "wasSoon": true,
    "references": [
     "upper-stage-bending-influence-on-static-stability3"
    ],

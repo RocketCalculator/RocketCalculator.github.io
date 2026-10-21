@@ -114,6 +114,7 @@ const INVARIANTS = {
   'pitch-yaw-wavenumber': (v, R) => [R.L > 0, Math.abs(R.L * R.lam - 2 * Math.PI) < 1e-9, R.f > 0, Math.abs(R.P * R.f - 1) < 1e-9, R.Cma < 0, R.I > 0],
   'roll-rate-history': (v, R) => [R.fB * Math.sign(v.delta || 1) >= -1e-12, Math.abs(R.fB) <= Math.abs(R.fB0) * (1 + 1e-9) + 1e-12, Math.abs(R.fA) <= Math.abs(R.fB0) * (1 + 1e-9) + 1e-12, R.JB <= 0, R.k <= 0, R.X >= 0, R.CLp < 0],
   'parachute-recovery': (v, R) => [R.t > 0, R.drift >= 0, R.vAft <= R.vNose * (1 + 1e-12), R.vAft >= R.vAftMin * (1 - 1e-12), R.vDeploy > 0, !v.reef || (R.k > 0 && R.k <= 1 && R.tReefed > 0)],
+  'upper-stage-divergence': (v, R) => [R.qD > 0, typeof R.amp !== 'number' || R.amp >= 1, typeof R.margin !== 'number' || Math.abs(R.margin - R.qD / v.q) <= 1e-9 * R.margin, v.mode !== 'tube' || Math.abs(R.lmax - v.l * Math.sqrt(R.qD / v.q)) <= 1e-9 * R.lmax],
   'two-stage-weights': (v, R) => [R.M01 >= v.Mpl, R.m1 >= 0 && R.m2 >= 0, Math.abs(R.M01 - v.Mpl - R.m1 - R.m2) <= 1e-9 * R.M01, Math.abs(R.dv1 + R.dv2 - v.dv) <= 1e-6 * v.dv, R.payloadPct > 0 && R.payloadPct <= 100, R.lam > 0],
   'ogive-nose': (v, R) => [R.S > 0, R.xbar > 0 && R.xbar < v.L, R.fineness > 0, R.tipHalfAngle > 0 && R.tipHalfAngle <= 90],
   'subsonic-cp': (v, R, warned) => [R.CNa > 0 || warned, R.CNaFins >= 0, Number.isFinite(R.xcp), R.d > 0],
@@ -324,4 +325,11 @@ test('Parachute recovery: a bigger canopy descends slower; a longer tether lands
   increasing([100, 60, 30, 10, 0].map((L) => run('parachute-recovery', { L }).vAft), 'aft speed vs shorter tether');
   assert.ok(run('parachute-recovery', { reef: true }).t < run('parachute-recovery', { reef: false }).t, 'reefing descends faster');
   increasing([0, 3000, 6000].map((hG) => run('parachute-recovery', { hG }).vNose), 'landing speed vs ground elevation');
+});
+
+test('Upper-stage divergence: longer or softer stages diverge sooner; loads grow toward q_D', () => {
+  increasing([250, 200, 150, 100].map((l) => run('upper-stage-divergence', { l }).qD), 'q_D vs shorter stage');
+  increasing([0.05, 0.1, 0.2].map((t) => run('upper-stage-divergence', { t }).qD), 'q_D vs thicker wall');
+  increasing([0, 4000, 8000, 12000].map((q) => run('upper-stage-divergence', { q }).amp), 'amplification vs q');
+  assert.equal(run('upper-stage-divergence', { q: 1e6 }).amp, 'diverges');
 });

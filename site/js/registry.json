@@ -128,6 +128,12 @@
    "description": "Launcher quadrant elevation and azimuth that cancel the wind drift and place the impact point where you want it."
   },
   {
+   "slug": "pitch-yaw-wavenumber",
+   "title": "Pitch-Yaw Wave Number",
+   "topic": "pitch-yaw-wavenumber",
+   "description": "Pitch/yaw wavelength, wave number and natural frequency of a statically stable rocket."
+  },
+  {
    "slug": "two-stage-weights",
    "title": "Two-Stage Weight Allocation",
    "topic": "optimum-weight-allocation",
@@ -561,9 +567,11 @@
    "area": "dyn",
    "summary": "The single most important parameter of rocket short-period motion.",
    "abstract": "Pitch-Yaw Wavenumber3.doc identifies the eponymous parameter as the most important single variable affecting rocket short period dynamics. Its relationship to the pitch-yaw natural frequency, the analogous parameter in stationary dynamics, is documented. A formula for calculating this wave number is included.",
-   "status": "soon",
-   "calculators": [],
-   "wasSoon": false,
+   "status": "available",
+   "calculators": [
+    "pitch-yaw-wavenumber"
+   ],
+   "wasSoon": true,
    "references": [
     "the-pitch-yaw-wave-number3"
    ],

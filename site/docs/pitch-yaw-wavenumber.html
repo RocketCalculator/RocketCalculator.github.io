@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pitch-Yaw Wave Number — Theory & documentation — Rocket Calculator</title>
+<meta name="description" content="The pitch/yaw wavelength and wave number of a statically stable rocket: derivation, speed independence, scaling and use.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../css/site.css">
+<script>try{var t=JSON.parse(localStorage.getItem('rc-theme'));if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<main id="main">
+<div class="wrap">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Home</a><span class="sep">/</span><a href="../index.html#area-dyn">Flight Dynamics &amp; Mass Properties</a><span class="sep">/</span><a href="../calculators/pitch-yaw-wavenumber.html">Pitch-Yaw Wave Number</a><span class="sep">/</span><span>Documentation</span></nav>
+  <div class="calc-title"><h1>Pitch-Yaw Wave Number — theory</h1></div>
+  <p class="calc-sub">The short-period motion of a stable rocket in one number. Based on C. P. Hoult, <em>The Pitch-Yaw Wave Number (rev. 3)</em>, 2013.</p>
+  <div class="calc-badges"><a class="btn small primary" href="../calculators/pitch-yaw-wavenumber.html">Open the calculator</a><a class="btn small" href="../references/index.html#the-pitch-yaw-wave-number3">Original memo (PDF)</a></div>
+  <div class="doc-layout">
+    <nav class="doc-toc" aria-label="Contents"></nav>
+    <article class="doc">
+
+      <section id="overview">
+        <h2>Overview</h2>
+        <p>Sounding rockets are nearly symmetric about their roll axis: the pitch and yaw moments of inertia are equal, and so are the aerodynamic moments in pitch and yaw. Whatever is said about pitch therefore holds for yaw as well.</p>
+        <p>A statically stable rocket that is disturbed — by a gust, by leaving the launcher, by a misaligned thrust — swings about its centre of gravity like a weathervane until its own damping settles it. The pitch/yaw wavelength is the distance it travels through the air during one of these swings. It sets how quickly the rocket turns into the wind off the launcher, how much a thrust misalignment deflects it, and whether its roll rate can lock in with the pitch motion.</p>
+      </section>
+
+      <section id="model">
+        <h2>Derivation</h2>
+        <p>Picture the rocket in a wind tunnel on an axle through its centre of gravity. If the nose is tweaked, the model oscillates according to</p>
+        <div class="eq"><div class="tex-display">I\frac{d^2\alpha}{dt^2}=\tfrac12\rho S d\,U^2C_{M\alpha}\,\alpha</div></div>
+        <p>where <span class="tex">I</span> is the pitch moment of inertia about the CG, <span class="tex">\rho</span> the air density, <span class="tex">S=\pi d^2/4</span> the body cross-section area, <span class="tex">d</span> the body diameter, <span class="tex">U</span> the airspeed, <span class="tex">C_{M\alpha}</span> the pitching-moment slope about the CG (per radian) and <span class="tex">\alpha</span> the angle of attack. Substituting <span class="tex">\alpha=\sin\omega_N t</span> gives the natural frequency</p>
+        <div class="eq"><div class="tex-display">\omega_N^2=\frac{-\rho S d\,U^2C_{M\alpha}}{2I}</div></div>
+        <p>The period is <span class="tex">P=2\pi/\omega_N</span>, and in that time the rocket moves the wavelength <span class="tex">L=UP</span>:</p>
+        <div class="eq"><div class="tex-display">L=2\pi\sqrt{\frac{2I}{-\rho S d\,C_{M\alpha}}},\qquad \lambda_p=\frac{2\pi}{L}=\sqrt{\frac{-\rho S d\,C_{M\alpha}}{2I}}</div></div>
+        <p>The minus sign is harmless: <span class="tex">C_{M\alpha}</span> is negative for a stable rocket. The wave number <span class="tex">\lambda_p</span> is a frequency in space rather than time, in radians per metre or per foot.</p>
+        <p>When the normal-force slope <span class="tex">C_{N\alpha}</span> (from the centre-of-pressure calculation) and the static margin are known, the pitching-moment slope about the CG is</p>
+        <div class="eq"><div class="tex-display">C_{M\alpha}=-C_{N\alpha}\,\frac{X_{CP}-X_{CG}}{d}</div></div>
+        <p>If no measured inertia is available, the calculator can treat the rocket as a uniform slender rod, <span class="tex">I=m\ell^2/12</span>. Real rockets carry their mass at the motor and in the nose, so this is only an estimate; the Bifilar Pendulum calculator turns two stopwatch timings into the measured value.</p>
+      </section>
+
+      <section id="frequency">
+        <h2>Frequency and speed</h2>
+        <p>The speed cancels from the wavelength: the restoring moment grows as <span class="tex">U^2</span>, so the swing gets faster in exactly the proportion that the rocket covers more ground. The frequency is therefore simply</p>
+        <div class="eq"><div class="tex-display">f_N=\frac{\omega_N}{2\pi}=\frac{U}{L}</div></div>
+        <p>The memo notes that the same wavelength holds when the speed is not constant but increases under constant acceleration, as during boost. Density does enter: the wavelength grows as <span class="tex">\rho^{-1/2}</span>, so a rocket coasting into thin air weathercocks more and more slowly.</p>
+      </section>
+
+      <section id="scaling">
+        <h2>Scaling</h2>
+        <p>For two geometrically similar rockets of lengths in the ratio <span class="tex">\ell</span>, the density and <span class="tex">C_{M\alpha}</span> are unchanged, <span class="tex">Sd\propto\ell^3</span>, and <span class="tex">I\propto\ell^5</span> (the mass grows as <span class="tex">\ell^3</span> and the radius of gyration as <span class="tex">\ell</span>). So</p>
+        <div class="eq"><div class="tex-display">L\propto\ell</div></div>
+        <p>Bigger rockets have longer wavelengths, but the wavelength measured in body lengths, <span class="tex">L/\ell</span>, is the same for similar rockets of any size. For typical student sounding rockets the initial wavelength is of order 200 m, or about 40–60 body lengths.</p>
+      </section>
+
+      <section id="verification">
+        <h2>Verification</h2>
+        <p>No spreadsheet exists for this topic. The tests check the memo’s relations between <span class="tex">\omega_N</span>, <span class="tex">P</span>, <span class="tex">L</span> and <span class="tex">\lambda_p</span>, integrate the pitch equation numerically over twenty periods and recover the period to one part in a million, and confirm the speed independence, the <span class="tex">\rho^{-1/2}</span> dependence and the <span class="tex">L\propto\ell</span> scaling law.</p>
+      </section>
+
+      <section id="references">
+        <h2>References</h2>
+        <ol class="refs">
+          <li>C. P. Hoult, “The Pitch-Yaw Wave Number (rev. 3),” RS&amp;T, 5 January 2013. <a href="../references/index.html#the-pitch-yaw-wave-number3">View in library</a></li>
+        </ol>
+      </section>
+    </article>
+  </div>
+</div>
+</main>
+<script type="module">
+import { mountDocs } from '../js/docs.js';
+mountDocs();
+</script>
+</body>
+</html>

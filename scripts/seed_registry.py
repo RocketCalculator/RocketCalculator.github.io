@@ -156,6 +156,7 @@ CALCULATORS = [
     ('newtonian-drag', 'Modified Newtonian Drag', 'ModiNewtDrag', 'Supersonic wave drag of nose caps, cones, flat faces and rounded fin leading edges (Lees).'),
     ('nozzle-thrust', 'Nozzle Thrust Coefficient', 'Nozzles', 'Exit Mach number, exit pressure, thrust coefficient and thrust of a conical de Laval nozzle, with the Malina divergence correction.'),
     ('wind-compensation', 'Wind Compensation', 'WindComp', 'Launcher quadrant elevation and azimuth that cancel the wind drift and place the impact point where you want it.'),
+    ('pitch-yaw-wavenumber', 'Pitch-Yaw Wave Number', 'PitcWave', 'Pitch/yaw wavelength, wave number and natural frequency of a statically stable rocket.'),
     ('two-stage-weights', 'Two-Stage Weight Allocation', 'OptiWeigAllo', 'Lightest split of mass between two stages for a payload and a required ideal velocity (Vertregt).'),
 ]
 

@@ -4,6 +4,13 @@ Every commit adds an entry here, newest first. Live site: https://darasamii.gith
 
 ## 2026-10-21
 
+### New calculator: Pitch-Yaw Wave Number
+- Added: `calculators/pitch-yaw-wavenumber.html`. It gives the pitch/yaw wavelength $L=2\pi\sqrt{2I/(-\rho SdC_{M\alpha})}$, the wave number $\lambda_p$, and the natural frequency and period at any airspeed.
+- $C_{M\alpha}$ is entered directly or comes from $C_{N\alpha}$ and the static margin (with sliders). The inertia is measured or estimated as a slender rod $m\ell^2/12$. The body radius and length are shared with the other calculators.
+- Drawing: one wavelength with the attitude swinging nose-up and nose-down, and the rocket to scale with its CG and a draggable CP.
+- Plots: wavelength against static margin, wavelength against altitude (standard atmosphere), and frequency against airspeed. Also a report and a documentation page.
+- Tests: the memo's relations; a numerical integration of the pitch equation that recovers the period to $10^{-6}$; speed independence, $\rho^{-1/2}$ and $L\propto\ell$ scaling; and random-input invariants.
+
 ### New calculator: Wind Compensation
 - Added: `calculators/wind-compensation.html`. It gives the launcher quadrant elevation and azimuth that cancel the wind drift and place the impact point at a desired azimuth and range.
 - Inputs: the desired impact point, the in-plane and cross-plane wind drift of a vertical launch (from a trajectory simulation), and an editable table of zero-wind range against launcher QE.

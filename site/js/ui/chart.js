@@ -69,7 +69,8 @@ export function createChart(host, opts = {}) {
     const W = Math.max(280, svgHost.clientWidth || 600);
     const H = Math.round(opts.height ?? Math.min(360, Math.max(230, W * (spec.aspect ?? 0.56))));
     const m = { l: 58, r: 18, t: 14, b: 44 };
-    const series = spec.series.map((se, i) => ({ ...se, idx: i, col: se.color || color(i) })).filter((se) => se.points?.length);
+    // malformed points (not [x, y] pairs) are dropped rather than breaking the chart
+    const series = spec.series.map((se, i) => ({ ...se, idx: i, col: se.color || color(i), points: (se.points || []).filter(Array.isArray) })).filter((se) => se.points.length);
     const vis = series.filter((se) => !hidden.has(se.name));
     const pts = vis.flatMap((se) => se.points).filter(([x, y]) => Number.isFinite(x) && Number.isFinite(y));
     const extraY = [...(spec.hlines || []).map((l) => l.y), ...(spec.markers || []).map((mk) => mk.y)].filter(Number.isFinite);

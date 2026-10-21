@@ -164,6 +164,12 @@
    "description": "Wind speed and direction from the elevation angle of a tethered pilot balloon, corrected for tether sag and drag."
   },
   {
+   "slug": "nose-pressure",
+   "title": "Nose Pressure Distribution",
+   "topic": "nose-pressure-coefficient",
+   "description": "Subsonic surface pressure along a nose and body by line sources, critical Mach number and adverse pressure gradient."
+  },
+  {
    "slug": "two-stage-weights",
    "title": "Two-Stage Weight Allocation",
    "topic": "optimum-weight-allocation",
@@ -474,9 +480,11 @@
    "area": "aero",
    "summary": "Incompressible surface pressure on a slender nose by source superposition.",
    "abstract": "These files support the design of an arbitrary slender “smooth” body of revolution in incompressible flow. “Smooth” means the radial profile has no steps, although the body radial profile may have slope discontinuities. This process can be used to design a nose shape that will inhibit separation of vortices from the forward parts of the body, and thus delay the onset of roll lock-in. Nose Pressure Distro4.doc describes the theory – superposition of sources – used to compute the incompressible surface pressure. MUNKSHIP2.xls implements this theory. Finally, AIAAFelkel3.doc and the corresponding presentation charts filed as AIAAFelkel2.pptx covers much of the same material and provides the background to estimation of the critical Mach number in CRITICAL MACH NUMBER.xls .",
-   "status": "soon",
-   "calculators": [],
-   "wasSoon": false,
+   "status": "available",
+   "calculators": [
+    "nose-pressure"
+   ],
+   "wasSoon": true,
    "references": [
     "nose-pressure-distro4",
     "aiaafelkel3"

@@ -4,6 +4,16 @@ Every commit adds an entry here, newest first. Live site: https://darasamii.gith
 
 ## 2026-10-21
 
+### New calculator: Nose Pressure Distribution
+- Added: `calculators/nose-pressure.html`. It computes subsonic surface pressure along any nose shape (shared with the other calculators, or a custom profile) and body, using Munk's line-source sum exactly as in the field tool's VBA. A wake from impulse–momentum and Bernoulli closes the body.
+- Compressibility: the Kármán–Tsien correction, and the critical Mach number solved against the sonic $C_p^*$ (bracketed below the Kármán–Tsien singularity).
+- Results: the minimum $C_p$ behind the shoulder (sought away from the blunt base, where the method is unreliable), the steepest adverse pressure gradient, and the nose axial-force coefficient from the memo's integral.
+- Drawing: the body and near wake with radial pressure arrows (radius exaggerated, scale shown), and a draggable shoulder.
+- Plots: $C_p$ along body and wake, the critical-Mach crossing, and standard nose shapes compared.
+- The source sum is bounded at 1 200 stations because it is $O(n^2)$.
+- Charts drop malformed points instead of failing. This was found by the UI fuzz at an extreme radius.
+- Tests: every one of the field tool's 140 station radii and incompressible $C_p$ values, the wake diameter, the Kármán–Tsien and $C_p^*$ relations, a textbook critical Mach number, convergence to the exact line-source integral on a cone, and random-input invariants.
+
 ### New calculator: Tethered Balloon Wind Sensor
 - Added: `calculators/tethered-pibal.html`. It gives the wind speed from the elevation angle of a tethered pilot balloon (force balance, eq. 1), corrected for tether sag and drag (eq. 5), with the balloon height and the north and east components.
 - The gas weight comes from the fill pressure and temperature, and the air density at the balloon from the standard troposphere.

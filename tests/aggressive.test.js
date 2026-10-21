@@ -96,6 +96,7 @@ const REPAIR = {
   'parachute-recovery': (v, r) => { if (v.hG + v.hD > 36000) { v.hG = 6000 * r(); v.hD = 1000 + 25000 * r(); } if (v.reef && v.hR >= v.hD) v.hR = v.hD * r(); },
   'launcher-deflection': (v, r) => { if (v.D <= 2 * v.t) v.t = v.D * 0.4 * r(); if (v.d <= v.D) v.d = v.D * (1.5 + 10 * r()); },
   'tethered-pibal': (v, r) => { if (v.D < 2) v.D = 2 + 4 * r(); if (v.We > 0.5) v.We = 0.5 * r(); if (v.L > 1500) v.L = 50 + 1400 * r(); if (v.dt > 0.05) v.dt = 0.005 + 0.03 * r(); if (v.rhoT > 3) v.rhoT = 0.5 + 2 * r(); if (v.pG > 110000 || v.pG < 50000) v.pG = 50000 + 60000 * r(); if (v.TG < 250) v.TG = 250 + 70 * r(); if (v.theta < 15) v.theta = 15 + 70 * r(); if (v.hG > 15000) v.hG = 15000 * r(); if (v.CD < 0.2) v.CD = 0.2 + 0.6 * r(); },
+  'nose-pressure': (v, r) => { if (v.bodyLen <= v.noseL) v.bodyLen = v.noseL * (1.2 + 4 * r()); if (v.noseL > 30 * v.R) v.noseL = v.R * (1 + 20 * r()); if (v.bodyLen > 80 * v.R) v.bodyLen = v.noseL + v.R * (2 + 40 * r()); },
   'two-stage-weights': (v, r) => { const lim = 32.174 * (-v.Isp1 * Math.log(v.s1) - v.Isp2 * Math.log(v.s2)); if (v.dv >= lim) v.dv = lim * (0.02 + 0.93 * r()); },
 };
 
@@ -119,6 +120,7 @@ const INVARIANTS = {
   'upper-stage-divergence': (v, R) => [R.qD > 0, typeof R.amp !== 'number' || R.amp >= 1, typeof R.margin !== 'number' || Math.abs(R.margin - R.qD / v.q) <= 1e-9 * R.margin, v.mode !== 'tube' || Math.abs(R.lmax - v.l * Math.sqrt(R.qD / v.q)) <= 1e-9 * R.lmax],
   'launcher-deflection': (v, R) => [R.pitchDeg >= R.yawDeg - 1e-12, R.yawDeg >= 0, R.Fp >= R.Ft - 1e-12, R.I > 0, R.Lmax === 'no limit' || Math.abs(v.factor * R.Fp * R.Lmax ** 2 / (2 * R.EI) * 180 / Math.PI - v.allow) <= 1e-9 * v.allow],
   'tethered-pibal': (v, R) => [R.Vc > 0 && R.Vc <= R.V * (1 + 1e-12), R.corr > 0 && R.corr <= 1, R.lift > 0, Math.abs(Math.hypot(R.north, R.east) - R.Vc) <= 1e-9 * R.Vc, R.b >= 0 && R.c >= 0],
+  'nose-pressure': (v, R) => [R.cp0Min >= 0 || R.cpMin <= R.cp0Min + 1e-12, R.Mcr > 0 && R.Mcr <= 1, R.grad >= 0, R.Dw > 0],
   'two-stage-weights': (v, R) => [R.M01 >= v.Mpl, R.m1 >= 0 && R.m2 >= 0, Math.abs(R.M01 - v.Mpl - R.m1 - R.m2) <= 1e-9 * R.M01, Math.abs(R.dv1 + R.dv2 - v.dv) <= 1e-6 * v.dv, R.payloadPct > 0 && R.payloadPct <= 100, R.lam > 0],
   'ogive-nose': (v, R) => [R.S > 0, R.xbar > 0 && R.xbar < v.L, R.fineness > 0, R.tipHalfAngle > 0 && R.tipHalfAngle <= 90],
   'subsonic-cp': (v, R, warned) => [R.CNa > 0 || warned, R.CNaFins >= 0, Number.isFinite(R.xcp), R.d > 0],
@@ -349,4 +351,11 @@ test('Tethered pibal: a lower angle means more wind; a longer tether needs more 
   increasing([80, 60, 40, 20].map((theta) => run('tethered-pibal', { theta }).Vc), 'wind vs lower angle');
   increasing([1000, 500, 200, 50].map((L) => run('tethered-pibal', { L }).corr), 'correction vs shorter tether');
   increasing([2, 3, 4].map((D) => run('tethered-pibal', { D }).lift), 'lift vs bigger balloon');
+});
+
+test('Nose pressure: a sharp shoulder dips deeper and recovers more steeply; faster flow deepens the dip; longer noses have a higher critical Mach', () => {
+  const cone = run('nose-pressure', { noseType: 'cone', M: 0 }), ogive = run('nose-pressure', { noseType: 'ogive', M: 0 });
+  assert.ok(cone.cp0Min < ogive.cp0Min && cone.grad > ogive.grad, 'cone vs ogive');
+  increasing([0, 0.4, 0.7].map((M) => -run('nose-pressure', { M }).cpMin), 'suction vs Mach');
+  increasing([10, 20, 40].map((noseL) => run('nose-pressure', { noseL }).Mcr), 'M_cr vs longer nose');
 });

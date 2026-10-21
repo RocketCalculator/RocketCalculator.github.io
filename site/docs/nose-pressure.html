@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nose Pressure Distribution — Theory & documentation — Rocket Calculator</title>
+<meta name="description" content="Subsonic pressure distribution over a rocket nose and body by Munk's line-source method, with a closing wake, Kármán–Tsien compressibility, critical Mach number and nose axial force.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../css/site.css">
+<script>try{var t=JSON.parse(localStorage.getItem('rc-theme'));if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<main id="main">
+<div class="wrap">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Home</a><span class="sep">/</span><a href="../index.html#area-aero">Aerodynamics</a><span class="sep">/</span><a href="../calculators/nose-pressure.html">Nose Pressure Distribution</a><span class="sep">/</span><span>Documentation</span></nav>
+  <div class="calc-title"><h1>Nose Pressure Distribution — theory</h1></div>
+  <p class="calc-sub">Surface pressures on a rocket nose at subsonic speed. Based on C. P. Hoult, <em>Nose Pressure Distribution (rev. 4)</em>, 2012, after M. M. Munk, <em>Note on the Pressure Distribution over the Hull of Elongated Airships with Circular Cross Section</em>, NACA TN-192, 1924.</p>
+  <div class="calc-badges"><a class="btn small primary" href="../calculators/nose-pressure.html">Open the calculator</a><a class="btn small" href="../references/index.html#nose-pressure-distro4">Original memo (PDF)</a></div>
+  <div class="doc-layout">
+    <nav class="doc-toc" aria-label="Contents"></nav>
+    <article class="doc">
+
+      <section id="overview">
+        <h2>Why the nose pressure matters</h2>
+        <p>A rolling rocket sees its body-fixed misalignments as torques at the roll frequency. When the roll rate nears the pitch frequency, the angle of attack grows. Above a modest angle of attack the boundary layer separates and sheds a pair of vortices along the body; when they reach the fins they induce a roll torque that can overpower the fin cant and lock the roll rate in. A smooth, continuously falling pressure along the body helps keep the boundary layer attached; an <em>adverse</em> gradient — pressure rising aft — encourages separation.</p>
+        <p>The circumferential pressure from cross flow, <span class="tex">C_p=\sin^2\alpha(1-4\sin^2\theta)</span>, does not depend on the body shape. The longitudinal pressure does, and the nose designer controls it.</p>
+        <h3>Munk airship theory</h3>
+        <p>The flow round a body of revolution at zero angle of attack is represented by sources and sinks along its axis. A source of strength <span class="tex">\sigma\,d\zeta</span> at station <span class="tex">\zeta</span> induces at the point <span class="tex">(z,r)</span> the velocities</p>
+        <div class="eq"><div class="tex-display">q_r=\frac{1}{4\pi}\int\frac{r\,\sigma\,d\zeta}{[(z-\zeta)^2+r^2]^{3/2}},\qquad q_z=\frac{1}{4\pi}\int\frac{(z-\zeta)\,\sigma\,d\zeta}{[(z-\zeta)^2+r^2]^{3/2}}</div></div>
+        <p>For a slender body the flow from nearby sources is nearly radial, so flow tangency at the surface <span class="tex">r_B(z)</span> gives <span class="tex">\sigma=2\pi U_\infty r_B\,dr_B/dz</span>. Linearising Bernoulli’s equation, <span class="tex">C_p\simeq-2q_z/U_\infty</span>:</p>
+        <div class="eq"><div class="tex-display">C_{p0}(z)=-\int\frac{(z-\zeta)\,r_B\,\frac{dr_B}{d\zeta}}{\left[(z-\zeta)^2+r_B^2\right]^{3/2}}\,d\zeta</div></div>
+        <p>Numerically the body radius is sampled at equal stations <span class="tex">\Delta z</span> apart and <span class="tex">r\,dr/dz=r_2(r_3-r_1)/(z_3-z_1)</span> from a parabola through three neighbouring stations. The sum runs over every station of body and wake. The method is poor near a blunt tip and close to a blunt base; elsewhere it gives a good picture of the pressure.</p>
+      </section>
+
+      <section id="wake">
+        <h2>Closing the body: the wake</h2>
+        <p>A source distribution must close, or the body would grow without end. Behind the base the flow forms a wake that narrows to a cylinder. Its diameter follows from two relations: the drag impulse equals the momentum lost by the air entering the cylindrical wake, and Bernoulli’s equation holds from the base (at the base pressure) to the wake, where the pressure has recovered. Solving them,</p>
+        <div class="eq"><div class="tex-display">D_w=D\sqrt{\frac{C_D}{2\left(1-\sqrt{C_{Db}}\right)}}</div></div>
+        <p>where <span class="tex">C_D</span> is the forebody drag coefficient including the base and <span class="tex">C_{Db}</span> the base drag coefficient, both on the body cross-section. The wake converges as a cone of half angle <span class="tex">\varepsilon</span>; lacking better data, <span class="tex">\varepsilon\approx0.1</span> rad.</p>
+      </section>
+
+      <section id="compress">
+        <h2>Compressibility and the critical Mach number</h2>
+        <p>The Kármán–Tsien rule scales the incompressible pressure to a subcritical Mach number:</p>
+        <div class="eq"><div class="tex-display">C_p=\frac{C_{p0}}{\beta+\frac{C_{p0}}{2}(1-\beta)},\qquad\beta=\sqrt{1-M_\infty^2}</div></div>
+        <p>The critical Mach number is the lowest free-stream Mach number at which the surface flow somewhere reaches sonic speed. There the corrected minimum pressure equals the sonic pressure coefficient</p>
+        <div class="eq"><div class="tex-display">C_p^*=\frac{2}{\gamma M^2}\left[\left(\frac{2+(\gamma-1)M^2}{\gamma+1}\right)^{\frac{\gamma}{\gamma-1}}-1\right]</div></div>
+        <p>and the calculator solves for that Mach number. Above it a supersonic pocket forms and the correction no longer applies. For the incompressible minimum of the memo’s example, <span class="tex">C_{p0}=-0.0566</span>, the critical Mach number is about 0.92.</p>
+      </section>
+
+      <section id="gradient">
+        <h2>Adverse pressure gradient</h2>
+        <p>For most nose shapes the pressure coefficient bottoms out near −0.06 just behind the shoulder, where the air speeds up to round the corner, and then rises along the cylinder. The calculator reports the steepest rise per body diameter behind the minimum. Reshaping the nose — a gentler shoulder, a longer nose — cannot remove the dip, but the memo shows it can roughly halve the adverse gradient. Use the custom profile to explore faired shapes, and compare the standard shapes in the plot.</p>
+      </section>
+
+      <section id="axial">
+        <h2>Axial force on the nose</h2>
+        <p>The pressure on a slice of nose surface gives the axial force <span class="tex">dF=2\pi r_Bp\,dr_B</span>. With <span class="tex">p=p_\infty+qC_p</span> the hydrostatic part integrates to <span class="tex">p_\infty</span> times the base area (it cancels over a whole body but matters for internal loads) and the hydrodynamic part is</p>
+        <div class="eq"><div class="tex-display">F=2\pi q\int_0^{L_n}C_p\,r_B\frac{dr_B}{dz}\,dz,\qquad C_A=\frac{F}{q\pi R^2}</div></div>
+        <p>The first element at a pointed tip contributes <span class="tex">\pi qC_{p1}r_1^2</span>. In subsonic flow the nose axial force can be negative — the suction on the shoulder pulls the nose forward.</p>
+      </section>
+
+      <section id="verification">
+        <h2>Verification</h2>
+        <p>The tests reproduce every station radius and every incompressible pressure coefficient of the original field tool’s ogive-cylinder (30 in ogive, 6.25 in body, 108 in long, with its wake). They check the wake diameter, the Kármán–Tsien and sonic pressure relations, a textbook critical Mach number (<span class="tex">C_{p0,min}=-0.43\Rightarrow M_{cr}\approx0.72</span>), and the convergence of the discrete sum to the exact line-source integral on a slender cone.</p>
+      </section>
+
+      <section id="notes">
+        <h2>Notes on the method</h2>
+        <ul>
+          <li><strong>Axial force.</strong> The field tool’s drag-area column omits the factor <span class="tex">2\pi</span> on the body elements and sums only the first 15 in of the nose; the calculator integrates the memo’s formula over the whole nose.</li>
+          <li><strong>Field point.</strong> As in the field tool, the distance from each source uses the body radius at the source station; this is the usual slender-body simplification.</li>
+          <li><strong>Plume.</strong> The wake model is for a coasting (non-thrusting) rocket; a motor plume changes the flow behind the base.</li>
+        </ul>
+      </section>
+
+      <section id="references">
+        <h2>References</h2>
+        <ol class="refs">
+          <li>C. P. Hoult, “Nose Pressure Distribution (rev. 4),” RS&amp;T, 14 May 2012. <a href="../references/index.html#nose-pressure-distro4">View in library</a></li>
+          <li>M. M. Munk, “Note on the Pressure Distribution over the Hull of Elongated Airships with Circular Cross Section,” NACA TN-192, 1924.</li>
+          <li>R. J. Felkel, “Effect of Different Nose Profiles on Subsonic Pressure Coefficients,” AIAA student paper. <a href="../references/index.html#aiaafelkel3">View in library</a></li>
+          <li>C. P. Hoult, “Compressibility Effects on a Minimum Pressure Gradient Nose,” RS&amp;T, 2010. <a href="../references/index.html#local-sonic-flow">View in library</a></li>
+          <li>M. Rauscher, <em>Introduction to Aeronautical Dynamics</em>, Wiley, 1953.</li>
+        </ol>
+      </section>
+    </article>
+  </div>
+</div>
+</main>
+<script type="module">
+import { mountDocs } from '../js/docs.js';
+mountDocs();
+</script>
+</body>
+</html>

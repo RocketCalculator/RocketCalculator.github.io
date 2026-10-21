@@ -66,7 +66,8 @@ Single accent, ink and greys — no second accent colour.
 4. **Design bar** (one slim `--surface` strip): rocket name · “Share dimensions across calculators” switch · ⓘ ·
    Pin as baseline (or Baseline chip · Restore · Clear) · Save design · Open design. See §5a.
 5. **Inputs** card: grouped fields (group legend uppercase), each field = label + symbol (KaTeX) + ⓘ + input + unit.
-   “Load example…”, Reset, Share. No footnotes. Prefer **choices over raw data**: e.g. nose shape is a dropdown
+   “Load example…”, Reset, Share. No footnotes. Bounded inputs (fractions and probabilities 0–1, counts with a
+   sensible range) get a **slider** under the box, with a tidy `step` (e.g. 0.01, or 1 for whole numbers). Prefer **choices over raw data**: e.g. nose shape is a dropdown
    (tangent ogive, cone, Von Kármán, LV-Haack, elliptical, parabolic K′, power n) with length/radius; a “Custom
    profile” option reveals the point table only for users who need it.
 6. **Key results**: 3–4 cards, **light** (`--surface-2`, dark surface in dark mode) with a 1 px border and a 4 px
@@ -127,6 +128,9 @@ Order of contents:
 
 - Custom SVG chart (`js/ui/chart.js`): grid, ticks sized to width, TeX axis labels, hover read-out, legend toggles,
   current operating point as a marker.
+- Curves are **smooth**: sample continuous models finely; for quantities defined only at whole numbers (flights,
+  stages) pass the computed points with `smooth: true` (monotone cubic, no overshoot) and `dots: true`. No staircases
+  or jagged polylines; exported data stays the computed points.
 - **One Export button** per plot and drawing, grouped with separator lines: **data** — CSV, TXT/TSV, XLSX, JSON
   (plots and the results table; `js/ui/tabular.js`, no library) | **vector** — SVG, PDF, EPS | **image** — PNG, JPEG.
   Drawings have no data group. PDF/EPS are true vector (`js/ui/vector.js`), include the legend and title.

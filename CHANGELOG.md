@@ -4,6 +4,13 @@ Every commit adds an entry here, newest first. Live site: https://darasamii.gith
 
 ## 2026-10-20 (continued)
 
+### Reliability Growth: sliders, smooth plots, clearer ladder
+- Sliders for every bounded input: $D_0$, $p$, $d$ and $R^*$ in steps of 0.1/0.01/0.005, and the number of flight tests in whole flights.
+- Plots are smooth curves (monotone cubic through the whole-flight values, shown as dots); the tests-needed plot shows the unrounded $T^*$ instead of a staircase.
+- New plot: reliability of the first flight and after the tests against the chance a defect shows up, with a docs paragraph on why it dips.
+- Ladder drawing: bracket over the test campaign, later flights outlined, the next flight's value inside its bar, target labelled in the margin, smooth defects curve and a legend.
+- Framework: chart series options `smooth` and `dots`; sliders accept a `step` (snapped values). Design guide updated.
+
 ### New calculator: Two-Stage Weight Allocation
 - Added: `calculators/two-stage-weights.html`, which gives the lightest two-stage rocket for a payload and a required
   ideal velocity, with the following:

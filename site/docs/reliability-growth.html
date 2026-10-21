@@ -43,6 +43,7 @@
         <p>and the reliability of the flight that follows <span class="tex">T</span> flight tests is</p>
         <div class="eq"><div class="tex-display">R_T=(1-p)^{D_T}=(1-p)^{D_0(1-p\,d)^T}</div></div>
         <p>Each test removes on average the fraction <span class="tex">p\,d</span> of the defects still present. The product shows the two levers: <span class="tex">p</span> is set by the vehicle and its flights, while <span class="tex">d</span> is set by how well each flight is instrumented, recovered and investigated.</p>
+        <p>The chance <span class="tex">p</span> acts both ways. Taking logarithms, <span class="tex">\ln R_T=D_0(1-p\,d)^T\ln(1-p)</span>: a large <span class="tex">p</span> ruins the first flight but removes defects quickly, while a small <span class="tex">p</span> does little harm on any one flight but lets defects survive the tests. After a few tests the reliability is therefore lowest for an intermediate <span class="tex">p</span>; the plot of reliability against <span class="tex">p</span> shows where the design sits.</p>
         <p>Schaechter and Hoult studied a set of sounding-rocket development histories and found <span class="tex">D_0\approx4</span>, <span class="tex">p\approx0.6</span> and <span class="tex">d\approx0.8</span> to be representative. With these values the first flight succeeds with probability 0.026; after five tests the next flight succeeds with probability 0.87, and after ten with 0.995.</p>
       </section>
 

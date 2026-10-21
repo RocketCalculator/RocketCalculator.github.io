@@ -38,7 +38,8 @@ export function buildForm(def, state, { onChange, onHighlight, infoFor }) {
       slider = h('input', { type: 'range', 'aria-label': `${f.label} slider`, step: 'any' });
       el.append(slider);
       slider.addEventListener('input', () => {
-        const v = fromDisplay(Number(slider.value), f, getSystem());
+        // a slider with its own step (e.g. whole flights) snaps to it; otherwise it moves in 1/400 of its range
+        const v = fromDisplay(f.slider.step ? +(Math.round(Number(slider.value) / f.slider.step) * f.slider.step).toPrecision(12) : Number(slider.value), f, getSystem());
         state.values[f.id] = v; input.value = show(v, f, getSystem()); validate(); onChange(f.id, { fast: true });
       });
     }
@@ -48,7 +49,7 @@ export function buildForm(def, state, { onChange, onHighlight, infoFor }) {
       if (document.activeElement !== input || !input.value) input.value = show(state.values[f.id], f, sys);
       if (slider) {
         const lo = toDisplay(f.slider.min, f, sys), hi = toDisplay(f.slider.max, f, sys);
-        slider.min = Math.min(lo, hi); slider.max = Math.max(lo, hi); slider.step = Math.abs(hi - lo) / 400;
+        slider.min = Math.min(lo, hi); slider.max = Math.max(lo, hi); slider.step = f.slider.step ?? Math.abs(hi - lo) / 400;
         slider.value = toDisplay(state.values[f.id], f, sys);
       }
     };

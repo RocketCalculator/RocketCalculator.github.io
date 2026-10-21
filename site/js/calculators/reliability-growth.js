@@ -1,7 +1,8 @@
 // Reliability Growth — UI definition.
 import { relgrowth, history, flightsToReach, reliability } from '../calc/relgrowth.js';
 import { s, fmt, InputError } from '../util.js';
-import { path, text } from '../ui/svg.js';
+import { text } from '../ui/svg.js';
+import { linePath } from '../ui/chart.js';
 
 const ONE = { dim: 'none' };
 const N_MAX = 200;   // longest test campaign accepted (loops and plots are sized by it)
@@ -39,20 +40,20 @@ export default {
     {
       id: 'def', title: 'Latent defects',
       fields: [
-        { id: 'D0', label: 'Lethal latent defects at the first flight', sym: 'D_0', ...ONE, default: 4, min: 0, max: 1000,
+        { id: 'D0', label: 'Lethal latent defects at the first flight', sym: 'D_0', ...ONE, default: 4, min: 0, max: 1000, slider: { min: 0, max: 12, step: 0.1 },
           info: { text: 'Expected number of design or workmanship defects, each able to cause a failure, that the vehicle carries into its first flight. It is an expected value, so it need not be a whole number.', range: 'About 4 fits the sounding-rocket development histories studied by Schaechter and Hoult. More for a new design or team, fewer for a vehicle built from proven parts.', doc: 'model' } },
-        { id: 'p', label: 'Chance a defect shows up in a flight', sym: 'p', ...ONE, default: 0.6, min: 0, max: 1, minExclusive: true, maxExclusive: true,
+        { id: 'p', label: 'Chance a defect shows up in a flight', sym: 'p', ...ONE, default: 0.6, min: 0, max: 1, minExclusive: true, maxExclusive: true, slider: { min: 0.01, max: 0.99, step: 0.01 },
           info: { text: 'Probability that any one latent defect is triggered during a given flight. A defect that shows up causes a failure.', range: 'About 0.6 in the histories studied by Schaechter and Hoult.', doc: 'model' } },
       ],
     },
     {
       id: 'test', title: 'Flight-test campaign',
       fields: [
-        { id: 'd', label: 'Chance a defect that showed up is fixed', sym: 'd', ...ONE, default: 0.8, min: 0, max: 1,
+        { id: 'd', label: 'Chance a defect that showed up is fixed', sym: 'd', ...ONE, default: 0.8, min: 0, max: 1, slider: { min: 0, max: 1, step: 0.01 },
           info: { text: 'Probability that a defect which shows up in a test flight is detected, understood and corrected before the next flight. Flight instrumentation, telemetry, recovery of hardware and careful failure investigation raise it.', range: 'About 0.8 in the histories studied by Schaechter and Hoult. Close to 1 with good telemetry and recovered hardware; low for uninstrumented flights.', doc: 'model' } },
-        { id: 'N', label: 'Number of flight tests', sym: 'T', ...ONE, default: 5, min: 0, max: N_MAX,
+        { id: 'N', label: 'Number of flight tests', sym: 'T', ...ONE, default: 5, min: 0, max: N_MAX, slider: { min: 0, max: 30, step: 1 },
           info: { text: 'Flight tests flown before the flight of interest, counting failed flights. Zero gives the reliability of the very first flight.', doc: 'model' } },
-        { id: 'Rt', label: 'Target reliability', sym: 'R^*', ...ONE, default: 0.95, min: 0, max: 1, minExclusive: true, maxExclusive: true,
+        { id: 'Rt', label: 'Target reliability', sym: 'R^*', ...ONE, default: 0.95, min: 0, max: 1, minExclusive: true, maxExclusive: true, slider: { min: 0.5, max: 0.995, step: 0.005 },
           info: { text: 'Reliability wanted for the flight that follows the tests, as a probability of success between 0 and 1.', doc: 'target' } },
       ],
     },
@@ -95,12 +96,12 @@ export default {
   plots: [
     {
       id: 'growth', title: 'Reliability flight by flight',
-      info: { text: 'Reliability of the next flight against the number of flight tests already flown. The dashed curve is the best case in which every defect that shows up is fixed; the gap shows what better instrumentation and failure investigation would buy.', doc: 'model' },
+      info: { text: 'Reliability of the next flight against the number of flight tests already flown; the dots are whole flights. The dashed curve is the best case in which every defect that shows up is fixed; the gap shows what better instrumentation and failure investigation would buy.', doc: 'model' },
       build(v, out) {
         const n = span(v, out.o), mine = [], best = [];
         for (let i = 0; i <= n; i++) { mine.push([i, reliability(v.D0, v.p, v.d, i)]); best.push([i, reliability(v.D0, v.p, 1, i)]); }
-        const series = [{ name: 'R_n', points: mine }];
-        if (v.d < 1) series.push({ name: 'every defect fixed ($d=1$)', points: best, dashed: true, color: 'var(--text-3)' });
+        const series = [{ name: 'R_n', points: mine, smooth: true, dots: n <= 60 }];
+        if (v.d < 1) series.push({ name: 'every defect fixed ($d=1$)', points: best, dashed: true, smooth: true, color: 'var(--text-3)' });
         return { x: { label: 'Flight tests flown $n$' }, y: { label: 'Reliability of the next flight' }, yDomain: [0, 1], series,
           hlines: [{ y: v.Rt, label: 'target R^*', color: 'var(--red-text)' }],
           markers: [{ x: v.N, y: out.o.RT, label: 'R_T' }] };
@@ -108,73 +109,98 @@ export default {
     },
     {
       id: 'defects', title: 'Latent defects and expected failures',
-      info: { text: 'Expected number of lethal latent defects left after each flight test, and the running total of failed flights to expect. The total levels off once most defects are fixed.', doc: 'campaign' },
+      info: { text: 'Expected number of lethal latent defects left after each flight test, and the running total of failed flights to expect; the dots are whole flights. The total levels off once most defects are fixed.', doc: 'campaign' },
       build(v, out) {
-        const rows = history(v.D0, v.p, v.d, span(v, out.o));
+        const rows = history(v.D0, v.p, v.d, span(v, out.o)), dots = rows.length <= 61;
         return { x: { label: 'Flight tests flown $n$' }, y: { label: 'Expected number' }, includeZero: true,
-          series: [{ name: 'defects left $D_n$', points: rows.map((r) => [r.n, r.D]) }, { name: 'failures so far $F_n$', points: rows.map((r) => [r.n, r.F]), dashed: true }],
+          series: [{ name: 'defects left $D_n$', points: rows.map((r) => [r.n, r.D]), smooth: true, dots },
+            { name: 'failures so far $F_n$', points: rows.map((r) => [r.n, r.F]), dashed: true, smooth: true, dots }],
           vlines: [{ x: v.N, label: 'planned tests', color: 'var(--text-3)' }],
           markers: [{ x: v.N, y: out.o.DT, label: 'D_T' }] };
       },
     },
     {
+      id: 'exposure', title: 'Reliability vs chance a defect shows up',
+      info: { text: 'Reliability of the first flight and of the flight after the tests against the chance that a defect shows up. Defects that show up often ruin the first flight but are found quickly; defects that rarely show up do little harm but survive the tests.', doc: 'model' },
+      build(v, out) {
+        const after = [], first = [];
+        for (let i = 1; i <= 99; i++) { const p = i / 100; after.push([p, reliability(v.D0, p, v.d, v.N)]); first.push([p, reliability(v.D0, p, v.d, 0)]); }
+        return { x: { label: 'Chance a defect shows up $p$' }, y: { label: 'Reliability' }, yDomain: [0, 1],
+          series: [{ name: `after ${v.N} test${v.N === 1 ? '' : 's'} $R_T$`, points: after, smooth: true }, { name: 'first flight $R_0$', points: first, dashed: true, smooth: true, color: 'var(--text-3)' }],
+          hlines: [{ y: v.Rt, label: 'target R^*', color: 'var(--red-text)' }],
+          markers: [{ x: v.p, y: out.o.RT, label: 'design' }] };
+      },
+    },
+    {
       id: 'detect', title: 'Flight tests needed vs chance of fixing',
-      info: { text: 'Flight tests needed to reach the target reliability against the chance that a defect which shows up is fixed. It shows how much flight instrumentation and failure investigation shorten a test campaign.', doc: 'target' },
+      info: { text: 'Flight tests needed to reach the target reliability against the chance that a defect which shows up is fixed, before rounding up to whole flights. It shows how much flight instrumentation and failure investigation shorten a test campaign.', doc: 'target' },
       build(v, out) {
         const pts = [];
-        for (let i = 0; i <= 90; i++) { const d = 0.1 + i / 100; pts.push([d, flightsToReach(v.D0, v.p, d, v.Rt).flights]); }
-        return { x: { label: 'Chance a defect is fixed $d$' }, y: { label: 'Flight tests needed $T^*$' }, includeZero: true, series: [{ name: 'T^*', points: pts }],
-          markers: Number.isFinite(out.o.Tstar) && v.d >= 0.1 ? [{ x: v.d, y: out.o.Tstar, label: 'design' }] : [] };
+        for (let i = 0; i <= 180; i++) { const d = 0.1 + i / 200; pts.push([d, flightsToReach(v.D0, v.p, d, v.Rt).exact]); }
+        return { x: { label: 'Chance a defect is fixed $d$' }, y: { label: 'Flight tests needed $T^*$ (unrounded)' }, includeZero: true, series: [{ name: 'T^*', points: pts, smooth: true }],
+          markers: Number.isFinite(out.o.Texact) && v.d >= 0.1 ? [{ x: v.d, y: out.o.Texact, label: `design: ${flightsText(out.o.Tstar)} flights` }] : [] };
       },
     },
   ],
   schematicTitle: 'Flight-by-flight reliability ladder',
-  schematicHint: 'Each bar is one flight, its height the chance it succeeds; drag the red line to set the target and the grey marker to set the number of flight tests',
+  schematicHint: 'Each bar is one flight, its height the chance it succeeds; drag the red handle to set the target and the grey handle to set the number of flight tests',
   schematic(ctx, v, out) {
-    const W = 760, H = 330, o = out.o;
+    const W = 760, H = 352, o = out.o;
     const fr = ctx.frame({ width: W, height: H, label: 'Reliability of each flight in the test campaign' });
     const g = fr.layer('main'); g.replaceChildren();
-    const M = Math.min(41, Math.max(10, v.N + 1, Number.isFinite(o.Tstar) ? o.Tstar + 1 : 0));   // columns (flights) shown
-    const x0 = 64, x1 = 736, yb = 268, yt = 58, cw = (x1 - x0) / M, Y = (r) => yb - r * (yb - yt);
-    const rows = history(v.D0, v.p, v.d, M - 1);
-    // test campaign band
-    const nT = Math.min(v.N, M);
-    if (nT > 0) {
-      g.append(s('rect', { x: x0, y: yt - 26, width: nT * cw, height: yb - yt + 26, fill: 'var(--surface-2)', stroke: 'var(--schem-dim)', 'stroke-dasharray': '4 3', 'data-field': 'N' }));
-      g.append(text(x0 + 6, yt - 12, `${v.N} flight test${v.N === 1 ? '' : 's'}`, { size: 11, field: 'N' }));
-    }
-    // axis and gridlines
-    g.append(s('path', { d: `M${x0},${yt}V${yb}H${x1}`, class: 'sc-line' }));
+    const M = Math.min(41, Math.max(10, v.N + 1, Number.isFinite(o.Tstar) ? o.Tstar + 2 : 0));   // columns (flights) shown
+    const x0 = 58, x1 = 664, yb = 262, yt = 52, cw = (x1 - x0) / M, Y = (r) => yb - r * (yb - yt);
+    const rows = history(v.D0, v.p, v.d, M - 1), nT = Math.min(v.N, M), every = Math.ceil(M / 14);
+    // gridlines and axis
     for (const r of [0, 0.25, 0.5, 0.75, 1]) {
-      if (r > 0) g.append(s('line', { x1: x0, x2: x1, y1: Y(r), y2: Y(r), class: 'sc-thin', 'stroke-opacity': 0.5 }));
-      g.append(text(x0 - 6, Y(r) + 4, fmt(r, { digits: 2 }), { anchor: 'end', cls: 'sc-dim-text', size: 10 }));
+      if (r > 0) g.append(s('line', { x1: x0, x2: x1, y1: Y(r), y2: Y(r), class: 'sc-thin', 'stroke-opacity': 0.35 }));
+      g.append(text(x0 - 8, Y(r) + 4, fmt(r, { digits: 2 }), { anchor: 'end', cls: 'sc-dim-text', size: 10 }));
     }
-    g.append(text(16, (yt + yb) / 2, 'R', { anchor: 'middle', size: 12 }));
-    // one bar per flight: flight n + 1 follows n tests
-    const every = Math.ceil(M / 14);
+    g.append(text(18, (yt + yb) / 2 + 4, 'R', { anchor: 'middle', size: 12 }));
+    // bracket over the test campaign
+    if (nT > 0) {
+      const bx1 = x0 + nT * cw - 3, by = yt - 14;
+      g.append(s('path', { d: `M${x0 + 3},${by + 6}V${by}H${bx1}V${by + 6}`, class: 'sc-thin', 'data-field': 'N' }));
+      g.append(text((x0 + bx1) / 2, by - 6, `${v.N} flight test${v.N === 1 ? '' : 's'}`, { anchor: 'middle', size: 11, field: 'N' }));
+    }
+    // one bar per flight: flight i + 1 follows i tests; tests solid, the next flight red, later flights outlined
     rows.forEach((r, i) => {
-      const x = x0 + i * cw + cw * 0.15, w = cw * 0.7, next = i === v.N;
-      g.append(s('rect', { x, y: Y(r.R), width: w, height: Math.max(0.5, yb - Y(r.R)), class: next ? null : 'sc-body', fill: next ? 'var(--red)' : null, 'fill-opacity': next ? 0.85 : null, 'data-field': 'D0 p d' }));
-      if (i % every === 0 || next) g.append(text(x + w / 2, yb + 15, String(i + 1), { anchor: 'middle', cls: 'sc-dim-text', size: 10 }));
+      const x = x0 + i * cw + cw * 0.14, w = cw * 0.72, ht = Math.max(0.5, yb - Y(r.R));
+      const kind = i < v.N ? 'test' : i === v.N ? 'next' : 'later';
+      g.append(s('rect', { x, y: Y(r.R), width: w, height: ht, rx: Math.min(2, w / 6), 'data-field': 'D0 p d',
+        class: kind === 'test' ? 'sc-body-2' : kind === 'later' ? 'sc-thin' : null,
+        fill: kind === 'next' ? 'var(--red)' : kind === 'later' ? 'none' : null, 'stroke-dasharray': kind === 'later' ? '3 2' : null }));
+      if (i % every === 0 || kind === 'next') g.append(text(x + w / 2, yb + 15, String(i + 1), { anchor: 'middle', cls: kind === 'next' ? 'sc-label' : 'sc-dim-text', size: 10 }));
     });
+    g.append(s('path', { d: `M${x0},${yt - 4}V${yb}H${x1}`, class: 'sc-line' }));
+    g.append(text((x0 + x1) / 2, yb + 32, 'flight number', { anchor: 'middle', cls: 'sc-dim-text', size: 10 }));
     // expected latent defects left before each flight, as a share of D0
-    if (v.D0 > 0) {
-      g.append(s('path', { d: path(rows.map((r, i) => [x0 + (i + 0.5) * cw, Y(r.D / v.D0)])), class: 'sc-accent2', fill: 'none', 'stroke-dasharray': '2 3', 'data-field': 'D0 p d' }));
-      g.append(text(x1, H - 10, 'dotted: defects left as a share of D_0', { anchor: 'end', size: 10, cls: 'sc-dim-text', field: 'D0' }));
-    }
-    g.append(text((x0 + x1) / 2, yb + 34, 'flight number', { anchor: 'middle', cls: 'sc-dim-text', size: 10 }));
-    if (v.N < M) g.append(text(Math.min(x1 - 4, x0 + (v.N + 0.5) * cw), Y(o.RT) - 8, `R_T = ${fmt(o.RT, { digits: 3 })}`, { anchor: v.N > M - 4 ? 'end' : 'middle', size: 11 }));
-    else g.append(text(x1, yt - 12, `showing the first ${M} flights; the next flight is number ${v.N + 1}`, { anchor: 'end', cls: 'sc-dim-text', size: 10 }));
-    // target line
+    if (v.D0 > 0) g.append(s('path', { d: linePath(rows.map((r, i) => [x0 + (i + 0.5) * cw, Y(r.D / v.D0)]), true), class: 'sc-thin', fill: 'none', 'stroke-width': 1.5, 'stroke-dasharray': '1.5 3', 'data-field': 'D0 p d' }));
+    // value of the next flight: inside its bar when it fits, else above it
+    if (v.N < M) {
+      const cx = x0 + (v.N + 0.5) * cw, inside = yb - Y(o.RT) > 26 && cw * 0.72 >= 34;
+      g.append(text(cx, inside ? Y(o.RT) + 16 : Y(o.RT) - 6, fmt(o.RT, { digits: 3 }), { anchor: 'middle', size: 11, cls: inside ? 'sc-on-accent' : 'sc-label' }));
+    } else g.append(text(x1, yt - 30, `first ${M} flights shown; the next flight is number ${v.N + 1}`, { anchor: 'end', cls: 'sc-dim-text', size: 10 }));
+    // target line, labelled in the right margin
     g.append(s('line', { x1: x0, x2: x1, y1: Y(v.Rt), y2: Y(v.Rt), class: 'sc-accent', 'stroke-dasharray': '6 4', 'data-field': 'Rt' }));
-    g.append(text(x1 - 16, Y(v.Rt) - 6, `target R^* = ${fmt(v.Rt, { digits: 3 })}`, { anchor: 'end', size: 11, field: 'Rt' }));
-    g.append(text(x0, H - 10, `first flight R_0 = ${fmt(o.R0, { digits: 3 })} · tests to reach the target T^* = ${flightsText(o.Tstar)}`, { size: 11 }));
+    g.append(text(x1 + 14, Y(v.Rt) - 3, 'target', { size: 10, cls: 'sc-dim-text', field: 'Rt' }));
+    g.append(text(x1 + 14, Y(v.Rt) + 11, `R^* = ${fmt(v.Rt, { digits: 3 })}`, { size: 11, field: 'Rt' }));
+    // summary and legend
+    g.append(text(x0, H - 34, `first flight R_0 = ${fmt(o.R0, { digits: 3 })} · after the tests R_T = ${fmt(o.RT, { digits: 3 })} · tests to reach the target T^* = ${flightsText(o.Tstar)}`, { size: 11 }));
+    const key = [['test', 'test flight'], ['next', 'next flight'], ['later', 'later flights'], ['dots', 'defects left, share of D_0']];
+    let kx = x0;
+    for (const [k, label] of key) {
+      if (k === 'dots') g.append(s('path', { d: `M${kx},${H - 15}h16`, class: 'sc-thin', 'stroke-width': 1.5, 'stroke-dasharray': '1.5 3' }));
+      else g.append(s('rect', { x: kx + 3, y: H - 21, width: 10, height: 11, rx: 1.5, class: k === 'test' ? 'sc-body-2' : k === 'later' ? 'sc-thin' : null, fill: k === 'next' ? 'var(--red)' : k === 'later' ? 'none' : null, 'stroke-dasharray': k === 'later' ? '3 2' : null }));
+      g.append(text(kx + 22, H - 11, label, { size: 10, cls: 'sc-dim-text' }));
+      kx += 34 + label.length * 5.6;
+    }
     ctx.handle('target', x1, Y(v.Rt), {
       field: 'Rt', title: 'Drag up or down to change the target reliability',
       onDrag: (sx, sy) => ctx.setValue('Rt', Math.min(0.999, Math.max(0.001, (yb - sy) / (yb - yt)))),
       onKey: (dx, dy) => ctx.setValue('Rt', Math.min(0.999, Math.max(0.001, v.Rt + 0.01 * dy))),
     });
-    ctx.handle('tests', x0 + Math.min(v.N, M) * cw, yb, {
+    ctx.handle('tests', x0 + nT * cw, yb, {
       field: 'N', title: 'Drag left or right to change the number of flight tests',
       onDrag: (sx) => ctx.setValue('N', Math.min(N_MAX, Math.max(0, Math.round((sx - x0) / cw))), { round: 1 }),
       onKey: (dx) => ctx.setValue('N', Math.min(N_MAX, Math.max(0, v.N + dx)), { round: 1 }),

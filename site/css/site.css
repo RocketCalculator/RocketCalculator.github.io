@@ -370,6 +370,7 @@ table.ptable button:hover { color: var(--red); }
 .sc-dim { fill: none; stroke: var(--schem-dim); stroke-width: 1; vector-effect: non-scaling-stroke; }
 .sc-dim-text { fill: var(--text); font: 500 11.5px var(--font-sans); font-variant-numeric: tabular-nums; paint-order: stroke; stroke: var(--surface); stroke-width: 3px; stroke-linejoin: round; }
 .sc-label { fill: var(--text-2); font: 12px var(--font-sans); paint-order: stroke; stroke: var(--surface); stroke-width: 3px; stroke-linejoin: round; }
+.sc-on-accent { fill: #fff; font: 600 12px var(--font-sans); }
 .sc-accent { fill: none; stroke: var(--red); stroke-width: 2; vector-effect: non-scaling-stroke; }
 .sc-accent-fill { fill: var(--red); }
 .sc-accent2 { fill: none; stroke: var(--text); stroke-width: 2; vector-effect: non-scaling-stroke; }

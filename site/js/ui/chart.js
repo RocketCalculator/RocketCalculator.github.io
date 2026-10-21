@@ -32,9 +32,26 @@ function niceDomain([lo, hi], count) {
 }
 const color = (i) => `var(--series-${(i % 6) + 1})`;
 
+/** SVG path through screen points: straight segments, or a monotone cubic (Fritsch–Carlson) that never overshoots the data. */
+export function linePath(P, smooth) {
+  if (!P.length) return '';
+  const f = (v) => v.toFixed(2);
+  if (!smooth || P.length < 3) return P.map(([x, y], i) => `${i ? 'L' : 'M'}${f(x)},${f(y)}`).join('');
+  const n = P.length, dx = [], m = [], t = new Array(n);
+  for (let i = 0; i < n - 1; i++) { dx.push(P[i + 1][0] - P[i][0]); m.push(dx[i] ? (P[i + 1][1] - P[i][1]) / dx[i] : 0); }
+  t[0] = m[0]; t[n - 1] = m[n - 2];
+  for (let i = 1; i < n - 1; i++) t[i] = m[i - 1] * m[i] <= 0 ? 0 : (3 * (dx[i - 1] + dx[i])) / ((2 * dx[i] + dx[i - 1]) / m[i - 1] + (dx[i] + 2 * dx[i - 1]) / m[i]);
+  let d = `M${f(P[0][0])},${f(P[0][1])}`;
+  for (let i = 0; i < n - 1; i++) {
+    const h3 = dx[i] / 3;
+    d += `C${f(P[i][0] + h3)},${f(P[i][1] + h3 * t[i])} ${f(P[i + 1][0] - h3)},${f(P[i + 1][1] - h3 * t[i + 1])} ${f(P[i + 1][0])},${f(P[i + 1][1])}`;
+  }
+  return d;
+}
+
 /**
  * createChart(host, { height, title }) → { update(spec), el }
- * spec = { x: {label, unit}, y: {label, unit}, series: [{name, points:[[x,y]], dashed, color}], markers:[{x,y,label,color}],
+ * spec = { x: {label, unit}, y: {label, unit}, series: [{name, points:[[x,y]], dashed, color, smooth, dots}], markers:[{x,y,label,color}],
  *          hlines:[{y,label,color}], vlines:[{x,label,color}], xDomain, yDomain, includeZero, hover: 'x'|'y', aspect }
  */
 export function createChart(host, opts = {}) {
@@ -97,14 +114,18 @@ export function createChart(host, opts = {}) {
     }
     const animate = !drawn && !reducedMotion();
     for (const se of vis) {
-      let d = '', pen = false;
+      // split at non-finite points; each run is drawn straight or as a monotone cubic (smooth)
+      let d = '', run = [];
+      const flush = () => { d += linePath(run, se.smooth); run = []; };
       for (const [x, y] of se.points) {
-        if (!Number.isFinite(x) || !Number.isFinite(y)) { pen = false; continue; }
-        d += `${pen ? 'L' : 'M'}${X(x).toFixed(2)},${Y(y).toFixed(2)}`; pen = true;
+        if (!Number.isFinite(x) || !Number.isFinite(y)) { flush(); continue; }
+        run.push([X(x), Y(y)]);
       }
+      flush();
       const p = s('path', { class: `series${se.dashed ? ' dashed' : ''}`, d, stroke: se.col, 'stroke-width': se.width || 2 });
       if (se.area) plot.append(s('path', { d: d + `L${X(se.points.at(-1)[0])},${Y(Math.max(yd[0], 0))}L${X(se.points[0][0])},${Y(Math.max(yd[0], 0))}Z`, fill: se.col, opacity: 0.08, stroke: 'none' }));
       plot.append(p);
+      if (se.dots) for (const [x, y] of se.points) if (Number.isFinite(x) && Number.isFinite(y)) plot.append(s('circle', { class: 'series-dot', cx: X(x).toFixed(2), cy: Y(y).toFixed(2), r: 2.6, fill: se.col }));
       if (animate && !se.dashed) { requestAnimationFrame(() => { const len = p.getTotalLength?.() || 1000; p.style.setProperty('--len', len); p.classList.add('anim'); }); }
     }
     const marks = s('g', { class: 'marker' });

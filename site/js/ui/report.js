@@ -47,12 +47,20 @@ export function symbolsIn(tex, dict) {
   if (!tex || !dict) return [];
   const src = Array.isArray(tex) ? tex.join(' ') : String(tex);
   const found = [];
+  // positions inside a subscript group _{…}: a symbol found there is part of another symbol's name (C_{L\delta})
+  const inSub = new Uint8Array(src.length + 1), open = [];
+  for (let j = 0; j < src.length; j++) {
+    if (src[j] === '{') open.push(src[j - 1] === '_');
+    else if (src[j] === '}') open.pop();
+    else if (open.includes(true)) inSub[j] = 1;
+  }
   for (const [key, desc] of Object.entries(dict)) {
     let i = src.indexOf(key), first = -1;
     while (i >= 0) {
       const b = src[i - 1], a = src[i + key.length];
-      const okB = !b || !/[A-Za-z\\]/.test(b);
-      const okA = !a || (!/[A-Za-z0-9]/.test(a) && !(a === '_' && !/_/.test(key)) && !(a === '{' && /\\[a-z]+$/.test(key)));
+      // not a subscript, and not part of a longer name (a command such as \delta cannot merge with a letter before it)
+      const okB = !inSub[i] && (!b || (key[0] === '\\' ? b !== '\\' : !/[A-Za-z\\]/.test(b)) && b !== '_');
+      const okA = !a || /[}]$/.test(key) || (!/[A-Za-z0-9]/.test(a) && !(a === '_' && !/_/.test(key)) && !(a === '{' && /\\[a-z]+$/.test(key)));
       if (okB && okA) { first = i; break; }
       i = src.indexOf(key, i + 1);
     }

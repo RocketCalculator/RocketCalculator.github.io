@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Roll Rate History — Theory & documentation — Rocket Calculator</title>
+<meta name="description" content="Roll rate of a small sounding rocket with canted fins from launcher exit to burnout, including roll inertia, and the roll rate at apogee.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../css/site.css">
+<script>try{var t=JSON.parse(localStorage.getItem('rc-theme'));if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<main id="main">
+<div class="wrap">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Home</a><span class="sep">/</span><a href="../index.html#area-dyn">Flight Dynamics &amp; Mass Properties</a><span class="sep">/</span><a href="../calculators/roll-rate-history.html">Roll Rate History</a><span class="sep">/</span><span>Documentation</span></nav>
+  <div class="calc-title"><h1>Roll Rate History — theory</h1></div>
+  <p class="calc-sub">Spin from the launcher to apogee. Based on C. P. Hoult, <em>Small Sounding Rocket Boost Phase Roll Rate</em> (2013) and <em>Small Sounding Rocket Apogee Roll Rate</em> (2013).</p>
+  <div class="calc-badges"><a class="btn small primary" href="../calculators/roll-rate-history.html">Open the calculator</a><a class="btn small" href="../references/index.html#boost-phase-roll-rate2">Boost-phase memo (PDF)</a><a class="btn small" href="../references/index.html#apogee-roll-rate">Apogee memo (PDF)</a></div>
+  <div class="doc-layout">
+    <nav class="doc-toc" aria-label="Contents"></nav>
+    <article class="doc">
+
+      <section id="overview">
+        <h2>Overview</h2>
+        <p>Roll rate matters for the rocket’s dynamics — spin averages out thrust and fin misalignments, but a roll rate near the pitch frequency can lock in — and for the payload: cameras and sensors near apogee, where the payload lingers, and parachute deployment, where a fast spin can wrap the riser lines.</p>
+        <p>While the angle of attack is small, the roll equation is linear and decoupled from the rest of the motion. For vertical flight it is</p>
+        <div class="eq"><div class="tex-display">I_R\frac{dp}{dt}=qSd\left[C_{Lp}\frac{pd}{2U}+C_{L\delta}\sum_i\delta_i\right]</div></div>
+        <p>where <span class="tex">I_R</span> is the roll moment of inertia, <span class="tex">p</span> the roll rate, <span class="tex">q=\tfrac12\rho U^2</span> the dynamic pressure, <span class="tex">S=\pi R^2</span> and <span class="tex">d=2R</span> the reference area and length, <span class="tex">C_{Lp}</span> the roll-damping derivative of all fins, <span class="tex">C_{L\delta}</span> the roll-driving derivative of one fin and <span class="tex">\delta_i</span> the fin cant angles. With <span class="tex">N</span> fins at the same cant, <span class="tex">\sum\delta_i=N\delta</span>.</p>
+      </section>
+
+      <section id="derivatives">
+        <h2>Roll derivatives</h2>
+        <p>The calculator takes <span class="tex">C_{L\delta}</span> and <span class="tex">C_{Lp}</span> from strip theory for a straight-tapered fin set, exactly as in the Fin Cant Angle calculator: each strip of fin carries a lift proportional to its local angle of attack, which is the cant angle for the driving moment and <span class="tex">py/U</span> at radius <span class="tex">y</span> for the damping moment. The fin geometry is shared between the two calculators.</p>
+      </section>
+
+      <section id="boost">
+        <h2>Boost without inertia</h2>
+        <p>For most of the boost the inertia term is small, and driving balances damping:</p>
+        <div class="eq"><div class="tex-display">p\simeq-\frac{2UC_{L\delta}}{d\,C_{Lp}}\sum_i\delta_i,\qquad\lambda_{R0}=\frac pU=-\frac{2C_{L\delta}}{d\,C_{Lp}}\sum_i\delta_i</div></div>
+        <p>The roll wave number <span class="tex">\lambda_{R0}</span> is the roll per unit distance flown. Apart from Mach-number and aeroelastic effects it is constant, so the roll rate grows in proportion to speed, <span class="tex">p=\lambda_{R0}U</span>, and the roll angle in proportion to height, <span class="tex">\Delta\phi=\lambda_{R0}(h-L)</span>. The rocket rolls along a helix that makes one turn every <span class="tex">2\pi/\lambda_{R0}</span>.</p>
+      </section>
+
+      <section id="lag">
+        <h2>Roll inertia and the lag</h2>
+        <p>The roll rate is zero until the rocket clears the launcher, and just after it the dynamic pressure is still low, so inertia dominates and the spin lags behind <span class="tex">\lambda_{R0}U</span>. With constant acceleration, <span class="tex">U^2=2ah</span>, the memo shows that the lag is governed by</p>
+        <div class="eq"><div class="tex-display">J=\frac{I_R}{2\pi\rho(h-L)R^4C_{Lp}}=\frac{k}{h-L},\qquad k=\frac{I_R}{2\pi\rho R^4C_{Lp}}</div></div>
+        <p>(<span class="tex">J</span> and the roll-lag length <span class="tex">k</span> are negative because <span class="tex">C_{Lp}</span> is). Summing the asymptotic series gives the closed-form estimate</p>
+        <div class="eq"><div class="tex-display">\lambda_R\simeq\frac{\lambda_{R0}}{1-J},\qquad\Delta\phi\simeq\lambda_{R0}\left[h-L+k\ln\frac{h-L-k}{-k}\right]</div></div>
+        <p>which the memo compares with Prospector-18D flight data. The estimate is accurate while <span class="tex">|J|</span> is small — within about 1 % for <span class="tex">|J|\lesssim0.05</span> — but it overstates the rate when the inertia is large: by about 20 % at <span class="tex">|J|=0.3</span>. The calculator therefore integrates the roll equation itself, with the same constant-acceleration boost (<span class="tex">U=at</span>, <span class="tex">h=at^2/2</span>, <span class="tex">p=0</span> at launcher exit), and reports the integrated values; the closed-form estimate is shown alongside for comparison. Very stiff cases (tiny inertia) switch to an exponential integration step that is stable for any step size.</p>
+      </section>
+
+      <section id="apogee">
+        <h2>Roll rate at apogee</h2>
+        <p>After burnout, near apogee, gravity is the main force changing the speed, <span class="tex">dV/dt\simeq-g</span>, and with the density at apogee <span class="tex">\rho_A</span> the roll equation becomes</p>
+        <div class="eq"><div class="tex-display">\frac{dp}{dV}-GVp=-HV^2,\qquad G=-\frac{\rho_ASd^2C_{Lp}}{4gI_R},\quad H=\frac{\rho_ASd\,C_{L\delta}\sum\delta_i}{2gI_R}</div></div>
+        <p>With the integrating factor <span class="tex">e^{-GV^2/2}</span> and <span class="tex">p_B=HV_B/G</span> the memo arrives at</p>
+        <div class="eq"><div class="tex-display">\frac{p_A}{p_B}=e^{-GV_B^2/2}+\frac{G}{V_B}\int_0^{V_B}V^2e^{-GV^2/2}\,dV</div></div>
+        <p>and evaluates the integral numerically for its Figure 1. The integral does have a closed form; with <span class="tex">a=GV_B^2/2</span>,</p>
+        <div class="eq"><div class="tex-display">\frac{p_A}{p_B}=\frac{\sqrt\pi\,\mathrm{erf}\sqrt a}{2\sqrt a}</div></div>
+        <p>which falls from 1 at <span class="tex">a=0</span> to 0.50 at <span class="tex">GV_B^2=6</span>, as in the memo’s figure. If the roll rate at burnout has not reached <span class="tex">\lambda_{R0}V_B</span> because of the lag, the same integration gives</p>
+        <div class="eq"><div class="tex-display">p_A=p_Be^{-a}+\lambda_{R0}V_B\left[\frac{\sqrt\pi\,\mathrm{erf}\sqrt a}{2\sqrt a}-e^{-a}\right]</div></div>
+        <p>The approximation is meant for small rockets whose apogee is well inside the troposphere.</p>
+      </section>
+
+      <section id="verification">
+        <h2>Verification</h2>
+        <p>No spreadsheet exists for this topic. The tests compare the integrated burnout rate with an independent fine integration of the roll equation (to <span class="tex">10^{-8}</span>), confirm that the closed-form estimate agrees within 0.5 % when <span class="tex">|J|</span> is small, check the closed-form apogee ratio against direct quadrature of the memo’s integral and against its Figure 1, check the apogee rate against a numerical solution of the coast equation started from the lagged burnout rate, and test the error function against tabulated values.</p>
+      </section>
+
+      <section id="notes">
+        <h2>Notes on the method</h2>
+        <ul>
+          <li><strong>Upper stages.</strong> The boost memo also sketches the case of an upper stage that ignites already spinning (its eqs. 5f–5i). As printed those equations are dimensionally inconsistent (the roll inertia is missing), so they are not used here.</li>
+          <li><strong>Constant acceleration.</strong> The boost is modelled with constant acceleration from the launcher base to burnout and a single representative density. Use a trajectory simulation for detailed histories.</li>
+        </ul>
+      </section>
+
+      <section id="references">
+        <h2>References</h2>
+        <ol class="refs">
+          <li>C. P. Hoult, “Small Sounding Rocket Boost Phase Roll Rate,” RS&amp;T, 28 September 2013. <a href="../references/index.html#boost-phase-roll-rate2">View in library</a></li>
+          <li>C. P. Hoult, “Small Sounding Rocket Apogee Roll Rate,” RS&amp;T, 15 January 2013. <a href="../references/index.html#apogee-roll-rate">View in library</a></li>
+          <li>C. P. Hoult, “Strip Theory for Setting Fin Angles (rev. 3),” RS&amp;T, 2014. <a href="../references/index.html#fin-setting-theory-3">View in library</a></li>
+          <li>B. Etkin, <em>Dynamics of Flight: Stability and Control</em>, Wiley, 1959.</li>
+        </ol>
+      </section>
+    </article>
+  </div>
+</div>
+</main>
+<script type="module">
+import { mountDocs } from '../js/docs.js';
+mountDocs();
+</script>
+</body>
+</html>

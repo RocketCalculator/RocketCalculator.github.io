@@ -4,6 +4,16 @@ Every commit adds an entry here, newest first. Live site: https://darasamii.gith
 
 ## 2026-10-21
 
+### New calculator: Roll Rate History
+- Added: `calculators/roll-rate-history.html`. Given the fin set and its cant, it gives the roll rate from launcher exit to burnout including roll inertia, the roll turns during boost, and the roll rate at apogee.
+- Roll derivatives come from strip theory, shared with Fin Cant Angle, and the fin geometry is shared too.
+- The memo's roll equation (constant-acceleration boost) is integrated with RK4, switching to an exponential step for very stiff cases. The memo's closed-form estimate $\lambda_{R0}/(1-J)$ is shown alongside. It is accurate for small $|J|$ but about 20 % high at $|J|=0.3$; the docs page explains this.
+- Apogee: the memo's integral (7) has the closed form $p_A/p_B=\sqrt\pi\,\mathrm{erf}\sqrt a/(2\sqrt a)$, extended to a lagged burnout rate.
+- Drawing: the boost to scale, with the roll drawn as a helix, burnout and apogee call-outs, and a rear view spinning at the burnout rate.
+- Plots: roll rate during boost, roll wave number against time (as in the memo's Prospector-18D figure), roll turns, and the apogee ratio (the memo's Figure 1).
+- Report symbol lists, all calculators: a subscript such as the $L$ in $C_{L\delta}$ is no longer taken for a symbol of its own, and a command such as $\delta$ right after a letter ($N\delta$) is now recognised.
+- Tests: integration against an independent RK4, the closed form against quadrature and Figure 1, the apogee rate against an ODE solution, the error function, and random-input invariants.
+
 ### New calculator: Pitch-Yaw Wave Number
 - Added: `calculators/pitch-yaw-wavenumber.html`. It gives the pitch/yaw wavelength $L=2\pi\sqrt{2I/(-\rho SdC_{M\alpha})}$, the wave number $\lambda_p$, and the natural frequency and period at any airspeed.
 - $C_{M\alpha}$ is entered directly or comes from $C_{N\alpha}$ and the static margin (with sliders). The inertia is measured or estimated as a slender rod $m\ell^2/12$. The body radius and length are shared with the other calculators.

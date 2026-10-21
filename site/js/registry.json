@@ -134,6 +134,12 @@
    "description": "Pitch/yaw wavelength, wave number and natural frequency of a statically stable rocket."
   },
   {
+   "slug": "roll-rate-history",
+   "title": "Roll Rate History",
+   "topic": "roll-rate",
+   "description": "Roll rate from launcher exit to burnout with roll inertia, roll turns during boost, and the roll rate at apogee."
+  },
+  {
    "slug": "two-stage-weights",
    "title": "Two-Stage Weight Allocation",
    "topic": "optimum-weight-allocation",
@@ -690,9 +696,11 @@
    "area": "dyn",
    "summary": "Boost-phase and apogee roll-rate estimates.",
    "abstract": "Approximate analyses of small sounding rockets is conveniently done in two parts, boost and post boost. In both cases the approximations presented here are based on a linear (low angle of attack) dynamics model. Boost phase roll behaviors are described in \"Small Sounding Rocket Boost Phase Roll Rate\", by C. P. Hoult, RST memo dated 24 September 2013. It is filed as Boost Phase Roll Rate2.doc . For a small sounding rocket whose apogee lies in the troposphere, its roll rate at apogee can be estimated from the graph in \"Small Sounding Rocket Apogee Roll Rate\" by C. P. Hoult, 29 March 2013. It has been filed as Apogee Roll Rate.doc . The roll damping stability derivative needed can be estimated using CANT ANGLE3.xls .",
-   "status": "soon",
-   "calculators": [],
-   "wasSoon": false,
+   "status": "available",
+   "calculators": [
+    "roll-rate-history"
+   ],
+   "wasSoon": true,
    "references": [
     "boost-phase-roll-rate2",
     "apogee-roll-rate"

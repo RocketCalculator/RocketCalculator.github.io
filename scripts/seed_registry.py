@@ -157,6 +157,7 @@ CALCULATORS = [
     ('nozzle-thrust', 'Nozzle Thrust Coefficient', 'Nozzles', 'Exit Mach number, exit pressure, thrust coefficient and thrust of a conical de Laval nozzle, with the Malina divergence correction.'),
     ('wind-compensation', 'Wind Compensation', 'WindComp', 'Launcher quadrant elevation and azimuth that cancel the wind drift and place the impact point where you want it.'),
     ('pitch-yaw-wavenumber', 'Pitch-Yaw Wave Number', 'PitcWave', 'Pitch/yaw wavelength, wave number and natural frequency of a statically stable rocket.'),
+    ('roll-rate-history', 'Roll Rate History', 'RollRate', 'Roll rate from launcher exit to burnout with roll inertia, roll turns during boost, and the roll rate at apogee.'),
     ('two-stage-weights', 'Two-Stage Weight Allocation', 'OptiWeigAllo', 'Lightest split of mass between two stages for a payload and a required ideal velocity (Vertregt).'),
 ]
 

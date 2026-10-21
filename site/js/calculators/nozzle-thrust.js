@@ -148,49 +148,95 @@ export default {
     },
   ],
   schematicTitle: 'Nozzle section',
-  schematicHint: 'Drag the exit lip to change the expansion ratio (up and down) and the half angle (along the axis)',
+  schematicHint: 'Drag the exit lip to change the expansion ratio (up and down) and the half angle (along the axis). The shading follows the static pressure; the plume flares when under-expanded and necks when over-expanded',
   schematic(ctx, v, out) {
-    const W = 760, H = 330, o = out.o;
-    const fr = ctx.frame({ width: W, height: H, label: 'Nozzle section with throat, cone and exit' });
+    const W = 760, H = 392, o = out.o;
+    const fr = ctx.frame({ width: W, height: H, label: 'Nozzle half-section: chamber, throat, diverging cone and exhaust' });
     const g = fr.layer('main'); g.replaceChildren();
     const ul = ctx.U(LEN), L = (x) => `${fmt(ul.v(x), { digits: 3 })} ${ul.label}`;
-    const rt = v.dt / 2, re = o.de / 2, rc = 2 * rt, Lc = rc - rt;       // convergent drawn as a 45° cone from 2 r_t (context only)
-    const k = Math.min(520 / (Lc + o.Ld), 250 / (2 * Math.max(re, rc))), cy = 160;
-    const x0 = 120, xt = x0 + Lc * k, xe = xt + o.Ld * k;
-    const Y = (r) => cy - r * k, Yb = (r) => cy + r * k;
-    g.append(s('line', { x1: x0 - 50, x2: xe + 140, y1: cy, y2: cy, class: 'sc-thin', 'stroke-dasharray': '8 4 2 4' }));
-    // convergent (context) and chamber stub
-    for (const side of [Y, Yb]) {
-      g.append(s('path', { d: path([[x0 - 40, side(rc)], [x0, side(rc)], [xt, side(rt)]]), class: 'sc-thin', fill: 'none', 'stroke-dasharray': '4 3' }));
-      g.append(s('path', { d: path([[xt, side(rt)], [xe, side(re)]]), class: 'sc-line', fill: 'none', 'stroke-width': 2.4, 'data-field': 'alpha eps' }));
-    }
-    // gas fill of the diverging section
-    g.append(s('path', { d: path([[xt, Y(rt)], [xe, Y(re)], [xe, Yb(re)], [xt, Yb(rt)]], true), fill: 'var(--series-1)', 'fill-opacity': 0.1, stroke: 'none' }));
-    // throat and exit planes
-    g.append(s('line', { x1: xt, x2: xt, y1: Y(rt), y2: Yb(rt), class: 'sc-thin', 'data-field': 'dt' }));
-    g.append(s('line', { x1: xe, x2: xe, y1: Y(re), y2: Yb(re), class: 'sc-thin', 'data-field': 'eps' }));
-    // exhaust plume: flares when under-expanded, necks when over-expanded (sketch)
-    const tilt = Math.max(-0.35, Math.min(0.35, 0.12 * Math.log(Math.max(1e-6, o.pe / Math.max(v.pa, 1e-9 * v.pc)))));
-    const pl = Math.min(120, W - xe - 20), rp = Math.max(4, re * k + tilt * pl);
-    g.append(s('path', { d: `M${xe},${Y(re)} Q${xe + pl / 2},${cy - (re * k + tilt * pl / 2)} ${xe + pl},${cy - rp} M${xe},${Yb(re)} Q${xe + pl / 2},${cy + (re * k + tilt * pl / 2)} ${xe + pl},${cy + rp}`, class: 'sc-thin', fill: 'none', 'stroke-dasharray': '3 3', stroke: 'var(--series-1)' }));
-    g.append(s('path', { d: `M${xe + 10},${cy} L${xe + Math.min(90, pl - 10)},${cy}`, class: 'sc-accent', 'marker-end': fr.arrow('acc') }));
-    // dimensions
-    g.append(dim(fr, xt, Yb(rt), xt, Y(rt), null, { field: 'dt' }));
-    g.append(text(xt - 8, cy - 6, `d_t = ${L(v.dt)}`, { anchor: 'end', size: 11, field: 'dt' }));
-    g.append(dim(fr, xe, Yb(re), xe, Y(re), null, { field: 'eps' }));
-    g.append(text(xe - 8, cy - 6, `d_e = ${L(o.de)}`, { anchor: 'end', size: 11, field: 'eps' }));
-    g.append(dim(fr, xt, Yb(Math.max(re, rc)), xe, Yb(Math.max(re, rc)), `L_d = ${L(o.Ld)}`, { off: -22, field: 'alpha' }));
-    // half angle arc at the throat (upper wall)
-    const ar = Math.min(60, 0.6 * o.Ld * k), aR = v.alpha * RAD;
-    g.append(s('line', { x1: xt, x2: xt + ar + 12, y1: Y(rt), y2: Y(rt), class: 'sc-thin', opacity: 0.7, 'data-field': 'alpha' }));
-    g.append(s('path', { d: `M${xt + ar},${Y(rt)} A${ar},${ar} 0 0 0 ${xt + ar * Math.cos(aR)},${Y(rt) - ar * Math.sin(aR)}`, class: 'sc-accent', fill: 'none', 'data-field': 'alpha' }));
-    g.append(text(xt + ar + 6, Y(rt) - 6, `\\alpha = ${fmt(v.alpha, { digits: 3 })}°`, { size: 11, field: 'alpha' }));
     const up = ctx.U(PRES), P = (x) => `${fmt(up.v(x), { digits: 3 })} ${up.label}`;
-    g.append(text(20, 24, `ε = ${fmt(v.eps, { digits: 4 })} · M_e = ${fmt(o.Me, { digits: 3 })}`, { size: 11, field: 'eps' }));
-    g.append(text(20, 42, `p_e = ${P(o.pe)} · p_a = ${P(v.pa)}${v.pa > 0 ? ` · ${o.state}` : ''}`, { size: 11, field: 'pa pc' }));
-    g.append(text(20, H - 12, 'solid: diverging cone (to scale) · dashed: convergent section for context and plume sketch', { cls: 'sc-dim-text', size: 10 }));
-    if (o.separated) g.append(text(xe - 6, Y(re) - 10, 'separation', { anchor: 'end', size: 11, cls: 'sc-dim-text' }));
-    ctx.handle('lip', xe, Y(re), {
+    // to scale: throat and diverging cone. Context: chamber (2.2 r_t), 45° convergent with a rounded throat entry
+    const rt = v.dt / 2, re = o.de / 2, rc = 2.2 * rt, Lcv = (rc - rt) * 1.15;
+    const k = Math.min(430 / (Lcv + o.Ld), 108 / Math.max(re, rc)), cy = 196;
+    const xt = 150 + Math.max(0, (430 - (Lcv + o.Ld) * k) / 2) + Lcv * k, xe = xt + o.Ld * k, xcv = xt - Lcv * k, xc = xcv - 70;
+    const tw = Math.min(12, Math.max(5, 0.2 * rt * k));                     // wall thickness on screen
+    const tanA = Math.tan(v.alpha * RAD);
+    // inner wall radius (model units) along x (screen): chamber, convergent with a smooth throat entry, cone
+    const xr = xt - 0.35 * Lcv * k;                                         // start of the throat rounding
+    const rIn = (x) => {
+      if (x <= xcv) return rc;
+      if (x >= xt) return rt + ((x - xt) / k) * tanA;
+      const lin = (x) => rc - ((rc - rt) * (x - xcv)) / (xt - xcv) * 1.15;
+      if (x <= xr) return Math.max(rt, lin(x));
+      const r0 = Math.max(rt, lin(xr)), u = (x - xr) / (xt - xr);          // quadratic blend to a level tangent at the throat
+      return r0 + (rt - r0) * (2 * u - u * u);
+    };
+    const xs = [];
+    for (let i = 0; i <= 24; i++) xs.push(xc + ((xcv - xc) * i) / 24);
+    for (let i = 1; i <= 40; i++) xs.push(xcv + ((xt - xcv) * i) / 40);
+    for (let i = 1; i <= 60; i++) xs.push(xt + ((xe - xt) * i) / 60);
+    const inner = xs.map((x) => [x, rIn(x) * k]);
+    // gas, shaded by static pressure: subsonic part blends p_c → p*, the cone uses the Mach number of its local area ratio
+    const pAt = (x, r) => (x <= xcv ? 1 : x < xt ? 1 - (1 - o.pStar / v.pc) * ((x - xcv) / (xt - xcv)) ** 2 : cf(v.g, (r / rt) ** 2, 0).pec);
+    for (let i = 0; i < inner.length - 1; i++) {
+      const [xa, ha] = inner[i], [xb, hb] = inner[i + 1];
+      const pr = pAt((xa + xb) / 2, rIn((xa + xb) / 2));
+      // crisp edges: no anti-aliased seams between slices (the walls cover the jagged top and bottom)
+      g.append(s('path', { d: path([[xa, cy - ha - 1], [xb, cy - hb - 1], [xb, cy + hb + 1], [xa, cy + ha + 1]], true), fill: 'var(--red)', 'fill-opacity': (0.05 + 0.3 * pr ** 0.45).toFixed(3), stroke: 'none', 'shape-rendering': 'crispEdges' }));
+    }
+    // exhaust plume: flares when under-expanded, necks when over-expanded; leaves the wall early if the jet separates
+    const sepR = o.separated ? Math.min(re, rt * Math.sqrt(o.epsSep)) : re, xs0 = o.separated ? xt + ((sepR - rt) / tanA) * k : xe;
+    const pl = W - 30 - xe, tilt = Math.max(-0.5, Math.min(0.5, 0.35 * Math.log(Math.max(1e-6, o.pe / Math.max(v.pa, 1e-9 * v.pc)))));
+    const hp = (f) => Math.max(0.35 * sepR * k, sepR * k + tilt * pl * f * (1.3 - f));
+    const plume = [[xs0, sepR * k]]; for (let i = 1; i <= 20; i++) { const f = i / 20; plume.push([xe + pl * f, hp(f)]); }
+    g.append(s('path', { d: path([...plume.map(([x, h]) => [x, cy - h]), ...plume.reverse().map(([x, h]) => [x, cy + h])], true), fill: 'var(--red)', 'fill-opacity': 0.05, stroke: 'var(--red)', 'stroke-opacity': 0.45, 'stroke-dasharray': '4 3', 'data-field': 'pa' }));
+    g.append(s('path', { d: `M${xe + 14},${cy}H${xe + Math.min(110, pl - 10)}`, class: 'sc-accent', 'marker-end': fr.arrow('acc') }));
+    // walls with thickness (upper and lower), drawn over the gas
+    for (const sg of [-1, 1]) {
+      const wall = [...inner.map(([x, h]) => [x, cy + sg * h]), ...inner.slice().reverse().map(([x, h]) => [x, cy + sg * (h + tw)])];
+      g.append(s('path', { d: path(wall, true), class: 'sc-body-2', 'data-field': 'dt alpha eps' }));
+    }
+    // break line on the cut chamber
+    const hc = rc * k + tw + 4, zig = [];
+    for (let i = 0; i <= 8; i++) zig.push([xc + (i % 2 ? -5 : 0) + (i % 4 === 1 ? 10 : 0), cy - hc + (2 * hc * i) / 8]);
+    g.append(s('path', { d: path(zig), class: 'sc-thin' }));
+    g.append(s('line', { x1: xc - 20, x2: W - 24, y1: cy, y2: cy, class: 'sc-thin', 'stroke-dasharray': '10 4 2 4' }));
+    // throat and exit planes
+    g.append(s('line', { x1: xt, x2: xt, y1: cy - rt * k, y2: cy + rt * k, class: 'sc-thin', 'stroke-dasharray': '3 3', 'data-field': 'dt' }));
+    g.append(s('line', { x1: xe, x2: xe, y1: cy - re * k, y2: cy + re * k, class: 'sc-thin', 'stroke-dasharray': '3 3', 'data-field': 'eps' }));
+    // stations: label above, leader down to the wall
+    const top = cy - Math.max(rc, re) * k - tw;
+    // label x may be moved apart from the station x (min 105 px between labels); the leader then slants to the wall
+    const station = (lx, x, y0, lines, field) => {
+      g.append(s('path', { d: path([[lx, top - 14], [lx, top - 8], [x, Math.max(top - 2, y0 - 12)], [x, y0 - 3]]), class: 'sc-thin', fill: 'none', opacity: 0.6, 'data-field': field }));
+      lines.forEach((t, i) => g.append(text(lx, top - 50 + i * 15, t, { anchor: 'middle', size: i ? 10.5 : 11, cls: i ? 'sc-dim-text' : 'sc-label', field })));
+    };
+    const sx = (xc + xcv) / 2;
+    station(Math.min(sx, xt - 105), sx, cy - rc * k - tw, ['chamber', `p_c = ${P(v.pc)}`, `\\gamma = ${fmt(v.g, { digits: 3 })}`], 'pc g');
+    station(xt, xt, cy - rt * k - tw, ['throat', 'M = 1', `p^* = ${P(o.pStar)}`], 'dt');
+    station(Math.max(xe, xt + 105), xe, cy - re * k - tw, ['exit', `M_e = ${fmt(o.Me, { digits: 3 })}`, `p_e = ${P(o.pe)}`], 'eps');
+    const amb = v.pa > 0 ? (o.separated ? 'jet separates' : o.state) : 'vacuum';
+    g.append(text(W - 24, top - 50, 'ambient', { anchor: 'end', size: 11, field: 'pa' }));
+    g.append(text(W - 24, top - 35, `p_a = ${P(v.pa)}`, { anchor: 'end', size: 10.5, cls: 'sc-dim-text', field: 'pa' }));
+    g.append(text(W - 24, top - 20, amb, { anchor: 'end', size: 10.5, cls: 'sc-dim-text', field: 'pa' }));
+    if (o.separated) {
+      g.append(s('circle', { cx: xs0, cy: cy - sepR * k, r: 4, fill: 'none', stroke: 'var(--red)', 'stroke-width': 1.5 }));
+      g.append(text(xs0 - 8, cy - sepR * k - tw - 6, 'separation', { anchor: 'end', size: 10.5, cls: 'sc-dim-text', field: 'pa' }));
+    }
+    // half angle at the throat (upper wall)
+    const ar = Math.min(56, 0.55 * o.Ld * k), aR = v.alpha * RAD, ya = cy - rt * k;
+    g.append(s('line', { x1: xt, x2: xt + ar + 10, y1: ya, y2: ya, class: 'sc-thin', opacity: 0.7, 'data-field': 'alpha' }));
+    g.append(s('path', { d: `M${xt + ar},${ya} A${ar},${ar} 0 0 0 ${xt + ar * Math.cos(aR)},${ya - ar * Math.sin(aR)}`, class: 'sc-accent', fill: 'none', 'data-field': 'alpha' }));
+    g.append(text(xt + ar + 6, ya + 4, `\\alpha = ${fmt(v.alpha, { digits: 3 })}°`, { size: 11, field: 'alpha' }));
+    // dimensions, all outside the gas
+    const bot = cy + Math.max(rc, re) * k + tw;
+    g.append(dim(fr, xt, bot, xe, bot, `L_d = ${L(o.Ld)}`, { off: 22, textOff: 16, field: 'alpha' }));
+    g.append(dim(fr, xt, cy + rt * k, xt, cy - rt * k, null, { field: 'dt' }));
+    g.append(text(xt - 10, bot + 26, `d_t = ${L(v.dt)}`, { anchor: 'end', size: 11, field: 'dt' }));
+    g.append(dim(fr, xe, cy + re * k, xe, cy - re * k, null, { field: 'eps' }));
+    g.append(text(xe + 10, bot + 26, `d_e = ${L(o.de)} · \\varepsilon = ${fmt(v.eps, { digits: 4 })}`, { size: 11, field: 'eps' }));
+    g.append(text(24, H - 12, 'to scale: throat and diverging cone · chamber, convergent and plume for context · shading: static pressure', { cls: 'sc-dim-text', size: 10 }));
+    ctx.handle('lip', xe, cy - re * k, {
       field: 'eps', title: 'Drag to change the expansion ratio and the half angle',
       onDrag: (sx, sy) => {
         const r = Math.max(rt * 1.0005, (cy - sy) / k), len = Math.max(1e-6, (sx - xt) / k);

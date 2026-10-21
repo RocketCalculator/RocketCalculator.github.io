@@ -4,6 +4,13 @@ Every commit adds an entry here, newest first. Live site: https://darasamii.gith
 
 ## 2026-10-20 (continued)
 
+### Nozzle Thrust Coefficient: new nozzle drawing
+- Half-section drawing with wall thickness: the cut chamber, the convergent section with a rounded throat entry, and the diverging cone (throat and cone to scale).
+- The gas is shaded by static pressure: the cone uses the Mach number of its local area ratio.
+- Station labels: chamber ($p_c$, $\gamma$), throat ($M=1$, $p^*$), exit ($M_e$, $p_e$) and ambient ($p_a$ and the expansion state), with leaders that move apart when the throat is small.
+- The plume flares when under-expanded and necks when over-expanded. When the jet separates, the drawing marks the point on the wall where $p=0.4\,p_a$.
+- Dimensions $d_t$, $L_d$ and $d_e$ (with $\varepsilon$) sit in one row below the nozzle, outside the gas.
+
 ### Reliability Growth: sliders, smooth plots, clearer ladder
 - Sliders for every bounded input: $D_0$, $p$, $d$ and $R^*$ in steps of 0.1/0.01/0.005, and the number of flight tests in whole flights.
 - Plots are smooth curves (monotone cubic through the whole-flight values, shown as dots); the tests-needed plot shows the unrounded $T^*$ instead of a staircase.

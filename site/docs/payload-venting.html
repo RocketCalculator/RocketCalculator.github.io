@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Payload Bay Venting — Theory & documentation — Rocket Calculator</title>
+<meta name="description" content="Pressure history of a vented payload bay during ascent: isentropic expansion, subsonic and choked vent flow, vent exit pressure and the largest pressure difference across the shell.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../css/site.css">
+<script>try{var t=JSON.parse(localStorage.getItem('rc-theme'));if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<main id="main">
+<div class="wrap">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Home</a><span class="sep">/</span><a href="../index.html#area-struct">Structures &amp; Aeroelasticity</a><span class="sep">/</span><a href="../calculators/payload-venting.html">Payload Bay Venting</a><span class="sep">/</span><span>Documentation</span></nav>
+  <div class="calc-title"><h1>Payload Bay Venting — theory</h1></div>
+  <p class="calc-sub">The pressure inside a vented payload bay during ascent. Based on C. P. Hoult, <em>Payload Bay Venting in Flight (rev. 2)</em>, 2012.</p>
+  <div class="calc-badges"><a class="btn small primary" href="../calculators/payload-venting.html">Open the calculator</a><a class="btn small" href="../references/index.html#payload-venting2">Original memo (PDF)</a></div>
+  <div class="doc-layout">
+    <nav class="doc-toc" aria-label="Contents"></nav>
+    <article class="doc">
+
+      <section id="overview">
+        <h2>Overview</h2>
+        <p>As a rocket climbs, the air outside thins, but the air in a payload bay can only leave through its vents. Until it does, the bay is pressurised against the outside and the shell is in tension; in extreme cases the shell fails, as part of the payload shroud of the first Space General Astrobee 1500 did early in its first-stage burn. The lag also corrupts any measurement of atmospheric pressure made inside the bay. Vents should make the bay pressure follow the outside closely.</p>
+      </section>
+
+      <section id="model">
+        <h2>Bay pressure</h2>
+        <p>The analysis is simple but captures the main effects. The vents are cylindrical (throat and exit areas equal) and all exit at the same pressure, so their areas simply add; three or more equally spaced vents keep angle of attack from biasing the bay. The flow through them is adiabatic and isentropic, the bay air is stagnant and expands isentropically from its lift-off state <span class="tex">p_0,T_0</span>, and air is a perfect gas.</p>
+        <p>The vent mass flow is <span class="tex">\dot m=-\rho_Ta_TM_TAC_N</span>, with throat conditions from isentropic flow out of the bay, and the bay loses mass at <span class="tex">V\,d\rho_C/dt</span> with <span class="tex">\rho_C=\rho_0(p_C/p_0)^{1/\gamma}</span>. Matching the two:</p>
+        <div class="eq"><div class="tex-display">\frac{dp_C}{dt}=-\gamma\sqrt{\gamma RT_0}\,\frac{A}{V}\,C_NM_T\left[1+\frac{\gamma-1}{2}M_T^2\right]^{-\frac{\gamma+1}{2(\gamma-1)}}p_0^{-\frac{\gamma-1}{2\gamma}}\,p_C^{\frac{3\gamma-1}{2\gamma}}</div></div>
+        <p>When the outside is at the higher pressure the sign changes and air flows in. The equation is integrated by fourth-order Runge–Kutta along the trajectory, with the time step set from the venting time constant <span class="tex">\tau\approx V/(AC_{SON}a_0)</span>. Large vents make the equation stiff near equilibrium (the flow goes as <span class="tex">\sqrt{\Delta p}</span>); there the bay simply follows the outside and the calculator says so.</p>
+        <p>The trajectory — height and speed against time — comes from a trajectory simulation; the atmosphere is the standard troposphere for the launch site’s elevation, temperature and latitude.</p>
+      </section>
+
+      <section id="orifice">
+        <h2>Vent flow and orifice coefficient</h2>
+        <p>The vent is choked (<span class="tex">M_T=1</span>) when the pressure ratio across it exceeds <span class="tex">\left(\frac{\gamma+1}{2}\right)^{\gamma/(\gamma-1)}\approx1.893</span>. Below that the throat Mach number is</p>
+        <div class="eq"><div class="tex-display">M_T=\sqrt{\frac{2}{\gamma-1}\left[\left(\frac{p_C}{p_X}\right)^{\frac{\gamma-1}{\gamma}}-1\right]}</div></div>
+        <p>(upstream over downstream pressure). The orifice coefficient runs from its incompressible value — about 0.5 for a sharp-edged hole, up to 0.8 with a radiused inner edge — to 0.96–0.98 when choked. Busemann’s hodograph solution for a slit gives the interpolation</p>
+        <div class="eq"><div class="tex-display">C_N=\frac{C_{SON}}{1+\sqrt{1-M_T^2}\left(\frac{C_{SON}}{C_{INC}}-1\right)}</div></div>
+      </section>
+
+      <section id="external">
+        <h2>Pressure outside the vents</h2>
+        <p>The vents exit into the flow over the body, at <span class="tex">p_X=p_a+\tfrac12\gamma p_aM_\infty^2C_{pX}</span>. Below the critical Mach number of the vent location, the incompressible pressure coefficient (from the Nose Pressure Distribution calculator) is scaled by Kármán–Tsien; above it, a table from a transonic or supersonic method (for example second-order shock-expansion) is interpolated. Vents just behind the nose shoulder see suction, which raises the difference across the shell; the largest difference usually comes near burnout.</p>
+      </section>
+
+      <section id="verification">
+        <h2>Verification</h2>
+        <p>With the original field tool’s trajectory (0.01 s steps), atmosphere and inputs, the tests reproduce its bay pressure, vent-exit pressure and integration constant at every checked step, and its largest difference of 0.1437 psi at 5.14 s. The memo’s plot (0.66 psi) belongs to a different case: it is labelled with a vent area of 0.0144 in², not the stored tool’s 0.0124 in². Further tests check the choking limit, the orifice interpolation and the supersonic pressure table.</p>
+      </section>
+
+      <section id="notes">
+        <h2>Notes on the method</h2>
+        <ul>
+          <li><strong>Choking.</strong> The field tool compares the up/downstream pressure ratio (always ≥ 1) with the sonic ratio 0.528, so its vents can never choke. The calculator chokes them at a ratio of 1.893; the difference matters only for very small vents or fast climbs.</li>
+          <li><strong>Inflow.</strong> When air flows in, the same equation with the bay conditions is used (as in the memo); this is an approximation.</li>
+        </ul>
+      </section>
+
+      <section id="references">
+        <h2>References</h2>
+        <ol class="refs">
+          <li>C. P. Hoult, “Payload Bay Venting in Flight (rev. 2),” RS&amp;T, 4 April 2012. <a href="../references/index.html#payload-venting2">View in library</a></li>
+          <li>Ames Research Staff, “Equations, Tables and Charts for Compressible Flow,” NACA Report 1135, 1953.</li>
+          <li>A. Busemann, “Hodographenmethode der Gasdynamik,” ZAMM 12, 1937.</li>
+          <li>A. Espinoza, B. Vite et al., “Sounding Rocket Allowable Differential Pressure,” AIAA student paper. <a href="../references/index.html#allowablediffpressure">View in library</a></li>
+          <li>C. P. Hoult, “Pressure Strength of Taped-On Doors,” RS&amp;T, 2011. <a href="../references/index.html#door-failure">View in library</a></li>
+        </ol>
+      </section>
+    </article>
+  </div>
+</div>
+</main>
+<script type="module">
+import { mountDocs } from '../js/docs.js';
+mountDocs();
+</script>
+</body>
+</html>

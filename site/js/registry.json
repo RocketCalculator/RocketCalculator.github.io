@@ -176,6 +176,12 @@
    "description": "Subsonic nose shape with the smallest suction peak: cone, ogive, Von Kármán and the optimum superellipse compared."
   },
   {
+   "slug": "payload-venting",
+   "title": "Payload Bay Venting",
+   "topic": "venting",
+   "description": "Bay pressure history through vent holes during ascent and the largest pressure difference across the shell."
+  },
+  {
    "slug": "two-stage-weights",
    "title": "Two-Stage Weight Allocation",
    "topic": "optimum-weight-allocation",
@@ -920,9 +926,11 @@
    "area": "struct",
    "summary": "Payload-bay internal pressure during ascent through vent holes.",
    "abstract": "The tools here can be used to estimate the internal pressure in a compartment, say the payload bay, of an ascending rocket. The theory is captured in Payload Venting2.doc The full orifice equations for both subsonic and sonic throats are discussed, including a Mach number-dependent external pressure. A fourth order Runge Kutta integration algorithm is used in BLOWDOWN2.xls to develop numerical results. Start with subsonic aerodynamics just like a rocket does. Find the radius vs. body station, and input this in the appropriate sky blue cells in MUNKSHIP2.xls . The other sky blue input cells are already filled in. MUNKSHIP2.xls finds the local surface pressure coefficient CP by putting a distribution of incompressible sources along the rocket centerline, and finding the source strength distribution by satisfying the flow tangency condition on the surface. The result is the pressure coefficient CP along the body. For supersonic Mach numbers, we use SUPERSONIC BARROWMAN EQUATIONS3.5.xls to generate CP along the body. SUPERSONIC BARROWMAN EQUATIONS3.5.xls uses second order shock expansion theory to estimate the CP distribution. The rub comes for transonic Mach numbers. There is no easy-to-use algorithm for such cases. What most engineers do is to haul out their favorite french curve and sketch in something that looks right. Of course, CFD can be used to do CP for any Mach number, but it’s never too quick and easy to apply. The next step is to find the critical Mach number for this problem. When the free stream Mach number reaches the critical Mach number the local flow becomes sonic (M L = 1). At a slightly higher free stream Mach number the local Mach number becomes supersonic, and then somewhere downstream M L returns to subsonic via shock wave(s). We know approximately where (body station) our vent holes will be drilled. Now find that body station forward of the vent hole station where the pressure coefficient is smallest. Note this minimum CP. The whole idea about finding the critical Mach number is that compressible subsonic flow is that is can be obtained by a transformation from incompressible flow. However, this is no longer possible when shock waves are present. Thus the critical Mach number is an upper bound on analytic modeling of CP. Now, execute CRITICAL MACH NUMBER.xls , and note the result. Of course, we need to know the trajectory to estimate cavity pressures. Our trajectory code is SKYAERO7.6.2.xls . Although I’m going to send you a copy, and it’s OK if you want to run it yourself, we use trajectory results for so many things that it’s a good idea to have a reference run that that all can use to ensure consistency. Finally, le piece de resistance: First, find the incompressible CP for the vent hole body station, and input it and the critical Mach number into BLOWDOWN2.xls . Then, paste the trajectory data from SKYAERO7.6.2.xls into BLOWDOWN2.xls , and run it to find the maximum pressure difference between the cavity and the local external pressure, P C - P X . Note that the input hole throat area A T is the sum of all holes venting the cavity in question. The real issue is how much pressure difference the cavity door can withstand, and the hole throat area needed to stay below it. This can be found from the Espinoza, Ruiz and Vite AIAA paper \"Sounding Rocket Allowable Differential Pressure\" presented in Seattle in 2012, and filed as 2012 AIAA Conference.ppt . The same material in textual form called \"Sounding Rocket Allowable Differential Pressure\" is filed as AllowableDiffPressure.doc . The theoretical basis for this is found in Door Failure.doc . All that remains is to iterate until the correct hole size is found. As a cautionary note, BLOWDOWN2.xls allows external air to flow into the cavity as well as trapped air to flow out. If the internal pressure is too small collapse of the cavity walls, or inward failure of the cavity door is possible.",
-   "status": "soon",
-   "calculators": [],
-   "wasSoon": false,
+   "status": "available",
+   "calculators": [
+    "payload-venting"
+   ],
+   "wasSoon": true,
    "references": [
     "payload-venting2",
     "allowablediffpressure",

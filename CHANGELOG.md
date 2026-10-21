@@ -4,6 +4,13 @@ Every commit adds an entry here, newest first. Live site: https://darasamii.gith
 
 ## 2026-10-21
 
+### New calculator: Payload Bay Venting
+- Added: `calculators/payload-venting.html`. It integrates the payload-bay pressure along a trajectory table (memo eq. 9, RK4, step set by the venting time constant) and gives the largest pressure difference across the shell and when it happens.
+- Vents are subsonic or choked, with Busemann's orifice-coefficient interpolation. The vent-exit pressure uses Kármán–Tsien below the critical Mach number and a table above it.
+- Plots: the pressures during the climb, the difference against time, and the peak difference against vent hole size.
+- The original field tool's vents can never choke (it compares the pressure ratio with the inverse sonic ratio); the calculator chokes at 1.893. This is documented.
+- Tests: the field tool's bay and vent pressures matched step by step on its 0.01 s trajectory, its peak of 0.1437 psi at 5.14 s, the choking limit, the orifice interpolation and the supersonic table.
+
 ### New calculator: Optimum Nose Shape
 - Added: `calculators/optimum-nose.html`. It compares cone, tangent-ogive, Von Kármán and superellipse noses of your length and radius by minimum pressure behind the shoulder and by critical Mach number, and finds the superellipse exponent with the smallest suction peak.
 - Reuses the Nose Pressure Distribution solver. The optimum is a scan followed by a golden-section refinement of the kink where two suction peaks are equal.

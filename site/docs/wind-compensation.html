@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wind Compensation — Theory & documentation — Rocket Calculator</title>
+<meta name="description" content="Launcher quadrant elevation and azimuth that cancel the wind drift of a small sounding rocket and place its impact point at a desired spot.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../css/site.css">
+<script>try{var t=JSON.parse(localStorage.getItem('rc-theme'));if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<main id="main">
+<div class="wrap">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Home</a><span class="sep">/</span><a href="../index.html#area-traj">Trajectory, Wind &amp; Launch</a><span class="sep">/</span><a href="../calculators/wind-compensation.html">Wind Compensation</a><span class="sep">/</span><span>Documentation</span></nav>
+  <div class="calc-title"><h1>Wind Compensation — theory</h1></div>
+  <p class="calc-sub">Setting the launcher so that the wind-blown rocket lands where it should. Based on C. P. Hoult with A. Espinoza and E. Cortez, <em>Wind Compensation for Small Sounding Rockets</em>, 7th and 8th Intercollegiate Rocket Engineering Competitions, 2012 and 2013.</p>
+  <div class="calc-badges"><a class="btn small primary" href="../calculators/wind-compensation.html">Open the calculator</a><a class="btn small" href="../references/index.html#the-effect-of-wind-and-rotation-of-the-earth-on-unguided-rockets-orig">Lewis wind-response paper (PDF)</a></div>
+  <div class="doc-layout">
+    <nav class="doc-toc" aria-label="Contents"></nav>
+    <article class="doc">
+
+      <section id="overview">
+        <h2>Overview</h2>
+        <p>An unguided rocket turns into the relative wind while it is still slow, so a crosswind near the ground tilts its flight path upwind. Higher up, the wind carries the rocket, and on a parachute descent it drifts downwind for a long time. Together these effects can move the impact point of a small sounding rocket by kilometres.</p>
+        <p>Wind compensation sets the launcher azimuth and quadrant elevation (QE) so that the predicted impact point falls at a chosen spot, usually the centre of the cleared impact area. It needs an estimate of the wind field at launch time and a trajectory simulation. This calculator does the last step: it turns the simulation results into launcher settings.</p>
+        <p>Only the slowly changing winds can be compensated. Van der Hoven’s wind spectrum has a deep gap between periods of about an hour and a few minutes: weather and daily breezes change slowly enough to measure and use, but gusts with periods of minutes or less cannot be compensated and remain as dispersion.</p>
+      </section>
+
+      <section id="inputs">
+        <h2>What the simulation provides</h2>
+        <p>The winds measured on launch day (tethered pilot balloons near the ground, forecast winds aloft higher up) are entered into the trajectory simulation as north–south and east–west profiles. The simulation resolves them along and across the desired impact azimuth <span class="tex">AZ</span>. Two kinds of runs are then made:</p>
+        <ul>
+          <li>with the measured winds and a vertical launch (<span class="tex">QE=90^\circ</span>): the impact displacement along the azimuth, <span class="tex">W_I</span> (positive downrange), and across it, <span class="tex">W_C</span> (positive to the right, clockwise). Separate runs with only the in-plane or only the cross-plane wind give the two parts;</li>
+          <li>with no wind, at a few launcher elevations (90°, 88°, 86°, 84°, 82°, 80°): the impact range <span class="tex">r_i</span> at each elevation <span class="tex">QE_i</span>.</li>
+        </ul>
+        <p>The simulation should use the Lewis wind-response model, with the finite-inertia correction near the launcher, so that a three-degree-of-freedom run reproduces the six-degree-of-freedom result.</p>
+      </section>
+
+      <section id="plane">
+        <h2>Tilt in each plane</h2>
+        <p>For a nearly vertical launch the displacements caused by in-plane wind, cross-plane wind and launcher tilt are approximately independent, so they add. A tilt in any vertical plane moves the impact point in that plane by the zero-wind range of the matching elevation.</p>
+        <p>The QE that gives a range <span class="tex">x</span> is found by linear interpolation in the zero-wind runs:</p>
+        <div class="eq"><div class="tex-display">QE(x)=QE_i+F_i\,(x-r_i),\qquad F_i=\frac{QE_{i+1}-QE_i}{r_{i+1}-r_i},\qquad r_i\le x&lt;r_{i+1}</div></div>
+        <p>Beyond the last run the slope is extrapolated as <span class="tex">F_{n}=2F_{n-1}-F_{n-2}</span>. The calculator warns when it extrapolates and refuses ranges more than twice the longest run.</p>
+        <p><strong>In plane</strong> the tilt must supply the range that the wind does not, <span class="tex">R-W_I</span>. If the wind alone would carry the rocket past the desired point, this is negative and the launcher tilts back, uprange:</p>
+        <div class="eq"><div class="tex-display">\theta_I=\operatorname{sign}(R-W_I)\,\bigl[90^\circ-QE(|R-W_I|)\bigr]</div></div>
+        <p><strong>Across the plane</strong> the tilt must cancel the drift <span class="tex">W_C</span>, so it points the other way:</p>
+        <div class="eq"><div class="tex-display">\theta_C=-\operatorname{sign}(W_C)\,\bigl[90^\circ-QE(|W_C|)\bigr]</div></div>
+      </section>
+
+      <section id="combine">
+        <h2>Total launcher setting</h2>
+        <p>Both tilts are small, so they add as a vector. The total tilt from vertical and the launcher quadrant elevation are</p>
+        <div class="eq"><div class="tex-display">\theta_T=\sqrt{\theta_I^2+\theta_C^2},\qquad QE_T=90^\circ-\theta_T</div></div>
+        <p>and the launcher points along the azimuth</p>
+        <div class="eq"><div class="tex-display">AZ_T=AZ+\tan^{-1}\frac{\theta_C}{\theta_I}</div></div>
+        <p>with the arctangent taken in the quadrant of <span class="tex">(\theta_I,\theta_C)</span>, so a tilt back uprange turns the launcher round. The angle between the launcher and impact azimuths, <span class="tex">\psi=\tan^{-1}(|\theta_C|/|\theta_I|)</span>, is listed too.</p>
+        <p>The plots show how the tilts and the azimuth change with the desired range for the same winds. The in-plane tilt passes through zero where the wind alone carries the rocket to the desired range. Close in, the launcher mainly fights the cross wind and points well off the impact azimuth. Far out, the in-plane tilt dominates and the launcher points almost along it.</p>
+      </section>
+
+      <section id="geometry">
+        <h2>Reading the plan view</h2>
+        <p>The drawing is a map with north up and rings of equal range around the launcher. The grey path is where the wind alone takes a vertical launch: first the in-plane part along the azimuth, then the cross-plane part. The red arrow from there to the target is what the launcher tilt adds. The short red bar at the launcher shows the launcher azimuth; its length is not to scale. The inset is a side view of the launcher rail at the computed elevation.</p>
+      </section>
+
+      <section id="verification">
+        <h2>Verification</h2>
+        <p>The tests reproduce the field example exactly: a drift of 3 200 ft in plane and 4 800 ft across the plane, a desired impact 5 000 ft away on azimuth 45°, and zero-wind runs from 90° to 80°. The interpolated elevations are 87.068° in plane and 81.556° across the plane. The total launcher QE is 81.061°, and the launcher azimuth is 70.85° off the impact azimuth. Further tests check extrapolation past the last run, a tilt back uprange, and the zero-wind limit.</p>
+      </section>
+
+      <section id="notes">
+        <h2>Notes on the method</h2>
+        <ul>
+          <li><strong>Sign of the azimuth correction.</strong> The original field tool adds the off-axis angle <span class="tex">\psi</span> to the impact azimuth whatever the sign of the cross-plane drift. Its result (115.85° for the example) is right when the drift is to the left. The calculator uses the signed formula of the presentation, <span class="tex">AZ_T=AZ+\tan^{-1}(\theta_C/\theta_I)</span>. With the example’s drift to the right, the launcher points 70.85° left of the impact azimuth, at 334.15°.</li>
+          <li><strong>Small tilts.</strong> Independence of the in-plane, cross-plane and tilt effects holds for nearly vertical launches. Above about 10° of tilt, check the setting with a full trajectory run that includes the winds.</li>
+          <li><strong>Gusts.</strong> Turbulence with periods of minutes or less cannot be measured and compensated in time; it remains as impact dispersion.</li>
+        </ul>
+      </section>
+
+      <section id="references">
+        <h2>References</h2>
+        <ol class="refs">
+          <li>C. P. Hoult, A. Espinoza and E. Cortez, “Wind Compensation for Small Sounding Rockets,” 7th and 8th Intercollegiate Rocket Engineering Competitions, Green River, UT, 2012 and 2013.</li>
+          <li>J. V. Lewis, “The Effect of Wind and Rotation of the Earth on Unguided Rockets,” Ballistic Research Laboratories Report 685, 1949. <a href="../references/index.html#the-effect-of-wind-and-rotation-of-the-earth-on-unguided-rockets-orig">View in library</a></li>
+          <li>C. P. Hoult, “Finite Inertia Corrections to the Lewis Model Wind Response,” The Aerospace Corporation, 1979. <a href="../references/index.html#finite-inertia-corrections-orig">View in library</a></li>
+          <li>I. Van der Hoven, “Power Spectrum of Horizontal Wind Speed in the Frequency Range from 0.0007 to 900 Cycles per Hour,” Journal of Meteorology 14, 1957, pp. 160–164. <a href="../references/index.html#van-der-hoven-orig">View in library</a></li>
+        </ol>
+      </section>
+    </article>
+  </div>
+</div>
+</main>
+<script type="module">
+import { mountDocs } from '../js/docs.js';
+mountDocs();
+</script>
+</body>
+</html>

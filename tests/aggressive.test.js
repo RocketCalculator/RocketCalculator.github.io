@@ -91,6 +91,7 @@ const REPAIR = {
   'yo-yo-despin': (v, r) => { if (v.ff >= v.f0) v.ff = v.f0 * r(); v.mu = r() < 0.8 ? 0 : Math.min(v.mu, 1e-5 * r()); },
   'newtonian-drag': (v, r) => { if (v.r2 <= v.r1) v.r2 = v.r1 * (1.05 + 3 * r()) + 1e-3; },
   'nozzle-thrust': (v, r) => { if (r() < 0.8) v.pa = Math.min(v.pa, 0.45 * r() * v.pc); },
+  'wind-compensation': (v, r) => { for (const k of ['WI', 'WC', 'R']) if (Math.abs(v[k]) > 5500) v[k] = Math.sign(v[k]) * 5500 * r(); },
   'two-stage-weights': (v, r) => { const lim = 32.174 * (-v.Isp1 * Math.log(v.s1) - v.Isp2 * Math.log(v.s2)); if (v.dv >= lim) v.dv = lim * (0.02 + 0.93 * r()); },
 };
 
@@ -107,6 +108,7 @@ const INVARIANTS = {
   'nozzle-thrust': (v, R) => [R.Me >= 1, R.pe > 0 && R.pe <= R.pStar * (1 + 1e-12), R.lambda >= 0.5 && R.lambda <= 1, R.cf <= R.cf1D + 1e-12, R.cfVac >= R.cf - 1e-12, R.thrust < R.thrustVac * (1 + 1e-12) || v.pa === 0],
   'propellant-slosh': (v, R) => [R.f1 > 0 && R.f2 > R.f1 && R.f3 > R.f2, R.m1frac > 0 && R.m1frac <= 100, R.fixedFrac >= -1e-9 && R.fixedFrac <= 100, R.L1 > 0],
   'reliability-growth': (v, R) => [R.RT >= R.R0 && R.RT <= 1, R.R0 >= 0, R.DT >= 0 && R.DT <= v.D0, R.F >= 0 && R.F <= v.N + 1e-9, R.Tstar === 'never' || (Number.isInteger(R.Tstar) && (R.Tstar > v.N) === (R.RT < v.Rt))],
+  'wind-compensation': (v, R) => [R.QE > 0 && R.QE <= 90, R.AZT >= 0 && R.AZT < 360, Math.abs(Math.hypot(R.tiltI, R.tiltC) - R.tilt) <= 1e-9 * Math.max(1, R.tilt), Math.abs(R.QE + R.tilt - 90) < 1e-9, R.offAxis >= 0 && R.offAxis <= 90],
   'two-stage-weights': (v, R) => [R.M01 >= v.Mpl, R.m1 >= 0 && R.m2 >= 0, Math.abs(R.M01 - v.Mpl - R.m1 - R.m2) <= 1e-9 * R.M01, Math.abs(R.dv1 + R.dv2 - v.dv) <= 1e-6 * v.dv, R.payloadPct > 0 && R.payloadPct <= 100, R.lam > 0],
   'ogive-nose': (v, R) => [R.S > 0, R.xbar > 0 && R.xbar < v.L, R.fineness > 0, R.tipHalfAngle > 0 && R.tipHalfAngle <= 90],
   'subsonic-cp': (v, R, warned) => [R.CNa > 0 || warned, R.CNaFins >= 0, Number.isFinite(R.xcp), R.d > 0],
@@ -287,4 +289,11 @@ test('Two-stage weights: a faster or heavier-structured rocket is heavier; bette
   increasing([300, 260, 220, 180].map((Isp2) => run('two-stage-weights', { dv: 8000, Isp2 }).M01), 'M01 vs falling Isp2');
   const a = run('two-stage-weights', { Mpl: 1 }), b = run('two-stage-weights', { Mpl: 7 });
   assert.ok(Math.abs(b.M01 / a.M01 - 7) < 1e-9, 'masses scale with the payload');
+});
+
+test('Wind compensation: more range or more drift needs more tilt; the tilt opposes the cross drift', () => {
+  increasing([1000, 2000, 3500, 5000].map((R) => run('wind-compensation', { WI: 0, WC: 0, R }).tilt), 'tilt vs range');
+  increasing([0, 1000, 2500, 4000].map((WC) => run('wind-compensation', { WC }).tilt), 'tilt vs cross drift');
+  assert.ok(run('wind-compensation', { WC: 2000 }).tiltC < 0 && run('wind-compensation', { WC: -2000 }).tiltC > 0, 'cross tilt against the drift');
+  assert.ok(run('wind-compensation', { WI: 6000, R: 2000 }).tiltI < 0, 'tailwind past the target tilts back');
 });

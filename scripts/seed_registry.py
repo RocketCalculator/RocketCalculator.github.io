@@ -155,6 +155,7 @@ CALCULATORS = [
     ('reliability-growth', 'Reliability Growth', 'Reliab', 'Reliability of each flight as test flights reveal latent defects, and the number of tests that reaches a target.'),
     ('newtonian-drag', 'Modified Newtonian Drag', 'ModiNewtDrag', 'Supersonic wave drag of nose caps, cones, flat faces and rounded fin leading edges (Lees).'),
     ('nozzle-thrust', 'Nozzle Thrust Coefficient', 'Nozzles', 'Exit Mach number, exit pressure, thrust coefficient and thrust of a conical de Laval nozzle, with the Malina divergence correction.'),
+    ('wind-compensation', 'Wind Compensation', 'WindComp', 'Launcher quadrant elevation and azimuth that cancel the wind drift and place the impact point where you want it.'),
     ('two-stage-weights', 'Two-Stage Weight Allocation', 'OptiWeigAllo', 'Lightest split of mass between two stages for a payload and a required ideal velocity (Vertregt).'),
 ]
 

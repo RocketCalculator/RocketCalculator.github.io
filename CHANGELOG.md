@@ -2,6 +2,18 @@
 
 Every commit adds an entry here, newest first. Live site: https://darasamii.github.io/RocketCalculator/
 
+## 2026-10-21
+
+### New calculator: Wind Compensation
+- Added: `calculators/wind-compensation.html`. It gives the launcher quadrant elevation and azimuth that cancel the wind drift and place the impact point at a desired azimuth and range.
+- Inputs: the desired impact point, the in-plane and cross-plane wind drift of a vertical launch (from a trajectory simulation), and an editable table of zero-wind range against launcher QE.
+- Method: the in-plane and cross-plane tilts are read from the table (linear interpolation, slope extrapolated past the last run, as in the field tool) and added as a small-angle vector.
+- Key results: launcher QE, launcher azimuth, and the in-plane and cross-plane tilts.
+- Drawing: a plan view with north up, range rings, the wind-only impact, the tilt correction and a draggable target, plus a side view of the launcher rail.
+- Plots: the zero-wind runs with the look-up points, the tilts against desired range, and the launcher azimuth offset against desired range. Also a report and a documentation page.
+- The launcher azimuth uses the presentation's signed formula $AZ_T=AZ+\tan^{-1}(\theta_C/\theta_I)$. The original field tool adds the off-axis angle whatever the sign of the cross-plane drift; the docs page explains this.
+- Tests: the field example is reproduced exactly (QE 81.061°, off-axis angle 70.85°), along with extrapolation, a tilt back uprange and the zero-wind limit; there is also a random-input fuzz with invariants.
+
 ## 2026-10-20 (continued)
 
 ### Two-Stage Weight Allocation: rocket drawing and sliders

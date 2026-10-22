@@ -166,6 +166,7 @@ CALCULATORS = [
     ('optimum-nose', 'Optimum Nose Shape', 'OptiNoseShap', 'Subsonic nose shape with the smallest suction peak: cone, ogive, Von Kármán and the optimum superellipse compared.'),
     ('payload-venting', 'Payload Bay Venting', 'Vent', 'Bay pressure history through vent holes during ascent and the largest pressure difference across the shell.'),
     ('body-bending', 'Body Bending Modes', 'BodyBend', 'Free-free bending frequencies, mode shapes and nodes of a rocket body with uneven stiffness and mass (Rayleigh–Ritz).'),
+    ('ground-handling', 'Ground Handling Loads', 'StruLoad', 'Carrying forces and joint bending moment of a hand-carried rocket, and the aft rail-button pull when the nose is lifted.'),
     ('two-stage-weights', 'Two-Stage Weight Allocation', 'OptiWeigAllo', 'Lightest split of mass between two stages for a payload and a required ideal velocity (Vertregt).'),
 ]
 

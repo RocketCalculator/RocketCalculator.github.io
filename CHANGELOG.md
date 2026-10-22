@@ -4,6 +4,13 @@ Every commit adds an entry here, newest first. Live site: https://darasamii.gith
 
 ## 2026-10-21
 
+### New calculator: Ground Handling Loads
+- Added: `calculators/ground-handling.html`. It covers the support forces and the joint shear and bending moment (with a load factor) of a rocket carried at two points, and the aft rail-button pull when the crew lifts the nose past nozzle contact (memo eq. 6).
+- The parts table sets the weight and CG. Plots: the button pull against nose lift (the memo's figure) and the bending moment along the carried body.
+- The memo's joint moment is taken about the nose tip. The calculator takes moments about the cut and checks them against the aft piece. This is documented.
+- New unit: bending moment (N·m, lbf·in).
+- Tests: the UNBUTTON table for $K=1$–3 (241.8 lb at $K=2$), the statics, and the cut equilibrium from both sides.
+
 ### New calculator: Body Bending Modes
 - Added: `calculators/body-bending.html`. It gives the first three free-free bending frequencies, the mode shapes and the fundamental's nodes for a body built from sections with linearly varying stiffness and weight. Method: Rayleigh–Ritz with the uniform-beam modes, Simpson integration, and a Cholesky + Jacobi eigen-solution.
 - Drawing: the sections (height for weight, shade for stiffness) with the fundamental mode and its nodes. Plots: the mode shapes, and the input distributions.

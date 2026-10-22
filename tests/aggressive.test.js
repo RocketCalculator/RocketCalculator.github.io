@@ -98,6 +98,7 @@ const REPAIR = {
   'tethered-pibal': (v, r) => { if (v.D < 2) v.D = 2 + 4 * r(); if (v.We > 0.5) v.We = 0.5 * r(); if (v.L > 1500) v.L = 50 + 1400 * r(); if (v.dt > 0.05) v.dt = 0.005 + 0.03 * r(); if (v.rhoT > 3) v.rhoT = 0.5 + 2 * r(); if (v.pG > 110000 || v.pG < 50000) v.pG = 50000 + 60000 * r(); if (v.TG < 250) v.TG = 250 + 70 * r(); if (v.theta < 15) v.theta = 15 + 70 * r(); if (v.hG > 15000) v.hG = 15000 * r(); if (v.CD < 0.2) v.CD = 0.2 + 0.6 * r(); },
   'nose-pressure': (v, r) => { if (v.bodyLen <= v.noseL) v.bodyLen = v.noseL * (1.2 + 4 * r()); if (v.noseL > 30 * v.R) v.noseL = v.R * (1 + 20 * r()); if (v.bodyLen > 80 * v.R) v.bodyLen = v.noseL + v.R * (2 + 40 * r()); },
   'optimum-nose': (v, r) => { if (v.noseL < 2 * v.R || v.noseL > 24 * v.R) v.noseL = v.R * (2 + 20 * r()); },
+  'ground-handling': (v, r) => { if (!(v.xAt > v.xFt)) v.xAt = v.xFt + 10 + 100 * r(); const s = [v.xF, v.xL, v.xN].sort((a, b) => a - b); [v.xF, v.xL, v.xN] = [s[0], s[1] + 1e-3, s[2] + 2e-3]; },
   'two-stage-weights': (v, r) => { const lim = 32.174 * (-v.Isp1 * Math.log(v.s1) - v.Isp2 * Math.log(v.s2)); if (v.dv >= lim) v.dv = lim * (0.02 + 0.93 * r()); },
 };
 
@@ -125,6 +126,7 @@ const INVARIANTS = {
   'optimum-nose': (v, R) => [R.nOpt > 1 && R.nOpt <= 4, R.cpOpt >= R.cp_se - 1e-9, R.cpOpt >= R.cp_cone - 1e-9, R.McrOpt >= R.mcr_cone - 1e-9, R.cpM <= R.cpOpt + 1e-12],
   'payload-venting': (v, R) => [Number.isFinite(R.dpMax), R.tau > 0, R.A > 0, R.p0 > 0],
   'body-bending': (v, R) => [R.f1 > 0 && R.f2 > R.f1 && R.f3 > R.f2, R.L > 0, R.W > 0],
+  'ground-handling': (v, R) => [R.W > 0, R.xCG >= v.xL || R.lift0 > 0, Number.isFinite(R.FL) && Number.isFinite(R.MJ)],
   'two-stage-weights': (v, R) => [R.M01 >= v.Mpl, R.m1 >= 0 && R.m2 >= 0, Math.abs(R.M01 - v.Mpl - R.m1 - R.m2) <= 1e-9 * R.M01, Math.abs(R.dv1 + R.dv2 - v.dv) <= 1e-6 * v.dv, R.payloadPct > 0 && R.payloadPct <= 100, R.lam > 0],
   'ogive-nose': (v, R) => [R.S > 0, R.xbar > 0 && R.xbar < v.L, R.fineness > 0, R.tipHalfAngle > 0 && R.tipHalfAngle <= 90],
   'subsonic-cp': (v, R, warned) => [R.CNa > 0 || warned, R.CNaFins >= 0, Number.isFinite(R.xcp), R.d > 0],
@@ -380,4 +382,9 @@ test('Body bending: a stiffer body rings higher, a heavier one lower (f ∝ √(
   const e = (k, kw = 1) => bySlug['body-bending'].examples[0].values.elems.map((r) => ({ ...r, EIf: r.EIf * k, EIa: r.EIa * k, wf: r.wf * kw, wa: r.wa * kw }));
   const f = (k, kw) => run('body-bending', { elems: e(k, kw) }).f1;
   assert.ok(Math.abs(f(4, 1) / f(1, 1) - 2) < 1e-9 && Math.abs(f(1, 4) / f(1, 1) - 0.5) < 1e-9);
+});
+
+test('Ground handling: a harder lift pulls the button harder; a bigger load factor raises the joint moment', () => {
+  increasing([1.5, 2, 3].map((K) => run('ground-handling', { K }).FL), 'pull vs K');
+  increasing([1, 2, 3].map((N) => Math.abs(run('ground-handling', { N }).MJ)), '|M_J| vs N');
 });

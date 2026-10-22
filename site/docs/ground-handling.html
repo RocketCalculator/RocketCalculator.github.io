@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ground Handling Loads — Theory & documentation — Rocket Calculator</title>
+<meta name="description" content="Loads on a sounding rocket carried by hand and loaded on the launch rail: support forces, joint bending moment and aft rail-button pull.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../css/site.css">
+<script>try{var t=JSON.parse(localStorage.getItem('rc-theme'));if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<main id="main">
+<div class="wrap">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Home</a><span class="sep">/</span><a href="../index.html#area-struct">Structures &amp; Aeroelasticity</a><span class="sep">/</span><a href="../calculators/ground-handling.html">Ground Handling Loads</a><span class="sep">/</span><span>Documentation</span></nav>
+  <div class="calc-title"><h1>Ground Handling Loads — theory</h1></div>
+  <p class="calc-sub">The two ground cases that break rockets. Based on C. P. Hoult, <em>Ground Handling Loads</em>, 2014.</p>
+  <div class="calc-badges"><a class="btn small primary" href="../calculators/ground-handling.html">Open the calculator</a><a class="btn small" href="../references/index.html#ground-handling-loads">Original memo (PDF)</a></div>
+  <div class="doc-layout">
+    <nav class="doc-toc" aria-label="Contents"></nav>
+    <article class="doc">
+
+      <section id="overview">
+        <h2>Overview</h2>
+        <p>Ground handling loads live in the shadow of flight and parachute loads, but ground failures happen, and even when repairable they cost schedule. Two cases are known: bending of a slender rocket carried from each end, and tearing the aft riding button off while the rocket is slid onto the launcher rail.</p>
+      </section>
+
+      <section id="transport">
+        <h2>Carried by hand</h2>
+        <p>A rocket of weight <span class="tex">W</span> with its centre of gravity at <span class="tex">x_{CG}</span>, carried at <span class="tex">x_F</span> and <span class="tex">x_A</span>, is in equilibrium when</p>
+        <div class="eq"><div class="tex-display">F_F+F_A=W,\qquad F_F(x_{CG}-x_F)=F_A(x_A-x_{CG})\quad\Rightarrow\quad F_F=W\frac{x_A-x_{CG}}{x_A-x_F},\ \ F_A=W\frac{x_{CG}-x_F}{x_A-x_F}</div></div>
+        <p>Split the rocket into parts of weight <span class="tex">w_i</span> at <span class="tex">x_i</span> and make a phantom cut at a possible weak point <span class="tex">x_J</span>, such as an interstage joint. The cut carries the shear and bending moment of everything ahead of it; while the rocket is carried it also bounces, so the static values are multiplied by a load factor <span class="tex">N\approx2</span>:</p>
+        <div class="eq"><div class="tex-display">V_J=N\left[F_F-\sum_{x_i<x_J}w_i\right],\qquad M_J=N\left[F_F(x_J-x_F)-\sum_{x_i<x_J}w_i(x_J-x_i)\right]</div></div>
+      </section>
+
+      <section id="button">
+        <h2>Riding-button extraction</h2>
+        <p>To load the rocket, the rail is lowered to horizontal and the aft button is slid into the end of the 80-20 slot. Inserting the forward button, often near mid-body, is hard to see, so the crew raises the nose. A pitch-up of only 1.5–5° brings the nozzle exit plane into contact with the rail; beyond that the rocket pivots on the nozzle, and the aft button is levered out of the rocket like a nail under a claw hammer — with almost no feel.</p>
+        <p>Before contact, the nose lift and the aft button share the weight:</p>
+        <div class="eq"><div class="tex-display">\frac{F_{F0}}{W}=\frac{x_L-x_{CG}}{x_L-x_F}</div></div>
+        <p>After contact the nozzle exit carries a reaction <span class="tex">F_A</span> and the button pulls with <span class="tex">F_L</span>. Moment and force balances give <span class="tex">F_F(x_A-x_F)+F_L(x_L-x_A)=W(x_A-x_{CG})</span>. The angle changes too little to warn the crew, but the force does: if the crew stops at <span class="tex">K</span> times the normal lift, a button designed to</p>
+        <div class="eq"><div class="tex-display">F_L=W\,\frac{K(x_L-x_{CG})(x_A-x_F)-(x_A-x_{CG})(x_L-x_F)}{(x_L-x_F)(x_A-x_L)}</div></div>
+        <p>will not be extracted. Absent better knowledge use <span class="tex">K=2</span>, design both buttons to the same load, and do not give this job to crew members who do not know their own strength.</p>
+      </section>
+
+      <section id="verification">
+        <h2>Verification</h2>
+        <p>The tests reproduce the original field tool’s lift forces and button loads for <span class="tex">K=1</span> to 3 (241.8 lb at <span class="tex">K=2</span> for the 54 lb example, the memo’s “about 243 lb”), check the statics of the carried rocket, and confirm that the joint shear and moment are the same whether computed from the forward or the aft piece.</p>
+      </section>
+
+      <section id="notes">
+        <h2>Notes on the method</h2>
+        <ul>
+          <li><strong>Joint moment.</strong> The memo writes the joint moment as <span class="tex">N(F_Fx_F-\sum w_ix_i)</span>, which is the moment about the nose tip; it equals the moment at the cut only when the shear there is zero. The calculator takes moments about the cut, and the test checks them against the aft piece.</li>
+        </ul>
+      </section>
+
+      <section id="references">
+        <h2>References</h2>
+        <ol class="refs">
+          <li>C. P. Hoult, “Ground Handling Loads,” RS&amp;T, 9 July 2014. <a href="../references/index.html#ground-handling-loads">View in library</a></li>
+          <li>C. P. Hoult, “Sounding Rocket Structural Design Loads (rev. 9),” RS&amp;T. <a href="../references/index.html#sounding-rocket-structural-design-loads10">View in library</a></li>
+        </ol>
+      </section>
+    </article>
+  </div>
+</div>
+</main>
+<script type="module">
+import { mountDocs } from '../js/docs.js';
+mountDocs();
+</script>
+</body>
+</html>

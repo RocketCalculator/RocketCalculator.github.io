@@ -165,6 +165,7 @@ CALCULATORS = [
     ('nose-pressure', 'Nose Pressure Distribution', 'NosePresCoef', 'Subsonic surface pressure along a nose and body by line sources, critical Mach number and adverse pressure gradient.'),
     ('optimum-nose', 'Optimum Nose Shape', 'OptiNoseShap', 'Subsonic nose shape with the smallest suction peak: cone, ogive, Von Kármán and the optimum superellipse compared.'),
     ('payload-venting', 'Payload Bay Venting', 'Vent', 'Bay pressure history through vent holes during ascent and the largest pressure difference across the shell.'),
+    ('body-bending', 'Body Bending Modes', 'BodyBend', 'Free-free bending frequencies, mode shapes and nodes of a rocket body with uneven stiffness and mass (Rayleigh–Ritz).'),
     ('two-stage-weights', 'Two-Stage Weight Allocation', 'OptiWeigAllo', 'Lightest split of mass between two stages for a payload and a required ideal velocity (Vertregt).'),
 ]
 

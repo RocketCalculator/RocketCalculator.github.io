@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Body Bending Modes — Theory & documentation — Rocket Calculator</title>
+<meta name="description" content="Free-free bending frequencies and mode shapes of a non-uniform rocket body by the Rayleigh–Ritz method with uniform-beam modes.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../css/site.css">
+<script>try{var t=JSON.parse(localStorage.getItem('rc-theme'));if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<main id="main">
+<div class="wrap">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Home</a><span class="sep">/</span><a href="../index.html#area-struct">Structures &amp; Aeroelasticity</a><span class="sep">/</span><a href="../calculators/body-bending.html">Body Bending Modes</a><span class="sep">/</span><span>Documentation</span></nav>
+  <div class="calc-title"><h1>Body Bending Modes — theory</h1></div>
+  <p class="calc-sub">Natural bending frequencies of a non-uniform rocket. Based on C. P. Hoult, <em>Longitudinal Body Bending Dynamics</em>, 2013.</p>
+  <div class="calc-badges"><a class="btn small primary" href="../calculators/body-bending.html">Open the calculator</a><a class="btn small" href="../references/index.html#longitudinal-body-bending-dynamics">Original memo (PDF)</a></div>
+  <div class="doc-layout">
+    <nav class="doc-toc" aria-label="Contents"></nav>
+    <article class="doc">
+
+      <section id="overview">
+        <h2>Overview</h2>
+        <p>Whenever flexible-body effects matter — propellant slosh, axial vibration, body bending — Lagrange’s equations come into play. A rocket in flight bends as a free-free beam: nothing holds either end. Its bending frequencies must stay clear of the pitch frequency, the roll rate and motor pressure oscillations, and sensors placed near a node of the fundamental mode see little bending motion.</p>
+      </section>
+
+      <section id="model">
+        <h2>Uniform beam and Rayleigh–Ritz</h2>
+        <p>For a uniform free-free beam of length <span class="tex">L</span>, stiffness <span class="tex">EI</span> and mass per length <span class="tex">m</span>, the modes are</p>
+        <div class="eq"><div class="tex-display">\psi_j(\xi)=B_j\left(\sinh\beta_j\xi+\sin\beta_j\xi\right)+\cosh\beta_j\xi+\cos\beta_j\xi,\qquad B_j=\frac{\cos\beta_j-\cosh\beta_j}{\sinh\beta_j-\sin\beta_j}</div></div>
+        <p>with <span class="tex">\xi=x/L</span> and <span class="tex">\beta_j</span> the roots of <span class="tex">\cos\beta\cosh\beta=1</span>: 4.7300, 7.8532, 10.9956. Their frequencies are <span class="tex">\omega_j=(\beta_j/L)^2\sqrt{EI/m}</span>.</p>
+        <p>A real rocket is a chain of sections — nose, payload, motor case, skirt — with their own stiffness and weight. Its displacement is approximated by the three uniform shapes, <span class="tex">y=\sum_jq_j\psi_j(x/L)</span>. Lagrange’s equations with the kinetic energy <span class="tex">\tfrac12\int m\dot y^2dx</span> and strain energy <span class="tex">\tfrac12\int EI\,(y'')^2dx</span> give <span class="tex">\mathbf M\ddot{\mathbf q}+\mathbf K\mathbf q=0</span>, with</p>
+        <div class="eq"><div class="tex-display">K_{ij}=\int_0^LEI\,\psi_i''\psi_j''\,dx,\qquad M_{ij}=\int_0^Lm\,\psi_i\psi_j\,dx</div></div>
+        <p>and the natural frequencies satisfy <span class="tex">\det(\omega^2\mathbf M-\mathbf K)=0</span>. The calculator integrates each section (stiffness and weight varying linearly within it) by Simpson’s rule and solves the 3×3 eigenproblem directly. The lowest frequency is the most accurate; with three shapes the third is only a rough estimate.</p>
+      </section>
+
+      <section id="shapes">
+        <h2>Mode shapes and nodes</h2>
+        <p>Each eigenvector gives a mode shape <span class="tex">\sum q_j\psi_j</span>, shown scaled to 1 at the nose tip. The fundamental mode has two nodes where the body does not move; an inertial sensor there sees the least bending.</p>
+      </section>
+
+      <section id="verification">
+        <h2>Verification</h2>
+        <p>For the original field tool’s Aries example (five sections, 365 in), the tests reproduce its three frequencies — 257.6, 585.5 and 1523.7 rad/s — and its stiffness and mass integrals within 0.1–0.2 %. They also check that the mode shapes are exact eigenvectors, and that a uniform body returns the exact uniform-beam frequencies.</p>
+      </section>
+
+      <section id="notes">
+        <h2>Notes on the method</h2>
+        <ul>
+          <li><strong>Mode shapes of the field tool.</strong> Its mode-shape macro misspells one matrix element (<code>l13st</code> for <code>j13st</code>), so the term <span class="tex">-K_{13}</span> is dropped and its mode shapes are wrong, although its frequencies are right. The calculator uses the full eigenvectors; the test confirms that the typo reproduces the tool’s shapes exactly.</li>
+          <li><strong>Integration.</strong> The tool’s trapezoid sums omit the first small step of each section; the calculator integrates the whole section, a difference of about 0.01 %.</li>
+          <li><strong>Uniform reference.</strong> The uniform-beam frequencies shown for comparison use length-averaged stiffness and mass.</li>
+        </ul>
+      </section>
+
+      <section id="references">
+        <h2>References</h2>
+        <ol class="refs">
+          <li>C. P. Hoult, “Longitudinal Body Bending Dynamics,” RS&amp;T, 5 August 2013. <a href="../references/index.html#longitudinal-body-bending-dynamics">View in library</a></li>
+        </ol>
+      </section>
+    </article>
+  </div>
+</div>
+</main>
+<script type="module">
+import { mountDocs } from '../js/docs.js';
+mountDocs();
+</script>
+</body>
+</html>

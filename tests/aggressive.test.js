@@ -124,6 +124,7 @@ const INVARIANTS = {
   'nose-pressure': (v, R) => [R.cp0Min >= 0 || R.cpMin <= R.cp0Min + 1e-12, R.Mcr > 0 && R.Mcr <= 1, R.grad >= 0, R.Dw > 0],
   'optimum-nose': (v, R) => [R.nOpt > 1 && R.nOpt <= 4, R.cpOpt >= R.cp_se - 1e-9, R.cpOpt >= R.cp_cone - 1e-9, R.McrOpt >= R.mcr_cone - 1e-9, R.cpM <= R.cpOpt + 1e-12],
   'payload-venting': (v, R) => [Number.isFinite(R.dpMax), R.tau > 0, R.A > 0, R.p0 > 0],
+  'body-bending': (v, R) => [R.f1 > 0 && R.f2 > R.f1 && R.f3 > R.f2, R.L > 0, R.W > 0],
   'two-stage-weights': (v, R) => [R.M01 >= v.Mpl, R.m1 >= 0 && R.m2 >= 0, Math.abs(R.M01 - v.Mpl - R.m1 - R.m2) <= 1e-9 * R.M01, Math.abs(R.dv1 + R.dv2 - v.dv) <= 1e-6 * v.dv, R.payloadPct > 0 && R.payloadPct <= 100, R.lam > 0],
   'ogive-nose': (v, R) => [R.S > 0, R.xbar > 0 && R.xbar < v.L, R.fineness > 0, R.tipHalfAngle > 0 && R.tipHalfAngle <= 90],
   'subsonic-cp': (v, R, warned) => [R.CNa > 0 || warned, R.CNaFins >= 0, Number.isFinite(R.xcp), R.d > 0],
@@ -373,4 +374,10 @@ test('Payload venting: bigger or more vents lower the peak difference; a bigger 
   increasing([0.4, 0.2, 0.1, 0.05].map((d) => Math.abs(run('payload-venting', { d }).dpMax)), 'Δp vs smaller vent');
   increasing([4, 2, 1].map((N) => Math.abs(run('payload-venting', { N }).dpMax)), 'Δp vs fewer vents');
   increasing([0.05, 0.2, 1].map((Vol) => Math.abs(run('payload-venting', { Vol }).dpMax)), 'Δp vs bay volume');
+});
+
+test('Body bending: a stiffer body rings higher, a heavier one lower (f ∝ √(EI/m))', () => {
+  const e = (k, kw = 1) => bySlug['body-bending'].examples[0].values.elems.map((r) => ({ ...r, EIf: r.EIf * k, EIa: r.EIa * k, wf: r.wf * kw, wa: r.wa * kw }));
+  const f = (k, kw) => run('body-bending', { elems: e(k, kw) }).f1;
+  assert.ok(Math.abs(f(4, 1) / f(1, 1) - 2) < 1e-9 && Math.abs(f(1, 4) / f(1, 1) - 0.5) < 1e-9);
 });

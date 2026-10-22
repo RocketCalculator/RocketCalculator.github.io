@@ -182,6 +182,12 @@
    "description": "Bay pressure history through vent holes during ascent and the largest pressure difference across the shell."
   },
   {
+   "slug": "body-bending",
+   "title": "Body Bending Modes",
+   "topic": "body-bending-dynamics",
+   "description": "Free-free bending frequencies, mode shapes and nodes of a rocket body with uneven stiffness and mass (Rayleigh–Ritz)."
+  },
+  {
    "slug": "two-stage-weights",
    "title": "Two-Stage Weight Allocation",
    "topic": "optimum-weight-allocation",
@@ -281,9 +287,11 @@
    "area": "struct",
    "summary": "Natural bending frequencies and mode shapes of the rocket body.",
    "abstract": "This supports the estimation of the body bending natural frequencies and the normal mode shapes. The technique used is a numerical; solution to LaGrange's equations with approximation that only the first three modes are carried. The code is filed as FLEXIT.xls , and the corresponding reference report is Longitudinal Body Bending Dynamics.doc . The results are the first three natural frequencies and the first two normal mode shapes. The example displayed is for the Aries sounding rocket, a early 1970s Minuteman I second stage conversion. The reader is cautioned that when the roll rate becomes resonant with the fundamental body bending frequency, a large angle of attack will occur. Structural break-up is a possibility, and roll lock-in can also occur. See \"In-Flight Flexure and Spin Lock-In for Antitank Kinetic Energy Projectiles\", by A. G. Mikhail, JSR, Vol. 33, No.5, pp 657-664 (1996).",
-   "status": "soon",
-   "calculators": [],
-   "wasSoon": false,
+   "status": "available",
+   "calculators": [
+    "body-bending"
+   ],
+   "wasSoon": true,
    "references": [
     "longitudinal-body-bending-dynamics"
    ],

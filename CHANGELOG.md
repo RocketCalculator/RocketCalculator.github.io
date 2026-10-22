@@ -4,6 +4,12 @@ Every commit adds an entry here, newest first. Live site: https://darasamii.gith
 
 ## 2026-10-21
 
+### New calculator: Body Bending Modes
+- Added: `calculators/body-bending.html`. It gives the first three free-free bending frequencies, the mode shapes and the fundamental's nodes for a body built from sections with linearly varying stiffness and weight. Method: Rayleigh–Ritz with the uniform-beam modes, Simpson integration, and a Cholesky + Jacobi eigen-solution.
+- Drawing: the sections (height for weight, shade for stiffness) with the fundamental mode and its nodes. Plots: the mode shapes, and the input distributions.
+- The field tool's mode-shape macro has a typo (`l13st` for `j13st`) that drops $-K_{13}$, so its shapes are wrong while its frequencies are right. The test reproduces the typo to prove this, and the docs page explains it.
+- Tests: the Aries frequencies (257.6, 585.5, 1523.7 rad/s) and integrals within 0.2 %, exact eigenvectors, and a uniform beam returning its exact frequencies.
+
 ### New calculator: Payload Bay Venting
 - Added: `calculators/payload-venting.html`. It integrates the payload-bay pressure along a trajectory table (memo eq. 9, RK4, step set by the venting time constant) and gives the largest pressure difference across the shell and when it happens.
 - Vents are subsonic or choked, with Busemann's orifice-coefficient interpolation. The vent-exit pressure uses Kármán–Tsien below the critical Mach number and a table above it.

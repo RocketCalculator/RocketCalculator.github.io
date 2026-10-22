@@ -168,6 +168,7 @@ CALCULATORS = [
     ('body-bending', 'Body Bending Modes', 'BodyBend', 'Free-free bending frequencies, mode shapes and nodes of a rocket body with uneven stiffness and mass (Rayleigh–Ritz).'),
     ('ground-handling', 'Ground Handling Loads', 'StruLoad', 'Carrying forces and joint bending moment of a hand-carried rocket, and the aft rail-button pull when the nose is lifted.'),
     ('flight-path-dispersion', 'Flight Path Angle Dispersions', 'Disp', 'One-sigma velocity tilt at burnout from thrust misalignment and gusts on a rolling rocket, as an equivalent launcher angle error.'),
+    ('roll-lock-in-design', 'Roll Lock-In', 'RollLockIn', 'Smallest angle of attack at which nose vortices can lock the roll rate onto the pitch frequency, with fins sized for a static margin, and the probability of no lock-in.'),
     ('two-stage-weights', 'Two-Stage Weight Allocation', 'OptiWeigAllo', 'Lightest split of mass between two stages for a payload and a required ideal velocity (Vertregt).'),
 ]
 

@@ -200,6 +200,12 @@
    "description": "One-sigma velocity tilt at burnout from thrust misalignment and gusts on a rolling rocket, as an equivalent launcher angle error."
   },
   {
+   "slug": "roll-lock-in-design",
+   "title": "Roll Lock-In",
+   "topic": "roll-lock-in",
+   "description": "Smallest angle of attack at which nose vortices can lock the roll rate onto the pitch frequency, with fins sized for a static margin, and the probability of no lock-in."
+  },
+  {
    "slug": "two-stage-weights",
    "title": "Two-Stage Weight Allocation",
    "topic": "optimum-weight-allocation",
@@ -744,9 +750,11 @@
    "area": "dyn",
    "summary": "Fin design to avoid roll locking onto the pitch frequency.",
    "abstract": "These files support the design of sounding rocket tail fins to minimize the probability of roll lock-in. Roll lock-in occurs when the pitch natural frequency matches the roll rate in powered flight. Linear theory asserts that the angle of attack (due to thrust misalignment and C.G. offset) will become large at that time. However, vorticity shed by the forebody at high angle of attack induces a nonlinear roll torque that causes the roll rate to depart from its expected linear increase with velocity and \"lock-in\" to the pitch natural frequency. This leads to prolonged high angle of attack, excessive drag, and sometimes mission failure. There are two aerodynamic nonlinearities important to roll lock-in. Besides the vortex-induced roll moment a second important aerodynamic nonlinearity is the Magnus torque from the fins. Magnus torques from the forebody tend to be very small. The analytical description of this process can be found in \"Sounding Rocket Fin Design to Mitigate Roll Lock-In\" by C. P. Hoult and Hien Tran, proceedings of the 2015 IEEE Aerospace Conference, Big Sky, MT, March 07-14, 2015. This is filed as Sounding Rocket Fin Design to Mitigate Roll Lock-In.pdf , and the associated presentation charts, with voice annotation, are filed as Sounding Rocket Design to Mitigate Roll Lock-In.ppt . The math is implemented in Sounding Rocket Design to Mitigate Roll Lock-In.xls .",
-   "status": "soon",
-   "calculators": [],
-   "wasSoon": false,
+   "status": "available",
+   "calculators": [
+    "roll-lock-in-design"
+   ],
+   "wasSoon": true,
    "references": [
     "sounding-rocket-fin-design-to-mitigate-roll-lock-in-orig"
    ],

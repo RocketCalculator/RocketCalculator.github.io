@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Roll Lock-In — Theory & documentation — Rocket Calculator</title>
+<meta name="description" content="Vortex-induced roll moment on sounding rocket fins, the smallest angle of attack for steady roll lock-in, and the probability of no lock-in.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../css/site.css">
+<script>try{var t=JSON.parse(localStorage.getItem('rc-theme'));if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<main id="main">
+<div class="wrap">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Home</a><span class="sep">/</span><a href="../index.html#area-dyn">Flight Dynamics &amp; Mass Properties</a><span class="sep">/</span><a href="../calculators/roll-lock-in-design.html">Roll Lock-In</a><span class="sep">/</span><span>Documentation</span></nav>
+  <div class="calc-title"><h1>Roll Lock-In — theory</h1></div>
+  <p class="calc-sub">Fin design against vortex-induced roll lock-in. Based on C. P. Hoult and H. Tran, <em>Sounding Rocket Fin Design to Mitigate Roll Lock-In</em>.</p>
+  <div class="calc-badges"><a class="btn small primary" href="../calculators/roll-lock-in-design.html">Open the calculator</a><a class="btn small" href="../references/index.html#sounding-rocket-fin-design-to-mitigate-roll-lock-in-orig">Original paper (PDF)</a></div>
+  <div class="doc-layout">
+    <nav class="doc-toc" aria-label="Contents"></nav>
+    <article class="doc">
+
+      <section id="overview">
+        <h2>Overview</h2>
+        <p>Roll lock-in (catastrophic yaw) is a persistent, nonlinear coning motion at high angle of attack. It usually starts in powered flight at pitch–roll resonance, when the roll rate equals the pitch natural frequency and the angle of attack driven by body-fixed perturbations is amplified. Nonlinear roll moments then hold the roll rate at the pitch frequency: the motion is lunar, one side of the rocket always facing the coning axis, and drag rises sharply for a long time.</p>
+        <p>Of the three causes — configuration asymmetries, centre-of-mass offset, and the interaction of nose vortices with the tail fins — only the last depends on fin design, and it is the one modelled here. The approach: size the fins for a required static margin, compute the induced roll moment, find the smallest angle of attack <span class="tex">\alpha^*</span> at which steady lock-in is possible, and estimate the probability that the trim angle of attack stays below it.</p>
+      </section>
+
+      <section id="vortex">
+        <h2>Nose vortex pair</h2>
+        <p>The vortex pair separates at <span class="tex">x_S</span>, about where the zero-<span class="tex">\alpha</span> surface pressure is lowest. Wind-tunnel data give its strength and position at a station <span class="tex">x</span>, with <span class="tex">\xi=(x-x_S)\alpha/R</span>:</p>
+        <div class="eq"><div class="tex-display">\frac{\Gamma}{2\pi RU\alpha}=0.6+0.08\,\xi^{1.52},\qquad \frac{y_V}{R}=0.7,\qquad \frac{z_V}{R}=1+0.21\,\xi</div></div>
+        <p>so the free vortex lies at radius <span class="tex">r=\sqrt{y_V^2+z_V^2}</span> and roll angle <span class="tex">\phi_V=\tan^{-1}(y_V/z_V)</span> from the leeward meridian, and its image inside the body at <span class="tex">s=R^2/r</span>. The cross flow is treated as incompressible, valid while <span class="tex">\sqrt{M^2-1}\sin\alpha\ll1</span>.</p>
+        <p>A vortex induces a velocity normal to a fin at span station <span class="tex">y</span> (eq. 9). With a straight-tapered chord <span class="tex">c(y)=C_1+C_2y</span>, the strip roll moment of one fin and one vortex integrates in closed form:</p>
+        <div class="eq"><div class="tex-display">C_{Li}=\frac{C_{N\alpha}\Gamma}{2\pi U\,\pi R^2\,2R}\left[g(C_1,C_2,r,\phi_V,y,\phi)\right]_{R}^{R+b},\quad g=-C_1r\cos(\phi_V-\phi)f_1+(C_1-C_2r\cos(\phi_V-\phi))f_2+C_2f_3</div></div>
+        <p>with the integrals <span class="tex">f_0\ldots f_3</span> of eqs. 13–16. The four vortices (two free, two images, with opposite signs) and all <span class="tex">N</span> fins at <span class="tex">\phi+2\pi k/N</span> are summed (eq. 19). The result is close to a sine wave in roll angle with period <span class="tex">2\pi/N</span>; at small angles of attack its phase can flip by 180°.</p>
+      </section>
+
+      <section id="fins">
+        <h2>Fin size from the static margin</h2>
+        <p>The fin assembly normal-force slope needed for a static margin <span class="tex">SM</span> is</p>
+        <div class="eq"><div class="tex-display">C_{N\alpha F}=C_{N\alpha N}\,\frac{x_{CG}+SM-x_{CPN}}{x_{CPF}-x_{CG}-SM}</div></div>
+        <p>and strip theory with body upwash <span class="tex">(1+R^2/y^2)</span> gives the root chord, with <span class="tex">c_1=1+(R/b)(1-\lambda)</span> and <span class="tex">c_2=(\lambda-1)/b</span>:</p>
+        <div class="eq"><div class="tex-display">C_{N\alpha F}=\frac{NC_{N\alpha}c_R}{2\pi R^2}\left[c_1b+\frac{c_2(b^2+2bR)}{2}+\frac{c_1R^2b}{R(b+R)}+c_2R^2\ln\frac{b+R}{R}\right]</div></div>
+      </section>
+
+      <section id="damping">
+        <h2>Lunar motion and roll damping</h2>
+        <p>In steady lunar coning at rate <span class="tex">\omega</span>, <span class="tex">p=\omega\cos\alpha</span> and <span class="tex">r=-\omega\sin\alpha</span>. The yaw equation gives the coning rate and the pitch equation the trim angle of attack:</p>
+        <div class="eq"><div class="tex-display">\omega\cong\frac{2\pi qR^4}{UI_p}(C_{Nr}-C_{Np\alpha}),\qquad \alpha\cong\frac{-T(l_T\delta_T+\Omega)}{2\pi qR^3\left[C_{M\alpha}-\frac{2\pi qR^5}{U^2I_p}(C_{Nr}-C_{Np\alpha})^2\right]}</div></div>
+        <p>Just before resonance the roll rate is the pitch frequency <span class="tex">\omega_n=\sqrt{-2\pi qR^3C_{M\alpha}/I_p}</span>, and the cant torque balances fin damping. The roll equation then reads</p>
+        <div class="eq"><div class="tex-display">\frac{C_{Lp}}{U}\left(R\omega-R\omega_n\right)+C_{Li}(\phi,\alpha)=0</div></div>
+        <p>The derivatives follow the paper’s appendix: <span class="tex">C_{M\alpha}</span> from the nose and fin slopes, <span class="tex">C_{Nr}=-\sum c_{N\alpha i}\Delta x_i^2/2R^2</span>, the fin Magnus term <span class="tex">C_{Np\alpha}</span> (eq. 41) and <span class="tex">C_{Lp}</span> from strip theory, all on reference area <span class="tex">\pi R^2</span> and length <span class="tex">2R</span>.</p>
+      </section>
+
+      <section id="lockin">
+        <h2>Smallest lock-in angle of attack</h2>
+        <p>At small angles the induced moment is too weak to satisfy the roll equation at any roll angle. Steady lock-in first becomes possible at the angle where its largest value over roll angle just reaches the damping term:</p>
+        <div class="eq"><div class="tex-display">\left|\frac{C_{Lp}}{U}\left(R\omega-R\omega_n\right)\right|\le\left|C_{Li\,max}(\alpha^*)\right|</div></div>
+        <p>The calculator scans <span class="tex">\alpha</span> up to the chosen limit, finds the largest <span class="tex">|C_{Li}|</span> over one fin period at each (scan plus golden section), and bisects the first crossing. Below <span class="tex">\alpha^*</span> lock-in cannot happen; above it, whether it does is a matter of statistics.</p>
+      </section>
+
+      <section id="probability">
+        <h2>Probability of no lock-in</h2>
+        <p>The misalignment <span class="tex">\delta_T</span> and offset <span class="tex">\Omega</span> are random, unbiased and independent, so each transverse component of the trim angle has standard deviation</p>
+        <div class="eq"><div class="tex-display">\sigma_\alpha=\frac{T\sqrt{l_T^2\sigma_{\delta_T}^2+\sigma_\Omega^2}}{2\pi qR^3\left|C_{M\alpha}-\frac{2\pi qR^5}{U^2I_p}(C_{Nr}-C_{Np\alpha})^2\right|}</div></div>
+        <p>and the total angle of attack is Rayleigh distributed. The probability of no lock-in is the probability that it stays below <span class="tex">\alpha^*</span>:</p>
+        <div class="eq"><div class="tex-display">P=1-\exp\left(-\frac{\alpha^{*2}}{2\sigma_\alpha^2}\right)</div></div>
+      </section>
+
+      <section id="design">
+        <h2>Implications for fin design</h2>
+        <p>No fin design guarantees freedom from lock-in: a large enough perturbation always succeeds. But the probability can be made very small. Static margin is more important than generally realized — more than the classical two calibres extends the region where lock-in is dynamically impossible. Three and four fins differ little; five or more help dramatically, six much more than four and eight more still (mortar bombs fly with eight). Taper ratio and span have minor effects. Lower dynamic pressure (higher altitude) makes lock-in easier.</p>
+      </section>
+
+      <section id="verification">
+        <h2>Verification</h2>
+        <p>The tests reproduce the field tool’s fin slope, pitching and yaw-damping derivatives and pitch frequency, its vortex circulation and position, the roll moment of each fin and of all fins at 9°, and its table of <span class="tex">|C_{Li}|_{max}</span> against angle of attack, once its slips below are fed back in. The closed-form strip integral <span class="tex">g</span> is checked against Simpson quadrature of eq. 12, and the induced moment is odd in roll angle with period <span class="tex">2\pi/N</span>.</p>
+      </section>
+
+      <section id="notes">
+        <h2>Notes on the method</h2>
+        <ul>
+          <li><strong>Units of the paper’s example.</strong> The paper and the field tool use inches, psi and <span class="tex">I_p=WL^2/g</span> “slug·in²”. In <span class="tex">\omega_n^2=-2\pi qR^3C_{M\alpha}/I_p</span> with <span class="tex">q</span> in psi the inertia must be in lbf·s²·in, so the tool’s pitch frequency is low by <span class="tex">\sqrt{12}</span>; <span class="tex">WL^2/g</span> is also 12 times the inertia of a uniform rod. The calculator works in consistent units and its example uses <span class="tex">mL^2/12</span>. The paper’s figures therefore are not reproduced numerically.</li>
+          <li><strong>Root chord.</strong> The tool takes Excel’s <code>LOG</code> (base 10) of <span class="tex">(b+R)/R</span> in eq. 33, where the integral of <span class="tex">1/y</span> is the natural logarithm; its chord, and with it every roll moment, is 12% small for the example.</li>
+          <li><strong>Vortex radius.</strong> The tool uses <span class="tex">R\sqrt{1+0.21\xi^2+0.49}</span> where eqs. 2–3 give <span class="tex">R\sqrt{0.49+(1+0.21\xi)^2}</span>.</li>
+          <li><strong>Magnus derivative.</strong> The tool’s <span class="tex">C_{Np\alpha}</span> cell holds a stale value its own formula (which also misplaces a parenthesis) does not give. It only enters the small coning rate.</li>
+          <li><strong>Normalization.</strong> The paper writes <span class="tex">C_{Nr}=-2\sum c_{N\alpha}(\Delta x/R)^2</span> and <span class="tex">C_{Lp}</span> over <span class="tex">\pi R^4</span>; on the reference <span class="tex">\pi R^2\cdot2R</span> and rates <span class="tex">R\omega/U</span> used in its moment equations (eqs. 21–25) these are <span class="tex">-\sum c_{N\alpha}\Delta x^2/2R^2</span> and <span class="tex">2\pi R^4</span>, as the tool has them.</li>
+          <li><strong>Probability.</strong> Eq. 28 writes <span class="tex">1-\exp(-\alpha^2/\mathrm{var}(\alpha))</span> with the per-axis variance of eq. 27; for a Rayleigh-distributed magnitude the exponent is <span class="tex">-\alpha^2/2\sigma^2</span>, which the calculator uses.</li>
+        </ul>
+      </section>
+
+      <section id="references">
+        <h2>References</h2>
+        <ol class="refs">
+          <li>C. P. Hoult, H. Tran, “Sounding Rocket Fin Design to Mitigate Roll Lock-In,” RS&amp;T. <a href="../references/index.html#sounding-rocket-fin-design-to-mitigate-roll-lock-in-orig">View in library</a></li>
+        </ol>
+      </section>
+    </article>
+  </div>
+</div>
+</main>
+<script type="module">
+import { mountDocs } from '../js/docs.js';
+mountDocs();
+</script>
+</body>
+</html>

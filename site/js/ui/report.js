@@ -170,10 +170,10 @@ function toMarkdown(M) {
 }
 
 const UNI = { '×': '$\\times$', '°': '$^\\circ$', '≈': '$\\approx$', '→': '$\\to$', '−': '$-$', '·': '$\\cdot$', '²': '$^2$', '³': '$^3$', '⁴': '$^4$', '¹': '$^1$', '⁰': '$^0$', '⁻': '$^-$',
-  α: '$\\alpha$', β: '$\\beta$', γ: '$\\gamma$', δ: '$\\delta$', Δ: '$\\Delta$', λ: '$\\lambda$', Λ: '$\\Lambda$', μ: '$\\mu$', ρ: '$\\rho$', φ: '$\\varphi$', θ: '$\\theta$', ψ: '$\\psi$', ω: '$\\omega$', Ω: '$\\Omega$', π: '$\\pi$', σ: '$\\sigma$', '±': '$\\pm$', '≤': '$\\le$', '≥': '$\\ge$', '√': '$\\surd$', '…': '\\ldots{}' };
+  α: '$\\alpha$', β: '$\\beta$', γ: '$\\gamma$', δ: '$\\delta$', Δ: '$\\Delta$', λ: '$\\lambda$', Λ: '$\\Lambda$', μ: '$\\mu$', ρ: '$\\rho$', φ: '$\\varphi$', θ: '$\\theta$', ψ: '$\\psi$', ω: '$\\omega$', Ω: '$\\Omega$', π: '$\\pi$', ξ: '$\\xi$', Γ: '$\\Gamma$', ε: '$\\varepsilon$', τ: '$\\tau$', σ: '$\\sigma$', '±': '$\\pm$', '≤': '$\\le$', '≥': '$\\ge$', '√': '$\\surd$', '…': '\\ldots{}' };
 const latexText = (s) => String(s).split(/(\$[^$]+\$)/g).map((p) => (p.startsWith('$') && p.endsWith('$') && p.length > 2 ? p
   : p.replace(/\\/g, '\\textbackslash{}').replace(/([%&_#{}])/g, '\\$1').replace(/~/g, '\\textasciitilde{}').replace(/\^/g, '\\textasciicircum{}')
-    .replace(/“/g, '``').replace(/”/g, "''").replace(/’/g, "'").replace(/—/g, '---').replace(/–/g, '--').replace(/[×°≈→−·²³⁴¹⁰⁻αβγδΔλΛμρφθψωΩπσ±≤≥√…]/g, (c) => UNI[c]))).join('');
+    .replace(/“/g, '``').replace(/”/g, "''").replace(/’/g, "'").replace(/—/g, '---').replace(/–/g, '--').replace(/[×°≈→−·²³⁴¹⁰⁻αβγδΔλΛμρφθψωΩπξΓετσ±≤≥√…]/g, (c) => UNI[c]))).join('');
 function toLaTeX(M) {
   const L = [];
   L.push('\\documentclass[11pt]{article}', '\\usepackage[margin=2.2cm]{geometry}', '\\usepackage{amsmath,amssymb,booktabs,longtable}', '\\usepackage[T1]{fontenc}', '\\usepackage{textcomp}', '',

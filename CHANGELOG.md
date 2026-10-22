@@ -4,6 +4,11 @@ Every commit adds an entry here, newest first. Live site: https://darasamii.gith
 
 ## 2026-10-22
 
+### New calculator: Roll Lock-In
+- Added: `calculators/roll-lock-in-design.html`. It sizes the fins for a required static margin and computes the roll moment the nose vortex pair induces on them (closed-form strip integral, four vortices). From these it finds the smallest angle of attack at which steady lunar lock-in is possible, and gives the probability of no lock-in from the thrust misalignment statistics.
+- Plots: the lock-in conditions (paper Fig. 7), roll moment against roll angle (Fig. 6), the effect of fin count (Figs. 10–13) and of static margin (Fig. 8).
+- Tests reproduce the "High Alfa Roll Lock-In" tool once its slips are fed back in: LOG base 10 in the chord formula, the vortex radius, and a stale C_Npα cell. The calculator uses consistent units; the tool's psi with "slug·in²" puts its pitch frequency low by √12.
+
 ### New calculator: Flight Path Angle Dispersions
 - Added: `calculators/flight-path-dispersion.html`. It gives the one-sigma velocity tilt at burnout of a rolling rocket from thrust misalignment (resolved east and north as the rocket rolls) and gusts, and the equivalent launcher angle error to feed a trajectory run.
 - Plots: tilt against altitude, the tilt seen from above, and the effects of roll wavelength (memo Fig. 3) and static margin. Tests reproduce the memo's Figs. 1 and 3 and the field tool's columns.

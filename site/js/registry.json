@@ -194,6 +194,12 @@
    "description": "Carrying forces and joint bending moment of a hand-carried rocket, and the aft rail-button pull when the nose is lifted."
   },
   {
+   "slug": "flight-path-dispersion",
+   "title": "Flight Path Angle Dispersions",
+   "topic": "dispersion",
+   "description": "One-sigma velocity tilt at burnout from thrust misalignment and gusts on a rolling rocket, as an equivalent launcher angle error."
+  },
+  {
    "slug": "two-stage-weights",
    "title": "Two-Stage Weight Allocation",
    "topic": "optimum-weight-allocation",
@@ -316,9 +322,11 @@
    "area": "traj",
    "summary": "How launcher, wind and thrust errors scatter the impact point.",
    "abstract": "Dispersion refers to the fact that rocket trajectories are always imperfect. “Dispersion” describes the scattering errors that reflect these imperfections. To estimate this, use Flt Path Angl Dispersions.doc which contains “Flight Path Angle Dispersions (rev.1)”, by C. P. Hoult, RST memo, 2011. This provides a way to estimate the standard deviation in launcher Quadrant Elevation angle for nominally vertical trajectories. A trajectory code can convert this to an impact point error. DISPERSION.xls is the corresponding spread sheet implementation. Much of the other material here documents the ways in which Quadrant Elevation angles other than 90º cause trajectory statistics to change. This QE angle scaling is captured in Theory Behind DISPERSION.doc . This memo also captures the QE scaling on Unit Wind Effects, both In-Range and Cross-Range. Launcher Tipoff Errors.doc describes the right way to design a rail launcher and riding lug system. Finally, estimates on the perturbing effects may be found in Standardized Perturbation Values.pdf .",
-   "status": "soon",
-   "calculators": [],
-   "wasSoon": false,
+   "status": "available",
+   "calculators": [
+    "flight-path-dispersion"
+   ],
+   "wasSoon": true,
    "references": [
     "flt-path-angl-dispersions",
     "theory-behind-dispersion",

@@ -99,6 +99,7 @@ const REPAIR = {
   'nose-pressure': (v, r) => { if (v.bodyLen <= v.noseL) v.bodyLen = v.noseL * (1.2 + 4 * r()); if (v.noseL > 30 * v.R) v.noseL = v.R * (1 + 20 * r()); if (v.bodyLen > 80 * v.R) v.bodyLen = v.noseL + v.R * (2 + 40 * r()); },
   'optimum-nose': (v, r) => { if (v.noseL < 2 * v.R || v.noseL > 24 * v.R) v.noseL = v.R * (2 + 20 * r()); },
   'ground-handling': (v, r) => { if (!(v.xAt > v.xFt)) v.xAt = v.xFt + 10 + 100 * r(); const s = [v.xF, v.xL, v.xN].sort((a, b) => a - b); [v.xF, v.xL, v.xN] = [s[0], s[1] + 1e-3, s[2] + 2e-3]; },
+  'flight-path-dispersion': (v, r) => { if (v.hb <= v.L) v.hb = v.L * (2 + 50 * r()); if (v.T < 2 * 32.174 * v.m) v.T = 32.174 * v.m * (2 + 15 * r()); if (2 * Math.PI / v.rollWave >= v.lP) v.rollWave = 2 * Math.PI / (v.lP * (0.1 + 0.8 * r())); },
   'two-stage-weights': (v, r) => { const lim = 32.174 * (-v.Isp1 * Math.log(v.s1) - v.Isp2 * Math.log(v.s2)); if (v.dv >= lim) v.dv = lim * (0.02 + 0.93 * r()); },
 };
 
@@ -127,6 +128,7 @@ const INVARIANTS = {
   'payload-venting': (v, R) => [Number.isFinite(R.dpMax), R.tau > 0, R.A > 0, R.p0 > 0],
   'body-bending': (v, R) => [R.f1 > 0 && R.f2 > R.f1 && R.f3 > R.f2, R.L > 0, R.W > 0],
   'ground-handling': (v, R) => [R.W > 0, R.xCG >= v.xL || R.lift0 > 0, Number.isFinite(R.FL) && Number.isFinite(R.MJ)],
+  'flight-path-dispersion': (v, R) => [R.gD >= 0 && R.gG >= 0, Math.abs(Math.hypot(R.gD, R.gG) - R.gam) <= 1e-9 * R.gam + 1e-300, R.g0 <= R.gam * (1 + 1e-12), R.LA >= 0, R.n > 0 && R.n < 1],
   'two-stage-weights': (v, R) => [R.M01 >= v.Mpl, R.m1 >= 0 && R.m2 >= 0, Math.abs(R.M01 - v.Mpl - R.m1 - R.m2) <= 1e-9 * R.M01, Math.abs(R.dv1 + R.dv2 - v.dv) <= 1e-6 * v.dv, R.payloadPct > 0 && R.payloadPct <= 100, R.lam > 0],
   'ogive-nose': (v, R) => [R.S > 0, R.xbar > 0 && R.xbar < v.L, R.fineness > 0, R.tipHalfAngle > 0 && R.tipHalfAngle <= 90],
   'subsonic-cp': (v, R, warned) => [R.CNa > 0 || warned, R.CNaFins >= 0, Number.isFinite(R.xcp), R.d > 0],
@@ -276,6 +278,13 @@ test('Newtonian drag: wave drag rises past Mach 1, more sweep means less leading
   increasing(sw, 'LE drag vs decreasing sweep');
   const h = run('newtonian-drag', { M: 10, bodyR: 2, cap: true, capR: 2, thetaM: 90, cone: false, flat: false, fins: false });
   assert.ok(Math.abs(h.CD - 0.92) < 0.01, `hemisphere CD ${h.CD}`);
+});
+
+test('Dispersion: more misalignment, gust or slower boost raise the error; more static margin lowers it', () => {
+  increasing([0.001, 0.002, 0.004].map((dT) => run('flight-path-dispersion', { dT }).g0), 'γ0 vs δ_T');
+  increasing([1, 3.3, 8].map((sG) => run('flight-path-dispersion', { sG }).gG), 'γ_G vs σ_G');
+  increasing([0.04, 0.03, 0.022, 0.012].map((lP) => run('flight-path-dispersion', { lP }).LA), 'L_A vs falling λ_P');
+  increasing([1000, 600, 300].map((T) => run('flight-path-dispersion', { T }).n), 'g/2a vs falling thrust');
 });
 
 test('Nozzle: thrust falls with ambient pressure, a wider cone loses thrust, the 1-D C_F peaks at p_e = p_a', () => {

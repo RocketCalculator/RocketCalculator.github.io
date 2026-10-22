@@ -2,6 +2,13 @@
 
 Every commit adds an entry here, newest first. Live site: https://darasamii.github.io/RocketCalculator/
 
+## 2026-10-22
+
+### New calculator: Flight Path Angle Dispersions
+- Added: `calculators/flight-path-dispersion.html`. It gives the one-sigma velocity tilt at burnout of a rolling rocket from thrust misalignment (resolved east and north as the rocket rolls) and gusts, and the equivalent launcher angle error to feed a trajectory run.
+- Plots: tilt against altitude, the tilt seen from above, and the effects of roll wavelength (memo Fig. 3) and static margin. Tests reproduce the memo's Figs. 1 and 3 and the field tool's columns.
+- The DISPERSION field tool's thrust step is L_A/m times too large and its gust factor uses λ_R for λ_G*. The calculator follows the memo; the test shows that putting both slips back reproduces the tool's λ_P table.
+
 ## 2026-10-21
 
 ### New calculator: Ground Handling Loads

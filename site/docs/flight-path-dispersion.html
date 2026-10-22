@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flight Path Angle Dispersions — Theory & documentation — Rocket Calculator</title>
+<meta name="description" content="One-sigma velocity tilt of a rolling sounding rocket at burnout from thrust misalignment and wind gusts, and the equivalent launcher angle error.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../css/site.css">
+<script>try{var t=JSON.parse(localStorage.getItem('rc-theme'));if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<main id="main">
+<div class="wrap">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Home</a><span class="sep">/</span><a href="../index.html#area-traj">Trajectory, Wind &amp; Launch</a><span class="sep">/</span><a href="../calculators/flight-path-dispersion.html">Flight Path Angle Dispersions</a><span class="sep">/</span><span>Documentation</span></nav>
+  <div class="calc-title"><h1>Flight Path Angle Dispersions — theory</h1></div>
+  <p class="calc-sub">How thrust misalignment and gusts rotate the velocity vector of a rolling rocket. Based on C. P. Hoult, <em>Flight Path Angle Dispersions</em> (rev. 1), 2011.</p>
+  <div class="calc-badges"><a class="btn small primary" href="../calculators/flight-path-dispersion.html">Open the calculator</a><a class="btn small" href="../references/index.html#flt-path-angl-dispersions">Original memo (PDF)</a></div>
+  <div class="doc-layout">
+    <nav class="doc-toc" aria-label="Contents"></nav>
+    <article class="doc">
+
+      <section id="overview">
+        <h2>Overview</h2>
+        <p>Every perturbation in boost either changes the length of the velocity vector (an energy error) or rotates it. Sounding rockets fly nearly vertically, so apogee errors come mainly from energy errors and impact point errors mainly from rotations. Two perturbations rotate the vector: thrust misalignment, which rotates with the body, and wind gusts, which are fixed to the earth. Both act mostly at low altitude and low speed, just after the rail.</p>
+        <p>The analysis takes the phugoid (trajectory) part of the response, assumes the short-period oscillations damp promptly, and expresses the result as an equivalent launcher angle error: the launcher error that, with no perturbation, would give the same velocity tilt at burnout. It is conservative: the steady states it uses are upper bounds of the transient responses.</p>
+      </section>
+
+      <section id="thrust">
+        <h2>Thrust misalignment</h2>
+        <p>A rocket rolling at roll wave number <span class="tex">\lambda_R</span> with a misalignment angle <span class="tex">\delta_T</span> and a thrust offset <span class="tex">\Omega</span> holds a steady angle of attack. Taking the two one-sigma effects as independent, its lift is constant along the boost:</p>
+        <div class="eq"><div class="tex-display">L_A=qSC_{L\alpha}\alpha_{SS}=\frac{\rho SC_{L\alpha}T\sqrt{\ell^2\delta_T^2+\Omega^2}}{2I_p(\lambda_P^2-\lambda_R^2)}</div></div>
+        <p>It grows without bound as the roll wave number approaches the pitch wave number <span class="tex">\lambda_P</span> (roll resonance), which is why more static margin can cut the dispersion sharply. With speed <span class="tex">U^2=2ah</span>, acceleration <span class="tex">a=T/m-g</span> and the flight path angle <span class="tex">\gamma_T</span> measured from the vertical,</p>
+        <div class="eq"><div class="tex-display">h\frac{d\gamma_T}{dh}=\frac{g}{2a}\gamma_T+\frac{L_A}{2ma},\quad \gamma_T(L)=0\quad\Rightarrow\quad \gamma_T=\frac{L_A}{mg}\left[\left(\frac{h}{L}\right)^{g/2a}-1\right]</div></div>
+        <p>Most of the turn happens close to the launcher of length <span class="tex">L</span>; a longer rail reduces it.</p>
+      </section>
+
+      <section id="roll">
+        <h2>Roll</h2>
+        <p>The lift rotates with the rocket, at roll angle <span class="tex">\phi=\lambda_R(h-L)</span>, so each increment of turn points in a different direction. Resolved into east and north components and summed in altitude steps,</p>
+        <div class="eq"><div class="tex-display">E=\int\cos\phi\,d\gamma_T,\qquad N=\int\sin\phi\,d\gamma_T,\qquad \gamma_D=\sqrt{E^2+N^2}</div></div>
+        <p>The calculator takes the exact <span class="tex">\Delta\gamma_T</span> of each step (4 ft, or 1/60 of a roll cycle if shorter) at its mid-step roll angle. Burning out after a whole number of roll cycles cancels the turn best, and one cycle is usually the minimum; a roll wavelength near 1000 ft is close to optimum over a broad range of pitch wave numbers.</p>
+      </section>
+
+      <section id="gust">
+        <h2>Wind gusts</h2>
+        <p>Above the first correlation distance the gust angle of attack has a nearly constant standard deviation (Hoult, <em>Sounding Rocket Gust Angle of Attack</em>):</p>
+        <div class="eq"><div class="tex-display">\alpha_G=\sigma_G\lambda_P\sqrt{\frac{\lambda_G^*}{2a(\lambda_P^2+\lambda_G^{*2})}}</div></div>
+        <p>Its lift, <span class="tex">L_A/2ma=\rho SC_{L\alpha}h\alpha_G/2m</span>, drives the same equation as above, giving a planar one-sigma flight path angle</p>
+        <div class="eq"><div class="tex-display">\gamma_G=K\left[\frac{h}{L}-\left(\frac{h}{L}\right)^{g/2a}\right],\qquad K=\frac{\rho SLC_{L\alpha}\sigma_G\lambda_P}{m(2a-g)}\sqrt{\frac{a\lambda_G^*}{2(\lambda_P^2+\lambda_G^{*2})}}</div></div>
+        <p>The model needs <span class="tex">2a&gt;g</span>, a thrust above 1.5 times the weight.</p>
+      </section>
+
+      <section id="launcher">
+        <h2>Equivalent launcher angle</h2>
+        <p>The two errors come from independent causes, so</p>
+        <div class="eq"><div class="tex-display">\gamma=\sqrt{\gamma_D^2+\gamma_G^2}</div></div>
+        <p>evaluated at burnout. Without lift, a launcher error <span class="tex">\gamma_0</span> grows as <span class="tex">\gamma=\gamma_0(h/L)^{g/2a}</span>, so the equivalent launcher angle is</p>
+        <div class="eq"><div class="tex-display">\gamma_0=\gamma\left(\frac{h_b}{L}\right)^{-g/2a}</div></div>
+        <p>Started from <span class="tex">\gamma(L)=\gamma_0</span>, a point-mass trajectory run gives one component of the impact displacement. Both components are normally distributed, unbiased and independent with the same standard deviation, because the misalignment phase is uniform in roll and the gust field has two independent components.</p>
+      </section>
+
+      <section id="verification">
+        <h2>Verification</h2>
+        <p>The tests reproduce the memo’s Figure 3 (<span class="tex">g/2a=0.1</span>, <span class="tex">L_A/mg=0.2</span>, <span class="tex">L=40</span> ft: peak 0.042 rad at 0.4 roll wavelengths, 0.029 near one cycle) and Figure 1, the field tool’s lift, <span class="tex">\gamma_T</span> and gust columns, and, with the tool’s two slips put back, its tabulated equivalent launcher angle against pitch wave number at 1850 ft burnout to 0.5%.</p>
+      </section>
+
+      <section id="notes">
+        <h2>Notes on the method</h2>
+        <ul>
+          <li><strong>Field tool step.</strong> DISPERSION integrates <span class="tex">E</span> and <span class="tex">N</span> with the step <span class="tex">(L_A/mg)(L_A/2ma)\,Z\,\Delta h/h</span> (with <span class="tex">a</span> in g), which is <span class="tex">L_A/m</span> times the slope of eq. 3 and disagrees with its own <span class="tex">\gamma_T</span> column. The error grows near roll resonance: at <span class="tex">\lambda_P=0.012</span> ft⁻¹ the tool gives 0.074 rad where eq. 3 gives 0.014 rad. The memo’s Figure 3 agrees with eq. 3, which the calculator follows.</li>
+          <li><strong>Field tool gust factor.</strong> The tool uses <span class="tex">\lambda_P^2+\lambda_R^2</span> where eq. 15 has <span class="tex">\lambda_P^2+\lambda_G^{*2}</span>; the gust field is fixed to the earth, so roll does not enter. The difference is a few percent.</li>
+          <li><strong>Acceleration.</strong> The tool uses <span class="tex">a=T/m</span>; the calculator subtracts gravity, <span class="tex">a=T/m-g</span>, as the vertical-flight equations assume. Drag is neglected in both.</li>
+        </ul>
+      </section>
+
+      <section id="references">
+        <h2>References</h2>
+        <ol class="refs">
+          <li>C. P. Hoult, “Flight Path Angle Dispersions (rev. 1),” RS&amp;T, 8 May 2011. <a href="../references/index.html#flt-path-angl-dispersions">View in library</a></li>
+          <li>C. P. Hoult, “Thrust Misalignment Response,” RS&amp;T, 30 December 2010. <a href="../references/index.html#thrust-misalignment">View in library</a></li>
+          <li>R. L. Ammons, C. P. Hoult, “Standardized Perturbation Values to be Used in the Calculation of Dispersion and Structural Loads,” Aerojet-General, 1970. <a href="../references/index.html#standardized-perturbation-values-orig">View in library</a></li>
+          <li>C. P. Hoult, “The Theory Behind DISPERSION,” RS&amp;T, 2007. <a href="../references/index.html#theory-behind-dispersion">View in library</a></li>
+        </ol>
+      </section>
+    </article>
+  </div>
+</div>
+</main>
+<script type="module">
+import { mountDocs } from '../js/docs.js';
+mountDocs();
+</script>
+</body>
+</html>

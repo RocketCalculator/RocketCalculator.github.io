@@ -4,6 +4,13 @@ Every commit adds an entry here, newest first. Live site: https://darasamii.gith
 
 ## 2026-10-22
 
+### New calculator: Trajectory Simulation (SKYAERO)
+- Added: `calculators/skyaero-trajectory.html`. A two-degree-of-freedom point-mass flight of a one- to three-stage rocket from the rail to impact. It covers a thrust curve and Mach-dependent drag table per stage, the simulated launcher length (Hoult 1976), the Lewis wind response with the finite-inertia correction, and optional drogue and main parachutes, through the latitude-dependent atmosphere.
+- Results: apogee, impact range, peak Mach, dynamic pressure and acceleration, rail exit speed and burnout conditions. Plots: trajectory, altitude, speed, thrust and drag, dynamic pressure and flight path angle. The drawing shows the flight profile by phase.
+- Tests reproduce SKYAERO's M1939 impulse and Isp, its simulated launcher length and wind table, and Hoult's Table 1. They also check the rocket equation, ballistic apogee, two-stage velocity gains, step convergence and terminal speed under a parachute.
+- Fixed relative to SKYAERO: the wind handling inside its Runge–Kutta loop, the upper-stage thrust time base, and the launcher-length fit beyond λL = 1.
+- With this, every topic on the home page has a calculator.
+
 ### New calculator: Roll Lock-In
 - Added: `calculators/roll-lock-in-design.html`. It sizes the fins for a required static margin and computes the roll moment the nose vortex pair induces on them (closed-form strip integral, four vortices). From these it finds the smallest angle of attack at which steady lunar lock-in is possible, and gives the probability of no lock-in from the thrust misalignment statistics.
 - Plots: the lock-in conditions (paper Fig. 7), roll moment against roll angle (Fig. 6), the effect of fin count (Figs. 10–13) and of static margin (Fig. 8).

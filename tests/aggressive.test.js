@@ -101,6 +101,7 @@ const REPAIR = {
   'ground-handling': (v, r) => { if (!(v.xAt > v.xFt)) v.xAt = v.xFt + 10 + 100 * r(); const s = [v.xF, v.xL, v.xN].sort((a, b) => a - b); [v.xF, v.xL, v.xN] = [s[0], s[1] + 1e-3, s[2] + 2e-3]; },
   'flight-path-dispersion': (v, r) => { if (v.hb <= v.L) v.hb = v.L * (2 + 50 * r()); if (v.T < 2 * 32.174 * v.m) v.T = 32.174 * v.m * (2 + 15 * r()); if (2 * Math.PI / v.rollWave >= v.lP) v.rollWave = 2 * Math.PI / (v.lP * (0.1 + 0.8 * r())); },
   'roll-lock-in-design': (v, r) => { if (!(v.xF > v.xS)) v.xF = v.xS * (1.1 + r()) + 0.1; const lo = Math.max(0, v.xN - v.xCG); if (!(v.xF - v.xCG > lo + 1e-3)) v.xF = v.xCG + lo + 0.2 + r(); if (!(v.SM > lo && v.SM < v.xF - v.xCG)) v.SM = lo + (v.xF - v.xCG - lo) * (0.1 + 0.8 * r()); },
+  'skyaero-trajectory': (v) => { for (const k of [1, 2, 3]) { v[`s${k}Wd`] = Math.min(Math.max(v[`s${k}Wd`], 3), k === 1 ? 120 : 30); v[`s${k}Wp`] = Math.min(Math.max(v[`s${k}Wp`], 0.5), 2 * v[`s${k}Wd`]); v[`s${k}d`] = Math.max(v[`s${k}d`], 0.5); v[`s${k}Ae`] = Math.min(v[`s${k}Ae`], 0.4 * v[`s${k}d`] ** 2); } },
   'two-stage-weights': (v, r) => { const lim = 32.174 * (-v.Isp1 * Math.log(v.s1) - v.Isp2 * Math.log(v.s2)); if (v.dv >= lim) v.dv = lim * (0.02 + 0.93 * r()); },
 };
 
@@ -131,6 +132,7 @@ const INVARIANTS = {
   'ground-handling': (v, R) => [R.W > 0, R.xCG >= v.xL || R.lift0 > 0, Number.isFinite(R.FL) && Number.isFinite(R.MJ)],
   'flight-path-dispersion': (v, R) => [R.gD >= 0 && R.gG >= 0, Math.abs(Math.hypot(R.gD, R.gG) - R.gam) <= 1e-9 * R.gam + 1e-300, R.g0 <= R.gam * (1 + 1e-12), R.LA >= 0, R.n > 0 && R.n < 1],
   'roll-lock-in-design': (v, R) => [R.Pno >= 0 && R.Pno <= 100, R.sigma >= 0, R.D > 0, R.cR > 0, R.CMa < 0, R.CLp < 0, R.alphaStar === '—' || (R.alphaStar > 0 && R.alphaStar <= v.alphaMax * (1 + 1e-12))],
+  'skyaero-trajectory': (v, R) => [R.apo >= 0, R.railV > 0, R.maxMach >= 0, R.tw > 0, Number.isFinite(R.range), R.maxQ >= 0, R.railL > 0],
   'two-stage-weights': (v, R) => [R.M01 >= v.Mpl, R.m1 >= 0 && R.m2 >= 0, Math.abs(R.M01 - v.Mpl - R.m1 - R.m2) <= 1e-9 * R.M01, Math.abs(R.dv1 + R.dv2 - v.dv) <= 1e-6 * v.dv, R.payloadPct > 0 && R.payloadPct <= 100, R.lam > 0],
   'ogive-nose': (v, R) => [R.S > 0, R.xbar > 0 && R.xbar < v.L, R.fineness > 0, R.tipHalfAngle > 0 && R.tipHalfAngle <= 90],
   'subsonic-cp': (v, R, warned) => [R.CNa > 0 || warned, R.CNaFins >= 0, Number.isFinite(R.xcp), R.d > 0],
@@ -293,6 +295,12 @@ test('Roll lock-in: more static margin raises α*; worse alignment lowers the ch
   increasing([16, 18, 20].map((SM) => run('roll-lock-in-design', { SM: SM * 0.0254 }).alphaStar), 'α* vs SM');
   increasing([0.006, 0.004, 0.002].map((sdT) => run('roll-lock-in-design', { sdT, T: 20000 }).Pno), 'P vs better alignment');
   increasing([0.001, 0.002, 0.004].map((sdT) => run('roll-lock-in-design', { sdT }).sigma), 'σ_α vs δ_T');
+});
+
+test('Trajectory: lower elevation flies farther; more weight or drag lowers apogee', () => {
+  increasing([88, 84, 80].map((QE) => run('skyaero-trajectory', { QE }).range), 'range vs falling QE');
+  increasing([80, 60, 51].map((s1Wd) => run('skyaero-trajectory', { s1Wd }).apo), 'apogee vs lighter rocket');
+  increasing([9, 7.5, 6.25].map((s1d) => run('skyaero-trajectory', { s1d }).apo), 'apogee vs slimmer rocket');
 });
 
 test('Nozzle: thrust falls with ambient pressure, a wider cone loses thrust, the 1-D C_F peaks at p_e = p_a', () => {

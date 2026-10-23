@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trajectory Simulation (SKYAERO) — Theory & documentation — Rocket Calculator</title>
+<meta name="description" content="Two-degree-of-freedom point-mass trajectory of a one- to three-stage sounding rocket: rail phase, Lewis wind response with finite-inertia correction, staging and parachutes.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../css/site.css">
+<script>try{var t=JSON.parse(localStorage.getItem('rc-theme'));if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<main id="main">
+<div class="wrap">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Home</a><span class="sep">/</span><a href="../index.html#area-traj">Trajectory, Wind &amp; Launch</a><span class="sep">/</span><a href="../calculators/skyaero-trajectory.html">Trajectory Simulation</a><span class="sep">/</span><span>Documentation</span></nav>
+  <div class="calc-title"><h1>Trajectory Simulation — theory</h1></div>
+  <p class="calc-sub">The SKYAERO 7.6 point-mass simulation. Based on A. Fuentes, C. P. Hoult, H. Tran and M. Tong, <em>SKYAERO v7.6.1 User’s Manual</em>, and C. P. Hoult, <em>Launcher Length for Sounding-Rocket Point-Mass Trajectory Simulations</em>, 1976.</p>
+  <div class="calc-badges"><a class="btn small primary" href="../calculators/skyaero-trajectory.html">Open the calculator</a><a class="btn small" href="../references/index.html#skyaeromanual-ver3-orig">User’s manual (PDF)</a></div>
+  <div class="doc-layout">
+    <nav class="doc-toc" aria-label="Contents"></nav>
+    <article class="doc">
+
+      <section id="overview">
+        <h2>Overview</h2>
+        <p>SKYAERO integrates the flight of a sounding rocket as a point mass moving in the vertical plane of fire, from the launch rail to impact. It is a two-degree-of-freedom model: the state is downrange distance <span class="tex">x</span>, altitude <span class="tex">h</span> and their rates. In free flight</p>
+        <div class="eq"><div class="tex-display">\dot{\vec V}=\frac{T-D}{m}\,\hat u_{rel}-g\,\hat z,\qquad D=\tfrac12\rho V_{rel}^2\,C_D(M)\,S</div></div>
+        <p>with thrust along, and drag against, the velocity relative to the air <span class="tex">\hat u_{rel}</span>. The equations are integrated with fourth-order Runge–Kutta at 0.05 s, with shorter steps on the rail and when parachute drag makes the equations stiff; burnouts and ignitions fall exactly on step boundaries. Apogee and impact are interpolated between steps.</p>
+      </section>
+
+      <section id="atmosphere">
+        <h2>Atmosphere and gravity</h2>
+        <p>The atmosphere is Hoult’s model, tied to the measured surface temperature at the launch site: a linear lapse rate up to a tropopause whose altitude depends on latitude, isothermal above. Gravity is the Potsdam surface value for the latitude, falling with the inverse square of distance from the Earth’s centre, <span class="tex">g=g_s\,(R_E/(R_E+h))^2</span>. The same model is in the Geophysical Environment calculator.</p>
+      </section>
+
+      <section id="motor">
+        <h2>Motor</h2>
+        <p>Thrust curves are usually published at sea level. They are converted to vacuum thrust by adding <span class="tex">p_0A_e</span>, and the thrust delivered at altitude is <span class="tex">T=T_{vac}-pA_e</span>. The total vacuum impulse (trapezoid rule) over the propellant weight gives the vacuum specific impulse, and propellant is consumed in proportion to the vacuum impulse delivered,</p>
+        <div class="eq"><div class="tex-display">I_{sp}=\frac{I_{vac}}{W_p},\qquad \dot m=-\frac{T_{vac}}{I_{sp}\,g_0}</div></div>
+        <p>so the burnout mass is exact whatever the curve shape.</p>
+      </section>
+
+      <section id="forces">
+        <h2>Drag</h2>
+        <p>The drag coefficient is interpolated in Mach number from a table for each stage, power-on while the motor burns and power-off (with base drag) while coasting, on the reference area of that stage. Beyond the table the last value is held.</p>
+      </section>
+
+      <section id="rail">
+        <h2>Launch rail and simulated launcher length</h2>
+        <p>On the rail the rocket accelerates along the rail at elevation <span class="tex">QE</span>, held until <span class="tex">T/m&gt;g\sin QE</span>:</p>
+        <div class="eq"><div class="tex-display">\dot V=\frac{T-D}{m}-g\sin QE</div></div>
+        <p>A point mass leaving a real rail turns over under gravity far faster than a rocket, whose static stability keeps it pointing into the wind. Hoult (1976) matched the two solutions and found the rail length a point-mass simulation should use; SKYAERO fits his result as</p>
+        <div class="eq"><div class="tex-display">L_{sim}=\frac{0.140365}{\lambda_P}\exp\left(\sqrt{2\pi\lambda_PL}-0.387621(\lambda_PL)^{1.2}\right)</div></div>
+        <p>where <span class="tex">\lambda_P=2\pi/\Lambda_P</span> is the pitch wave number at launch. For a typical rocket the simulated rail is about twice the real one.</p>
+      </section>
+
+      <section id="wind">
+        <h2>Wind</h2>
+        <p>Lewis’ method assumes the rocket instantly heads into the relative wind. A real rocket has inertia, so in powered flight only part of the wind turns it; Hoult’s finite-inertia correction gives the fraction <span class="tex">k</span> as a function of altitude in pitch wavelengths, rising from 0 at the rail to nearly 1 after about 5 radians of <span class="tex">\lambda_Ph</span>:</p>
+        <div class="eq"><div class="tex-display">w_{sim}=k(\lambda_Ph)\,w(h)\ \text{(powered)},\qquad w_{sim}=w(h)\ \text{(coasting and on parachutes)}</div></div>
+        <p>The wind is the in-plane component, positive blowing away from the launcher. A rocket weathercocks into the wind, so a downrange wind shortens the range. For the launcher settings that compensate wind, use the Wind Compensation calculator with impact points from runs in each wind component.</p>
+      </section>
+
+      <section id="phases">
+        <h2>Phases and staging</h2>
+        <p>Stage 1 ignites on the rail at <span class="tex">t=0</span>. Each upper stage ignites after a coast measured from the previous burnout; the spent stage, with its dry weight, separates at its burnout, and the vehicle then flies on the next stage’s drag table and reference area. The top stage keeps its dry weight to impact.</p>
+      </section>
+
+      <section id="recovery">
+        <h2>Parachutes</h2>
+        <p>A drogue deploys a chosen time after apogee and a main at a chosen altitude above the ground. Their drag areas <span class="tex">C_DS</span> replace the vehicle’s, growing from the previous drag area as <span class="tex">1-e^{-t/\tau}</span>. Under the main the rocket settles to its terminal speed <span class="tex">\sqrt{2W/\rho C_DS}</span> and drifts with the full wind.</p>
+      </section>
+
+      <section id="verification">
+        <h2>Verification</h2>
+        <p>The tests reproduce SKYAERO’s total vacuum impulse and Isp of the AeroTech M1939 example (2542.8 lb·s, 254.3 s), its simulated launcher length (23.54 ft for 12 ft and a 350 ft wavelength) and its wind-correction table. In vacuum with constant thrust the burnout speed and height match the rocket equation, the apogee and impact time the ballistic formulas, and a two-stage vehicle the sum of the stage velocity gains. With the atmosphere, halving the step four times changes apogee by less than 0.01%, the main parachute lands at its terminal speed, and the rail exit happens at the simulated length.</p>
+      </section>
+
+      <section id="notes">
+        <h2>Notes on the method</h2>
+        <ul>
+          <li><strong>Simulated rail beyond its range.</strong> SKYAERO’s fit drops below the real rail for <span class="tex">\lambda_PL\gtrsim2</span>. Above <span class="tex">\lambda_PL=1</span> the calculator uses the increment <span class="tex">\lambda(L_{sim}-L)</span> from Hoult’s Table 1 (0.168 at 1, 0.125 at 2), held beyond 2.</li>
+          <li><strong>Wind in the integrator.</strong> SKYAERO’s Runge–Kutta loop feeds half the simulated wind into its mid-step evaluations and adds the wind to itself when updating the relative velocity. The calculator evaluates <span class="tex">w_{sim}</span> afresh at every stage of every step.</li>
+          <li><strong>Upper-stage thrust time.</strong> SKYAERO looks up the second and third stage thrust tables with the time since liftoff, not since ignition; the calculator uses the time since ignition.</li>
+          <li><strong>Upper atmosphere.</strong> SKYAERO adds a warming layer from 65 617 to 104 987 ft and returns no temperature above it; the calculator keeps the isothermal stratosphere of the geophysics memo, which changes drag negligibly at those heights.</li>
+          <li><strong>Not included.</strong> Air-dropped and balloon launches with a stabilization chute (SKYAERO phases 1–2), a target impact altitude different from the launch site, and cross-plane wind are left out; run the cross-plane case by entering that component as the in-plane wind.</li>
+        </ul>
+      </section>
+
+      <section id="references">
+        <h2>References</h2>
+        <ol class="refs">
+          <li>A. Fuentes, C. P. Hoult, H. Tran, M. Tong, “SKYAERO v7.6.1 User’s Manual,” 2014. <a href="../references/index.html#skyaeromanual-ver3-orig">View in library</a></li>
+          <li>C. P. Hoult, “Launcher Length for Sounding-Rocket Point-Mass Trajectory Simulations,” J. Spacecraft &amp; Rockets 13(12), 1976. <a href="../references/index.html#launcher-length-for-sounding-rocket-point-mass-traj-sim-orig">View in library</a></li>
+          <li>J. V. Lewis, “The Effect of Wind and Rotation of the Earth on Unguided Rockets,” Ballistic Research Laboratories.</li>
+        </ol>
+      </section>
+    </article>
+  </div>
+</div>
+</main>
+<script type="module">
+import { mountDocs } from '../js/docs.js';
+mountDocs();
+</script>
+</body>
+</html>

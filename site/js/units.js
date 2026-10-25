@@ -42,6 +42,7 @@ export const UNITS = {
   perrad: { label: '/rad', ...lin(1) }, perdeg: { label: '/°', ...lin(180 / Math.PI) },
   perm: { label: '1/m', ...lin(1) }, perft: { label: '1/ft', ...lin(1 / FT) },
   pct: { label: '%', ...lin(1) }, none: { label: '', ...lin(1) },
+  J: { label: 'J', ...lin(1) }, ftlbf: { label: 'ft·lbf', ...lin(LBF * FT) },
   Pas: { label: 'Pa·s', ...lin(1) }, lbfsft2: { label: 'lbf·s/ft²', ...lin(LBF / (FT * FT)) }, m2s: { label: 'm²/s', ...lin(1) }, ft2s: { label: 'ft²/s', ...lin(FT * FT) },
   gmol: { label: 'g/mol', ...lin(1) }, kgs: { label: 'kg/s', ...lin(1) }, lbs: { label: 'lb/s', ...lin(LBM) },
   // structural: joint compliance and bending stiffness
@@ -82,6 +83,7 @@ export const DIMS = {
   wavenumber: { si: 'perm', us: 'perft' },
   percent: { si: 'pct', us: 'pct' },
   molarMass: { si: 'gmol', us: 'gmol' },
+  energy: { si: 'J', us: 'ftlbf' },
   viscosity: { si: 'Pas', us: 'lbfsft2' },
   kinViscosity: { si: 'm2s', us: 'ft2s' },
   massFlow: { si: 'kgs', us: 'lbs' },
@@ -136,6 +138,7 @@ export const UNIT_TEX = {
   s: '\\mathrm{s}', deg: '{}^{\\circ}', rad: '\\mathrm{rad}', perrad: '\\mathrm{rad^{-1}}', perdeg: '{}^{\\circ\\,-1}',
   radpernm: '\\mathrm{rad\\,N^{-1}\\,m^{-1}}', radperlbin: '\\mathrm{rad\\,lbf^{-1}\\,in^{-1}}', Nm2: '\\mathrm{N\\,m^{2}}', lbfin2: '\\mathrm{lbf\\,in^{2}}', cm4: '\\mathrm{cm^{4}}', in4: '\\mathrm{in^{4}}', Nm: '\\mathrm{N\\,m}', lbfin: '\\mathrm{lbf\\,in}',
   perm: '\\mathrm{m^{-1}}', perft: '\\mathrm{ft^{-1}}', pct: '\\%', none: '',
+  J: '\\mathrm{J}', ftlbf: '\\mathrm{ft\\,lbf}',
   Pas: '\\mathrm{Pa\\,s}', lbfsft2: '\\mathrm{lbf\\,s\\,ft^{-2}}', m2s: '\\mathrm{m^{2}\\,s^{-1}}', ft2s: '\\mathrm{ft^{2}\\,s^{-1}}',
   gmol: '\\mathrm{g\\,mol^{-1}}', kgs: '\\mathrm{kg\\,s^{-1}}', lbs: '\\mathrm{lb\\,s^{-1}}',
 };

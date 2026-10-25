@@ -19,7 +19,7 @@ export function head({ title, description, depth = 1 }) {
 <link rel="icon" href="${up}assets/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="${up}vendor/fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="${up}css/site.css">
-<script>try{var t=JSON.parse(localStorage.getItem('rc-theme'));if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+<script>try{var d=document.documentElement,t=JSON.parse(localStorage.getItem('rc-theme')),a=JSON.parse(localStorage.getItem('rc-accent'));if(t==='light'||t==='dark')d.dataset.theme=t;if(a&&a!=='red')d.dataset.accent=a}catch(e){}</script>
 </head>`;
 }
 

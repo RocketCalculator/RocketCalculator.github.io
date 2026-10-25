@@ -51,7 +51,7 @@ export const ICONS = {
 /** The rocket brand mark: a thin-line sounding rocket on a climb angle. */
 export function brandMark() {
   return s('svg', { viewBox: '0 0 32 32', 'aria-hidden': 'true' },
-    s('rect', { width: 32, height: 32, rx: 6, fill: '#e60000' }),
+    s('rect', { width: 32, height: 32, rx: 6, fill: 'var(--red)' }),
     s('path', { d: 'M5 25 Q 13 23 21 10', fill: 'none', stroke: '#ffffff', 'stroke-width': 1.4, 'stroke-dasharray': '1.8 2', opacity: 0.85 }),
     s('g', { transform: 'translate(21 10) rotate(38)' },
       s('path', { d: 'M0 -8.5 C 2.4 -5.4 2.4 -2 2.4 4.2 L -2.4 4.2 C -2.4 -2 -2.4 -5.4 0 -8.5 Z', fill: '#ffffff' }),
@@ -84,6 +84,24 @@ function header(active) {
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', syncTheme);
   syncTheme();
 
+  // accent colour: replaces the brand red site-wide (CSS [data-accent]); red means danger regardless (--danger)
+  const ACCENTS = [['red', '#e60000'], ['blue', '#1f6feb'], ['purple', '#7c3aed'], ['pink', '#db2777'], ['orange', '#ea580c'], ['green', '#15803d']];
+  const accentNow = () => storage.get('rc-accent', 'red');
+  const applyAccent = (a) => { if (a === 'red') delete document.documentElement.dataset.accent; else document.documentElement.dataset.accent = a; window.dispatchEvent(new Event('themechange')); };
+  const accentMenu = h('div.accent-menu', { hidden: true, role: 'menu', 'aria-label': 'Accent colour' }, ACCENTS.map(([name, hex]) =>
+    h('button', { type: 'button', role: 'menuitemradio', title: name[0].toUpperCase() + name.slice(1), 'aria-label': name, 'data-accent': name, style: `background:${hex}`, 'aria-pressed': String(accentNow() === name) })));
+  const accentBtn = h('button.icon-btn', { type: 'button', 'aria-label': 'Accent colour', title: 'Accent colour', 'aria-haspopup': 'true', 'aria-expanded': 'false' }, h('span.accent-dot'));
+  const accentPick = h('div.accent-pick', accentBtn, accentMenu);
+  const closeAccent = () => { accentMenu.hidden = true; accentBtn.setAttribute('aria-expanded', 'false'); };
+  accentBtn.addEventListener('click', (e) => { e.stopPropagation(); accentMenu.hidden = !accentMenu.hidden; accentBtn.setAttribute('aria-expanded', String(!accentMenu.hidden)); });
+  accentMenu.addEventListener('click', (e) => {
+    const b = e.target.closest('button[data-accent]'); if (!b) return;
+    storage.set('rc-accent', b.dataset.accent); applyAccent(b.dataset.accent);
+    accentMenu.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b))); closeAccent();
+  });
+  document.addEventListener('click', (e) => { if (!accentPick.contains(e.target)) closeAccent(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeAccent(); });
+
   const menuBtn = h('button.icon-btn.menu-btn', { type: 'button', 'aria-label': 'Menu', 'aria-expanded': 'false', 'aria-controls': 'site-nav' }, ICONS.menu());
   menuBtn.addEventListener('click', () => { const o = nav.classList.toggle('open'); menuBtn.setAttribute('aria-expanded', String(o)); });
 
@@ -96,7 +114,7 @@ function header(active) {
       h('a.brand', { href: url('index.html'), 'aria-label': 'Rocket Calculator home' }, brandMark(),
         h('span.name', h('span', 'Rocket Calculator'), h('small', 'Sounding-rocket engineering'))),
       nav,
-      h('div.header-tools', searchBtn, unitsSeg, themeBtn,
+      h('div.header-tools', searchBtn, unitsSeg, themeBtn, accentPick,
         h('a.icon-btn.gh-btn', { href: REPO_URL, rel: 'noopener', target: '_blank', 'aria-label': 'Source code on GitHub', title: 'Source code on GitHub' }, ICONS.github()),
         menuBtn)));
 }

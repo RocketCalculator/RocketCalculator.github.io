@@ -103,3 +103,13 @@ live pages checked after each deploy.
 - Tagged `subsonic-cp/v1.1.0` and `v1.5.1` (merge `9218a07`).
 
 **Next:** Parachute Recovery (`improve/parachute-cycle-1`), with the bare-minimum testing from D20.
+
+## 2026-10-25 — Phase 2: Nozzle Design and Thrust (done, `nozzle-thrust/v2.0.0`, `v1.6.0`)
+
+- PR #15, merge `5b2905b`: Rao bell or cone contour, flow profiles (A/A*, M, p, T, ρ) sharing the drawing's x axis,
+  inviscid normal shock, Schmucker separation, verdict with ε / p_c fixes, c*, ṁ, Isp. Sources read: NACA 1135,
+  Huzel & Huang SP-125 §4.3, Schmucker TM-77396 (charts digitised and calibrated; see KNOWLEDGE).
+- Fixed: choke limit (was p*, is the subsonic-exit pressure). D21 (1.15 margin, project choice), D22.
+- Tests: npm test 294/294; browser check of all examples, SI/US, live site clean. Layout/diagram suites deferred (D20).
+- Earlier the same day (user requests): back-view note shown whole and drawings above plots (#12), Fin Flutter fin
+  count removed (#13), Reliability Growth handle centred (#14).

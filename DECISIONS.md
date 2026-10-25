@@ -146,3 +146,8 @@ Decisions taken while the owner was unavailable. Each entry: date, question, opt
   ranges θc 10–80°, cone α 3–45°, bell 50–120 % of a 15° cone (outside: refused with the achievable lengths).
 - BREAKING for saved links and designs of the previous version (the old fields are ignored; defaults are used).
 
+## D24 — 2026-10-25 — No per-calculator tags; branches deleted on merge (owner's request)
+- All 21 tags (per-calculator `<calc>/vX.Y.Z`, site `vX.Y.Z`, `baseline-pre-overhaul`) and 7 merged branches were
+  deleted (all verified merged into `main`; the commits remain in its history). Releases are recorded in CHANGELOG.md
+  with their PR and merge commit; PRs are merged with `--delete-branch`. Supersedes the tag scheme of the original plan.
+

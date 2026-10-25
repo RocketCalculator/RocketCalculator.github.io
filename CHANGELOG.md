@@ -3,6 +3,20 @@
 Newest first, in the spirit of [Keep a Changelog](https://keepachangelog.com/). From 2026-10-25 every entry names its
 branch, tag and commit range. Live site: https://rocketcalculator.github.io/.
 
+## 2026-10-25 — About page; Atmosphere & Gravity: standard-day comparison and flight condition (PRs #22, #23)
+
+### Added
+- About page (C. P. Hoult, why the site exists, the author, how to report problems and contribute); footer credit and
+  links to issues and LinkedIn; organisation logo and profile text in `docs/brand/`.
+- Atmosphere & Gravity: the US Standard Atmosphere 1976 (to 86 km, verified against its table I) beside your
+  launch-site atmosphere — density altitude, pressure altitude, standard-day T/p/ρ, and a plot of how much denser or
+  thinner your air is at every altitude. Flight condition: Mach number, dynamic pressure, Sutherland viscosity,
+  kinematic viscosity and Reynolds number for a speed and reference length. Two tiers (latitude plots in Explore).
+- Units: dynamic and kinematic viscosity.
+
+### Changed
+- Repository housekeeping: all 21 tags and the 7 merged branches deleted; no per-calculator tags from now on (D24).
+
 ## 2026-10-25 — Fin materials from OpenRocket; nozzle panels in design-system reds (`feat/flutter-materials-nozzle-reds`, tags `fin-flutter/v1.1.0`, `nozzle-thrust/v3.4.0`, `v1.8.1`)
 
 ### Added

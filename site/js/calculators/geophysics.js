@@ -1,5 +1,5 @@
 // Atmosphere & Gravity (Geophysics) — UI definition.
-import { atmosphere, profile, tropopause, surfaceGravity, C } from '../calc/geophysics.js';
+import { atmosphere, profile, tropopause, surfaceGravity, C, std1976, stdAltitudeOf, sutherland } from '../calc/geophysics.js';
 import { s, fmt } from '../util.js';
 import { path, text } from '../ui/svg.js';
 
@@ -9,11 +9,20 @@ const PRES = { dim: 'pressure', internal: 'psf' };
 const DENS = { dim: 'density', internal: 'slugft3' };
 const SPD = { dim: 'speed', internal: 'fts' };
 const ACC = { dim: 'accel', internal: 'fts2' };
+const LEN = { dim: 'length', internal: 'in' };
+const MU = { dim: 'viscosity', internal: 'Pas' };
+const NU = { dim: 'kinViscosity', internal: 'm2s' };
+const PERL = { dim: 'wavenumber', internal: 'perm' };
+// English ↔ SI for the 1976 standard and the flight-condition numbers
+const FT = 0.3048, PSF = 47.880258980, SLUG3 = 515.3788184, RANK = 5 / 9;
+/** Standard-day state at h (ft), in the calculator's internal English units. */
+const stdAt = (h) => { const s = std1976(h * FT); return { T: s.T / RANK, p: s.P / PSF, rho: s.rho / SLUG3, a: s.a / FT }; };
 
 export default {
   slug: 'geophysics',
   topic: 'geophysics',
   title: 'Atmosphere & Gravity',
+  tiers: true,
   subtitle: 'A <b>local</b> atmosphere that passes through your launch-site temperature, with a latitude-dependent tropopause, Potsdam gravity and the WGS-84 Earth radius.',
   intro: {
     what: 'Gives temperature, pressure, density, speed of sound and gravity at any altitude, for your launch site and latitude.',
@@ -50,8 +59,17 @@ export default {
     {
       id: 'point', title: 'Evaluate at',
       fields: [
-        { id: 'h', label: 'Altitude (MSL)', sym: 'h', ...ALT, default: 40000, min: -1500, max: 300000, slider: { min: 0, max: 100000 },
+        { id: 'h', label: 'Altitude (MSL)', sym: 'h', ...ALT, default: 40000, min: -1500, max: 280000, slider: { min: 0, max: 100000 },
           info: { text: 'Altitude above mean sea level at which the state is evaluated. Drag the marker on the atmosphere column to scan.', range: 'The two-layer model is meant for the troposphere and lower stratosphere (to ≈ 65,000 ft).', doc: 'atmosphere' } },
+      ],
+    },
+    {
+      id: 'flight', title: 'Flight condition',
+      fields: [
+        { id: 'V', label: 'Flight speed', sym: 'V', ...SPD, default: 820, min: 0, max: 15000, slider: { min: 0, max: 4000, step: 5 },
+          info: { text: 'Speed of the rocket at this altitude (from your simulation). Gives the Mach number, dynamic pressure and Reynolds number.', range: 'High-power rockets: 300–3,000 ft/s (100–900 m/s).', doc: 'flight' } },
+        { id: 'Lref', label: 'Reference length for Reynolds number', sym: 'L', ...LEN, default: 4, min: 0, minExclusive: true, max: 2000, slider: { min: 0.5, max: 200, step: 0.1 },
+          info: { text: 'Length the Reynolds number is based on: body diameter for the nose and fins, or the overall length for skin friction.', doc: 'flight' } },
       ],
     },
   ],
@@ -80,6 +98,18 @@ export default {
       info: { text: 'Radius of the sphere tangent to the WGS-84 ellipsoid at this latitude.', tex: 'R_E^2=\\frac{(a^2\\cos\\varphi)^2+(b^2\\sin\\varphi)^2}{(a\\cos\\varphi)^2+(b\\sin\\varphi)^2}', doc: 'geodesy' } },
     { id: 'omega', label: 'Earth rotation rate', sym: '\\Omega', dim: 'rate', internal: 'rads', digits: 6,
       info: { text: 'Sidereal rotation rate, 2π / 86164.09 s.', doc: 'geodesy' } },
+    { id: 'hRho', label: 'Density altitude', sym: 'h_{\\rho}', ...ALT, key: true, note: (x, out) => `air ${fmt(Math.abs(out.o.dRho), { digits: 3 })} % ${out.o.dRho < 0 ? 'thinner' : 'denser'} than standard`,
+      info: { text: 'Altitude in the US Standard Atmosphere 1976 that has the same density as your air at $h$. Above your altitude means thinner air: less drag and a higher apogee, but less fin authority.', doc: 'standard' } },
+    { id: 'hP', label: 'Pressure altitude', sym: 'h_p', ...ALT, info: { text: 'Altitude in the US Standard Atmosphere 1976 with the same pressure.', doc: 'standard' } },
+    { id: 'Tstd', label: 'Standard-day temperature at $h$', sym: 'T_{std}', ...TEMP, units: { si: 'K', us: 'R' }, note: (x, out) => `your day ${out.o.dT >= 0 ? '+' : '−'}${fmt(Math.abs(out.o.dT) * (5 / 9), { digits: 3 })} K`, info: { text: 'US Standard Atmosphere 1976 at the same geometric altitude.', doc: 'standard' } },
+    { id: 'pStd', label: 'Standard-day pressure at $h$', sym: 'p_{std}', ...PRES, info: { doc: 'standard' } },
+    { id: 'rhoStd', label: 'Standard-day density at $h$', sym: '\\rho_{std}', ...DENS, info: { doc: 'standard' } },
+    { id: 'M', label: 'Mach number', sym: 'M', dim: 'none', digits: 4, info: { tex: 'M=\\frac{V}{a}', doc: 'flight' } },
+    { id: 'q', label: 'Dynamic pressure', sym: 'q', ...PRES, info: { tex: 'q=\\tfrac12\\rho V^2', doc: 'flight' } },
+    { id: 'mu', label: 'Dynamic viscosity', sym: '\\mu', ...MU, digits: 4, info: { tex: '\\mu=\\frac{\\beta\\,T^{3/2}}{T+S}', text: 'Sutherland’s law with the US Standard Atmosphere 1976 constants.', doc: 'flight' } },
+    { id: 'nu', label: 'Kinematic viscosity', sym: '\\nu', ...NU, digits: 4, info: { tex: '\\nu=\\frac{\\mu}{\\rho}', doc: 'flight' } },
+    { id: 'ReL', label: 'Reynolds number per unit length', sym: 'Re/L', ...PERL, digits: 4, info: { tex: '\\frac{Re}{L}=\\frac{\\rho V}{\\mu}', doc: 'flight' } },
+    { id: 'Re', label: 'Reynolds number on the reference length', sym: 'Re', dim: 'none', digits: 4, info: { tex: 'Re=\\frac{\\rho V L}{\\mu}', text: 'Below about 5 × 10⁵ the boundary layer is likely laminar on a smooth body; drag calculators use it for skin friction.', doc: 'flight' } },
   ],
   compute(v, { compat }) {
     const o = atmosphere(v, { compat });
@@ -90,32 +120,69 @@ export default {
     const hmax = Math.max(1.35 * o.hT, 1.15 * v.h, 1.2 * v.ho, 20000);
     const hlo = Math.min(v.ho, v.h);
     const prof = profile(v, hlo, hmax, 160, { compat });
-    return { results: o, warnings, o, prof, hmax, hlo };
+    // the 1976 standard at the same altitude, and where your density and pressure sit in it
+    const sd = stdAt(v.h), zr = stdAltitudeOf('rho', o.rho * SLUG3), zp = stdAltitudeOf('P', o.p * PSF);
+    o.dRho = 100 * (o.rho / sd.rho - 1); o.dT = o.T - sd.T;
+    // flight condition: Sutherland viscosity at the local temperature
+    const mu = sutherland(o.T * RANK), rhoSI = o.rho * SLUG3, VSI = v.V * FT, nu = mu / rhoSI, ReL = (rhoSI * VSI) / mu;
+    if (v.h * FT > 86000) warnings.push({ level: 'warn', text: 'Above 86 km the US Standard Atmosphere 1976 is no longer a mixed, hydrostatic atmosphere; its comparison values stop there.' });
+    if (zr == null) warnings.push({ level: 'info', text: 'Your density lies outside the standard atmosphere’s −5 to 86 km range, so it has no density altitude.' });
+    if (Math.abs(o.dRho) > 10 && v.h <= o.hT) warnings.push({ level: 'info', text: `At this altitude your air is ${fmt(Math.abs(o.dRho), { digits: 3 })} % ${o.dRho < 0 ? 'thinner' : 'denser'} than the standard day: drag, apogee and Mach number differ noticeably from a standard-day simulation.`, fix: 'Run your trajectory simulation with the launch-site temperature, not a standard day.' });
+    const results = { ...o, hRho: zr == null ? '—' : zr / FT, hP: zp == null ? '—' : zp / FT, Tstd: sd.T, pStd: sd.p, rhoStd: sd.rho,
+      M: v.V / o.a, q: 0.5 * o.rho * v.V * v.V, mu, nu, ReL, Re: ReL * v.Lref * 0.0254 };
+    return { results, warnings, o, prof, hmax, hlo };
   },
   plots: [
     {
       id: 'temperature', title: 'Temperature profile',
-      info: { text: 'Temperature against altitude: linear through the launch-site value up to the tropopause, constant above. Hover to read off any altitude.', doc: 'atmosphere' },
+      info: { text: 'Temperature against altitude: linear through the launch-site value up to the tropopause, constant above — compared with the US Standard Atmosphere 1976 (dashed). Hover to read off any altitude.', doc: 'atmosphere' },
       build(v, out, { U }) {
         const ut = U({ ...TEMP, units: { si: 'K', us: 'R' } }), uh = U(ALT);
         return {
           x: { label: 'Temperature', unit: ut.label }, y: { label: 'Altitude', unit: uh.label }, hover: 'y',
-          series: [{ name: 'T(h)', points: out.prof.map((p) => [ut.v(p.T), uh.v(p.h)]) }],
+          series: [{ name: 'your day', points: out.prof.map((p) => [ut.v(p.T), uh.v(p.h)]) }, { name: 'US Standard 1976', dashed: true, color: 'var(--text-3)', points: out.prof.map((p) => [ut.v(stdAt(p.h).T), uh.v(p.h)]) }],
           hlines: [{ y: uh.v(out.o.hT), label: 'tropopause', color: 'var(--accent-2)' }, { y: uh.v(v.ho), label: 'launch site', color: 'var(--text-3)' }],
           markers: [{ x: ut.v(out.o.T), y: uh.v(v.h), label: `${fmt(ut.v(out.o.T), { digits: 4 })} ${ut.label}` }],
         };
       },
     },
     {
-      id: 'ratios', title: 'Pressure & density ratios',
+      id: 'density', title: 'Your air against the standard day',
+      info: { text: 'How much denser (+) or thinner (−) your air is than the US Standard Atmosphere 1976 at each altitude. Thinner air means less drag and a higher apogee than a standard-day simulation predicts.', doc: 'standard' },
+      build(v, out, { U }) {
+        const uh = U(ALT);
+        return {
+          x: { label: 'Density difference from standard', unit: '%' }, y: { label: 'Altitude', unit: uh.label }, hover: 'y',
+          series: [{ name: 'density', points: out.prof.map((p) => [100 * (p.rho / stdAt(p.h).rho - 1), uh.v(p.h)]) }, { name: 'pressure', dashed: true, points: out.prof.map((p) => [100 * (p.p / stdAt(p.h).p - 1), uh.v(p.h)]) }],
+          vlines: [{ x: 0, label: 'standard', color: 'var(--text-3)' }],
+          hlines: [{ y: uh.v(out.o.hT), label: 'tropopause', color: 'var(--accent-2)' }, { y: uh.v(v.ho), label: 'launch site', color: 'var(--text-3)' }],
+          markers: [{ x: out.o.dRho, y: uh.v(v.h), label: `${out.o.dRho >= 0 ? '+' : ''}${fmt(out.o.dRho, { digits: 3 })} %` }],
+        };
+      },
+    },
+    {
+      id: 'flight', title: 'Dynamic pressure and Mach number at your speed', explore: true,
+      info: { text: 'Dynamic pressure $q=\\tfrac12\\rho V^2$ at your flight speed if it were flown at each altitude, for your day and the standard day. It sets aerodynamic loads; the read-out also gives the Mach number.', doc: 'flight' },
+      build(v, out, { U }) {
+        const uh = U(ALT), up = U(PRES);
+        return {
+          x: { label: 'Dynamic pressure $q$', unit: up.label }, y: { label: 'Altitude', unit: uh.label }, hover: 'y',
+          series: [{ name: 'your day', points: out.prof.map((p) => [up.v(0.5 * p.rho * v.V * v.V), uh.v(p.h)]) }, { name: 'US Standard 1976', dashed: true, color: 'var(--text-3)', points: out.prof.map((p) => [up.v(0.5 * stdAt(p.h).rho * v.V * v.V), uh.v(p.h)]) }],
+          hlines: [{ y: uh.v(out.o.hT), label: 'tropopause', color: 'var(--accent-2)' }],
+          markers: [{ x: up.v(out.results.q), y: uh.v(v.h), label: `M ${fmt(out.results.M, { digits: 3 })}` }],
+        };
+      },
+    },
+    {
+      id: 'ratios', title: 'Pressure & density ratios', explore: true,
       info: { text: 'Pressure and density divided by their sea-level standard values (2116.2 lb/ft², 0.0023769 slug/ft³).', doc: 'atmosphere' },
       build(v, out, { U }) {
         const uh = U(ALT);
         return {
           x: { label: 'Ratio to sea-level standard' }, y: { label: 'Altitude', unit: uh.label }, hover: 'y',
           series: [
-            { name: 'p/p_{SL}', points: out.prof.map((p) => [p.p / C.po, uh.v(p.h)]) },
-            { name: '\\rho/\\rho_{SL}', points: out.prof.map((p) => [p.rho / 0.0023769, uh.v(p.h)]) },
+            { name: '$p/p_{SL}$', points: out.prof.map((p) => [p.p / C.po, uh.v(p.h)]) },
+            { name: '$\\rho/\\rho_{SL}$', points: out.prof.map((p) => [p.rho / 0.0023769, uh.v(p.h)]) },
           ],
           hlines: [{ y: uh.v(out.o.hT), label: 'tropopause', color: 'var(--accent-2)' }],
           markers: [{ x: out.o.p / C.po, y: uh.v(v.h), color: 'var(--series-1)' }, { x: out.o.rho / 0.0023769, y: uh.v(v.h), color: 'var(--series-2)' }],
@@ -123,7 +190,7 @@ export default {
       },
     },
     {
-      id: 'tropopause', title: 'Tropopause altitude vs latitude',
+      id: 'tropopause', title: 'Tropopause altitude vs latitude', explore: true,
       info: { text: 'The tropopause is far lower over the poles than at the equator.', doc: 'tropopause' },
       build(v, out, { U }) {
         const uh = U(ALT);
@@ -133,7 +200,7 @@ export default {
       },
     },
     {
-      id: 'gravity', title: 'Surface gravity vs latitude',
+      id: 'gravity', title: 'Surface gravity vs latitude', explore: true,
       info: { text: 'Potsdam formula: centripetal relief and the Earth’s flattening make gravity about 0.5 % stronger at the poles.', doc: 'gravity' },
       build(v, out, { U }) {
         const ug = U(ACC);

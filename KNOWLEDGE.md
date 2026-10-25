@@ -206,6 +206,16 @@ scripts/generate_pages.mjs`; write `site/docs/<slug>.html`; add REPAIR/INVARIANT
 - **Open questions:** two-phase losses (sugar/aluminised motors); method-of-characteristics contour instead of the
   parabola; side-load magnitude after separation; a chamber-Mach threshold with a source (0.3 is a rule of thumb).
 
+### Atmosphere & Gravity (`geophysics`) — cycle 1, branch `improve/geophysics-cycle-1`
+- **Sources read this session:** U.S. Standard Atmosphere 1976 (NASA-TM-X-74335, NTRS scan): constants p. 3–4,
+  table 4 (layers), eq. (5), table I rows at H = 1500, 11 000, 28 000 m′ (page images; no text layer). The NASA copy
+  carries an erratum: table 2's R* (×10⁶), r₀ (×1000), S = 110.4 K (printed 110), σ; β is also printed 1.458 × 10⁶
+  (must be 10⁻⁶ — gives μ₀ = 1.7894 × 10⁻⁵ Pa·s). M₀ = 28.9644 checked from table I (ρR*T/P).
+- **Model:** Hoult's two-layer launch-site atmosphere unchanged (workbook tests); the 1976 standard beside it for
+  density/pressure altitude and the difference plot; Sutherland viscosity for Mach/q/Re.
+- **Not done (no primary source read):** humidity (virtual temperature, saturation vapour pressure); WGS-84
+  Somigliana gravity instead of Potsdam; winds.
+
 ### Diagram Quality Gate log
 
 **Fin Flutter**
@@ -236,6 +246,14 @@ scripts/generate_pages.mjs`; write `site/docs/<slug>.html`; add REPAIR/INVARIANT
 | Wall pressure against separation pressure (Explore) | Where exactly does the jet leave the wall, and with what margin? | Yes — the crossing is the separation point; the gap is the margin | Sees how much ε or p_c must change | Crossing, inviscid shock | Axes with units | KEEP (new) |
 | Thrust against ambient pressure (Explore) | How does thrust change from launch to vacuum, and where does it separate? | Yes — regime boundaries along the climb | Checks the lowest firing altitude | p_e = p_a, separation, shock-at-exit lines | Axes with units | KEEP (redesigned with regimes) |
 | Divergence efficiency against length (Explore) | Bell or cone, and how long? | Yes — Huzel & Huang fig. 4-12 for the user's ε | Chooses ~80 % bell or a 15° cone | Your nozzle marked | Axes | KEEP (replaces λ vs α) |
+
+**Atmosphere & Gravity**
+| Diagram | 1 Question | 2 Better than a number? | 3 What the user does | 4 Shows the problem | 5 Scale | Verdict |
+|---|---|---|---|---|---|---|
+| Your air against the standard day (new, main) | How different is today's air from the standard day my simulation assumes? | Yes — the sign changes with altitude (thinner near a hot ground, denser aloft), which one number hides | Runs the simulation with the site temperature | Marker at h; standard line | Axes with units | KEEP |
+| Temperature profile (main) | What is the temperature at each altitude? | Yes, with the standard overlay and both tropopauses | Sees the local tropopause | Tropopause, launch site | Axes | KEEP (standard overlay added) |
+| Dynamic pressure and Mach at your speed (new, Explore) | What loads would this speed give at each altitude? | Yes — q falls with altitude; marker shows Mach | Picks the max-q altitude for loads | Marker | Axes | KEEP |
+| Ratios, tropopause vs latitude, gravity vs latitude | Context | Partly | — | — | Axes | KEEP, moved to Explore |
 
 ## Lessons learned
 

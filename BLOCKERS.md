@@ -3,9 +3,34 @@
 Things that stopped a task, what was tried, and what the owner needs to do. Newest first. Resolved blockers are
 struck through with the date and commit that resolved them.
 
+## B2 — Site down: the transferred repo is private (opened 2026-10-25)
+
+**Status:** open — **every address returns 404** (`rocketcalculator.github.io/RocketCalculator/`, the org root, and
+the old `darasamii.github.io/RocketCalculator/`).
+
+**What happened**
+- The repo was transferred to the org (B1 steps 1–2 done) and is now **private**
+  (`gh api repos/RocketCalculator/RocketCalculator` → `"visibility": "private"`). The org is on the **Free** plan,
+  where GitHub Pages is only available for public repositories.
+- Every Pages deploy since then fails at `actions/deploy-pages`: `Failed to create deployment (status: 422)
+  Validation Failed`. The build itself succeeds. Tried: re-running the failed job (that only duplicated the
+  artifact) and a fresh `workflow_dispatch` run → same 422.
+- Pages settings are otherwise right: source = GitHub Actions, `github-pages` environment allows `main`, the org
+  lets members create public Pages.
+
+**Not done on purpose:** making the repo public — that publishes the source and is the owner's decision.
+
+**What the owner needs to do (one of)**
+1. Make the repo public (Settings → General → Danger Zone → Change visibility), then Actions → Deploy site to GitHub
+   Pages → Run workflow. Or
+2. Upgrade the org to a plan that allows Pages from private repos (Team), then run the workflow.
+
+**Waiting on it:** live verification and the tags `subsonic-cp/v1.1.0` and `v1.5.1` for PR #8 (merged as 9218a07).
+
 ## B1 — Pending manual step: hosting migration (opened 2026-10-25)
 
-**Status:** open. Work continued at the current address; the site works at both addresses.
+**Status:** partly done (2026-10-25): the org exists and the repo was transferred to `RocketCalculator/RocketCalculator`.
+Still open: step 3 (rename to `RocketCalculator.github.io`), step 5, and the follow-ups below. See also B2.
 
 **What was tried**
 - `gh api orgs/RocketCalculator` → 404: the organization does not exist yet. `gh api users/RocketCalculator` → 404, so

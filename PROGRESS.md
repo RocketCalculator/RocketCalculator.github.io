@@ -77,3 +77,18 @@ live pages checked after each deploy.
 ```
 
 **Next:** Phase 2, calculator 1 — Subsonic Centre of Pressure (`improve/subsonic-cp-cycle-1`).
+
+## 2026-10-25 — Phase 2, calculator 1: Subsonic CP (merged; release blocked by B2)
+
+- PR #8 `improve/subsonic-cp-cycle-1`, merged as `9218a07`: a stability verdict on the worst-case static margin
+  (Mach 0 and the highest Mach, launch and burnout CG, with and without the NACA 1307 carry-over lift; D18). The
+  thresholds are rules of thumb (D19). Remedies: CG shift and fin span. New main plot: margin through the flight.
+- Shared changes: a "NO VERDICT" banner level; notices on phones clamp to two lines (the dock had covered up to a third
+  of the screen and the zoom buttons); reports now include the verdict and every fix.
+- The full test set passed (npm test 288, ui-layout 29 calculators, ui-diagrams 29, uifuzz, smoke, LaTeX).
+- **User instruction, mid-cycle:** bare-minimum testing from now on (D20): `npm test` and a browser look.
+- **Blocked:** the deploy fails with a 422 because the transferred repo is private on the org's Free plan (B2). The
+  site is down at every address. Tags wait for the live check.
+
+**Next:** Parachute Recovery (`improve/parachute-cycle-1`) once B2 is resolved, or locally in the meantime.
+

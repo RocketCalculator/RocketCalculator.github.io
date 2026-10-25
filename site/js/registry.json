@@ -69,9 +69,9 @@
   },
   {
    "slug": "fin-flutter",
-   "title": "Fin Flutter Margin",
+   "title": "Fin Flutter",
    "topic": "fin-aeroelasticity",
-   "description": "NACA TN-4197 bending-torsion flutter Mach number and margin of safety."
+   "description": "Flutter speed of a fin panel through the flight (Martin, corrected by Bennett), safety factor, and the thickness, span or material that fixes it."
   },
   {
    "slug": "bifilar-pendulum",

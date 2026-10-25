@@ -146,7 +146,7 @@ CALCULATORS = [
     ('drag-coefficient', 'Zero-Lift Drag Coefficient', 'DragCoef', 'Skin friction, base, nose and lug drag for a single-stage rocket.'),
     ('geophysics', 'Atmosphere & Gravity', 'Geop', 'Temperature, pressure, density, sound speed and gravity at any altitude and latitude.'),
     ('ogive-nose', 'Ogive Nose Profile', 'OgivNose', 'Tangent-ogive profile, wetted area and area centroid.'),
-    ('fin-flutter', 'Fin Flutter Margin', 'FinAero', 'NACA TN-4197 bending-torsion flutter Mach number and margin of safety.'),
+    ('fin-flutter', 'Fin Flutter', 'FinAero', 'Flutter speed of a fin panel through the flight (Martin, corrected by Bennett), safety factor, and the thickness, span or material that fixes it.'),
     ('bifilar-pendulum', 'Bifilar Pendulum Inertia', 'BifiPend', 'Pitch/yaw moment of inertia from measured pendulum periods.'),
     ('fin-cant-angle', 'Fin Cant Angle & Roll Rate', 'FinSett', 'Strip-theory roll derivatives and the cant angle for a target roll rate.'),
     ('single-wedge', 'Single Wedge Airfoil', 'SingWeAf', 'Supersonic normal-force multiplier and wave drag of single-wedge fins, with the shock-detachment limit.'),

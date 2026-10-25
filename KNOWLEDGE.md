@@ -165,6 +165,7 @@ scripts/generate_pages.mjs`; write `site/docs/<slug>.html`; add REPAIR/INVARIANT
 - **Thresholds (D15):** UNSAFE SF < 1.2, MARGINAL to target, SAFE ≥ target (1.5; 2 when supersonic).
 - **Shared code added in this branch (D17):** `def.actions` (buttons under the form), `def.externalRefs` (linked
   sources in Theory and the report), chart `area: 'above'` (danger zone), LaTeX export maps thin spaces.
+- **Materials (2026-10-25):** OpenRocket's bulk materials with in-plane G from the owner's OpenRocket fork (core `Databases.java`, commit 54b78727d); woods, plywood, balsa and fibreglass match Bennett's values; listed as given, not independently checked.
 - **Open questions:** Martin's original constants and the ε correction's derivation (needs TN 4197); a better G for
   composites; tip-to-tip ×2 allowance unverified.
 

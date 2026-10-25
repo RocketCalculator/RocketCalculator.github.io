@@ -3,6 +3,17 @@
 Newest first, in the spirit of [Keep a Changelog](https://keepachangelog.com/). From 2026-10-25 every entry names its
 branch, tag and commit range. Live site: https://rocketcalculator.github.io/.
 
+## 2026-10-25 — Fin materials from OpenRocket; nozzle panels in design-system reds (`feat/flutter-materials-nozzle-reds`, tags `fin-flutter/v1.1.0`, `nozzle-thrust/v3.4.0`, `v1.8.1`)
+
+### Added
+- Fin Flutter: 29 materials from OpenRocket's database with their in-plane shear modulus (plastics incl. nylon,
+  3D-printed PLA / PETG / ABS / ASA at 100 % infill, metals, woods incl. birch plywood, composites, paper and foam),
+  grouped in the list, each with G in GPa and psi. Warnings for 3D-printed (indicative only) and foam/cork fins.
+- Shared: select options can be grouped (`group`).
+
+### Changed
+- Nozzle flow panels use the design system's reds with line patterns instead of blue/amber/green.
+
 ## 2026-10-25 — Nozzle plots readable; "Final" badge (`feat/final-badge-nozzle-plots`, tags `nozzle-thrust/v3.3.0`, `v1.8.0`)
 
 ### Changed

@@ -1,7 +1,7 @@
 // Parachute Recovery (single parachute, two-piece rocket, optional reefing) — UI definition.
 // Physics in ../calc/recovery.js (C. P. Hoult, Dual Purpose Parachute Recovery System rev. 2 and Parachute Reefing,
 // RS&T 2013, after Knacke).
-import { recovery, descentSpeed, descentTime, aftImpact, reefedDragRatio, densityExponent, tau, REEF, ATM, descentHistory, diameterFor, tetherFor, disreefFor } from '../calc/recovery.js';
+import { recovery, descentSpeed, descentTime, aftImpact, reefedDragRatio, densityExponent, tau, REEF, ATM, descentHistory, diameterFor, tetherFor, disreefFor, windAt, layeredTrack } from '../calc/recovery.js';
 import { s, fmt, InputError } from '../util.js';
 import { text, dim, path } from '../ui/svg.js';
 import { toDisplay, displayUnit, unitLabel } from '../units.js';
@@ -15,6 +15,10 @@ const DENS = { dim: 'density', internal: 'slugft3' };
 const LEN = { dim: 'length', internal: 'ft', units: { si: 'm', us: 'ft' } };
 const ENERGY = { dim: 'energy', internal: 'ftlbf' };
 const reefed = (v) => !!v.reef;
+const layered = (v) => v.windMode === 'layers';
+const DIR = { dim: 'angle', internal: 'deg' };
+// Open-Meteo pressure levels used for the wind profile (hPa); 10 m wind is added as the lowest layer
+const LEVELS = [1000, 975, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 250, 200];
 const mins = (t) => `${fmt(t / 60, { digits: 3 })} min`;
 const sp = (x) => `${fmt(toDisplay(x, SPEED), { digits: 3 })} ${unitLabel(displayUnit(SPEED))}`;
 const ds = (x) => `${fmt(toDisplay(x, DIST), { digits: 3 })} ${unitLabel(displayUnit(DIST))}`;
@@ -87,8 +91,25 @@ export default {
           info: { text: ['How high the landing area is above sea level.', 'From a map or GPS.', 'Air is thinner at a high site, so the parachute makes less drag and the rocket lands faster: about 3 % faster per 1000 m.'], tex: '\\rho=\\rho_0\\tau^m,\\ \\tau=1+\\frac{\\alpha h}{T_0}', range: 'Black Rock Desert ≈ 1190 m (3900 ft); Spaceport America ≈ 1400 m (4600 ft).', doc: 'descent' } },
         { id: 'VD', label: 'Speed when the parachute opens', sym: 'V_D', ...SPEED, default: 100, min: 0, max: 5000, slider: { min: 0, max: 500, step: 1 },
           info: { text: ['How fast the rocket is moving at the moment the parachute comes out.', 'From the flight simulation at the opening time (near apogee it is mostly the sideways speed).', 'The jolt on the parachute and the reefing cord grows with the square of this speed.'], tex: 'q_D=\\tfrac12\\rho_DV_D^2', range: 'Near apogee 10–60 m/s (30–200 ft/s).', doc: 'reefing' } },
-        { id: 'wind', label: 'Average wind speed', sym: 'w', ...SPEED, default: 20, min: 0, max: 300, slider: { min: 0, max: 100, step: 1 },
+      ],
+    },
+    {
+      id: 'windgrp', title: 'Wind and location',
+      fields: [
+        { id: 'windMode', label: 'Wind', kind: 'select', default: 'mean', options: [{ value: 'mean', label: 'One average wind speed' }, { value: 'layers', label: 'Wind layers (by height, with direction)' }],
+          info: { text: ['Choose a single average wind, or a list of wind layers — speed and direction at several heights, as weather forecasts give them.', 'Real winds usually get stronger and turn with height. With layers the calculator follows the rocket through each layer and gives where it lands, not just how far.', 'Use “Load winds from Open-Meteo” to fill the layers from a forecast for your launch site.'], doc: 'drift' } },
+        { id: 'wind', label: 'Average wind speed', sym: 'w', ...SPEED, default: 20, min: 0, max: 300, slider: { min: 0, max: 100, step: 1 }, when: (v) => !layered(v),
           info: { text: ['The average horizontal wind the parachute falls through, from opening to landing.', 'Use the forecast “winds aloft”, averaged over the heights of the descent; ground wind alone is usually too low.', 'The drift is directly proportional to it: double the wind, double the drift.'], tex: 'x_w=w\\,t', range: 'Ground 2–8 m/s; aloft often 10–20 m/s (30–60 ft/s) or more.', doc: 'drift' } },
+        { id: 'winds', label: 'Wind layers', kind: 'table', minRows: 1, when: layered,
+          columns: [{ id: 'h', label: 'Height above ground', ...ALT }, { id: 'w', label: 'Speed', ...SPEED }, { id: 'dir', label: 'From (°)', ...DIR }],
+          default: [{ h: 0, w: 10, dir: 270 }, { h: 3000, w: 25, dir: 260 }, { h: 10000, w: 45, dir: 250 }, { h: 20000, w: 70, dir: 245 }, { h: 30000, w: 90, dir: 240 }],
+          info: { text: ['Each row is the wind at one height above the ground: its speed and the compass direction it blows FROM (270 = from the west, so it carries the rocket east). Between rows the wind changes smoothly; above the top row and below the bottom row it stays as in that row.', 'Fill it from a forecast (the button below), from a balloon sounding, or by hand.', 'The rocket drifts with the wind at whatever height it is, so slow winds near the ground matter little if the parachute falls fast high up.'], range: 'Ground 2–8 m/s; 3–10 km often 10–30 m/s (30–100 ft/s), jet stream up to 50 m/s+.', doc: 'drift' } },
+        { id: 'lat', label: 'Launch site latitude', sym: '\\varphi', dim: 'angle', internal: 'deg', default: 40.86, min: -90, max: 90,
+          info: { text: ['North–south position of the launch site in degrees (north positive), as shown by any map app.', 'Used to load the forecast winds and to open the site on a map.'], doc: 'drift' } },
+        { id: 'lon', label: 'Launch site longitude', sym: '\\lambda_E', dim: 'angle', internal: 'deg', default: -119.07, min: -180, max: 180,
+          info: { text: ['East–west position of the launch site in degrees (east positive, west negative).'], doc: 'drift' } },
+        { id: 'hoursAhead', label: 'Forecast for … hours from now', sym: '\\Delta t_f', dim: 'none', default: 0, min: 0, max: 160, step: 1, when: layered, slider: { min: 0, max: 160, step: 1 },
+          info: { text: ['Which forecast hour to load: 0 is now, 24 is this time tomorrow (up to about a week).', 'Pick the hour of your launch window, then press “Load winds from Open-Meteo”.'], doc: 'drift' } },
       ],
     },
     {
@@ -110,6 +131,8 @@ export default {
       status: (x, out) => (x > out.v.Rf ? 'err' : x > DRIFT_WARN * out.v.Rf ? 'warn' : 'ok'),
       note: (x, out) => `recovery area ${ds(out.v.Rf)}`,
       info: { text: ['How far the wind carries the rocket sideways between the parachute opening and landing.', 'It is the average wind speed times the descent time — so anything that shortens the descent (reefing, a lower opening, a smaller parachute) cuts it.', 'Compare it with the distance to the edge of your recovery area.'], tex: 'x_w=w\\,t', doc: 'drift' } },
+    { id: 'bearing', label: 'Drift direction (towards)', sym: '\\psi', ...DIR, digits: 3, when: layered, note: (x) => (typeof x === 'number' ? `towards ${['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'][Math.round(x / 45) % 8]}` : ''),
+      info: { text: ['The compass direction from the launch pad to the landing point (0 = north, 90 = east).', 'Only with wind layers: the wind direction changes with height, so the landing point is found by adding up the drift in every layer.'], doc: 'drift' } },
     { id: 't', label: 'Descent time', sym: 't', dim: 'time', key: true, digits: 4,
       note: (x, out, v) => `${mins(x)}${v.reef ? ` · reefed ${mins(out.o.tReefed)}` : ''}`,
       info: { text: ['How long the rocket hangs under the parachute, from opening to landing.', 'Found by adding up small steps of height divided by the descent speed at that height (the speed changes as the air gets thicker).', 'Longer time = more drift and more chance of losing sight of the rocket.'], tex: 't=\\int\\frac{dh}{V}=\\frac{T_0\\left(\\tau_D^{\\,e}-\\tau_G^{\\,e}\\right)}{\\alpha V_0e}', doc: 'descent' } },
@@ -133,8 +156,15 @@ export default {
   compute(v) {
     if (v.hG + v.hD > 36000) throw new InputError('The parachute must open inside the troposphere (below about 36 000 ft / 11 km above sea level) for this atmosphere model.');
     const o = recovery(v);
-    // fixes
-    const Dneed = diameterFor(v, v.vT), Lneed = tetherFor(v, v.vT), hRneed = disreefFor({ ...v, ratio: v.reef ? v.ratio : 0.25 }, v.Rf);
+    // drift: one mean wind, or integrated through the wind layers (gives the landing bearing too)
+    const lay = layered(v) && Array.isArray(v.winds) && v.winds.length;
+    const track = lay ? layeredTrack(v, v.winds) : null;
+    if (track) o.drift = track.dist;
+    const driftOf = (p) => (lay ? layeredTrack(p, v.winds, 120).dist : recovery(p).drift);
+    let hRneed = null;
+    { const p = { ...v, reef: true, ratio: v.reef ? v.ratio : 0.25 };          // highest disreef that keeps the drift inside
+      if (driftOf({ ...p, hR: 1e-6 }) <= v.Rf) { let lo = 1e-6, hi = v.hD * 0.999; if (driftOf({ ...p, hR: hi }) <= v.Rf) lo = hi; else for (let k = 0; k < 40; k++) { const mid = (lo + hi) / 2; if (driftOf({ ...p, hR: mid }) <= v.Rf) lo = mid; else hi = mid; } hRneed = lo; } }
+    const Dneed = diameterFor(v, v.vT), Lneed = tetherFor(v, v.vT);
     const KEaft = 0.5 * o.m2 * o.vAft ** 2, KEnose = 0.5 * o.m1 * o.vNose ** 2;   // slug·ft²/s² = ft·lbf
     // verdict: soft landing and inside the recovery area
     const slow = o.vAft <= v.vT, slowish = o.vAft <= MARGIN * v.vT, inside = o.drift <= DRIFT_WARN * v.Rf, insideish = o.drift <= v.Rf;
@@ -161,10 +191,43 @@ export default {
     if (v.reef && v.ratio >= 0.62) warnings.push({ level: 'info', text: 'At a reefing ratio of 0.62 the canopy is already fully open: reefing does nothing.' });
     if (v.reef && o.vDisreef > 3 * o.vNose) warnings.push({ level: 'info', text: `The parachute is still falling at ${sp(o.vDisreef)} when it disreefs, ${fmt(o.vDisreef / o.vNose, { digits: 2 })} times its final speed: expect a hard opening jolt (Hoult).`, fix: 'A larger reefing ratio lowers the speed at disreef (at the cost of more drift).' });
     if (!v.reef && v.hD > 5000 && o.drift > v.Rf) warnings.push({ level: 'info', text: 'High opening without reefing: most of the drift happens in the upper air.', fix: 'Turn on reefing to fall faster through it.' });
-    const results = { vAft: o.vAft, drift: o.drift, t: o.t, vDeploy: o.vDeploy, Dneed: Dneed ?? '—', Lneed: Lneed ?? '—', hRneed: hRneed ?? '—', KEaft, KEnose,
+    const results = { bearing: track ? track.bearing : '—', vAft: o.vAft, drift: o.drift, t: o.t, vDeploy: o.vDeploy, Dneed: Dneed ?? '—', Lneed: Lneed ?? '—', hRneed: hRneed ?? '—', KEaft, KEnose,
       vNose: o.vNose, vAftMin: o.vAftMin, vDisreef: o.vDisreef, tReefed: o.tReefed, tOpen: o.tOpen, k: o.k, reefLine: o.reefLine, rhoG: o.rhoG };
-    return { results, warnings, verdict, o, v, hist: descentHistory(v) };
+    if (lay && v.winds.some((r) => !(r.w >= 0) || !Number.isFinite(r.dir))) warnings.push({ level: 'warn', text: 'Some wind layers have no speed or direction and are ignored.' });
+    if (lay) warnings.push({ level: 'info', text: 'Wind directions are where the wind blows from (meteorological convention, as weather services give them).' });
+    const hist = track ? track.pts.map((q) => ({ ...q, x: q.dist })) : descentHistory(v);
+    return { results, warnings, verdict, o, v, hist, track };
   },
+  actions: [
+    {
+      label: 'Load winds from Open-Meteo', title: 'Fetch the forecast winds at the launch site (Open-Meteo, free, no account) into the wind layers; also sets the ground elevation',
+      async run(v) {
+        const vars = ['wind_speed_10m', 'wind_direction_10m', ...LEVELS.flatMap((p) => [`wind_speed_${p}hPa`, `wind_direction_${p}hPa`, `geopotential_height_${p}hPa`])];
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${encodeURIComponent(v.lat)}&longitude=${encodeURIComponent(v.lon)}&hourly=${vars.join(',')}&wind_speed_unit=ms&forecast_days=7&timezone=auto`;
+        const r = await fetch(url);
+        if (!r.ok) throw new Error(`Open-Meteo did not answer (${r.status}). Check the latitude and longitude, or try again later.`);
+        const d = await r.json(), H = d.hourly, elev = d.elevation;
+        // the hour nearest to now + hoursAhead (times are local; utc_offset_seconds converts them)
+        const target = Date.now() + (v.hoursAhead || 0) * 3600e3;
+        let k = 0, best = Infinity;
+        H.time.forEach((t, i) => { const ms = Date.parse(t + 'Z') - d.utc_offset_seconds * 1000, e = Math.abs(ms - target); if (e < best) { best = e; k = i; } });
+        const M2FT = 1 / 0.3048, rows = [{ h: 10 * M2FT, w: H.wind_speed_10m[k] * M2FT, dir: H.wind_direction_10m[k] }];
+        for (const p of LEVELS) {
+          const z = H[`geopotential_height_${p}hPa`]?.[k], w = H[`wind_speed_${p}hPa`]?.[k], dir = H[`wind_direction_${p}hPa`]?.[k];
+          if ([z, w, dir].every(Number.isFinite) && z - elev > 30) rows.push({ h: (z - elev) * M2FT, w: w * M2FT, dir });
+        }
+        return { values: { windMode: 'layers', winds: rows, hG: Math.max(0, elev * M2FT) }, message: `Loaded ${rows.length} wind layers for ${H.time[k].replace('T', ' ')} local time; ground elevation set to ${Math.round(elev)} m. Weather data by Open-Meteo.com (CC BY 4.0).` };
+      },
+    },
+    {
+      label: 'Open in OpenStreetMap', title: 'Show the launch site on OpenStreetMap',
+      async run(v) { window.open(`https://www.openstreetmap.org/?mlat=${v.lat}&mlon=${v.lon}#map=12/${v.lat}/${v.lon}`, '_blank', 'noopener'); return {}; },
+    },
+    {
+      label: 'Open in Google Maps', title: 'Show the launch site on Google Maps',
+      async run(v) { window.open(`https://www.google.com/maps/search/?api=1&query=${v.lat},${v.lon}`, '_blank', 'noopener'); return {}; },
+    },
+  ],
   plots: [
     {
       id: 'history', title: 'The descent, second by second', wide: true, height: 560,
@@ -200,12 +263,38 @@ export default {
       },
     },
     {
+      id: 'track', title: 'Where it lands: the ground track seen from above', when: layered, aspect: 1,
+      info: { text: ['The path of the rocket over the ground from parachute opening to landing, seen from above (north up, east right), with the wind layers you entered.', 'The circle is your recovery area around the pad; the landing point should be inside it. Hover to read the time and height along the path.'], doc: 'drift' },
+      build(v, out, { U }) {
+        if (!out.track) return null;
+        const ud = U(DIST), P = out.track.pts, R = Math.max(v.Rf, ...P.map((q) => Math.hypot(q.x, q.y))) * 1.1, ring = [];
+        for (let i = 0; i <= 72; i++) { const a = (i / 72) * 2 * Math.PI; ring.push([ud.v(v.Rf * Math.sin(a)), ud.v(v.Rf * Math.cos(a))]); }
+        const end = P[P.length - 1], col = out.verdict.level === 'unsafe' ? 'var(--danger)' : out.verdict.level === 'marginal' ? 'var(--warn)' : 'var(--ok)';
+        return { x: { label: 'East', unit: ud.label }, y: { label: 'North', unit: ud.label }, xDomain: [-ud.v(R), ud.v(R)], yDomain: [-ud.v(R), ud.v(R)], aspect: 1,
+          series: [{ name: 'ground track', points: P.map((q) => [ud.v(q.x), ud.v(q.y)]) }, { name: 'recovery area', points: ring, dashed: true, color: 'var(--danger)' }],
+          markers: [{ x: 0, y: 0, label: 'pad', color: 'var(--text-2)', r: 4 }, { x: ud.v(end.x), y: ud.v(end.y), label: `lands ${ds(out.track.dist)}`, color: col }] };
+      },
+    },
+    {
+      id: 'winds', title: 'Wind profile', explore: true, when: layered,
+      info: { text: ['Wind speed against height from your layers, with the direction it comes from written at each layer. The shaded band is the height range the parachute falls through.'], doc: 'drift' },
+      build(v, out, { U }) {
+        if (!layered(v) || !v.winds?.length) return null;
+        const us = U(SPEED), ua = U(ALT), L = [...v.winds].filter((r) => Number.isFinite(r.h) && r.w >= 0).sort((a, b) => a.h - b.h), top = Math.max(v.hD, ...L.map((r) => r.h));
+        const pts = []; for (let i = 0; i <= 80; i++) { const h = (top * i) / 80, w = windAt(L, h); pts.push([us.v(Math.hypot(w.u, w.v)), ua.v(h)]); }
+        return { x: { label: 'Wind speed', unit: us.label }, y: { label: 'Height above ground', unit: ua.label }, hover: 'y', includeZero: true,
+          series: [{ name: 'wind speed', points: pts }], hlines: [{ y: ua.v(v.hD), label: 'parachute opens', color: 'var(--text-3)' }],
+          markers: L.map((r) => ({ x: us.v(r.w), y: ua.v(r.h), label: `${Math.round(r.dir)}°`, r: 3 })) };
+      },
+    },
+    {
       id: 'disreef', title: 'Drift against disreef height', explore: true,
       info: { text: ['How the drift changes if you cut the reefing cord higher or lower (at your reefing ratio). Lower disreef means less time under the full canopy, so less drift; the landing speed does not change as long as the canopy has time to open.', 'Where the curve crosses the red line is the highest disreef that still lands inside the area.'], doc: 'drift' },
       build(v, out, { U }) {
         if (!v.reef) return null;
         const ua = U(ALT), ud = U(DIST), pts = [];
-        for (let i = 0; i <= 60; i++) { const hR = (0.98 * v.hD * i) / 60; pts.push([ua.v(hR), ud.v(recovery({ ...v, hR }).drift)]); }
+        const dOf = (p) => (layered(v) && v.winds?.length ? layeredTrack(p, v.winds, 80).dist : recovery(p).drift);
+        for (let i = 0; i <= 40; i++) { const hR = (0.98 * v.hD * i) / 40; pts.push([ua.v(hR), ud.v(dOf({ ...v, hR }))]); }
         return { x: { label: 'Disreef height above ground $h_{DR}$', unit: ua.label }, y: { label: 'Drift $x_w$', unit: ud.label }, includeZero: true,
           series: [{ name: 'drift', points: pts }], hlines: [{ y: ud.v(v.Rf), label: 'edge of the area', color: 'var(--danger)' }],
           markers: [{ x: ua.v(v.hR), y: ud.v(out.o.drift), label: 'your disreef' }] };
@@ -259,9 +348,23 @@ export default {
       if (i % 2 === 0) g.append(text(X(q.x) + 6, Y(q.h) + 3, `${t >= 60 && step >= 60 ? `${fmt(t / 60, { digits: 3 })} min` : `${t} s`}`, { size: 9.5, cls: 'sc-dim-text' }));
     }
     // wind arrows on the left, length ∝ wind speed
-    const wl = Math.min(70, 1.4 * us.v(v.wind) * (us.plain === 'm/s' ? 3.2 : 1));
-    for (const f of [0.25, 0.55, 0.85]) { const y = Y(f * v.hD); if (wl > 2) g.append(s('path', { d: `M${38},${y}h${wl}`, class: 'sc-accent', 'marker-end': fr.arrow('acc'), 'data-field': 'wind' })); }
-    g.append(text(38, Y(0.85 * v.hD) - 8, `wind ${Sp(v.wind)}`, { size: 10.5, field: 'wind' }));
+    const pxPer = 1.4 * (us.plain === 'm/s' ? 3.2 : 1) * us.v(1);           // arrow px per ft/s
+    const wl = layered(v) ? 0 : Math.min(70, pxPer * v.wind);
+    if (layered(v) && v.winds?.length) {
+      // one arrow per layer inside the descent height: length ∝ speed; label speed and the direction it blows from
+      // the side view's horizontal axis runs along the ground track, so each arrow shows the wind component along it
+      const psi = ((out.track?.bearing ?? 90) * Math.PI) / 180;
+      let lastY = Infinity;
+      for (const r of [...v.winds].filter((q) => q.h <= v.hD && q.w >= 0).sort((a, b) => a.h - b.h)) {
+        const y = Y(r.h), a = (r.dir * Math.PI) / 180, along = -r.w * (Math.sin(a) * Math.sin(psi) + Math.cos(a) * Math.cos(psi));
+        const len = Math.max(-34, Math.min(70, pxPer * along)), x0w = along >= 0 ? 38 : 72;
+        if (Math.abs(len) > 2) g.append(s('path', { d: `M${x0w},${y}h${len}`, class: 'sc-accent', 'marker-end': fr.arrow('acc'), 'data-field': 'winds' }));
+        if (lastY - y >= 13) { g.append(text(38, y - 5, `${Sp(r.w)} from ${Math.round(r.dir)}°`, { size: 9.5, cls: 'sc-dim-text', field: 'winds' })); lastY = y; }
+      }
+    } else {
+      for (const f of [0.25, 0.55, 0.85]) { const y = Y(f * v.hD); if (wl > 2) g.append(s('path', { d: `M${38},${y}h${wl}`, class: 'sc-accent', 'marker-end': fr.arrow('acc'), 'data-field': 'wind' })); }
+      g.append(text(38, Y(0.85 * v.hD) - 8, `wind ${Sp(v.wind)}`, { size: 10.5, field: 'wind' }));
+    }
     // parachute at opening (reefed mouth) and at disreef (open), sized by the diameter
     const cw = Math.max(9, Math.min(26, 5 + 3.2 * Math.sqrt(v.D0)));
     const top = hist[0];

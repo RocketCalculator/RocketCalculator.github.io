@@ -74,3 +74,12 @@ test('Sizing helpers: the diameter, tether and disreef height they return hit th
   close(H.at(-1).t, o.t, 1e-9, 'history ends at t'); close(H.at(-1).x, o.drift, 1e-9, 'history ends at the drift');
   for (let i = 1; i < H.length; i++) if (H[i].reefed === H[i - 1].reefed) assert.ok(H[i].V <= H[i - 1].V + 1e-9, 'slower as the air thickens');
 });
+
+test('Wind layers: uniform layers reproduce the mean-wind drift; direction is the meteorological "from"', async () => {
+  const { layeredTrack, windAt } = await import('../site/js/calc/recovery.js');
+  const p = { W1: 10, W2: 8.5, L: 33, D0: 5.18, CD: 0.8, reef: true, ratio: 0.25, hR: 1000, hD: 25000, hG: 4300, VD: 100, wind: 20 };
+  const T = layeredTrack(p, [{ h: 0, w: 20, dir: 270 }, { h: 30000, w: 20, dir: 270 }]);
+  close(T.dist, recovery(p).drift, 1e-9, 'uniform westerly = mean-wind drift'); close(T.bearing, 90, 1e-9, 'carried east'); assert.ok(Math.abs(T.y) < 1e-6, 'no north drift');
+  const w = windAt([{ h: 0, w: 10, dir: 0 }, { h: 1000, w: 10, dir: 90 }], 500);
+  close(w.u, -5, 1e-12, 'u halfway between north and east winds'); close(w.v, -5, 1e-12, 'v');
+});

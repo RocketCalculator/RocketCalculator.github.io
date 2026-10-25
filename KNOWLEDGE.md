@@ -228,6 +228,10 @@ scripts/generate_pages.mjs`; write `site/docs/<slug>.html`; add REPAIR/INVARIANT
 - **Helpers (calc/recovery.js):** descentHistory, diameterFor (bisection), tetherFor (closed form), disreefFor
   (bisection); tests check each hits its target exactly.
 - **Shared fix:** stale drag handles are hidden after each render (calculator-page.js).
+- **Wind layers (2026-10-25):** windAt (component interpolation), layeredTrack (dx = u dt along the descent). Open-Meteo
+  (`api.open-meteo.com/v1/forecast`, read: docs + live call; CORS *, no key, CC BY 4.0 non-commercial, attribution
+  given) — 10 m wind + 14 pressure levels with geopotential height; **direction convention not stated by Open-Meteo**,
+  taken as meteorological "from" (unverified). Uniform layers reproduce the mean-wind drift exactly (test).
 
 ### Diagram Quality Gate log
 

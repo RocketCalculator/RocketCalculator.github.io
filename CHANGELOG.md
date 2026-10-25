@@ -3,6 +3,14 @@
 Newest first, in the spirit of [Keep a Changelog](https://keepachangelog.com/). From 2026-10-25 every entry names its
 branch, tag and commit range. Live site: https://rocketcalculator.github.io/.
 
+## 2026-10-25 — Parachute Recovery: wind layers and forecast winds (`feat/recovery-wind-layers`)
+- Wind as one average speed or as layers (height, speed, direction it blows from); the drift is integrated through the
+  descent and gives the landing point and its bearing. Ground-track plot seen from above with the recovery-area
+  circle; wind-profile plot (Explore); per-layer wind arrows in the drawing (component along the track).
+- "Load winds from Open-Meteo": forecast winds for a latitude, longitude and hour (up to a week ahead), plus the site
+  elevation. Weather data by Open-Meteo.com (CC BY 4.0).
+- "Open in OpenStreetMap" / "Open in Google Maps" for the launch site.
+
 ## 2026-10-25 — Accent colour picker (`feat/accent-colour`)
 - Header picker next to dark mode: red, blue, purple, pink, orange or green replaces the brand red site-wide, remembered
   and applied before the page paints. Danger (UNSAFE, errors, separation and limit lines) stays red (`--danger`).

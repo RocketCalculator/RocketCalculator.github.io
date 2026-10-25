@@ -57,7 +57,12 @@
 
       <section id="drift">
         <h2>Wind drift</h2>
-        <p>The parachute drifts with the wind for the whole descent. The calculator uses a single mean wind speed; winds aloft are usually stronger than at the ground, so take a representative value from the forecast winds aloft. The drift grows with the descent time, which is why reefing high up — to come down fast — helps keep the rocket on the range.</p>
+        <p>The parachute drifts with the wind for the whole descent, and the drift grows with the descent time. That is why reefing high up, to come down fast, helps keep the rocket on the range. There are two ways to give the wind.</p>
+        <p><strong>One average wind</strong> <span class="tex">w</span>: the drift is <span class="tex">x_w=w\,t</span>. Winds aloft are usually stronger than at the ground, so average the forecast winds over the heights of the descent.</p>
+        <p><strong>Wind layers</strong>: a table of height, speed and the direction the wind blows <em>from</em> (the meteorological convention: 270° comes from the west and carries the rocket east). Between layers the east and north components are interpolated linearly; above and below the table the end layers hold. The calculator follows the rocket through the descent, adding up the drift in each time step:</p>
+        <div class="eq"><div class="tex-display">x=\int u(h)\,dt,\quad y=\int v(h)\,dt,\quad dt=\frac{dh}{V(h)}</div></div>
+        <p>Here <span class="tex">u</span> and <span class="tex">v</span> are the east and north wind components at the rocket’s height. The result is the landing point: its distance <span class="tex">\sqrt{x^2+y^2}</span>, which the verdict compares with the recovery area, and its bearing. A uniform layer profile reproduces the single-wind drift exactly; the tests check this.</p>
+        <p><strong>Forecast winds.</strong> “Load winds from Open-Meteo” fetches the forecast for the latitude, longitude and hour you give. It takes the 10 m wind and the winds on 14 pressure levels from 1000 to 200 hPa, each at its forecast geopotential height minus the site elevation, and keeps the levels that are above the ground. It also sets the ground elevation. The request goes from your browser straight to Open-Meteo; nothing else is sent. Weather data by <a href="https://open-meteo.com/" rel="noopener">Open-Meteo.com</a>, licensed under <a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener">CC BY 4.0</a>, free for non-commercial use. Open-Meteo’s documentation does not state its direction convention; it is taken as the meteorological “from” direction.</p>
       </section>
 
       <section id="verdict">

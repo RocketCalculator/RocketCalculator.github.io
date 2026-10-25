@@ -121,3 +121,8 @@ against your own judgement and your range's rules before flying anything.
 
 ## Credits
 Theory and original spreadsheets: C. P. Hoult, [Rocket Science and Engineering Technologies](http://www.rsandt.com/).
+Website by [Dara Rahmat Samii](https://darasamii.github.io/) ([LinkedIn](https://www.linkedin.com/in/dara-samii)) — see the [About page](https://rocketcalculator.github.io/about.html).
+
+## Problems and contributions
+Found a wrong result or a bug? [Open an issue](https://github.com/RocketCalculator/RocketCalculator.github.io/issues/new) with the calculator's Share link.
+Pull requests are welcome: read `KNOWLEDGE.md`, add a test for any physics change, and cite the source you checked it against.

@@ -712,3 +712,9 @@ body.rocket-linked .shared-mark { display: inline-flex; }
 .db-share-wrap { display: inline-flex; align-items: center; gap: 8px; }
 .compare-box { flex-wrap: nowrap; }
 @media (max-width: 600px) { .db-share-wrap { flex: 1 1 100%; } .compare-box { flex: 1 1 100%; } }
+/* About page: author photo beside the text, stacked on phones */
+.about-author { display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 24px; align-items: start; }
+.about-author img { width: 100%; height: auto; border-radius: var(--radius); border: 1px solid var(--border); }
+.about-links { display: flex; flex-wrap: wrap; gap: 8px; }
+@media (max-width: 640px) { .about-author { grid-template-columns: minmax(0, 1fr); } .about-author img { max-width: 280px; } }
+

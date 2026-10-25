@@ -85,7 +85,9 @@ const sel = Object.fromEntries(parts.map((p) => [p, PARTS[p]]));
 const jobs = slugs.flatMap((slug) => systems.flatMap((sys) => widths.map((w) => ({ slug, sys, w }))));
 const CONCURRENCY = +arg('jobs', 4);
 async function run({ slug, sys, w }) {
-      const page = await browser.newPage();
+      // its own context: pages share localStorage otherwise, and the unit system is read from it on every recompute
+      const ctx = await browser.createBrowserContext();
+      const page = await ctx.newPage();
       await page.setViewport({ width: w, height: 900 });
       await page.goto(BASE + 'index.html');
       await page.evaluate((sys) => { localStorage.clear(); localStorage.setItem('rc-units', JSON.stringify(sys)); }, sys);
@@ -137,7 +139,7 @@ async function run({ slug, sys, w }) {
         }
       }
       if (errs.length) failures.push(`${tag}: page errors — ${errs.slice(0, 2).join(' | ')}`);
-      await page.close();
+      await ctx.close();
       process.stdout.write('.');
 }
 await Promise.all(Array.from({ length: CONCURRENCY }, async () => { while (jobs.length) await run(jobs.shift()); }));

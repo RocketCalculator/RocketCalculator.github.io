@@ -3,6 +3,25 @@
 Newest first, in the spirit of [Keep a Changelog](https://keepachangelog.com/). From 2026-10-25 every entry names its
 branch, tag and commit range. Live site: https://rocketcalculator.github.io/.
 
+## 2026-10-25 — Nozzle Design and Thrust, cycle 3 (`fix/nozzle-cycle-3`, tags `nozzle-thrust/v3.1.0`, `v1.7.1`)
+
+### Fixed
+- Moving most geometry sliders refused the whole calculation (a derived angle or the bell length left its accepted
+  range), so the drawing and plots never changed. Only impossible diameters (exit or inlet not larger than the throat)
+  are refused now; a length that cannot be built is drawn at the nearest buildable length, with a warning giving the
+  range.
+- An inlet barely wider than the throat crashed the contour; the upstream throat rounding now shrinks to fit (noted).
+- Results rows appeared and disappeared with the ambient pressure and moved the table; they are always shown ("—").
+
+### Changed
+- The nozzle drawing and the flow plots are one box: the nozzle is the top panel of "Nozzle and the flow along it",
+  on the same x axis, with the throat, shock, separation and hover lines through every panel. Curves are red like the
+  other plots. The separate drawing (and its drag handles) is gone.
+
+### Added (shared)
+- `chart.js` panels: drawing panels (`draw`, `equalAspect`, `minHeight`/`maxHeight`) on the shared x scale; series in
+  panels use the site's series colours.
+
 ## 2026-10-25 — Nozzle Design and Thrust, cycle 2 (`improve/nozzle-cycle-2`, tags `nozzle-thrust/v3.0.0`, `v1.7.0`)
 
 ### Changed (BREAKING: inputs)

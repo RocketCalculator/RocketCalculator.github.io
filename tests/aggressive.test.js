@@ -1,6 +1,7 @@
 // Aggressive tests for every calculator: random inputs across the allowed ranges, every field at its limits,
 // unit round-trips, reports free of NaN/undefined, and physical trends that must hold.
 import { test } from 'node:test';
+import { conicalLength, convergentLength } from '../site/js/calc/nozzle.js';
 import assert from 'node:assert/strict';
 import { readdirSync } from 'node:fs';
 import { toDisplay, fromDisplay } from '../site/js/units.js';
@@ -90,7 +91,7 @@ const REPAIR = {
   'fin-cant-angle': (v, r) => { if (v.b <= v.R) v.b = v.R * (1.1 + 2 * r()); },
   'yo-yo-despin': (v, r) => { if (v.ff >= v.f0) v.ff = v.f0 * r(); v.mu = r() < 0.8 ? 0 : Math.min(v.mu, 1e-5 * r()); },
   'newtonian-drag': (v, r) => { if (v.r2 <= v.r1) v.r2 = v.r1 * (1.05 + 3 * r()) + 1e-3; },
-  'nozzle-thrust': (v, r) => { if (r() < 0.8) v.pa = Math.min(v.pa, 0.45 * r() * v.pc); if (v.dc < 2.6 * v.dt) v.dc = v.dt * (2.6 + 3 * r()); },
+  'nozzle-thrust': (v, r) => { if (r() < 0.8) v.pa = Math.min(v.pa, 0.45 * r() * v.pc); if (v.din < 2.6 * v.dt) v.din = v.dt * (2.6 + 3 * r()); if (v.de <= 1.02 * v.dt) v.de = v.dt * (1.1 + 5 * r()); const eps = (v.de / v.dt) ** 2, rt = v.dt / 2; v.Lc = convergentLength(rt, v.din / 2, 15 + 40 * r()); v.Ld = v.type === 'cone' ? conicalLength(rt, eps, 8 + 20 * r(), 0.382 * rt) : (0.6 + 0.4 * r()) * conicalLength(rt, eps, 15, 0.382 * rt); },
   'wind-compensation': (v, r) => { for (const k of ['WI', 'WC', 'R']) if (Math.abs(v[k]) > 5500) v[k] = Math.sign(v[k]) * 5500 * r(); },
   'roll-rate-history': (v, r) => { if (v.b <= v.R) v.b = v.R * (1.1 + r()); if (v.hB <= v.L) v.hB = v.L * (2 + 20 * r()); },
   'parachute-recovery': (v, r) => { if (v.hG + v.hD > 36000) { v.hG = 6000 * r(); v.hD = 1000 + 25000 * r(); } if (v.reef && v.hR >= v.hD) v.hR = v.hD * r(); },
@@ -154,7 +155,7 @@ for (const def of defs) {
       for (const p of def.plots || []) {
         const sp = p.build(v, out, { U: () => ({ v: (x) => x, label: '', plain: '' }), sys: () => 'si' });
         if (!sp) continue;
-        for (const se of sp.series) assert.ok(se.points.some((q) => q.every(Number.isFinite)), `${name}: plot ${p.id} / ${se.name} has no finite points`);
+        for (const se of sp.series ?? sp.panels.flatMap((pn) => pn.series)) assert.ok(se.points.some((q) => q.every(Number.isFinite)), `${name}: plot ${p.id} / ${se.name} has no finite points`);
       }
     }
   });
@@ -326,11 +327,11 @@ test('Subsonic CP: the worst-case margin is the minimum of the cases; the CG shi
 
 test('Nozzle: thrust falls with ambient pressure, a wider cone loses thrust, the 1-D C_F peaks at p_e = p_a', () => {
   increasing([200, 100, 50, 14.7, 0].map((pa) => run('nozzle-thrust', { pa }).thrust), 'T vs falling p_a');
-  increasing([40, 30, 20, 10, 2].map((alpha) => run('nozzle-thrust', { type: 'cone', alpha }).cf), 'C_F vs narrowing cone');
-  increasing([60, 70, 80, 90, 100].map((Lf) => run('nozzle-thrust', { Lf }).cf), 'C_F vs longer bell');
-  increasing([1.5, 2, 4, 8, 16].map((eps) => run('nozzle-thrust', { pa: 0, eps }).cf), 'vacuum C_F vs ε');
-  const opt = run('nozzle-thrust', {}).epsOpt;
-  for (const f of [0.7, 1.4]) assert.ok(run('nozzle-thrust', { eps: opt * f }).cf1D < run('nozzle-thrust', { eps: opt }).cf1D, `C_F off-optimum ×${f}`);
+  increasing([40, 30, 20, 10, 4].map((a) => run('nozzle-thrust', { type: 'cone', Ld: conicalLength(0.5, 8, a, 0.191) }).cf), 'C_F vs narrowing cone');
+  increasing([60, 70, 80, 90, 100].map((Lf) => run('nozzle-thrust', { Ld: (Lf / 100) * conicalLength(0.5, 8, 15, 0.191) }).cf), 'C_F vs longer bell');
+  increasing([1.5, 2, 4, 8, 16].map((eps) => run('nozzle-thrust', { pa: 0, type: 'cone', de: Math.sqrt(eps), Ld: conicalLength(0.5, eps, 15, 0.191) }).cf), 'vacuum C_F vs ε');
+  const opt = (run('nozzle-thrust', {}).deOpt) ** 2, at = (e) => run('nozzle-thrust', { type: 'cone', de: Math.sqrt(e), Ld: conicalLength(0.5, e, 15, 0.191) }).cf1D;
+  for (const f of [0.7, 1.4]) assert.ok(at(opt * f) < at(opt), `C_F off-optimum ×${f}`);
 });
 
 test('Fin cant: steady cant angle is linear in roll rate and sign-symmetric', () => {

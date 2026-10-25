@@ -171,12 +171,15 @@ export async function mountCalculator(def) {
   // Warnings live in a fixed dock (bottom corner), so they never push the results down. Each can be dismissed;
   // a dismissed message stays hidden until its text changes.
   const warnBox = h('div.warnings.notice-dock', { 'aria-live': 'polite', role: 'status' });
-  const dismissed = new Set();
+  const dismissed = new Set(), opened = new Set();
   new MutationObserver(() => {
     for (const n of warnBox.querySelectorAll('.notice:not([data-dock])')) {
       n.dataset.dock = '1';
       const key = n.textContent;
       if (dismissed.has(key)) { n.hidden = true; continue; }
+      // phones show each notice clipped to two lines without the fix (site.css); a tap opens it, and it stays open across recomputes
+      n.classList.toggle('open', opened.has(key));
+      n.addEventListener('click', (e) => { if (e.target.closest('.notice-x')) return; opened[opened.has(key) ? 'delete' : 'add'](key); n.classList.toggle('open'); });
       n.append(h('button.notice-x', { type: 'button', 'aria-label': 'Dismiss', title: 'Dismiss', onclick: () => { dismissed.add(key); n.hidden = true; } }, '×'));
     }
   }).observe(warnBox, { childList: true });
@@ -460,7 +463,7 @@ export async function mountCalculator(def) {
   for (const c of charts) { c.visible = false; io.observe(c.card); }
 
   const renderTable = (out) => renderResults(out, { table: true });
-  const VERDICT = { safe: ['✓', 'SAFE'], marginal: ['!', 'MARGINAL'], unsafe: ['✕', 'UNSAFE'] };
+  const VERDICT = { safe: ['✓', 'SAFE'], marginal: ['!', 'MARGINAL'], unsafe: ['✕', 'UNSAFE'], none: ['i', 'NO VERDICT'] };   // none: an input the verdict needs is missing
   /** Verdict banner: icon + word + colour (never colour alone), one-line summary, up to three fixes; fixed height. */
   function renderVerdict(v) {
     if (!v) { verdictBox.className = 'verdict'; verdictBox.replaceChildren(h('div.verdict-word', '—'), h('div.verdict-text', 'No verdict for these inputs.')); return; }

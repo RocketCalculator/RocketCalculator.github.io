@@ -1,7 +1,8 @@
 # Knowledge base
 
 Notes for anyone (human or AI) working on this repository. Read this, `PROGRESS.md`, `DECISIONS.md` and
-`BLOCKERS.md` before starting work; update them when you finish. `docs/DESIGN-GUIDE.md` holds the UI rules.
+`BLOCKERS.md` before starting work; update them when you finish. `docs/DESIGN-GUIDE.md` holds the UI rules and
+`docs/CALCULATOR-SPEC.md` what every calculator page must contain and how to test it.
 
 ## Hosting
 

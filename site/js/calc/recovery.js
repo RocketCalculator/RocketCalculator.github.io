@@ -105,3 +105,32 @@ export function disreefFor(p, xMax) {
   for (let k = 0; k < 100; k++) { const mid = (lo + hi) / 2; if (drift(mid) <= xMax) lo = mid; else hi = mid; }
   return lo;
 }
+
+/**
+ * Wind at height h (ft AGL) from layers [{ h (ft AGL), w (ft/s), dir (deg, meteorological: the direction the wind
+ * blows FROM, clockwise from north) }], interpolated linearly by component, held constant beyond the end layers.
+ * Returns { u, v } = east and north components of the air motion (ft/s), i.e. where it carries the rocket.
+ */
+export function windAt(layers, h) {
+  const comp = (L) => { const a = (L.dir * Math.PI) / 180; return [-L.w * Math.sin(a), -L.w * Math.cos(a)]; };
+  const L = [...layers].filter((x) => [x.h, x.w, x.dir].every(Number.isFinite)).sort((a, b) => a.h - b.h);
+  if (!L.length) return { u: 0, v: 0 };
+  if (h <= L[0].h) { const [u, v] = comp(L[0]); return { u, v }; }
+  if (h >= L[L.length - 1].h) { const [u, v] = comp(L[L.length - 1]); return { u, v }; }
+  let i = 0; while (L[i + 1].h < h) i++;
+  const f = (h - L[i].h) / (L[i + 1].h - L[i].h), a = comp(L[i]), b = comp(L[i + 1]);
+  return { u: a[0] + f * (b[0] - a[0]), v: a[1] + f * (b[1] - a[1]) };
+}
+
+/** Ground track through layered winds: integrates dx = u dt, dy = v dt along the descent (dt = dh / V). */
+export function layeredTrack(p, layers, n = 300) {
+  const H = descentHistory(p, n), pts = [{ ...H[0], x: 0, y: 0, dist: 0 }];
+  let x = 0, y = 0;
+  for (let i = 1; i < H.length; i++) {
+    const dt = H[i].t - H[i - 1].t, w = windAt(layers, (H[i].h + H[i - 1].h) / 2);
+    x += w.u * dt; y += w.v * dt;
+    pts.push({ ...H[i], x, y, dist: Math.hypot(x, y) });
+  }
+  const bearing = ((Math.atan2(x, y) * 180) / Math.PI + 360) % 360;   // clockwise from north, the direction it drifts TO
+  return { pts, x, y, dist: Math.hypot(x, y), bearing, t: H[H.length - 1].t };
+}

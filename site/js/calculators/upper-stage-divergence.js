@@ -127,7 +127,7 @@ export default {
       },
     },
     {
-      id: 'trim', title: 'Angle-of-attack amplification against q',
+      id: 'trim', title: 'Angle-of-attack amplification against q', when: (v) => !!v.trim,
       info: { text: 'How much the trimmed angle of attack of the whole rocket and of its nose grow with dynamic pressure, compared with a rigid rocket (memo eqs. 1 and 2). They run away before $q_D$ if the bending destroys static stability first.', doc: 'trim' },
       build(v, out, { U }) {
         if (!v.trim) return null;

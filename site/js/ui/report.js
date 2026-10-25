@@ -129,7 +129,10 @@ function buildModel({ def, state, refList, getSystem }) {
       known.set(st.lhs, mainValue(st.res));
     } else if (!st.lhs && st.res) st.calc = st.res;
   }
-  for (const w of out?.warnings || []) notes.push(`Warning: ${w.text.replace(/<[^>]+>/g, '')}`);
+  const plain = (t) => String(t || '').replace(/<[^>]+>/g, '');
+  const vd = out?.verdict;
+  if (vd && vd.level !== 'none') notes.push(`Verdict: ${vd.level.toUpperCase()}. ${plain(vd.title)}. ${plain(vd.text)}${vd.fixes?.length ? ` Fixes: ${vd.fixes.map(plain).join(' ')}` : ''}`);
+  for (const w of out?.warnings || []) notes.push(`Warning: ${plain(w.text)}${w.fix ? ` Fix: ${plain(w.fix)}` : ''}`);
   return {
     nom, title: def.title, source: refList[0] ? refList[0].title + (refList[0].authors ? ` (${refList[0].authors})` : '') : def.title, date: new Date().toISOString().slice(0, 10), units: sys === 'si' ? 'SI' : 'US customary',
     summary: (def.subtitle || '').replace(/<[^>]+>/g, ''), inputs, tables, results, sections, notes,

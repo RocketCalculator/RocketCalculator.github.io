@@ -63,3 +63,12 @@ test('Carry-over CP is continuous through s = 2r (analytic continuation of the w
 });
 
 after(() => console.log(`subsonic CP: ${stats.compared} values compared, max rel err ${stats.maxRel.toExponential(2)}`));
+
+test('Hand checks: a conical nose gives C_Nα = 2 at 2/3 of its length; Barrowman vs NACA 1307 interference', () => {
+  const o = subsonicCP({ M: 0, profile: [{ x: 0, r: 0 }, { x: 12, r: 2 }, { x: 60, r: 2 }], flatNose: false, fins: { N: 4, xLE: 50, xTipLE: 52, cR: 8, cT: 4, b: 4, tanBT: 0 } });
+  close(o.body.CNa, 2, 1e-12, 'cone C_Nα'); close(o.body.mom / o.body.CNa, 8, 1e-12, 'cone CP at 2L/3');
+  // NACA 1307: K_W(B) + K_B(W) = (1 + r/s)²; Barrowman's fin-in-presence-of-body factor 1 + r/(r + b) is smaller
+  const r = 2, s = 6;
+  close(o.fin.KWB + o.fin.KBW, (1 + r / s) ** 2, 1e-9, 'total interference');
+  assert.ok(o.fin.KWB + o.fin.KBW > 1 + r / (r + 4));
+});

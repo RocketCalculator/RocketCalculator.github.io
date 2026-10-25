@@ -53,3 +53,27 @@ live pages checked after each deploy.
 **Uncertain:** Barrowman fin-interference beyond 4 fins (D12). Handle drags still redraw the drawing each frame
 (≈30 fps at ×4 CPU on Subsonic CP).
 **Next:** `shared/verdict-tiers` (verdict banner + Explore section, opt-in), then Phase 1 Fin Flutter.
+
+## 2026-10-25 — Shared verdict/tiers and Phase 1: Fin Flutter (done)
+
+- `v1.4.0` (PR #6 `shared/verdict-tiers`): opt-in verdict banner, Explore tier, warnings with fixes.
+- `fin-flutter/v1.0.0` + `v1.5.0` (PR #7 `feat/fin-flutter-calculator`): Fin Flutter rebuilt on Martin's correlation as
+  corrected by Bennett (2023). Verified against Bennett's worked example (all intermediates and flutter speeds),
+  altimetercloud.com's published code (3 designs) and Hoult's workbook. The plan's "1.337" form was found to
+  overstate V_f by √2 (Bennett) and is not used (D13). Thresholds D15. UI fuzz found 20 page errors (rear view with a
+  cleared thickness) — fixed in the shared component before merge.
+- **Uncertain:** NACA TN 4197 not read directly; composite G; tip-to-tip ×2 allowance.
+- **Live check:** fin-flutter page, docs and two other calculators load without errors or 404s; example and
+  trajectory fill reproduce the local results.
+
+```
+*   cb3d840 Merge feat/fin-flutter-calculator: Fin Flutter rebuilt (#7)
+*   1679919 Merge shared/verdict-tiers (#6)
+*   ed1a183 Merge shared/rocket-back-view (#5)
+*   b34e96c Merge shared/diagram-viewport (#4)
+*   158150e Merge shared/number-field (#3)
+*   21b85e4 Merge docs/discovery (#2)
+*   44358b8 Merge chore/hosting-migration (#1)
+```
+
+**Next:** Phase 2, calculator 1 — Subsonic Centre of Pressure (`improve/subsonic-cp-cycle-1`).

@@ -4,6 +4,26 @@ Newest first, in the spirit of [Keep a Changelog](https://keepachangelog.com/). 
 branch, tag and commit range. Live site: https://darasamii.github.io/RocketCalculator/ (moving to
 https://rocketcalculator.github.io/, see `BLOCKERS.md` B1).
 
+## 2026-10-25 — Subsonic CP: stability verdict (`improve/subsonic-cp-cycle-1`, tags `subsonic-cp/v1.1.0`, `v1.5.1`)
+
+### Added
+- Verdict (SAFE / MARGINAL / UNSAFE) on the worst-case static margin over Mach 0 and your highest Mach, launch and
+  burnout CG, and with and without the NACA 1307 body carry-over lift (D18, D19).
+- Inputs: CG at burnout (optional), target static margin. Results: worst-case margin, CG shift and fin span that
+  reach the target, nominal / no-carry-over / burnout margins.
+- Plots: static margin through the flight (main) and against fin span (Explore). CP, C_Nα and build-up plots moved to
+  Explore; the fin end view moved under the fin-count input.
+- Docs: worst-case margin and thresholds section. Tests: cone and interference hand checks, worst-case trends.
+
+### Added (shared)
+- Verdict banner level `none` for "not enough input yet".
+- Reports (all formats) include the verdict with its fixes, and each warning's fix.
+
+### Fixed (shared)
+- Phones: the notice dock covered up to a third of the screen (and the drawing's zoom buttons). Each notice now
+  shows two lines; a tap opens it. The dock is capped at 30 % of the screen height.
+- Results rows that appear only for some inputs shifted the table (burnout margin now always shown, "—" until set).
+
 ## 2026-10-25 — Fin Flutter rebuilt (`feat/fin-flutter-calculator`, tags `fin-flutter/v1.0.0`, `v1.5.0`)
 
 ### Changed (BREAKING: results and inputs changed; old links fall back to the new defaults)

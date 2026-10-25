@@ -105,6 +105,24 @@
         <p>measured aft of the nose tip (station 0). With the CG at <span class="tex">X_{CG}</span>, the static margin in calibres is</p>
         <div class="eq"><div class="tex-display">SM=\frac{X_{CP}-X_{CG}}{d}.</div></div>
         <p>Positive means the CP is behind the CG and the rocket is statically stable. A margin of 1–2 calibres is common amateur practice.</p>
+        <h3 id="verdict">Worst-case margin and the verdict</h3>
+        <p>The margin changes during the flight, so the calculator does not judge a single number. It evaluates every combination of</p>
+        <ul>
+          <li>Mach 0 (leaving the rail) and your highest flight Mach number — compressibility moves the fin CP;</li>
+          <li>the CG at launch and, if you give it, the CG at burnout — the CG usually moves forward as propellant burns, but not always;</li>
+          <li>with and without the body carry-over lift of NACA 1307. Barrowman’s own method uses the smaller factor 1 + r/(r + s) instead, so a rocket that only passes with it is relying on lift most tools do not count.</li>
+        </ul>
+        <p>The lowest of these is the <strong>worst-case static margin</strong>, and the verdict uses it:</p>
+        <table class="sym-table">
+          <thead><tr><th>Verdict</th><th>Worst-case margin</th></tr></thead>
+          <tbody>
+            <tr><td>SAFE</td><td>at or above your target (default 1.5 cal)</td></tr>
+            <tr><td>MARGINAL</td><td>between 1 cal and the target</td></tr>
+            <tr><td>UNSAFE</td><td>below 1 cal (or negative: unstable)</td></tr>
+          </tbody>
+        </table>
+        <p>These limits are <strong>common amateur practice, not a published standard</strong>: the 1-calibre floor and the 1–2 calibre band are widely used rules of thumb that this site has not traced to a primary source. Above about 4 calibres the rocket is very stable but weathercocks strongly into the wind; the calculator notes that but does not mark it unsafe.</p>
+        <p>When the worst case misses the target, the calculator gives two fixes: the forward CG shift that reaches the target (<span class="tex">\Delta X_{CG}=(SM_{target}-SM)\,d</span>), and the exposed semispan that reaches it with the other fin dimensions held, found by bisection over the full worst-case search.</p>
       </section>
 
       <section id="assumptions">

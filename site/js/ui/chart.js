@@ -125,7 +125,8 @@ export function createChart(host, opts = {}) {
       }
       flush();
       const p = s('path', { class: `series${se.dashed ? ' dashed' : ''}`, d, stroke: se.col, 'stroke-width': se.width || 2 });
-      if (se.area) plot.append(s('path', { d: d + `L${X(se.points.at(-1)[0])},${Y(Math.max(yd[0], 0))}L${X(se.points[0][0])},${Y(Math.max(yd[0], 0))}Z`, fill: se.col, opacity: 0.08, stroke: 'none' }));
+      // area: true fills down to zero; area: 'above' fills up to the top of the plot (a danger zone above a limit)
+      if (se.area) { const yEdge = se.area === 'above' ? Y(yd[1]) : Y(Math.max(yd[0], 0)); plot.append(s('path', { d: d + `L${X(se.points.at(-1)[0])},${yEdge}L${X(se.points[0][0])},${yEdge}Z`, fill: se.col, opacity: se.area === 'above' ? 0.12 : 0.08, stroke: 'none' })); }
       plot.append(p);
       if (se.dots) for (const [x, y] of se.points) if (Number.isFinite(x) && Number.isFinite(y)) plot.append(s('circle', { class: 'series-dot', cx: X(x).toFixed(2), cy: Y(y).toFixed(2), r: 2.6, fill: se.col }));
       if (animate && !se.dashed) { requestAnimationFrame(() => { const len = p.getTotalLength?.() || 1000; p.style.setProperty('--len', len); p.classList.add('anim'); }); }

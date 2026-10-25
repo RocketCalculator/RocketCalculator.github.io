@@ -60,3 +60,17 @@ test('Reefing curve and the memo’s example (reefing ratio 0.25 gives ≈ 61 ft
   assert.ok(Math.abs(o.vSL - 61.25) < 2, `reefed sea-level speed ${o.vSL}`);
   assert.ok(o.vAft < o.vNose && o.vAft > o.vAftMin && o.tReefed > 0 && o.tOpen > 0);
 });
+
+test('Sizing helpers: the diameter, tether and disreef height they return hit their targets exactly', async () => {
+  const { diameterFor, tetherFor, disreefFor, descentHistory } = await import('../site/js/calc/recovery.js');
+  const p = { W1: 10, W2: 8.5, L: 33, D0: 5.18, CD: 0.8, reef: true, ratio: 0.25, hR: 1000, hD: 25000, hG: 4300, VD: 100, wind: 20 };
+  close(recovery({ ...p, D0: diameterFor(p, 15) }).vAft, 15, 1e-9, 'diameter for 15 ft/s');
+  const L = tetherFor(p, 23); close(recovery({ ...p, L }).vAft, 23, 1e-9, 'tether for 23 ft/s');
+  assert.equal(tetherFor(p, 21), null, 'below the endless-tether speed no tether works');
+  const hR = disreefFor(p, 8000); close(recovery({ ...p, hR }).drift, 8000, 1e-6, 'disreef for 8000 ft drift');
+  assert.equal(disreefFor(p, 5000), null, 'reefed part alone drifts farther than 5000 ft');
+  // the time history ends at the computed descent time and drift, speed falls monotonically within each phase
+  const H = descentHistory(p), o = recovery(p);
+  close(H.at(-1).t, o.t, 1e-9, 'history ends at t'); close(H.at(-1).x, o.drift, 1e-9, 'history ends at the drift');
+  for (let i = 1; i < H.length; i++) if (H[i].reefed === H[i - 1].reefed) assert.ok(H[i].V <= H[i - 1].V + 1e-9, 'slower as the air thickens');
+});

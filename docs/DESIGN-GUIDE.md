@@ -117,6 +117,28 @@ Order of contents:
 6. **Typical values** — ranges and practical guidance.
 7. Footer: “Open full documentation ↗” (new tab, to the right section).
 
+### 6a. Writing an info tab (the standard, owner's request 2026-10-25)
+
+The reader has **high-school STEM knowledge**: they know speed, mass, force, pressure and simple algebra, but not
+aerospace jargon. Every input and result gets an info tab written for that reader:
+
+- **In short — three short paragraphs** (`text: [...]`), one idea each, everyday words, no jargon without a bracketed
+  explanation the first time:
+  1. *What it is* — in one plain sentence, ideally with a picture in words ("the diameter of the parachute laid flat
+     on the floor").
+  2. *Where the number comes from* — how to measure, look up or choose it (input), or what the number means and how
+     to read it (result).
+  3. *What changing it does* — the direction and size of its effect on the main results ("double the diameter and
+     the landing speed halves, but the drift roughly doubles").
+- **Key formula** (`tex`) — the one equation that uses or produces it. Every symbol in it must be in `symbols` with
+  a plain meaning **and its unit** ("descent speed, how fast the rocket falls (m/s or ft/s)"); the drawer lists them.
+- **Diagram** — inputs that appear in the drawing are tied to it with `data-field`, so the info tab shows the drawing
+  with that input highlighted.
+- **Typical values** (`range`) — realistic numbers with context (model, high-power, research rockets), in both unit
+  systems when they differ.
+- Plot info tabs say what is plotted, how to read it (what the lines and markers are) and the one thing to look for.
+- Never more than about 120 words of text per tab; put derivations on the theory page and link with `doc`.
+
 ## 7. Mathematics, symbols and units
 
 - **Every symbol and unit is typeset**, never written as ASCII. KaTeX in HTML (`texHTML`, `rich('… $C_{N\alpha}$ …')`);

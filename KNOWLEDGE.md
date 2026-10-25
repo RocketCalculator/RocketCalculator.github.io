@@ -217,6 +217,18 @@ scripts/generate_pages.mjs`; write `site/docs/<slug>.html`; add REPAIR/INVARIANT
 - **Not done (no primary source read):** humidity (virtual temperature, saturation vapour pressure); WGS-84
   Somigliana gravity instead of Potsdam; winds.
 
+### Parachute Recovery (`parachute-recovery`) — cycle 1, branch `improve/recovery-cycle-1`
+- **Sources (repo library, read this session):** Hoult, *Dual Purpose Parachute Recovery System rev2* (2013) and
+  *Parachute Reefing* (2013, after Knacke AD-A036 497). They give the descent and drift model, the aft-body slowing
+  (eq. 7), reefed drag (Knacke data), the 0.2 reefing-ratio limit for small canopies and the reefing-line strength.
+  They give **no** recommended landing speed, drift or opening-shock method (OSCALC not read) — hence D25.
+- **Memo inconsistency:** table 3 lists a total descent time of 27.1 min for the example, but its own reefed sea-level
+  speed (61 ft/s) gives ≈ 5 min; the closed form here matches direct integration and ONECHUTE (tests). Treated as a
+  misprint.
+- **Helpers (calc/recovery.js):** descentHistory, diameterFor (bisection), tetherFor (closed form), disreefFor
+  (bisection); tests check each hits its target exactly.
+- **Shared fix:** stale drag handles are hidden after each render (calculator-page.js).
+
 ### Diagram Quality Gate log
 
 **Fin Flutter**
@@ -255,6 +267,15 @@ scripts/generate_pages.mjs`; write `site/docs/<slug>.html`; add REPAIR/INVARIANT
 | Temperature profile (main) | What is the temperature at each altitude? | Yes, with the standard overlay and both tropopauses | Sees the local tropopause | Tropopause, launch site | Axes | KEEP (standard overlay added) |
 | Dynamic pressure and Mach at your speed (new, Explore) | What loads would this speed give at each altitude? | Yes — q falls with altitude; marker shows Mach | Picks the max-q altitude for loads | Marker | Axes | KEEP |
 | Ratios, tropopause vs latitude, gravity vs latitude | Context | Partly | — | — | Axes | KEEP, moved to Explore |
+
+**Parachute Recovery**
+| Diagram | 1 Question | 2 Better than a number? | 3 What the user does | 4 Shows the problem | 5 Scale | Verdict |
+|---|---|---|---|---|---|---|
+| Descent path and landing (drawing) | Where does it land, how long does it take, how hard does it land? | Yes — the path, time dots and the area edge show at a glance whether it lands inside | Drags the opening/disreef heights, wind or area edge | Landing point coloured by verdict; area shaded | Height and drift to one scale; landing inset not to scale (labelled) | REDESIGN done |
+| The descent, second by second (main, panels) | How do height, speed and drift evolve? | Yes — the disreef step, speed against the limit, drift against the edge on one time axis | Moves disreef or reefing | Limit lines | Axes with units | KEEP (new; replaces the split speed-vs-altitude plot) |
+| Choosing the parachute size (main, panels) | What diameter should I buy? | Yes — the trade-off between softness and drift | Picks a size between the crossings | Limit lines, current size | Axes | KEEP (new) |
+| Drift vs disreef height, tether, reefed drag (Explore) | Secondary trade-offs | Yes | Tunes disreef / tether | Limit lines | Axes | KEEP |
+| *Removed:* descent speed vs altitude, height vs time | replaced by the panel plot | | | | | REMOVE |
 
 ## Lessons learned
 

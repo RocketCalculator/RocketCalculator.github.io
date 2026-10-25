@@ -299,7 +299,7 @@ export async function mountCalculator(def) {
         holder.append(rec.el);
         handles.set(key, rec);
       }
-      rec.opts = opts;
+      rec.opts = opts; rec.used = true; rec.el.style.display = '';
       rec.el.setAttribute('cx', x); rec.el.setAttribute('cy', y);
       return rec.el;
     },
@@ -413,7 +413,10 @@ export async function mountCalculator(def) {
     if (verdictBox) renderVerdict(out.verdict);
     renderResults(out, { cards: true });
     if (def.schematic) {
+      // a handle the drawing does not ask for this time (e.g. disreef with reefing off) is hidden, not left stale
+      for (const r of handles.values()) r.used = false;
       try { def.schematic(ctx, state.values, out); } catch (err) { console.error(err); }
+      for (const r of handles.values()) if (!r.used) r.el.style.display = 'none';
       const sv = schemHost.querySelector('svg.schem');
       if (sv) viewport.attach(sv);
       syncAnim();

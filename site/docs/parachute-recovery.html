@@ -60,6 +60,26 @@
         <p>The parachute drifts with the wind for the whole descent. The calculator uses a single mean wind speed; winds aloft are usually stronger than at the ground, so take a representative value from the forecast winds aloft. The drift grows with the descent time, which is why reefing high up — to come down fast — helps keep the rocket on the range.</p>
       </section>
 
+      <section id="verdict">
+        <h2>Verdict and what to change</h2>
+        <p>You give two limits: the landing speed you accept for the aft body, <span class="tex">V_T</span>, and the radius of your recovery area, <span class="tex">R_f</span>. The calculator does not impose either value; they depend on your hardware and your launch site.</p>
+        <table class="sym-table">
+          <thead><tr><th>Verdict</th><th>Landing speed</th><th>Drift</th></tr></thead>
+          <tbody>
+            <tr><td>SAFE</td><td><span class="tex">V_{aft}\le V_T</span></td><td><span class="tex">x_w\le0.8\,R_f</span></td></tr>
+            <tr><td>MARGINAL</td><td>up to <span class="tex">1.25\,V_T</span></td><td>up to <span class="tex">R_f</span></td></tr>
+            <tr><td>UNSAFE</td><td>above <span class="tex">1.25\,V_T</span></td><td>beyond <span class="tex">R_f</span></td></tr>
+          </tbody>
+        </table>
+        <p>The 1.25 and 0.8 bands are this project’s choice (DECISIONS D25), a margin for the uncertainty in wind and drag coefficient, not published limits. When the design misses a limit, the calculator solves for:</p>
+        <ul>
+          <li>the <strong>parachute diameter</strong> that gives exactly <span class="tex">V_T</span>, by bisection on the landing-speed formula;</li>
+          <li>the <strong>tether length</strong> that gives <span class="tex">V_T</span>, in closed form from the impact formula: <span class="tex">L=-\frac{m_2}{C_D\rho_GS}\ln\frac{V_T^2-2m_2g/(C_D\rho_GS)}{2m_1g/(C_D\rho_GS)}</span>. There is none if <span class="tex">V_T</span> is below the endless-tether speed;</li>
+          <li>the <strong>disreef height</strong> that keeps the drift inside <span class="tex">R_f</span>, by bisection. With reefing off, it reports this for a 0.25 reefing ratio.</li>
+        </ul>
+        <p>The <em>Choosing the parachute size</em> plot shows the trade-off directly. A bigger canopy lowers the landing speed but raises the drift; the sizes that satisfy both limits lie between the two crossings.</p>
+      </section>
+
       <section id="verification">
         <h2>Verification</h2>
         <p>The tests compare the closed-form descent time with direct numerical integration of <span class="tex">dt=dh/V</span>, the landing formula with an integration of the aft body’s equation of motion over the tether, and the constant-density case with the 25 000 ft dart-descent table. The field tool’s cells are reproduced exactly when its own density exponent is used (see below). The reefing curve is checked to be monotone and to give the memo’s reefed descent speed (≈ 61 ft/s at sea level) within 2 ft/s.</p>

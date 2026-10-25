@@ -14,16 +14,51 @@ const NONE = { dim: 'none' };
 const Q = (x, spec, digits = 3) => `${fmt(toDisplay(x, spec), { digits })} ${unitLabel(displayUnit(spec))}`;
 
 // Bennett's suggested working shear moduli "allowing for margin" (Peak of Flight 615, table p. 4), psi.
+// Shear moduli G (psi). Bennett's working values (Peak of Flight 615) first; then the bulk materials of OpenRocket's
+// database with their in-plane shear modulus (OpenRocket core Databases.java, commit 54b78727d "Add in-plane shear
+// modulus to material"; sources in that file's comments: MatWeb, designerdata.nl, Peak of Flight 615, wood handbook
+// ratios G_LT/E_L). Not independently verified here; 3D-printed values are for 100 % infill.
+const BENNETT_G = 'Bennett (Peak of Flight 615)';
 const MATERIALS = [
-  { value: 'balsa', label: 'Balsa wood', G: 33359 },
-  { value: 'birchply', label: 'Birch aircraft plywood', G: 89000 },
-  { value: 'g10', label: 'G10 / G12 epoxy fibreglass', G: 600000 },
-  { value: 'cfrp', label: 'Carbon fibre–epoxy composite', G: 600000 },
-  { value: 'al6061', label: '6061-T6 aluminium', G: 3800000 },
-  { value: 'ti64', label: '6Al-4V titanium', G: 6200000 },
-  { value: 'st4130', label: '4130 steel', G: 12000000 },
+  { value: 'balsa', label: 'Balsa wood', G: 33359, group: BENNETT_G },
+  { value: 'birchply', label: 'Birch aircraft plywood', G: 89000, group: BENNETT_G },
+  { value: 'g10', label: 'G10 / G12 epoxy fibreglass', G: 600000, group: BENNETT_G },
+  { value: 'cfrp', label: 'Carbon fibre–epoxy composite', G: 600000, group: BENNETT_G },
+  { value: 'al6061', label: '6061-T6 aluminium', G: 3800000, group: BENNETT_G },
+  { value: 'ti64', label: '6Al-4V titanium', G: 6200000, group: BENNETT_G },
+  { value: 'st4130', label: '4130 steel', G: 12000000, group: BENNETT_G },
+  { value: 'or-acrylic', label: 'Acrylic', G: 246564, group: 'OpenRocket — Plastics' },
+  { value: 'or-delrin', label: 'Delrin', G: 137206, group: 'OpenRocket — Plastics' },
+  { value: 'or-nylon-6-6', label: 'Nylon (6/6)', G: 166793, group: 'OpenRocket — Plastics' },
+  { value: 'or-polycarbonate-lexan', label: 'Polycarbonate (Lexan)', G: 114000, group: 'OpenRocket — Plastics' },
+  { value: 'or-polystyrene', label: 'Polystyrene', G: 178396, group: 'OpenRocket — Plastics' },
+  { value: 'or-pvc', label: 'PVC', G: 330686, group: 'OpenRocket — Plastics' },
+  { value: 'or-pla-100-infill', label: 'PLA, 100 % infill', G: 348091, group: 'OpenRocket — 3D-printed (100 % infill)' },
+  { value: 'or-petg-100-infill', label: 'PETG, 100 % infill', G: 116030, group: 'OpenRocket — 3D-printed (100 % infill)' },
+  { value: 'or-abs-100-infill', label: 'ABS, 100 % infill', G: 126908, group: 'OpenRocket — 3D-printed (100 % infill)' },
+  { value: 'or-asa-100-infill', label: 'ASA, 100 % infill', G: 116030, group: 'OpenRocket — 3D-printed (100 % infill)' },
+  { value: 'or-aluminium-6061-t6', label: 'Aluminium (6061-T6)', G: 3.77098e+06, group: 'OpenRocket — Metals' },
+  { value: 'or-brass', label: 'Brass', G: 5.64197e+06, group: 'OpenRocket — Metals' },
+  { value: 'or-steel', label: 'Steel', G: 1.15595e+07, group: 'OpenRocket — Metals' },
+  { value: 'or-titanium', label: 'Titanium', G: 6.23662e+06, group: 'OpenRocket — Metals' },
+  { value: 'or-balsa', label: 'Balsa', G: 33358.7, group: 'OpenRocket — Woods' },
+  { value: 'or-basswood', label: 'Basswood', G: 48007.5, group: 'OpenRocket — Woods' },
+  { value: 'or-birch', label: 'Birch', G: 101526, group: 'OpenRocket — Woods' },
+  { value: 'or-cork', label: 'Cork', G: 1450.38, group: 'OpenRocket — Woods' },
+  { value: 'or-maple', label: 'Maple', G: 102977, group: 'OpenRocket — Woods' },
+  { value: 'or-pine', label: 'Pine', G: 102977, group: 'OpenRocket — Woods' },
+  { value: 'or-plywood-birch', label: 'Plywood (birch)', G: 88908.1, group: 'OpenRocket — Woods' },
+  { value: 'or-spruce', label: 'Spruce', G: 159542, group: 'OpenRocket — Woods' },
+  { value: 'or-carbon-fibre-quasi-isotropic', label: 'Carbon fibre (quasi-isotropic)', G: 600456, group: 'OpenRocket — Composites' },
+  { value: 'or-fibreglass', label: 'Fibreglass', G: 600456, group: 'OpenRocket — Composites' },
+  { value: 'or-kraft-phenolic', label: 'Kraft phenolic', G: 258167, group: 'OpenRocket — Composites' },
+  { value: 'or-cardboard', label: 'Cardboard', G: 58015.1, group: 'OpenRocket — Paper and foam' },
+  { value: 'or-depron-xps', label: 'Depron (XPS)', G: 391.602, group: 'OpenRocket — Paper and foam' },
+  { value: 'or-styrofoam-eps', label: 'Styrofoam (EPS)', G: 290.075, group: 'OpenRocket — Paper and foam' },
+  { value: 'or-blue-foam-xps', label: 'Blue foam (XPS)', G: 406.106, group: 'OpenRocket — Paper and foam' },
   { value: 'custom', label: 'Custom (enter G)', G: null },
 ];
+const GROUP_OF = (v) => MATERIALS.find((m) => m.value === v.material)?.group || '';
 const G_OF = (v) => (v.material === 'custom' ? v.Gc : MATERIALS.find((m) => m.value === v.material)?.G ?? v.Gc) * (v.tipToTip ? 2 : 1);
 
 // Verdict thresholds (DECISIONS.md D15): UNSAFE below 1.2 (Bennett: under 20 % margin "potentially unsafe";
@@ -89,7 +124,7 @@ export default {
     {
       id: 'mat', title: 'Material',
       fields: [
-        { id: 'material', label: 'Fin material', kind: 'select', default: 'g10', options: MATERIALS.map(({ value, label, G }) => ({ value, label: G ? `${label} — ${fmt(G, { digits: 3 })} psi` : label })),
+        { id: 'material', label: 'Fin material', kind: 'select', default: 'g10', options: MATERIALS.map(({ value, label, G, group }) => ({ value, group, label: G ? `${label} — G ${fmt((G * 6894.757293168) / 1e9, { digits: 3 })} GPa (${fmt(G, { digits: 3 })} psi)` : label })),
           info: { text: 'Working shear moduli suggested by Bennett (2023), chosen with margin. Composites are anisotropic and measured values for G10 range from 425 000 to 1 700 000 psi; the epoxy dominates, so carbon and glass are treated alike.', doc: 'material' } },
         { id: 'Gc', label: 'Shear modulus G', sym: 'G', ...MOD, default: 600000, min: 0, minExclusive: true, when: (v) => v.material === 'custom',
           info: { text: 'In-plane shear modulus of the fin material. From Young’s modulus E and Poisson’s ratio ν: G = E / (2(1 + ν)) — this overestimates G for composites.', doc: 'material' } },
@@ -195,7 +230,9 @@ export default {
     if (maxM > 1.5) warnings.push({ level: 'warn', text: `The flight reaches Mach ${fmt(maxM, { digits: 3 })}: Martin’s correlation was validated to about Mach 1.5 (Bennett), so the result is extrapolated.`, fix: 'Treat the safety factor as indicative and keep a larger margin, or analyse the fin properly.' });
     if (hot < Math.max(UNSAFE_SF, target) && SF >= target) warnings.push({ level: 'warn', text: `On a day 20 °F hotter the safety factor drops to ${fmt(hot, { digits: 3 })}.`, fix: `Check the hottest day you might launch; at least ${Q(fin.t * (target / hot) ** (2 / 3), LEN)} thick fins would cover it.` });
     if (Math.max(...flight.rows.map((r) => r.h + v.h0)) > H_TROPO) warnings.push({ level: 'info', text: 'Part of the flight is above 36 000 ft, where Bennett’s equations stop; an isothermal standard layer is used there.' });
-    if (['g10', 'cfrp'].includes(v.material) || (v.material === 'custom' && G < 2e6)) warnings.push({ level: 'info', text: 'Composite shear moduli vary widely (G10 measurements range from 425 000 to 1 700 000 psi); the result is only as good as G.', fix: 'Use a measured or conservative G for your layup.' });
+    if (/3D-printed/.test(GROUP_OF(v))) warnings.push({ level: 'warn', text: 'A 3D-printed fin’s stiffness depends on the print orientation, layer bonding, infill and temperature; OpenRocket’s value is for 100 % infill and is indicative only.', fix: 'Use a generous safety factor, or test a printed coupon; a laminated or plywood fin is far more predictable.' });
+    if (/foam/.test(GROUP_OF(v)) || v.material === 'or-cork') warnings.push({ level: 'warn', text: 'Foam, cork and paper are not structural fin materials: their shear modulus is tiny, so flutter happens at very low speed.', fix: 'Use them only for low-speed models, or skin them with fibreglass or plywood.' });
+    if (['g10', 'cfrp', 'or-carbon-fibre-quasi-isotropic', 'or-fibreglass', 'or-kraft-phenolic'].includes(v.material) || (v.material === 'custom' && G < 2e6)) warnings.push({ level: 'info', text: 'Composite shear moduli vary widely (G10 measurements range from 425 000 to 1 700 000 psi); the result is only as good as G.', fix: 'Use a measured or conservative G for your layup.' });
     if (v.tipToTip) warnings.push({ level: 'info', text: 'Tip-to-tip reinforcement is approximated by doubling G (Bennett) — not modelled by the correlation.' });
     if (f.eps0 < 0.25) warnings.push({ level: 'info', text: `The centroid is ahead of the usual position (ε = ${fmt(f.eps0, { digits: 3 })}); ε = 0.25 is used, the conservative choice.` });
     if (worst.h + v.h0 < 0) throw new InputError('The flight goes below sea level in this atmosphere model.');

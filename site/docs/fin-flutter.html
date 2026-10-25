@@ -58,6 +58,8 @@
       <section id="material">
         <h2>Shear modulus</h2>
         <p>The shear modulus dominates the answer, and is the least certain input. Bennett’s suggested working values, chosen with margin (psi): balsa 33 359; birch aircraft plywood 89 000; G10/G12 fibreglass 600 000; carbon-fibre epoxy 600 000; 6061-T6 aluminium 3 800 000; 6Al-4V titanium 6 200 000; 4130 steel 12 000 000. Measured values for G10 range from 425 000 to 1 700 000 psi; in-plane shear of a laminate depends mostly on the epoxy, so carbon and glass behave alike. From Young’s modulus and Poisson’s ratio, <span class="tex">G=E/(2(1+\nu))</span>, which overestimates <span class="tex">G</span> for composites. For tip-to-tip reinforcement Bennett suggests doubling <span class="tex">G</span> as a rough allowance.</p>
+      
+        <p>The calculator also offers the bulk materials of OpenRocket’s database with their in-plane shear modulus (OpenRocket core <code>Databases.java</code>, the commit that added the shear modulus; its comments cite MatWeb, designerdata.nl, Peak of Flight 615 and wood-handbook ratios). Those values are listed as given there, not independently checked here. The woods, plywood, fibreglass and balsa agree with Bennett’s working values. The 3D-printed plastics (PLA, PETG, ABS, ASA at 100 % infill) are indicative only: a printed fin’s stiffness depends on orientation, layer bonding and temperature, and the calculator warns about it.</p>
       </section>
 
       <section id="flight">

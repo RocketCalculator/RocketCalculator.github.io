@@ -52,8 +52,8 @@ export function linePath(P, smooth) {
 /**
  * createChart(host, { height, title }) → { update(spec), el }
  * spec = { x: {label, unit}, y: {label, unit}, series: [{name, points:[[x,y]], dashed, color, smooth, dots}], markers:[{x,y,label,color}],
- *          hlines:[{y,label,color}], vlines:[{x,label,color}], xDomain, yDomain, includeZero, hover: 'x'|'y', aspect }
- * Stacked panels with one shared x axis: spec = { x, xDomain, vlines, panels: [{ y: {label, unit}, series, hlines, yDomain,
+ *          hlines:[{y,label,color}], vlines:[{x,label,color,row}], xDomain, yDomain, includeZero, hover: 'x'|'y', aspect }
+ * Stacked panels with one shared x axis: spec = { x, xDomain, vlines, panels: [{ y: {label, unit}, series, hlines, yDomain, color,
  *          includeZero, ratio: {label} }] }. A point may carry a third value [x, y, r] (e.g. the ratio to a reference); the
  *          hover read-out then shows "y unit · ratio-label = r" for every panel at the crosshair.
  *          A panel may instead be a drawing: { draw(g, X, Y, box), yDomain, equalAspect, maxHeight } — drawn with the same x
@@ -118,7 +118,8 @@ export function createChart(host, opts = {}) {
     for (const l of spec.vlines || []) {
       if (!Number.isFinite(l.x)) continue;
       plot.append(s('line', { class: 'hline', y1: m.t, y2: H - m.b, x1: X(l.x), x2: X(l.x), stroke: l.color || 'var(--text-3)' }));
-      if (l.label) plot.append(svgRich(s('text', { x: X(l.x) + 5, y: m.t + 11, fill: l.color || 'var(--text-3)', 'font-size': 10.5 }), l.label, 10.5));
+      // row: stack labels of nearby lines (row 0, 1, 2 …) instead of overprinting them
+      if (l.label) plot.append(svgRich(s('text', { x: X(l.x) + 5, y: m.t + 11 + 13 * (l.row || 0), fill: l.color || 'var(--text-3)', 'font-size': 10.5 }), l.label, 10.5));
     }
     const animate = !drawn && !reducedMotion();
     for (const se of vis) {
@@ -202,7 +203,7 @@ export function createChart(host, opts = {}) {
 
   function renderPanels() {
     const W = Math.max(280, svgHost.clientWidth || 600), n = spec.panels.length;
-    const m = { l: 64, r: 18, t: 10, b: 44 }, gap = 14;
+    const m = { l: 64, r: 18, t: 10, b: 44 }, gap = 26;
     const H = Math.round(opts.height ?? 120 * n + m.t + m.b);
     const allX = spec.panels.flatMap((p) => (p.series || []).flatMap((se) => (se.points || []).map((q) => q[0]))).filter(Number.isFinite);
     const xd = spec.xDomain || niceDomain([Math.min(...allX), Math.max(...allX)], 7);
@@ -234,7 +235,7 @@ export function createChart(host, opts = {}) {
         svg.append(g);
         return { p, series: [], Y, top, bot };
       }
-      const series = p.series.map((se, j) => ({ ...se, col: se.color || color(j), points: (se.points || []).filter(Array.isArray), j }));
+      const series = p.series.map((se, j) => ({ ...se, col: se.color || p.color || color(j), points: (se.points || []).filter(Array.isArray), j }));
       const ys = [...series.flatMap((se) => se.points.map((q) => q[1])), ...(p.hlines || []).map((l) => l.y)].filter(Number.isFinite);
       let yd = p.yDomain || [Math.min(...ys), Math.max(...ys)];
       if (!ys.length) yd = [0, 1];
@@ -270,7 +271,9 @@ export function createChart(host, opts = {}) {
       }
       g.append(s('defs', {}, s('clipPath', { id: clipId }, s('rect', { x: m.l, y: top - 2, width: W - m.l - m.r, height: ph + 4 }))), grid,
         s('path', { class: 'axis', d: `M${m.l},${top}V${bot}H${W - m.r}`, fill: 'none' }), ticks,
-        svgRich(s('text', { class: 'axis-label', transform: `translate(14 ${(top + bot) / 2}) rotate(-90)`, 'text-anchor': 'middle' }), lab(p.y), 11.5), plot);
+        svgRich(s('text', { class: 'axis-label', transform: `translate(14 ${(top + bot) / 2}) rotate(-90)`, 'text-anchor': 'middle', style: p.color ? `fill:${p.color}` : null }), lab(p.y), 11.5), plot);
+      // a rule between panels so each curve is easy to follow
+      if (i < n - 1) g.append(s('line', { x1: 6, x2: W - 6, y1: bot + gap / 2, y2: bot + gap / 2, stroke: 'var(--border-strong)', 'stroke-width': 1.5 }));
       svg.append(g);
       return { p, series, Y, top, bot };
     });

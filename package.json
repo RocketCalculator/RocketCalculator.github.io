@@ -6,7 +6,8 @@
   "scripts": {
     "test": "node --test tests/*.test.js",
     "serve": "python3 -m http.server 8000 --directory site",
-    "test:ui-layout": "node scripts/ui-layout.mjs"
+    "test:ui-layout": "node scripts/ui-layout.mjs",
+    "test:ui-diagrams": "node scripts/ui-diagrams.mjs"
   },
   "devDependencies": {
     "puppeteer-core": "23.11.1"

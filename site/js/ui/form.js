@@ -1,6 +1,7 @@
 // Input form: grouped fields with units, validation, switches, selects and editable point tables.
 // Values are held in the calc module's internal units; the form converts for display.
-import { h, s, num } from '../util.js';
+import { h, s, num, fmt } from '../util.js';
+import { rocketBackView, finCountWarning } from './backview.js';
 import { displayUnit, unitLabel, unitTex, toDisplay, fromDisplay, getSystem } from '../units.js';
 import { texHTML, rich } from '../math.js';
 const L = (f) => h('span', { html: rich(f.label) });
@@ -43,8 +44,30 @@ export function buildForm(def, state, { onChange, onHighlight, infoFor }) {
         state.values[f.id] = v; input.value = show(v, f, getSystem()); validate(); onChange(f.id, { fast: true });
       });
     }
+    // RocketBackView under a fin-count input: f.backView(v) → { R, span, t, Rin, unit, nominal, note, range }
+    let bv, bvSig = '';
+    if (f.backView) {
+      // one fixed-size drawing and one fixed-height text box (note, or the warning when there is one): nothing below
+      // moves whatever N is typed
+      bv = { svg: h('div.bv-svg'), text: h('p.bv-text', { role: 'status' }) };
+      el.append(h('div.backview', bv.svg, bv.text));
+    }
+    const syncBackView = (sys) => {
+      const N = state.values[f.id], cfg = f.backView(state.values) || {};
+      const sig = JSON.stringify([N, sys, cfg]);
+      if (sig === bvSig) return;
+      bvSig = sig;
+      const fmtLen = (x) => `${fmt(toDisplay(x, cfg.unit, sys), { digits: 3 })} ${unitLabel(displayUnit(cfg.unit, sys))}`;
+      const ok = Number.isFinite(N) && N >= 0 && cfg.R > 0 && Number.isFinite(cfg.span ?? 0);
+      bv.svg.replaceChildren(rocketBackView(ok ? { ...cfg, N } : { N: 0, R: 0 }, fmtLen));
+      const warn = ok ? finCountWarning(N, cfg.range) : 'Enter a fin count and body radius to see the rear view.';
+      bv.text.classList.toggle('warn', !!warn);
+      bv.text.innerHTML = warn ? rich(warn) : cfg.note ? rich(cfg.note, { html: true }) : '';
+      bv.text.title = bv.text.textContent;
+    };
     const sync = () => {
       const sys = getSystem();
+      if (bv) syncBackView(sys);
       unit.innerHTML = texHTML(unitTex(displayUnit(f, sys)));
       if (document.activeElement !== input || !input.value) input.value = show(state.values[f.id], f, sys);
       if (slider) {

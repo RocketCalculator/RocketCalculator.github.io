@@ -110,7 +110,7 @@ const INVARIANTS = {
   'bifilar-pendulum': (v, R) => [R.I_periods > 0, R.I_length > 0, R.PG_theory > 0, R.k > 0],
   'drag-coefficient': (v, R) => [R.CDf > 0, R.CDbOff >= 0, R.CDoff > 0, R.CDon > 0, R.lamFrac >= 0 && R.lamFrac <= 100 + 1e-9, R.CDoffPar >= R.CDoff - 1e-12],
   'fin-cant-angle': (v, R, warned) => [Math.abs(R.delta) < Math.PI / 2 || warned, R.CLp < 0, R.Ycp >= v.R - 1e-9 && R.Ycp <= v.b + 1e-9],
-  'fin-flutter': (v, R) => [R.Mf > 0, R.pr > 0 && R.pr <= 1, R.tMin > 0, R.AR > 0],
+  'fin-flutter': (v, R) => [R.Vf > 0, R.SF > 0, R.tNeed > 0, R.A > 0, R.eps >= 0.25, R.Valt > 0, R.Vhoult > 0, R.SFhot <= R.SF * (1 + 1e-12)],
   geophysics: (v, R) => [R.p > 0, R.rho > 0, R.gh > 0, R.T > 0, R.a > 0],
   'newtonian-drag': (v, R) => [R.CD >= 0, R.CDnose >= 0, R.CDfins >= 0, R.cpt > 0 && R.cpt < 2, !v.cap || (R.capXcp >= 0 && R.capXcp <= v.capR), !v.cone || (R.coneXcp >= 0 && R.coneXcp <= v.coneL)],
   'single-wedge': (v, R, warned) => [R.K >= 1 - 1e-12, R.CDw >= 0, R.CDvehicle >= 0, R.MN > 0, R.thetaMax == null || (R.thetaMax > 0 && R.thetaMax < 46)],
@@ -214,12 +214,21 @@ test('Chart ticks: bounded and sensible for degenerate and extreme ranges', () =
 const run = (slug, patch) => { const def = bySlug[slug]; const v = { ...defaults(def), ...patch }; def.sharedAdjust?.(v); return def.compute(v, {}).results; };
 const increasing = (xs, msg) => xs.slice(1).forEach((x, i) => assert.ok(x > xs[i], `${msg}: ${xs.map((y) => y.toPrecision(5)).join(' → ')}`));
 
-test('Fin flutter: thicker, stiffer fins have more margin; flutter Mach rises with altitude', () => {
-  increasing([0.06, 0.1, 0.2, 0.4].map((t) => run('fin-flutter', { t }).MS), 'MS vs t');
-  increasing([1e6, 2e6, 4e6].map((G) => run('fin-flutter', { G }).Mf), 'Mf vs G');
-  const a = run('fin-flutter', { G: 1e6 }).Mf, b = run('fin-flutter', { G: 4e6 }).Mf;
-  assert.ok(Math.abs(b / a - 2) < 1e-9, 'Mf ∝ √G');
-  increasing([0, 10000, 30000, 60000].map((h) => run('fin-flutter', { h }).Mf), 'Mf vs h');
+test('Fin flutter: thicker, stiffer, shorter fins and higher, cooler flight are safer; the remedies reach the target', () => {
+  increasing([0.06, 0.1, 0.2, 0.4].map((t) => run('fin-flutter', { t }).SF), 'SF vs t');
+  increasing([1e6, 2e6, 4e6].map((Gc) => run('fin-flutter', { material: 'custom', Gc }).Vf), 'Vf vs G');
+  const a = run('fin-flutter', { material: 'custom', Gc: 1e6 }).Vf, b = run('fin-flutter', { material: 'custom', Gc: 4e6 }).Vf;
+  assert.ok(Math.abs(b / a - 2) < 1e-9, 'Vf ∝ √G');
+  increasing([6, 4, 3, 2].map((b) => run('fin-flutter', { b }).SF), 'SF vs shorter span');
+  increasing([0, 10000, 30000, 60000].map((hMax) => run('fin-flutter', { hMax }).Vf), 'Vf vs altitude');
+  increasing([100, 70, 40].map((Tsite) => run('fin-flutter', { Tsite }).SF), 'SF vs cooler day');
+  // Bennett's example flies at Mach 1.44: the supersonic target 2.0 applies
+  const r = run('fin-flutter', {});
+  assert.ok(Math.abs(run('fin-flutter', { t: r.tNeed }).SF - 2) < 1e-9, 't_req gives the target');
+  assert.ok(Math.abs(run('fin-flutter', { b: r.bMax }).SF - 2) < 1e-6, 'b_max gives the target');
+  const sub = run('fin-flutter', { Vmax: 900 });   // subsonic: the user's target 1.5
+  assert.ok(Math.abs(run('fin-flutter', { Vmax: 900, t: sub.tNeed }).SF - 1.5) < 1e-9, 'subsonic target');
+  assert.equal(run('fin-flutter', { tipToTip: true }).Gused, 2 * r.Gused);
 });
 
 test('Ogive nose: stable for extreme fineness (slender limit S → 4πRL/3, centroid at 5L/8 from the tip)', () => {

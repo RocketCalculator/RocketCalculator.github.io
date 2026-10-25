@@ -10,6 +10,9 @@ import { svgRich } from '../math.js';
  * nominal = { span?: true, t?: true } marks dimensions this calculator does not take (drawn nominal, labelled so).
  */
 export function rocketBackView({ N, R, span, t = 0, Rin = 0, nominal = {} }, fmtLen = (x) => fmt(x, { digits: 3 })) {
+  // a dimension the user has cleared or mistyped is drawn as "not given" rather than letting NaN reach the SVG
+  const ok = (x) => (Number.isFinite(x) && x > 0 ? x : 0);
+  t = ok(t); Rin = ok(Rin); span = ok(span);
   const W = 260, H = 236, cx = 130, cy = 108, rOut = 74;
   const n = Math.max(0, Math.min(24, Math.round(N) || 0));
   const sp = Math.max(0, span || 0), k = rOut / Math.max(R + sp, R * 1.02, 1e-12), rb = R * k, rt = (R + sp) * k;

@@ -79,3 +79,28 @@ Decisions taken while the owner was unavailable. Each entry: date, question, opt
   verified from a source in this session**, so 5–8 are flagged "indicative"); drag/Newtonian/wedge 1–12 (terms
   linear in N); roll calculators and Roll Lock-In 3–8 (the lock-in paper studies 3, 4, 6, 8).
 - **Reverse:** edit `range` in the definitions.
+
+## D13 — 2026-10-25 — Fin flutter: Martin's form as corrected by Bennett, not the "1.337" form
+- **Question:** the plan quotes V_f = a √(G / ((1.337 A³ P (λ+1)) / (2 (A+2) (t/c)³))).
+- **Finding:** Bennett (2023) shows that form divides by two twice and overstates V_f by √2 — unconservative.
+- **Choice:** Martin's form with DN = 24 ε κ p₀/π (Bennett), t/c on the root chord.
+- **Reverse:** `flutterSpeed()` in `calc/flutter.js`.
+
+## D14 — 2026-10-25 — ε below 0.25 not credited
+- **Choice:** ε = max(C_x/c_R − 0.25, 0.25). A forward centroid would raise V_f; Bennett only discusses ε ≥ 0.25.
+
+## D15 — 2026-10-25 — Flutter verdict thresholds
+- UNSAFE: SF < 1.2 (Bennett: margin < 20 % "potentially unsafe"; altimetercloud: < 1.2 "danger").
+- MARGINAL: 1.2 ≤ SF < target. SAFE: SF ≥ target; target default 1.5 (altimetercloud minimum), 2.0 when the flight
+  is supersonic (altimetercloud), user may raise it. Consequence: Bennett's chosen 3/16 in fin (SF 1.75 at Mach 1.4)
+  is MARGINAL here — the stricter reading.
+
+## D16 — 2026-10-25 — Flutter atmosphere stays Bennett's
+- Bennett's standard atmosphere (its constants reproduce his worked example exactly), tied to the launch-site
+  temperature by the same lapse line; not merged with `geophysics.atmosphere()` (Hoult's latitude-dependent model),
+  which would shift his numbers by ~0.3 %. Two models exist for two sources.
+
+## D17 — 2026-10-25 — Small shared additions inside the Fin Flutter branch
+- `def.actions`, `def.externalRefs`, chart `area: 'above'`, LaTeX thin-space mapping were added in
+  `feat/fin-flutter-calculator` as separate commits (opt-in, no change to other calculators), instead of separate
+  shared branches, to avoid a 30-minute full test cycle per one-line feature. All suites re-run before merge.

@@ -143,3 +143,55 @@ scripts/generate_pages.mjs`; write `site/docs/<slug>.html`; add REPAIR/INVARIANT
 - **Check:** `npm run test:ui-layout` (scripts/ui-layout.mjs) — sweeps every slider at 320/768/1280 px in SI and US
   and types 0.001, 1e6, −1 and empty into every number field at 320 px; fails on > 1 px movement, a wrapped unit, or
   NaN/undefined/Infinity on screen. Needs `npm install` (puppeteer-core) and `CHROME=/path/to/chromium`.
+
+## Per-calculator notes
+
+### Fin Flutter (`fin-flutter`) — Phase 1 rebuild, branch `feat/fin-flutter-calculator`, tag `fin-flutter/v1.0.0`
+- **Sources read this session:** Bennett, *Fin Flutter Analysis Revisited (Again)*, Apogee Peak of Flight 615 (2023),
+  all 16 pages (equations from page images); altimetercloud.com fin-flutter page **and its `ffCalc()` code**.
+  Martin, NACA TN 4197 (1958): **not read**, used through Bennett (Bennett's reference list misprints it "TN 4917").
+- **Equation:** `V_f = a √(G / (DN A³/((t/c)³(A+2)) · (λ+1)/2 · p/p₀))`, `DN = 24 ε κ p₀/π`, t/c on the root chord,
+  `ε = C_x/c_R − 0.25` from Bennett's trapezoid centroid with sweep length m, ε < 0.25 not credited.
+- **Atmosphere:** Bennett's (T_F = T_SL − 0.00356 h, a = 49.03 √(T_F + 459.7), p = 14.696 (T_R/518.7)^5.256), lapse
+  line through the launch-site temperature, isothermal above 36 089 ft. Kept in `calc/flutter.js` rather than
+  `calc/geophysics.js` because Bennett's constants are the source's (D16).
+- **Test cases (tests/flutter.test.js):** Bennett: C_x 4.49 in, ε 0.349, DN 54.88 psi, T −6.86 °F, a 1043.36 ft/s,
+  p 7.2 psi, V_f 1425 / 1991.7 / 2618.1 ft/s for t = 1/8, 5/32, 3/16 in at 18 500 ft; hot day (his method) 1580.2 / 2077.
+  altimetercloud: its code reproduced for three designs; ratio to Martin √(2/(A+2)) (symmetric fin). Hoult's
+  FLUTTER MARGIN1 row 6 to 1e-12. Remedies reach the target exactly.
+- **Found:** the plan's "commonly cited form" (1.337, extra ÷2) overstates V_f by √2 (Bennett) — unsafe, not used
+  (D13). altimetercloud's code omits (A+2): ~12 % lower at A = 0.6. The previous version (Hoult workbook) used the
+  75 %-span chord and DN = 39.3: optimistic for tapered/swept fins; its hot-day default was 92 °F.
+- **Thresholds (D15):** UNSAFE SF < 1.2, MARGINAL to target, SAFE ≥ target (1.5; 2 when supersonic).
+- **Shared code added in this branch (D17):** `def.actions` (buttons under the form), `def.externalRefs` (linked
+  sources in Theory and the report), chart `area: 'above'` (danger zone), LaTeX export maps thin spaces.
+- **Open questions:** Martin's original constants and the ε correction's derivation (needs TN 4197); a better G for
+  composites; tip-to-tip ×2 allowance unverified.
+
+### Diagram Quality Gate log
+
+**Fin Flutter**
+| Diagram | 1 Question it answers | 2 Better than a number? | 3 What the user does differently | 4 Shows the problem/change | 5 Scale | Verdict |
+|---|---|---|---|---|---|---|
+| Flutter speed through the flight (main) | Where in the flight am I closest to flutter, and by how much? | Yes — shows the whole envelope, the danger zone and the worst point at once | Sees whether the risk is at burnout or elsewhere; reads the required margin line | Worst point marked, danger zone shaded, target line | Axes with units | KEEP |
+| Safety factor vs thickness (Explore) | How thick must the fins be? | Yes — shows how steeply SF rises (t^1.5) and where the target is crossed | Picks a stock thickness above t_req | t_req line, target and unsafe lines | Axes with units | KEEP |
+| Safety factor vs semi-span (Explore) | How long may the fins be? | Yes — the trade between span (stability) and flutter | Trims span or accepts a thicker fin | b_max line, target line | Axes with units | KEEP |
+| Fin planform and root section (drawing) | Is my geometry what I think, and what sets ε and t/c? | Partly — it shows the centroid/quarter-chord geometry behind ε, which numbers hide; coloured by verdict | Checks the sweep input; sees the fin's thinness to scale | Centroid, ε, t/c, SF on the drawing | Planform to scale; section thickness ≥ 1.5 px (labelled) | KEEP (redesigned: was 75 %-span section) |
+| Rear view (under N) | How are the fins arranged? | Context only: fin count does not enter flutter — the note says so | Nothing for flutter; confirms the layout | — | To scale | KEEP (required for every fin-count input) |
+| *Removed:* "Margin of safety vs thickness" (old) | replaced by the SF plot with target lines | | | | | REMOVE → REDESIGN |
+| *Removed:* "Flutter Mach vs altitude" (old, single horizontal flight-Mach line) | replaced by the flight-envelope plot | | | | | REDESIGN |
+
+## Lessons learned
+
+### After Fin Flutter (Phase 1)
+- **Check the source's constants against the most recent correction:** the widely copied 1.337 form is wrong by √2.
+  Read every equation image, not just the text layer (pdftotext dropped all equations).
+- **When a cross-check tool can't be queried, read its code** — altimetercloud's page text showed three different
+  formulas; its JavaScript showed which one runs.
+- **Verdict thresholds come from the sources, with the source named in the docs table**; when two sources differ,
+  take the stricter bound for SAFE and the agreed bound for UNSAFE.
+- **Remedies:** exploit exact power laws (t^1.5, √G) before bisecting.
+- **Checklist for the next calculator:** (1) list every equation from page images; (2) hand-compute the source's worked
+  example and put every printed intermediate in a test; (3) look for later corrections/errata; (4) define verdict
+  thresholds with sources; (5) remedies for the 2–3 inputs a builder can change; (6) Quality Gate table; (7) limits
+  list; (8) layout, diagram, LaTeX, smoke tests.

@@ -74,7 +74,7 @@ export async function mountCalculator(def) {
   const exampleSel = def.examples?.length > 1 ? h('select.btn.small', { 'aria-label': 'Load example' }, h('option', { value: '' }, 'Load example…'), def.examples.map((e, i) => h('option', { value: i }, e.name))) : null;
   const exampleBtn = def.examples?.length === 1 ? h('button.btn.small', { type: 'button' }, 'Load example') : null;
   const linkBtn = h('button.btn.small.ghost', { type: 'button', title: 'Copy a link that reproduces these inputs' }, ICONS.link(), 'Share');
-  const form = buildForm(def, state, { onChange: (id, o) => { pendingShared.add(id); o?.fast ? recompute() : recomputeSoon(); }, onHighlight: highlight, infoFor });
+  const form = buildForm(def, state, { onChange: (id, o) => { pendingShared.add(id); o?.fast ? requestRecompute() : recomputeSoon(); }, onHighlight: highlight, infoFor });
   const compatBox = null;
   const inputsCard = h('aside.card.calc-inputs', { 'aria-label': 'Inputs' },
     h('div.card-head', h('h2', 'Inputs'), h('span.spacer'), h('div.form-actions', exampleSel, exampleBtn, resetBtn, linkBtn)),
@@ -172,14 +172,15 @@ export async function mountCalculator(def) {
   const keyBox = h('div.key-results', { 'aria-live': 'polite' });
   const schemHost = h('div.schem-host');
   const ANIM_KEY = 'rc-anim-paused';
-  const animBtn = h('button.btn.small', { type: 'button', hidden: true, 'aria-pressed': 'false' });
+  const animBtn = h('button.btn.small', { type: 'button', style: 'visibility:hidden', 'aria-pressed': 'false' });
   const syncAnim = () => {
     const svg = schemHost.querySelector('svg.schem');
     const paused = !!storage.get(ANIM_KEY, false);
     if (svg?.pauseAnimations) paused ? svg.pauseAnimations() : svg.unpauseAnimations();
     animBtn.replaceChildren(paused ? '▶ Play animation' : '❚❚ Pause animation');
     animBtn.setAttribute('aria-pressed', String(paused));
-    animBtn.hidden = !svg?.querySelector('animate, animateTransform, animateMotion');
+    // invisible rather than removed, so the card header keeps its height when an animation comes or goes
+    animBtn.style.visibility = svg?.querySelector('animate, animateTransform, animateMotion') ? '' : 'hidden';
   };
   animBtn.addEventListener('click', () => { storage.set(ANIM_KEY, !storage.get(ANIM_KEY, false)); syncAnim(); });
   const schemCard = def.schematic ? h('section.card',
@@ -253,13 +254,13 @@ export async function mountCalculator(def) {
       const f = def.groups.flatMap((g) => g.fields).find((x) => x.id === id);
       if (f) { if (f.min != null) v = Math.max(f.min + (f.minExclusive ? 1e-9 : 0), v); if (f.max != null) v = Math.min(f.max, v); }
       if (round) v = Math.round(v / round) * round;
-      state.values[id] = v; pendingShared.add(id); form.refresh(); recompute();
+      state.values[id] = v; pendingShared.add(id); requestRecompute();
     },
     setCell(id, row, col, v, { round } = {}) {
       if (!Number.isFinite(v)) return;
       if (round) v = Math.round(v / round) * round;
       const rows = state.values[id]; if (!rows?.[row]) return;
-      rows[row][col] = v; form.refresh(); recompute();
+      rows[row][col] = v; requestRecompute();
     },
     handle(key, x, y, opts) {
       let rec = handles.get(key);
@@ -338,7 +339,7 @@ export async function mountCalculator(def) {
   });
 
   let lastKey = {};
-  function recompute() {
+  function recompute({ live = false } = {}) {
     form.refresh();
     const ok = form.validateAll();
     warnBox.replaceChildren();
@@ -369,29 +370,53 @@ export async function mountCalculator(def) {
     keyBox.style.opacity = 1;
     state.out = out;
     for (const w of out.warnings || []) warnBox.append(h(`div.notice.${w.level || 'warn'}`, { html: rich(w.text, { html: true }) }));
-    renderResults(out);
+    renderResults(out, { cards: true });
     if (def.schematic) {
       try { def.schematic(ctx, state.values, out); } catch (err) { console.error(err); }
       syncAnim();
     }
-    const bl = baseline();
-    for (const c of charts) {
-      try {
-        let sp = c.def.build(state.values, out, ctx);
-        c.card.hidden = !sp;
-        if (sp && bl) {
-          const bs = c.def.build(bl.values, bl.out, ctx);
-          const named = (n) => `${hasTeX(n) && !n.includes('$') ? `$${n}$` : n} (baseline)`;
-          if (bs) sp = { ...sp, legend: true, series: [...sp.series, ...bs.series.filter((se) => se.points?.length).map((se) => ({ ...se, name: named(se.name), color: 'var(--text-3)', dashed: true, area: false, width: 1.6 }))] };
-        }
-        if (sp) c.chart.update(sp);
-      } catch (err) { console.error(err); }
-    }
+    for (const c of charts) c.dirty = true;
+    tableDirty = true;
     report.markDirty();
+    if (live) slowSoon(); else renderSlow(true);
   }
-  const recomputeSoon = debounce(recompute, 110);
+  const recomputeSoon = debounce(() => recompute(), 110);
 
-  function renderResults(out) {
+  // Continuous input (sliders, schematic handles) recomputes at most once per animation frame; the key results and
+  // the drawing follow every frame, the results table and the charts once the input pauses — and a chart only when it
+  // is on screen. A full rebuild of every chart on every pointer move was the drag lag (DISCOVERY.md §6).
+  let frameReq = 0, tableDirty = false;
+  function requestRecompute() { frameReq ||= requestAnimationFrame(() => { frameReq = 0; recompute({ live: true }); }); }
+  function renderChart(c) {
+    c.dirty = false;
+    const out = state.out, bl = baseline();
+    if (!out) return;
+    try {
+      let sp = c.def.build(state.values, out, ctx);
+      // a plot card never disappears once on the page (that moved everything below it): it says why it is empty
+      if (!sp) c.chart.empty();
+      if (sp && bl) {
+        const bs = c.def.build(bl.values, bl.out, ctx);
+        const named = (n) => `${hasTeX(n) && !n.includes('$') ? `$${n}$` : n} (baseline)`;
+        if (bs) sp = { ...sp, legend: true, series: [...sp.series, ...bs.series.filter((se) => se.points?.length).map((se) => ({ ...se, name: named(se.name), color: 'var(--text-3)', dashed: true, area: false, width: 1.6 }))] };
+      }
+      if (sp) c.chart.update(sp);
+    } catch (err) { console.error(err); }
+  }
+  // all = true (a full recompute: load, typing, buttons) draws every chart so its height is known before it is seen;
+  // during continuous input only the charts on screen are redrawn, the others when they scroll into view
+  function renderSlow(all = false) {
+    if (tableDirty && state.out) { tableDirty = false; renderTable(state.out); }
+    for (const c of charts) if (c.dirty && (all || c.visible)) renderChart(c);
+  }
+  const slowSoon = debounce(() => renderSlow(), 140);
+  const io = new IntersectionObserver((entries) => {
+    for (const e of entries) { const c = charts.find((x) => x.card === e.target); if (!c) continue; c.visible = e.isIntersecting; if (c.visible && c.dirty) renderChart(c); }
+  }, { rootMargin: '300px 0px' });
+  for (const c of charts) { c.visible = false; io.observe(c.card); }
+
+  const renderTable = (out) => renderResults(out, { table: true });
+  function renderResults(out, { cards: doCards = false, table: doTable = false } = {}) {
     const R = out.results || {}, B = baseline()?.out?.results;
     const cards = [], rows = [];
     const show = (r, x) => (typeof x === 'number' ? fmt(toDisplay(x, r), { digits: r.digits || 5 }) : x == null ? '—' : String(x));
@@ -409,25 +434,26 @@ export async function mountCalculator(def) {
       const disp = typeof v === 'number' ? toDisplay(v, r) : v;
       const txt = typeof disp === 'number' ? fmt(disp, { digits: r.digits || 5 }) : disp == null ? '—' : String(disp);
       const info = () => infoFor({ ...r, kind: 'result' });
-      if (r.key) {
+      if (r.key && doCards) {
         const st = r.status?.(v, out, state.values);
         const note = r.note?.(v, out, state.values);
         const card = h('div.kr', { class: st ? `status-${st}` : null, 'data-result': r.id },
           h('div.kr-label', h('span', { html: rich(r.label) }), r.sym ? h('span', { html: texHTML(r.sym) }) : null, infoButton(info, { label: r.label })),
           h('div.kr-row', h('span.kr-value', txt), u ? h('span.kr-unit', { html: u }) : null),
-          note ? h('div.kr-note', { html: rich(note, { html: true }) }) : null,
+          r.note ? h('div.kr-note', { html: rich(note || '', { html: true }), title: texToPlain(String(note || '').replace(/<[^>]+>/g, '')) || null }) : null,
           B && r.id in B ? (() => { const c = change(r, v, B[r.id]); return h('div.kr-base', `Baseline ${show(r, B[r.id])}`, c ? h(`span.${c.cls}`, ` · ${c.txt}`) : null); })() : null);
         if (lastKey[r.id] !== undefined && lastKey[r.id] !== txt) card.classList.add('flash');
         lastKey[r.id] = txt;
         cards.push(card);
       }
-      rows.push(h('tr', { class: r.key ? 'key' : null },
+      if (doTable) rows.push(h('tr', { class: r.key ? 'key' : null },
         h('th', h('span.lbl', h('span', { html: rich(r.label) }), r.sym ? h('span.muted', { html: texHTML(r.sym) }) : null, infoButton(info, { label: r.label }))),
         h('td.v', txt), h('td.u', { html: u }),
         B ? h('td.v.base', show(r, B[r.id])) : null,
         B ? (() => { const c = change(r, v, B[r.id]); return h(`td.delta${c ? '.' + c.cls : ''}`, c?.txt || ''); })() : null));
     }
-    keyBox.replaceChildren(...cards);
+    if (doCards) keyBox.replaceChildren(...cards);
+    if (!doTable) return;
     tableHead.replaceChildren(...(B ? [h('tr', h('th', ''), h('th.v', 'Current'), h('th', ''), h('th.v', 'Baseline'), h('th', 'Change'))] : []));
     tableBody.replaceChildren(...rows);
   }

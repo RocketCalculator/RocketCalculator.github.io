@@ -71,7 +71,8 @@
    "slug": "fin-flutter",
    "title": "Fin Flutter",
    "topic": "fin-aeroelasticity",
-   "description": "Flutter speed of a fin panel through the flight (Martin, corrected by Bennett), safety factor, and the thickness, span or material that fixes it."
+   "description": "Flutter speed of a fin panel through the flight (Martin, corrected by Bennett), safety factor, and the thickness, span or material that fixes it.",
+   "final": true
   },
   {
    "slug": "bifilar-pendulum",
@@ -107,7 +108,8 @@
    "slug": "reliability-growth",
    "title": "Reliability Growth",
    "topic": "reliability",
-   "description": "Reliability of each flight as test flights reveal latent defects, and the number of tests that reaches a target."
+   "description": "Reliability of each flight as test flights reveal latent defects, and the number of tests that reaches a target.",
+   "final": true
   },
   {
    "slug": "newtonian-drag",
@@ -119,7 +121,8 @@
    "slug": "nozzle-thrust",
    "title": "Nozzle Design and Thrust",
    "topic": "nozzles",
-   "description": "Conical or bell (Rao) nozzle contour, Mach number, pressure, temperature and density along it, normal shocks, flow separation, thrust, mass flow and specific impulse."
+   "description": "Conical or bell (Rao) nozzle contour, Mach number, pressure, temperature and density along it, normal shocks, flow separation, thrust, mass flow and specific impulse.",
+   "final": true
   },
   {
    "slug": "wind-compensation",

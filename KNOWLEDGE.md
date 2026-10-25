@@ -49,6 +49,17 @@ scripts/generate_pages.mjs`; write `site/docs/<slug>.html`; add REPAIR/INVARIANT
 - `recompute()` (no `live`) — typing (debounced 110 ms), buttons, unit/theme switch, load: everything, all charts.
 - Never call `recompute()` from a pointer or slider handler directly.
 
+### Two tiers, verdict and warnings (`calculator-page.js`, opt-in per definition)
+- `def.verdict: true` reserves a fixed-height **verdict banner** above the key results; `compute()` returns
+  `out.verdict = { level: 'safe' | 'marginal' | 'unsafe', title, text, fixes: [≤ 3 strings] }`. Rendered as icon + word
+  (✓ SAFE / ! MARGINAL / ✕ UNSAFE) + colour — never colour alone — then a one-line summary and up to three fixes.
+  Invalid inputs show "—".
+- `def.tiers: true` → glance view = verdict, key results, the main plots, the drawing; then a closed **Explore**
+  section with plots marked `explore: true`, the full results table and `def.limits` (assumptions and limits of
+  validity, list of strings).
+- Warnings: `{ level: 'err' | 'warn' | 'info', text, fix? }`, shown most severe first in the notice dock; `fix` is
+  printed as "Fix: …". Thresholds and their sources belong in the definition's comments and docs page.
+
 ### DiagramViewport (`ui/viewport.js` → `diagramViewport(host, { label })`)
 - Wraps every schematic (`calculator-page.js` creates it; definitions do not change). Returns
   `{ el, stage, attach(svg), reset(), zoomBy(f, px, py), withBase(fn), state() }`; the page calls `attach(svg)` after

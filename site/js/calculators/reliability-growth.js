@@ -200,9 +200,10 @@ export default {
       onDrag: (sx, sy) => ctx.setValue('Rt', Math.min(0.999, Math.max(0.001, (yb - sy) / (yb - yt)))),
       onKey: (dx, dy) => ctx.setValue('Rt', Math.min(0.999, Math.max(0.001, v.Rt + 0.01 * dy))),
     });
-    ctx.handle('tests', x0 + nT * cw, yb, {
+    // the handle sits at the foot of the next flight's red bar; dragging it by whole bars sets the number of tests
+    ctx.handle('tests', x0 + (nT + 0.5) * cw, yb, {
       field: 'N', title: 'Drag left or right to change the number of flight tests',
-      onDrag: (sx) => ctx.setValue('N', Math.min(N_MAX, Math.max(0, Math.round((sx - x0) / cw))), { round: 1 }),
+      onDrag: (sx) => ctx.setValue('N', Math.min(N_MAX, Math.max(0, Math.round((sx - x0) / cw - 0.5))), { round: 1 }),
       onKey: (dx) => ctx.setValue('N', Math.min(N_MAX, Math.max(0, v.N + dx)), { round: 1 }),
     });
   },

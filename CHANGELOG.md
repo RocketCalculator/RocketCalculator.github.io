@@ -3,6 +3,9 @@
 Newest first, in the spirit of [Keep a Changelog](https://keepachangelog.com/). From 2026-10-25 every entry names its
 branch, tag and commit range. Live site: https://rocketcalculator.github.io/.
 
+## 2026-10-25 — Reliability Growth: handle centred on the next flight (`fix/reliability-marker`)
+- The grey/red circle that sets the number of flight tests sat on the left edge of the red bar; it is now centred under it.
+
 ## 2026-10-25 — Fin Flutter: fin count removed (`fix/flutter-drop-fin-count`)
 - The number of fins and body radius (rear view only) are gone: neither changes the flutter speed. Saved links that carry them still load.
 

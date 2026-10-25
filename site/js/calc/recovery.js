@@ -61,3 +61,47 @@ export function recovery({ W1, W2, D0, CD, reef, ratio, hD, hR, hG, L, wind, VD 
     qD, reefLine: reef ? qD * (Math.PI / 4) * D0 * D0 * 0.02 : NaN,
   };
 }
+
+/**
+ * Time history of the descent: [{ t (s from deployment), h (ft AGL), V (ft/s), x (ft drift), reefed }], n samples
+ * evenly spaced in height, plus the disreef point itself so the speed step is drawn sharp.
+ */
+export function descentHistory(p, n = 120) {
+  const o = recovery(p), M = o.m1 + o.m2, hTop = p.hG + p.hD, hR = p.reef ? p.hG + Math.min(p.hR, p.hD) : hTop;
+  const reef = p.reef && hR < hTop;                                       // a reefed phase only if disreef is below the opening
+  const at = (h, reefed) => {
+    const t = reefed ? descentTime(M, o.CdSR, hTop, h) : o.tReefed + descentTime(M, o.CdS, hR, h);
+    return { t, h: h - p.hG, V: descentSpeed(M, reefed ? o.CdSR : o.CdS, h), x: p.wind * t, reefed };
+  };
+  const out = [];
+  for (let i = 0; i <= n; i++) {
+    const h = hTop - ((hTop - p.hG) * i) / n;
+    if (reef && h < hR && (out.length === 0 || out[out.length - 1].reefed)) { out.push(at(hR, true)); out.push(at(hR, false)); }
+    out.push(at(h, reef && h >= hR));
+  }
+  return out;
+}
+
+/** Root of f(x) = 0 for f increasing on [lo, hi] by bisection in log space; null when there is no sign change. */
+function bisectLog(f, lo, hi) {
+  if (f(lo) > 0 || f(hi) < 0) return null;
+  for (let k = 0; k < 100; k++) { const mid = Math.sqrt(lo * hi); if (f(mid) < 0) lo = mid; else hi = mid; }
+  return Math.sqrt(lo * hi);
+}
+/** Flat diameter (ft) that gives an aft-body landing speed vT (ft/s); landing speed falls as the diameter grows. */
+export const diameterFor = (p, vT) => bisectLog((D) => vT - recovery({ ...p, D0: D }).vAft, 0.05, 500);
+/** Tether length (ft) that gives an aft-body landing speed vT; null if even an endless tether is too fast. */
+export function tetherFor(p, vT) {
+  const o = recovery(p), k = o.CdS * o.rhoG, A = (2 * o.m2 * ATM.g) / k, B = (2 * o.m1 * ATM.g) / k;
+  if (!(vT * vT > A)) return null;
+  return vT * vT >= A + B ? 0 : (-o.m2 / k) * Math.log((vT * vT - A) / B);
+}
+/** Disreef height (ft AGL) at which the drift equals xMax (lower disreef → shorter time under the full canopy). */
+export function disreefFor(p, xMax) {
+  const drift = (hR) => recovery({ ...p, reef: true, hR }).drift;
+  if (drift(1e-6) > xMax) return null;
+  if (drift(p.hD * 0.999) <= xMax) return p.hD * 0.999;
+  let lo = 1e-6, hi = p.hD * 0.999;
+  for (let k = 0; k < 100; k++) { const mid = (lo + hi) / 2; if (drift(mid) <= xMax) lo = mid; else hi = mid; }
+  return lo;
+}

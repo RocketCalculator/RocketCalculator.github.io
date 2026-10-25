@@ -47,3 +47,21 @@ Decisions taken while the owner was unavailable. Each entry: date, question, opt
 - **Question:** `docs/PROGRESS.md` already exists (release log of the first build); the plan asks for `PROGRESS.md`.
 - **Choice:** new root `PROGRESS.md` for the overhaul run; `docs/PROGRESS.md` is kept unchanged as history.
 - **Reverse:** merge the two files.
+
+## D8 — 2026-10-25 — Shared components keep their module names
+- **Question:** the plan names `NumberField`, `SliderInput`, `ResultValue`; the codebase has `numberField()` in
+  `ui/form.js` and the result cards/rows in `calculator-page.js`, already shared by all 29 calculators.
+- **Choice:** keep the existing functions (no rename churn) and give them the stable-layout behaviour; KNOWLEDGE.md
+  maps the plan's names to them. Every calculator is migrated by construction.
+- **Reverse:** extract them into `ui/result-value.js` etc. if a second consumer appears.
+
+## D9 — 2026-10-25 — Charts update when the input pauses
+- **Question:** "results update live" vs. smooth dragging.
+- **Choice:** key results and the drawing update every frame; charts and the table 140 ms after the input pauses
+  (and off-screen charts when scrolled to). Measured: removes all long tasks at ×4 CPU.
+- **Reverse:** call `renderSlow()` instead of `slowSoon()` in `recompute()`.
+
+## D10 — 2026-10-25 — Browser tests use puppeteer-core
+- **Question:** the plan suggests Playwright "or similar"; the repo's browser scripts already use puppeteer-core.
+- **Choice:** puppeteer-core 23.11.1 as the only devDependency; Chromium-family browser via `CHROME`.
+- **Reverse:** port `scripts/ui-*.mjs` to Playwright.

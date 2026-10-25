@@ -318,11 +318,10 @@ a.topic-card:hover .chip { background: rgba(127, 127, 127, 0.25); color: inherit
 .field.invalid .ctl { border-color: var(--err); }
 .field.bool { grid-template-columns: minmax(0, 1fr) auto; }
 /* RocketBackView (js/ui/backview.js) under fin-count inputs */
-.field .backview { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 220px) minmax(0, 1fr); gap: 4px 12px; align-items: center; margin-top: 4px; }
-.backview .bv-svg svg { display: block; width: 100%; height: auto; }
-.backview .bv-text { margin: 0; font-size: 0.78rem; line-height: 1.35; color: var(--text-2); min-height: 5.4em; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 4; line-clamp: 4; overflow: hidden; }
+.field .backview { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1fr); gap: 6px; margin-top: 4px; }
+.backview .bv-svg svg { display: block; width: 100%; max-width: 240px; height: auto; margin: 0 auto; }
+.backview .bv-text { margin: 0; font-size: 0.78rem; line-height: 1.35; color: var(--text-2); min-height: 6.8em; }
 .backview .bv-text.warn { color: var(--warn); font-weight: 600; }
-@media (max-width: 420px) { .field .backview { grid-template-columns: minmax(0, 1fr); } .backview .bv-svg svg { max-width: 240px; margin: 0 auto; } }
 .rbv-body { fill: var(--schem-fill); stroke: var(--schem-stroke); stroke-width: 1.4; }
 .rbv-inner { fill: none; stroke: var(--schem-dim); stroke-width: 1; stroke-dasharray: 3 2; }
 .rbv-fin { fill: var(--schem-fill-2); stroke: var(--schem-stroke); stroke-width: 1; }

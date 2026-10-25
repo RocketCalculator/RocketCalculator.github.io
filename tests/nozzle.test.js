@@ -139,9 +139,13 @@ test('Calculator: the THRUSTCF example as a cone reproduces the workbook; geomet
   const d2 = ob.results.deMax, L2 = 0.8 * conicalLength(0.375, (d2 / 0.75) ** 2, 15, 0.14325);
   close(def.compute({ ...bad, de: d2, Ld: L2 }).results.sepMargin, 1.15, 1e-6, 'd_e,max gives margin 1.15');
   close(def.compute({ ...bad, pc: ob.results.pcMin }).results.sepMargin, 1.15, 1e-6, 'p_c,min gives margin 1.15');
-  // impossible lengths are refused with the achievable range
-  assert.throws(() => def.compute({ ...base, Lc: 0.01 }), /convergent length must be between/);
-  assert.throws(() => def.compute({ ...base, type: 'cone', Ld: 0.05 }), /divergent length must be between/);
+  // a length no angle can produce is drawn at the nearest buildable length, with a warning that gives the range
+  const short = def.compute({ ...base, Lc: 0.01 });
+  assert.equal(short.results.thetaC, 88); assert.ok(short.warnings.some((x) => /convergent .* cannot be built/.test(x.text) && /between/.test(x.fix)));
+  const cone = def.compute({ ...base, type: 'cone', Ld: 0.05 });
+  assert.equal(cone.results.alpha, 80); assert.ok(cone.warnings.some((x) => /cone .* cannot reach/.test(x.text)));
+  // only physically impossible diameters are refused
+  assert.throws(() => def.compute({ ...base, de: 0.9 }), /exit diameter must be larger/);
 });
 
 after(() => console.log(`# nozzle: ${stats.compared} comparisons, max rel err ${stats.maxRel.toExponential(2)}`));

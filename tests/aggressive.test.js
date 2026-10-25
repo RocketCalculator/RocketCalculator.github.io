@@ -155,7 +155,7 @@ for (const def of defs) {
       for (const p of def.plots || []) {
         const sp = p.build(v, out, { U: () => ({ v: (x) => x, label: '', plain: '' }), sys: () => 'si' });
         if (!sp) continue;
-        for (const se of sp.series ?? sp.panels.flatMap((pn) => pn.series)) assert.ok(se.points.some((q) => q.every(Number.isFinite)), `${name}: plot ${p.id} / ${se.name} has no finite points`);
+        for (const se of sp.series ?? sp.panels.flatMap((pn) => pn.series || [])) assert.ok(se.points.some((q) => q.every(Number.isFinite)), `${name}: plot ${p.id} / ${se.name} has no finite points`);
       }
     }
   });

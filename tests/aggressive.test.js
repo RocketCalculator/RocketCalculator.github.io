@@ -212,6 +212,7 @@ test('Chart ticks: bounded and sensible for degenerate and extreme ranges', () =
 
 // ---------- physical trends ----------
 const run = (slug, patch) => { const def = bySlug[slug]; const v = { ...defaults(def), ...patch }; def.sharedAdjust?.(v); return def.compute(v, {}).results; };
+const close2 = (x, y, msg, tol = 1e-6) => assert.ok(Math.abs(x - y) <= tol * Math.max(1, Math.abs(y)), `${msg}: ${x} vs ${y}`);
 const increasing = (xs, msg) => xs.slice(1).forEach((x, i) => assert.ok(x > xs[i], `${msg}: ${xs.map((y) => y.toPrecision(5)).join(' → ')}`));
 
 test('Fin flutter: thicker, stiffer, shorter fins and higher, cooler flight are safer; the remedies reach the target', () => {
@@ -310,6 +311,16 @@ test('Trajectory: lower elevation flies farther; more weight or drag lowers apog
   increasing([88, 84, 80].map((QE) => run('skyaero-trajectory', { QE }).range), 'range vs falling QE');
   increasing([80, 60, 51].map((s1Wd) => run('skyaero-trajectory', { s1Wd }).apo), 'apogee vs lighter rocket');
   increasing([9, 7.5, 6.25].map((s1d) => run('skyaero-trajectory', { s1d }).apo), 'apogee vs slimmer rocket');
+});
+
+test('Subsonic CP: the worst-case margin is the minimum of the cases; the CG shift and fin span reach the target', () => {
+  const r = run('subsonic-cp', { xcg: 75, xcgB: 77, targetSM: 2 });
+  assert.ok(r.margin <= r.marginNom + 1e-12 && r.margin <= r.marginNoCarry + 1e-12 && r.margin <= r.marginBurn + 1e-12);
+  assert.ok(r.dCG > 0 && typeof r.bNeed === 'number');
+  close2(run('subsonic-cp', { xcg: 75 - r.dCG, xcgB: 77 - r.dCG, targetSM: 2 }).margin, 2, 'CG shift reaches the target');
+  close2(run('subsonic-cp', { xcg: 75, xcgB: 77, targetSM: 2, b: r.bNeed }).margin, 2, 'span reaches the target');
+  increasing([77, 74, 71].map((xcgB) => run('subsonic-cp', { xcg: 70, xcgB }).margin), 'worst margin vs burnout CG moving forward');
+  assert.equal(run('subsonic-cp', { xcg: null }).margin, null);
 });
 
 test('Nozzle: thrust falls with ambient pressure, a wider cone loses thrust, the 1-D C_F peaks at p_e = p_a', () => {

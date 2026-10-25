@@ -2,7 +2,8 @@
 import { subsonicCP } from '../calc/barrowmanSub.js';
 import { NOSE_TYPES, bodyProfile } from '../calc/noseShapes.js';
 import { s, fmt, InputError } from '../util.js';
-import { dim, path, text, pointMarker, finEndView } from '../ui/svg.js';
+import { toDisplay, displayUnit, unitLabel } from '../units.js';
+import { dim, path, text, pointMarker } from '../ui/svg.js';
 
 const LEN = { dim: 'length', internal: 'in' };
 
@@ -19,12 +20,40 @@ export function profileOf(v) {
 }
 const notCustom = (v) => v.noseType !== 'custom';
 
+// Verdict thresholds (DECISIONS.md D19): UNSAFE below 1 calibre, MARGINAL up to the target (default 1.5), SAFE above —
+// common practice, not from a source read in this session (Hoult & Tran mention the "classical two calibre" rule).
+const UNSAFE_SM = 1;
+const MANY_CAL = 4;
+
+/**
+ * Static margin in every case that matters (DECISIONS.md D18): launch and burnout CG, Mach 0 and the flight Mach
+ * (fin lift grows with Mach, so the CP is furthest forward at low speed), and with or without the NACA 1307 carry-over
+ * lift on the body (Barrowman-style tools leave it out; without it the CP is further forward).
+ */
+function margins(v, prof) {
+  const cgs = [['launch', v.xcg], ['burnout', v.xcgB]].filter(([, x]) => x != null && Number.isFinite(x));
+  const rows = [];
+  for (const M of [0, v.M]) {
+    const o = subsonicCP({ M, profile: prof, flatNose: v.flatNose, fins: finsOf(v) });
+    const b = o.body, f = o.fin, CN0 = b.CNa + f.CNaWB, x0 = (b.Cma_flat + b.mom + f.xcpFin * f.CNaWB) / CN0;
+    for (const [cg, x] of cgs) {
+      rows.push({ M, cg, carry: true, xcp: o.xcp, SM: (o.xcp - x) / o.d, d: o.d });
+      rows.push({ M, cg, carry: false, xcp: x0, SM: (x0 - x) / o.d, d: o.d });
+    }
+  }
+  const worst = rows.reduce((w, r) => (!w || r.SM < w.SM ? r : w), null);
+  return { rows, worst };
+}
+const caseText = (w) => `${w.cg} CG, Mach ${fmt(w.M, { digits: 2 })}, ${w.carry ? 'with' : 'without'} body carry-over lift`;
+
 function finsOf(v) {
   return { N: v.N, xLE: v.xLE, xTipLE: v.xTipLE, cR: v.cR, cT: v.cT, b: v.b, tanBT: Math.tan((v.bt * Math.PI) / 180) };
 }
 
 export default {
   slug: 'subsonic-cp',
+  verdict: true,
+  tiers: true,
   topic: 'barrowman-equations',
   title: 'Subsonic Centre of Pressure',
   subtitle: 'Normal-force slope <b>$C_{N\\alpha}$</b> and centre-of-pressure location of a finned rocket below the critical Mach number — Barrowman’s method with NACA Report 1307 body–fin interference and a hemispherical nose cap.',
@@ -53,10 +82,14 @@ export default {
     {
       id: 'flight', title: 'Flight condition',
       fields: [
-        { id: 'M', label: 'Mach number', sym: 'M', dim: 'none', default: 0.05, min: 0, max: 0.95, maxExclusive: true, slider: { min: 0, max: 0.9 },
-          info: { text: 'Free-stream Mach number. Must be below the critical Mach number of the body (where sonic flow first appears locally) — typically 0.8 or so for a slender ogive.', doc: 'fins' } },
-        { id: 'xcg', label: 'Centre of gravity (from tip)', sym: 'X_{CG}', ...LEN, default: 60, min: 0, optional: true,
-          info: { text: 'Your rocket’s CG station measured from the nose tip, for the static margin. Leave empty to skip.', doc: 'stability' } },
+        { id: 'M', label: 'Highest flight Mach number', sym: 'M', dim: 'none', default: 0.05, min: 0, max: 0.95, maxExclusive: true, slider: { min: 0, max: 0.9, step: 0.01 },
+          info: { text: 'The fastest subsonic speed you will fly. The margin is checked from Mach 0 (the rail) up to it; must be below the body’s critical Mach number — typically about 0.8 for a slender ogive.', doc: 'fins' } },
+        { id: 'xcg', label: 'Centre of gravity at launch (from tip)', sym: 'X_{CG}', ...LEN, default: 60, min: 0, optional: true,
+          info: { text: 'CG station of the loaded rocket, measured from the nose tip. Balance the rocket on a straight edge with the motor installed. Leave empty to skip the stability verdict.', doc: 'stability' } },
+        { id: 'xcgB', label: 'Centre of gravity at burnout (from tip)', sym: 'X_{CG,b}', ...LEN, default: null, min: 0, optional: true,
+          info: { text: 'CG after the propellant has burnt — usually further forward (more stable), but not always (aft-loaded payloads, staging). Leave empty if unknown.', doc: 'stability' } },
+        { id: 'targetSM', label: 'Target static margin', sym: 'SM_{target}', dim: 'none', default: 1.5, min: 1, max: 6, slider: { min: 1, max: 3, step: 0.1 },
+          info: { text: 'The smallest margin (in calibres) you accept in the worst case. Below 1 calibre is treated as unsafe.', doc: 'stability' } },
       ],
     },
     {
@@ -111,10 +144,17 @@ export default {
     { id: 'xcp', label: 'Centre of pressure (from tip)', sym: 'X_{CP}', ...LEN, key: true,
       note: (v, o) => `${fmt((100 * v) / o.len, { digits: 3 })} % of length`,
       info: { text: 'Station where the total normal force acts, measured from the nose tip.', tex: 'X_{CP}=\\frac{\\sum C_{N\\alpha,i}x_i}{C_{N\\alpha}}', doc: 'stability' } },
-    { id: 'margin', label: 'Static margin', sym: 'SM', dim: 'none', key: true, digits: 3, when: (v) => v.xcg != null,
-      status: (m) => (m == null ? null : m < 0 ? 'err' : m < 1 ? 'warn' : 'ok'),
-      note: (m) => (m == null ? '' : `calibres · ${m < 0 ? 'UNSTABLE — CP ahead of CG' : m < 1 ? 'below the usual 1-calibre rule of thumb' : 'stable'}`),
-      info: { text: 'Distance from CG to CP in body diameters (calibres). Positive = CP behind CG = statically stable. 1–2 calibres is the usual guideline.', tex: '\\frac{X_{CP}-X_{CG}}{d}', doc: 'stability' } },
+    { id: 'margin', label: 'Static margin, worst case', sym: 'SM', dim: 'none', key: true, digits: 3, when: (v) => v.xcg != null,
+      status: (m, out) => (typeof m !== 'number' ? null : m < UNSAFE_SM ? 'err' : m < out.v.targetSM ? 'warn' : 'ok'),
+      note: (m, out) => (typeof m !== 'number' ? '' : `calibres · ${caseText(out.o.mg.worst)}`),
+      info: { text: 'Distance from CG to CP in body diameters (calibres), in the worst of: launch and burnout CG, Mach 0 and your highest Mach, with and without the body carry-over lift. Positive = CP behind CG = statically stable.', tex: '\\min\\frac{X_{CP}-X_{CG}}{d}', doc: 'stability' } },
+    { id: 'dCG', label: 'CG shift to reach the target', sym: '\\Delta X_{CG}', ...LEN, key: true, digits: 3, when: (v) => v.xcg != null,
+      note: (x) => (typeof x !== 'number' ? '' : x > 0 ? 'move the CG this far forward (nose weight)' : 'no change needed'),
+      info: { text: 'Forward movement of the worst-case CG that brings the worst-case margin to the target (the margin is linear in the CG station).', tex: '\\Delta X_{CG}=(SM_{target}-SM)\\,d', doc: 'stability' } },
+    { id: 'bNeed', label: 'Fin span to reach the target', sym: 'b_{req}', ...LEN, digits: 4, when: (v) => v.xcg != null, info: { text: 'Exposed semispan that brings the worst-case margin to the target, everything else unchanged (tip leading edge held at its station). “—” if no span reaches it.', doc: 'stability' } },
+    { id: 'marginNom', label: 'Static margin, launch CG, Mach 0, with carry-over', sym: 'SM_0', dim: 'none', digits: 3, when: (v) => v.xcg != null, info: { text: 'The classic single-number margin (NACA 1307 model).', doc: 'stability' } },
+    { id: 'marginNoCarry', label: 'Static margin without body carry-over lift (Barrowman-style)', sym: 'SM_{nc}', dim: 'none', digits: 3, when: (v) => v.xcg != null, info: { text: 'Leaving out the lift the fins induce on the body, as Barrowman-style tools do, moves the CP forward. Launch CG, Mach 0.', doc: 'interference' } },
+    { id: 'marginBurn', label: 'Static margin at burnout (worst Mach)', sym: 'SM_b', dim: 'none', digits: 3, when: (v) => v.xcg != null, info: { text: '“—” until you enter the CG at burnout.', doc: 'stability' } },
     { id: 'CNa', label: 'Normal-force slope', sym: 'C_{N\\alpha}', dim: 'perAngle', internal: 'perrad', key: true,
       info: { text: 'Total normal-force coefficient per radian of angle of attack, on the reference area πd²/4.', tex: 'C_{N\\alpha}=C_{N\\alpha,body}+C_{N\\alpha,fins}\\big(K_{W(B)}+K_{B(W)}\\big)', doc: 'stability' } },
     { id: 'CNaBody', label: 'Body normal-force slope', sym: 'C_{N\\alpha,body}', dim: 'perAngle', internal: 'perrad', info: { text: 'Slender-body normal force of the nose, shoulders and boat-tails (and the hemispherical cap).', tex: 'C_{N\\alpha}=\\frac{2(A_i-A_{i-1})}{S_{ref}}', doc: 'body' } },
@@ -135,7 +175,7 @@ export default {
     { id: 'd', label: 'Reference diameter', sym: 'd', ...LEN, info: { text: 'Maximum body diameter; $S_{ref}$ = πd²/4.', doc: 'body' } },
   ],
   compute(v) {
-    const prof = profileOf(v);
+    const prof = profileOf(v), u = (x) => toDisplay(x, LEN), uL = unitLabel(displayUnit(LEN));
     if (notCustom(v) && v.noseL >= v.bodyLen) throw new InputError('The nose must be shorter than the overall length.');
     if (v.bt > 0 && v.b <= v.cR * Math.tan((v.bt * Math.PI) / 180)) throw new InputError('The boat-tail is too steep for this fin: the exposed semispan must be larger than root chord × tan(boat-tail angle).');
     const o = subsonicCP({ M: v.M, profile: prof, flatNose: v.flatNose, fins: finsOf(v), xcg: v.xcg });
@@ -147,16 +187,82 @@ export default {
     if (notCustom(v) && v.noseL < 2 * v.R) warnings.push({ level: 'info', text: 'The nose is shorter than one calibre: slender-body theory loses accuracy for such blunt noses.' });
     if (notCustom(v) && v.btLen > 0 && Math.atan(Math.abs(v.R - v.btR) / v.btLen) > (15 * Math.PI) / 180) warnings.push({ level: 'warn', text: 'The boat-tail is steeper than 15°: the flow will separate and slender-body theory overstates its (negative) lift.' });
     if (!(o.CNa > 0)) warnings.push({ level: 'err', text: 'The total normal-force slope is not positive — this rocket has no restoring lift. Check the boat-tail and fin inputs.' });
+    // stability: worst case, verdict, remedies
+    let verdict = { level: 'none', title: 'Enter the centre of gravity', text: 'The verdict needs your CG (and, if you know it, the CG at burnout).', fixes: [] };
+    let mg = null, dCG = null, bNeed = null;
+    if (v.xcg != null) {
+      mg = margins(v, prof);
+      const w = mg.worst, SM = w.SM, T = v.targetSM;
+      dCG = Math.max(0, (T - SM) * w.d);
+      const worstAt = (b) => margins({ ...v, b }, prof).worst.SM - T;
+      if (worstAt(v.b) < 0) {          // too little margin: find the span that reaches the target (margin grows with span)
+        let lo = v.b, hi = v.b;
+        for (let i = 0; i < 12 && worstAt(hi) < 0; i++) hi *= 1.6;
+        if (worstAt(hi) >= 0) { for (let i = 0; i < 50; i++) { const m = (lo + hi) / 2; if (worstAt(m) < 0) lo = m; else hi = m; } bNeed = hi; }
+      }
+      const level = SM < UNSAFE_SM ? 'unsafe' : SM < T ? 'marginal' : 'safe';
+      const fixes = level === 'safe' ? [] : [
+        `Move the CG forward by at least <b>${fmt(u(dCG), { digits: 3 })} ${uL}</b> (nose weight), or`,
+        bNeed ? `enlarge the fin semispan from ${fmt(u(v.b), { digits: 3 })} to <b>${fmt(u(bNeed), { digits: 3 })} ${uL}</b>, or` : 'a larger fin span alone cannot reach the target — move the CG or the fins aft,',
+        'move the fins aft (larger root leading-edge station).',
+      ];
+      verdict = {
+        level,
+        title: SM < 0 ? 'Unstable: the centre of pressure is ahead of the CG' : level === 'unsafe' ? 'Less than one calibre of static margin' : level === 'marginal' ? 'Stable, but below your target margin' : 'Statically stable with margin',
+        text: `Worst-case static margin <b>${fmt(SM, { digits: 3 })} calibres</b> (${caseText(w)}); target ${fmt(T, { digits: 3 })}.`,
+        fixes,
+      };
+      if (SM > MANY_CAL) warnings.push({ level: 'info', text: `More than ${MANY_CAL} calibres of margin even in the worst case: the rocket will weathercock strongly into the wind.`, fix: 'Check the wind drift (Wind Compensation) or trim the fins if this is not intended.' });
+      if (v.xcgB == null) warnings.push({ level: 'info', text: 'No burnout CG given: the margin is checked at the launch CG only.', fix: 'Enter the CG with the motor burnt out (casing in, propellant out).' });
+    }
     const results = {
-      xcp: o.xcp, margin: o.margin, CNa: o.CNa, CNaBody: o.body.CNa, xcpBody: o.body.mom / o.body.CNa, CNaTail: o.fin.CNa, xcpTail: o.fin.xcp,
+      xcp: o.xcp, margin: mg ? mg.worst.SM : null, dCG, bNeed: bNeed ?? '—',
+      marginNom: mg ? mg.rows.find((r) => r.M === 0 && r.cg === 'launch' && r.carry).SM : null,
+      marginNoCarry: mg ? mg.rows.find((r) => r.M === 0 && r.cg === 'launch' && !r.carry).SM : null,
+      marginBurn: mg && v.xcgB != null ? Math.min(...mg.rows.filter((r) => r.cg === 'burnout').map((r) => r.SM)) : '—',
+      CNa: o.CNa, CNaBody: o.body.CNa, xcpBody: o.body.mom / o.body.CNa, CNaTail: o.fin.CNa, xcpTail: o.fin.xcp,
       CNaFins: o.fin.CNaFins, KWB: o.fin.KWB, KBW: o.fin.KBW, xcpFin: o.fin.xcpFin, xcpBW: o.fin.xcpBW, AR: o.fin.AR, sweep: (o.fin.sweepC4 * 180) / Math.PI,
       mac: o.fin.mac, CNd: o.fin.CNd, capCNa: o.body.cap.CNa, d: o.d,
     };
-    return { results, warnings, o, len };
+    o.mg = mg;
+    return { results, warnings, verdict, o, len, v };
   },
   plots: [
     {
-      id: 'mach-cp', title: 'Centre of pressure vs Mach',
+      id: 'margin', title: 'Static margin through the flight', when: (v) => v.xcg != null,
+      info: { text: 'Static margin from the rail (Mach 0) to your highest Mach number, at the launch CG and (if given) the burnout CG, with the NACA 1307 body carry-over lift (solid) and without it as Barrowman-style tools compute it (dashed). Below the red line the rocket is not safely stable; aim above the orange target line.', doc: 'stability' },
+      build(v, out) {
+        const ser = [], prof = profileOf(v), M1 = Math.max(v.M, 0.3);
+        for (const [cg, x, col] of [['launch CG', v.xcg, 'var(--series-2)'], ['burnout CG', v.xcgB, 'var(--series-5)']]) {
+          if (x == null || !Number.isFinite(x)) continue;
+          const w = [], nc = [];
+          for (let i = 0; i <= 30; i++) {
+            const M = (M1 * i) / 30, o = subsonicCP({ M, profile: prof, flatNose: v.flatNose, fins: finsOf(v) }), b = o.body, f = o.fin;
+            const x0 = (b.Cma_flat + b.mom + f.xcpFin * f.CNaWB) / (b.CNa + f.CNaWB);
+            w.push([M, (o.xcp - x) / o.d]); nc.push([M, (x0 - x) / o.d]);
+          }
+          ser.push({ name: `${cg}, with carry-over`, points: w, color: col, smooth: true }, { name: `${cg}, without`, points: nc, color: col, dashed: true, smooth: true });
+        }
+        const wst = out.o.mg.worst;
+        return { x: { label: 'Mach number $M$', unit: '' }, y: { label: 'Static margin', unit: 'cal' }, includeZero: true, series: ser,
+          hlines: [{ y: v.targetSM, label: `target ${fmt(v.targetSM, { digits: 2 })}`, color: 'var(--warn)' }, { y: UNSAFE_SM, label: 'unsafe below 1', color: 'var(--red)' }],
+          vlines: v.M > 0 ? [{ x: v.M, label: 'highest Mach', color: 'var(--text-3)' }] : [],
+          markers: [{ x: wst.M, y: wst.SM, label: `worst ${fmt(wst.SM, { digits: 3 })}`, color: wst.SM < UNSAFE_SM ? 'var(--red)' : wst.SM < v.targetSM ? 'var(--warn)' : 'var(--ok)' }] };
+      },
+    },
+    {
+      id: 'span', title: 'Static margin against fin span', explore: true, when: (v) => v.xcg != null,
+      info: { text: 'Worst-case static margin as the exposed semispan changes (tip leading edge held at its station). Where it crosses the target is the span you need; bigger fins also add drag and weight aft.', doc: 'stability' },
+      build(v, out, { U }) {
+        const ul = U(LEN), prof = profileOf(v), b1 = Math.max(2 * v.b, 1.3 * (typeof out.results.bNeed === 'number' ? out.results.bNeed : 0)), pts = [];
+        for (let i = 1; i <= 40; i++) { const b = (b1 * i) / 40; pts.push([ul.v(b), margins({ ...v, b }, prof).worst.SM]); }
+        return { x: { label: 'Exposed semispan $b$', unit: ul.label }, y: { label: 'Worst-case static margin', unit: 'cal' }, series: [{ name: 'SM', points: pts, smooth: true }],
+          hlines: [{ y: v.targetSM, label: 'target', color: 'var(--warn)' }, { y: UNSAFE_SM, label: 'unsafe below 1', color: 'var(--red)' }],
+          markers: [{ x: ul.v(v.b), y: out.results.margin, label: 'your fins' }] };
+      },
+    },
+    {
+      id: 'mach-cp', title: 'Centre of pressure vs Mach', explore: true,
       info: { text: 'Compressibility (Prandtl–Glauert) raises the fin lift slope with Mach number, moving the CP aft.', doc: 'fins' },
       build(v, out, { U }) {
         const ul = U(LEN); const pts = [];
@@ -166,7 +272,7 @@ export default {
       },
     },
     {
-      id: 'mach-cna', title: 'Normal-force slope vs Mach',
+      id: 'mach-cna', title: 'Normal-force slope vs Mach', explore: true,
       info: { text: 'Body $C_{N\\alpha}$ is independent of Mach in slender-body theory; only the fins change.', doc: 'fins' },
       build(v, out) {
         const tot = [], body = [], tail = [];
@@ -176,7 +282,7 @@ export default {
       },
     },
     {
-      id: 'buildup', title: 'Normal-force build-up along the rocket', wide: true,
+      id: 'buildup', title: 'Normal-force build-up along the rocket', wide: true, explore: true,
       info: { text: 'Cumulative $C_{N\\alpha}$ from the nose aft, placing each contribution at its own centre of pressure. Steps show where lift is generated.', doc: 'stability' },
       build(v, out, { U }) {
         const ul = U(LEN), o = out.o;
@@ -190,7 +296,7 @@ export default {
         pts.push([ul.v(out.len), acc]);
         return { x: { label: 'Station from tip', unit: ul.label }, y: { label: 'Cumulative C_{N\\alpha}', unit: '\\mathrm{rad^{-1}}' }, includeZero: true, xDomain: [0, ul.v(out.len)], xTight: true,
           series: [{ name: '\\Sigma C_{N\\alpha}', points: pts, area: true }],
-          vlines: [{ x: ul.v(o.xcp), label: 'CP', color: 'var(--accent)' }, ...(v.xcg != null ? [{ x: ul.v(v.xcg), label: 'CG', color: 'var(--accent-2)' }] : [])] };
+          vlines: [{ x: ul.v(o.xcp), label: 'CP', color: 'var(--accent)' }, ...(v.xcg != null ? [{ x: ul.v(v.xcg), label: 'CG', color: 'var(--accent-2)' }] : []), ...(v.xcgB != null ? [{ x: ul.v(v.xcgB), label: 'CG burnout', color: 'var(--text-3)' }] : [])] };
       },
     },
   ],
@@ -201,7 +307,7 @@ export default {
     if (over > 1e-9) { v.xLE = Math.max(0, v.xLE - over); v.xTipLE = Math.max(0, v.xTipLE - over); }
   },
   schematicTitle: 'Side view with CP and CG (radius exaggerated)',
-  schematicHint: 'Drag the nose shoulder to change nose length and radius, or the fin tip to change span and sweep; the rear view shows the fin count',
+  schematicHint: 'Drag the nose shoulder to change nose length and radius, or the fin tip to change span and sweep. The margin under the rocket is the launch-CG, Mach-0 value; the verdict uses the worst case',
   schematic(ctx, v, out) {
     const o = out.o, len = out.len, rmax = o.rmax, prof0 = profileOf(v);
     const W = 760, H = 300;
@@ -239,7 +345,8 @@ export default {
     g.append(pointMarker(X(o.xcp), cy, 'CP', { kind: 'cp', field: 'xcp margin CNa' }));
     if (v.xcg != null) {
       g.append(pointMarker(X(v.xcg), cy, 'CG', { kind: 'cg', field: 'xcg' }));
-      const st = o.margin < 0 ? 'var(--err)' : o.margin < 1 ? 'var(--warn)' : 'var(--ok)';
+      if (v.xcgB != null) g.append(pointMarker(X(v.xcgB), cy + 30, 'CG burnout', { kind: 'cg', field: 'xcgB' }));
+      const st = out.verdict.level === 'unsafe' ? 'var(--err)' : out.verdict.level === 'marginal' ? 'var(--warn)' : 'var(--ok)';
       const yb = Y(-(rmax + v.b)) + 26;
       g.append(dim(fr, X(Math.min(v.xcg, o.xcp)), yb, X(Math.max(v.xcg, o.xcp)), yb, null, { field: 'xcg' }));
       g.append(s('text', { x: (X(v.xcg) + X(o.xcp)) / 2, y: yb + 16, 'text-anchor': 'middle', style: `fill:${st};font:600 12px var(--font-sans)` }, `static margin ${fmt(o.margin, { digits: 3 })} cal`));
@@ -257,7 +364,6 @@ export default {
         });
       }
     });
-    g.append(finEndView(W - 90, 120, 62, { N: v.N, r: o.fin.r, s: o.fin.s, field: 'N b' }));
     if (v.noseType !== 'custom') ctx.handle('shoulder', X(v.noseL), Y(v.R), {
       field: 'noseL R', title: 'Drag to change the nose length (horizontal) and body radius (vertical)',
       onDrag: (px, py) => { ctx.setValue('noseL', Math.max(0.5, Math.min(v.bodyLen * 0.8, (px - 40) / kx - capLen)), { round: 0.1 }); ctx.setValue('R', Math.max(0.1, (cy - py) / ky), { round: 0.01 }); },
@@ -270,6 +376,14 @@ export default {
     });
   },
   reportNotes: ['Valid below the critical Mach number, at small angles of attack, for one fin set. Stations are measured aft of the nose tip.'],
+  limits: [
+    'Small angles of attack (linear normal force); below the critical Mach number of the body (about 0.8 for slender noses).',
+    'Slender bodies: noses shorter than about one calibre, steep boat-tails (over ~15°) and blunt shoulders are outside slender-body theory.',
+    'One fin set of 3 or 4 trapezoidal panels; with more panels the N/2 scaling is optimistic (mutual interference is not modelled).',
+    'Body carry-over lift (NACA Report 1307) moves the CP aft; Barrowman-style tools omit it. The verdict uses the smaller of the two margins.',
+    'Static stability only: no dynamic stability, roll coupling (see Roll Lock-In and Pitch-Yaw Wave Number) or flexibility (Upper-Stage Divergence).',
+    'Verdict thresholds (unsafe below 1 calibre, target 1.5 by default) are common practice, not taken from a source read for this calculator.',
+  ],
   symbols: {
     M: 'flight Mach number', 'X_{CG}': 'centre-of-gravity station', 'X_{CP}': 'centre-of-pressure station', d: 'reference (maximum body) diameter', 'S_{ref}': 'reference area ($\\pi d^2/4$)',
     A_i: 'body cross-section area at profile point $i$', x_i: 'station of profile point $i$', V_i: 'volume of body segment $i$', 'C_{N\\alpha,i}': 'normal-force slope of body segment $i$', 'x_{cp,i}': 'centre of pressure of segment $i$',

@@ -3,7 +3,8 @@
 import { test, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { workbook, close, stats } from './_workbook.js';
-import { nozzle, cf, exitMach, areaRatio, pressureRatio, machFromPressure, throatRatio, cfInfinity, malina } from '../site/js/calc/nozzle.js';
+import { nozzle, cf, exitMach, areaRatio, pressureRatio, machFromPressure, throatRatio, cfInfinity, malina, subsonicMach, normalShock, raoAngles, bellEfficiency, conicalLength, contour, nozzleFlow, separationRatio, cStar } from '../site/js/calc/nozzle.js';
+import def from '../site/js/calculators/nozzle-thrust.js';
 
 const W = workbook('THRUSTCF');
 const inp = { g: W('C5'), eps: W('D5'), alpha: W('E5'), pc: W('F5'), pa: W('H5'), dt: 1 };
@@ -69,6 +70,73 @@ test('Malina factor: 1 for a parallel jet, (1 + cos α)/2 otherwise; only the mo
   const a = cf(1.2, 10, 0.01, 0), b = cf(1.2, 10, 0.01, 20);
   close(b.cf3D - a.cf3D, (malina(20) - 1) * a.momentum, 1e-12, 'divergence loss');
   close(a.cf3D, a.cf1D, 1e-15);
+});
+
+test('Huzel & Huang worked example: 80 % bell, ε 14, r_t 12.45 in (NASA SP-125 p. 98)', () => {
+  const rt = 12.45, { thn, the } = raoAngles(14, 80);
+  close(conicalLength(rt, 14, 15, 0.382 * rt), 128.0, 2e-3, 'eq. (4-7): 15° cone length 128 in');
+  assert.ok(Math.abs(thn - 27.4) < 0.15 && Math.abs(the - 9.8) < 0.15, `θn ${thn}, θe ${the} vs 27.4°, 9.8°`);
+  const c = contour({ rt, rc: 2 * rt, thetaC: 30, eps: 14, type: 'bell', Lf: 80 });
+  close(c.Ln, 102.4, 1e-3, 'L_n = 0.8 × 128 = 102.4 in');
+  close(c.xN, 2.19, 3e-3, 'N_c = 0.382 r_t sin θn'); close(c.rN, 12.99, 1e-3, 'N_a = r_t + 0.382 r_t (1 − cos θn)');
+  const [xe, re] = c.pts[c.pts.length - 1]; close(xe, c.Ln, 1e-12, 'exit station'); close(re, rt * Math.sqrt(14), 1e-12, 'exit radius');
+  // the contour is continuous, monotone downstream of the throat and meets the throat at r_t
+  const dv = c.pts.filter(([x]) => x >= 0);
+  dv.slice(1).forEach(([x, r], i) => assert.ok(x > dv[i][0] && r >= dv[i][1], 'monotone divergent'));
+  close(Math.min(...c.pts.map(([, r]) => r)), rt, 1e-12, 'throat radius');
+});
+
+test('Huzel & Huang fig. 4-12/4-14 tables: limits and trends', () => {
+  close(bellEfficiency(20, 100), 0.9915, 1e-12, 'full bell 99.15 %');
+  assert.ok(bellEfficiency(10, 60) < bellEfficiency(10, 80) && bellEfficiency(10, 80) < bellEfficiency(10, 100), 'longer bell, less loss');
+  assert.ok(bellEfficiency(30, 80) > malina(15), '80 % bell beats a full 15° cone');
+  assert.ok(raoAngles(20, 60).thn > raoAngles(20, 100).thn && raoAngles(20, 60).the > raoAngles(20, 100).the, 'shorter bell turns harder');
+});
+
+test('Normal shock (NACA 1135 eqs. 93, 96, 99; table II, γ = 1.4)', () => {
+  const s = normalShock(2, 1.4);
+  close(s.M2, 0.57735, 1e-5, 'M2'); close(s.p2p1, 4.5, 1e-12, 'p2/p1'); close(s.p02p01, 0.72087, 1e-5, 'p02/p01');
+  close(normalShock(1, 1.4).p02p01, 1, 1e-12, 'no loss at M = 1');
+  close(subsonicMach(areaRatio(0.3, 1.2), 1.2), 0.3, 1e-10, 'subsonic root');
+});
+
+test('Schmucker eq. (11) and Summerfield eq. (7)', () => {
+  close(separationRatio('schmucker', 3, 40), (1.88 * 3 - 1) ** -0.64, 1e-15);
+  close(separationRatio('schmucker', 3, 40), 0.3743, 1e-3, 'p_i/p_a ≈ 0.37 at M_i = 3 (fig. 25)');
+  close(separationRatio('summerfield', 3, 40), 0.4, 0);
+  close(separationRatio('schmucker', 9, 40), separationRatio('schmucker', 5, 40), 0, 'held at the data limit M = 5');
+});
+
+test('Flow along the nozzle: shock position satisfies p_exit = p_a; mass flow is conserved; regimes ordered', () => {
+  const g = 1.2, geo = contour({ rt: 0.5, rc: 1.25, thetaC: 30, eps: 8, type: 'cone', alpha: 15 });
+  const pc = 100, f0 = nozzleFlow(geo, g, pc, 0);
+  assert.ok(f0.peNS > f0.pe && f0.peSub > f0.peNS, 'p_e < p_NS < p_sub');
+  const pa = (f0.peNS + f0.peSub) / 2, f = nozzleFlow(geo, g, pc, pa);
+  assert.equal(f.regime, 'shock');
+  const ex = f.prof[f.prof.length - 1];
+  close(ex.p * pc, pa, 1e-9, 'exit pressure behind the shock = p_a');
+  assert.ok(ex.M < 1 && f.shock.M1 > 1 && f.shock.x > 0 && f.shock.x < geo.Ln, 'subsonic exit, shock inside');
+  assert.ok(f.sep && f.sep.x < f.shock.x, 'a real nozzle separates before the inviscid shock');
+  // ρ V A / (ρ_c a_c A*) is the same everywhere: ρ/ρc · M · √(T/Tc) · A/A* (with A* growing behind the shock)
+  const flux = (p) => p.rho * p.M * Math.sqrt(p.T) * p.A;
+  const ref = flux(f.prof.find((p) => Math.abs(p.x) < 1e-12));
+  for (const p of f.prof) close(flux(p), ref, 1e-6, `mass flux at x = ${p.x.toFixed(3)}`);
+  assert.equal(nozzleFlow(geo, g, pc, 0.99 * f0.peSub * 1.02).regime, 'unchoked');
+});
+
+test('Calculator: the THRUSTCF example as a cone reproduces the workbook; verdict and fixes', () => {
+  const base = Object.fromEntries(def.groups.flatMap((gr) => gr.fields).map((f) => [f.id, f.default]));
+  const v = { ...base, type: 'cone', g: inp.g, eps: inp.eps, alpha: inp.alpha, pc: inp.pc, pa: inp.pa, dt: 1 };
+  const o = def.compute(v);
+  close(o.results.cf, W('R5'), 1e-9, 'R5 3-D thrust coefficient');
+  assert.equal(o.verdict.level, 'safe');
+  close(o.results.cstar, cStar(v.g, v.Tc, v.Mw), 1e-15);
+  close(o.results.mdot * o.results.cstar, v.pc * 6894.757293168 * o.results.At * 0.00064516, 1e-12, 'ṁ c* = p_c A_t');
+  // an over-expanded bell: unsafe, and the suggested ε and p_c each restore the 1.15 margin exactly
+  const bad = { ...base, type: 'bell', eps: 25, pc: 500, pa: 14.7 }, ob = def.compute(bad);
+  assert.equal(ob.verdict.level, 'unsafe');
+  close(def.compute({ ...bad, eps: ob.results.epsMax }).results.sepMargin, 1.15, 1e-6, 'ε_max gives margin 1.15');
+  close(def.compute({ ...bad, pc: ob.results.pcMin }).results.sepMargin, 1.15, 1e-6, 'p_c,min gives margin 1.15');
 });
 
 after(() => console.log(`# nozzle: ${stats.compared} comparisons, max rel err ${stats.maxRel.toExponential(2)}`));

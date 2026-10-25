@@ -117,9 +117,9 @@
   },
   {
    "slug": "nozzle-thrust",
-   "title": "Nozzle Thrust Coefficient",
+   "title": "Nozzle Design and Thrust",
    "topic": "nozzles",
-   "description": "Exit Mach number, exit pressure, thrust coefficient and thrust of a conical de Laval nozzle, with the Malina divergence correction."
+   "description": "Conical or bell (Rao) nozzle contour, Mach number, pressure, temperature and density along it, normal shocks, flow separation, thrust, mass flow and specific impulse."
   },
   {
    "slug": "wind-compensation",

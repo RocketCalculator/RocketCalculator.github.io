@@ -154,7 +154,7 @@ CALCULATORS = [
     ('propellant-slosh', 'Propellant Sloshing', 'ProSlosh', 'Slosh frequencies, slosh masses and equivalent pendulum for liquid in a cylindrical tank under thrust.'),
     ('reliability-growth', 'Reliability Growth', 'Reliab', 'Reliability of each flight as test flights reveal latent defects, and the number of tests that reaches a target.'),
     ('newtonian-drag', 'Modified Newtonian Drag', 'ModiNewtDrag', 'Supersonic wave drag of nose caps, cones, flat faces and rounded fin leading edges (Lees).'),
-    ('nozzle-thrust', 'Nozzle Thrust Coefficient', 'Nozzles', 'Exit Mach number, exit pressure, thrust coefficient and thrust of a conical de Laval nozzle, with the Malina divergence correction.'),
+    ('nozzle-thrust', 'Nozzle Design and Thrust', 'Nozzles', 'Conical or bell (Rao) nozzle contour, Mach number, pressure, temperature and density along it, normal shocks, flow separation, thrust, mass flow and specific impulse.'),
     ('wind-compensation', 'Wind Compensation', 'WindComp', 'Launcher quadrant elevation and azimuth that cancel the wind drift and place the impact point where you want it.'),
     ('pitch-yaw-wavenumber', 'Pitch-Yaw Wave Number', 'PitcWave', 'Pitch/yaw wavelength, wave number and natural frequency of a statically stable rocket.'),
     ('roll-rate-history', 'Roll Rate History', 'RollRate', 'Roll rate from launcher exit to burnout with roll inertia, roll turns during boost, and the roll rate at apogee.'),

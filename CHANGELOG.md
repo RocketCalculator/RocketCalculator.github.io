@@ -3,6 +3,27 @@
 Newest first, in the spirit of [Keep a Changelog](https://keepachangelog.com/). From 2026-10-25 every entry names its
 branch, tag and commit range. Live site: https://rocketcalculator.github.io/.
 
+## 2026-10-25 — Nozzle Design and Thrust (`improve/nozzle-cycle-1`, tags `nozzle-thrust/v2.0.0`, `v1.6.0`)
+
+### Changed (BREAKING: new default, renamed, results changed for separated or shocked flow)
+- "Nozzle Thrust Coefficient" becomes **Nozzle Design and Thrust**. Conical or Rao bell (Huzel & Huang parabolic
+  approximation: θn, θe from fig. 4-14, efficiency from fig. 4-12) with chamber diameter and convergent angle.
+- The drawing is now the whole contour to scale with **stacked A/A*, Mach, p, T, ρ profiles sharing its x axis**, the
+  inviscid normal shock and the separation point drawn through them, and a hover read-out.
+- Flow regimes solved: unchoked, **normal shock inside** (NACA 1135), over-, ideally and under-expanded. Separation by
+  **Schmucker's criterion** (default), Summerfield or Kalt–Bendall, located along the wall.
+- Verdict (attached / close / separated) with the expansion ratio and chamber pressure that restore the margin (D21).
+- New results: mass flow, c*, Isp (sea level and vacuum), exhaust velocity, exit temperature and density, chamber
+  Mach number, lengths, bell angles. Explore: wall pressure vs separation, thrust vs ambient pressure with regimes,
+  efficiency vs length (bell vs cone).
+
+### Fixed
+- The nozzle was refused for any ambient pressure above the throat pressure; it stays choked up to the subsonic-exit
+  pressure (D22).
+
+### Added (shared)
+- Units: molar mass (g/mol), mass flow (kg/s, lb/s).
+
 ## 2026-10-25 — Reliability Growth: handle centred on the next flight (`fix/reliability-marker`)
 - The grey/red circle that sets the number of flight tests sat on the left edge of the red bar; it is now centred under it.
 

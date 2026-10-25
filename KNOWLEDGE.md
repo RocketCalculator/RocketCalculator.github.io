@@ -183,6 +183,26 @@ scripts/generate_pages.mjs`; write `site/docs/<slug>.html`; add REPAIR/INVARIANT
 - **Open questions:** a sourced stability criterion (e.g. a NAR/Tripoli or NASA SL handbook figure); CP shift at angle
   of attack (viscous cross-flow), which the linear model omits.
 
+### Nozzle Design and Thrust (`nozzle-thrust`) — Phase 2 cycle 1, branch `improve/nozzle-cycle-1`, tag `nozzle-thrust/v2.0.0`
+- **Sources read this session (NTRS PDFs):** NACA Report 1135 (isentropic eqs.; normal shock eqs. 93, 96, 99 read from
+  the page image, p. 619); Huzel & Huang NASA SP-125 2nd ed. §4.3 (eq. 4-7, 4-8, figs. 4-12, 4-13, 4-14 and the A-1
+  worked example p. 98); Schmucker NASA TM-77396 (eqs. 7, 10, 11; fig. 25). Malina (1940) and Rao (1958) **not read**,
+  used through Huzel & Huang.
+- **Digitised charts:** fig. 4-14 (θn, θe by ε and L_f) and fig. 4-12 (bell λ) were read from a 500-dpi render with
+  pixel tracing (scratch script; ±0.2° / ±0.05 %). Fig. 4-12's y-axis needed a −0.5 % offset, calibrated on the 15°
+  cone = Malina 98.3 %. Check: the book's ε 14 / 80 % example gives θn 27.4°, θe 9.8°; the table gives 27.5°, 9.9°.
+- **Model:** contour (1.5 r_t / 0.382 r_t throat arcs; cone or Bézier parabola) → quasi-1-D flow on it; regimes
+  unchoked / shock inside (bisection on the shock area ratio) / over- / ideally / under-expanded; separation = first
+  wall station with p_wall ≤ p_sep(M) (attached pressures, upstream of any inviscid shock). Thrust after separation
+  = nozzle cut at the separation point (estimate).
+- **Bug fixed:** the old version refused any p_a > p* (throat pressure); the real choke limit is the subsonic-exit
+  pressure, higher (D22).
+- **Test cases (tests/nozzle.test.js):** THRUSTCF R5 through the new definition; Huzel & Huang 128 in / 102.4 in /
+  N (2.19, 12.99); NACA M1 = 2 → 0.5774 / 4.5 / 0.7209; Schmucker 0.374 at M 3; p_exit = p_a behind the shock and
+  ρVA conserved at every station; ε_max and p_c,min restore the 1.15 margin exactly.
+- **Open questions:** two-phase losses (sugar/aluminised motors); method-of-characteristics contour instead of the
+  parabola; side-load magnitude after separation; a chamber-Mach threshold with a source (0.3 is a rule of thumb).
+
 ### Diagram Quality Gate log
 
 **Fin Flutter**
@@ -204,7 +224,21 @@ scripts/generate_pages.mjs`; write `site/docs/<slug>.html`; add REPAIR/INVARIANT
 | Side view with CP and CG | Where are CP and CG on my rocket? | Yes — the margin as a distance on the body | Checks geometry input; sees the CG burnout marker | Margin label coloured by verdict | To scale (radius exaggerated, labelled) | KEEP (end view removed: now the back view under N) |
 | CP / C_Nα vs Mach, build-up (Explore) | How does each part contribute, and how does Mach move them? | Yes for the build-up; Mach plots are secondary | Finds which component dominates | Burnout CG vline on the build-up | Axes with units | KEEP, moved to Explore |
 
+**Nozzle Design and Thrust**
+| Diagram | 1 Question it answers | 2 Better than a number? | 3 What the user does differently | 4 Shows the problem/change | 5 Scale | Verdict |
+|---|---|---|---|---|---|---|
+| Contour with A/A*, M, p, T, ρ strips (shared x) | What happens to the gas along my nozzle, and where does it go wrong? | Yes — shows where the flow chokes, how fast p and T fall, and the shock/separation station on the wall itself | Moves the exit (ε, length) or raises p_c until the separation line leaves the nozzle | Separation (red) and inviscid shock (dashed) through every strip; hover read-out | Wall to scale while the radius fits (else labelled "radius drawn smaller"); x shared exactly | KEEP (redesigned: was a cone sketch with a not-to-scale convergent). Phone: text small, use zoom |
+| C_F against ε (main) | Which expansion ratio should I pick? | Yes — the optimum, the vacuum gain and the separation limit in one view | Picks ε left of the separation line, near p_e = p_a | Separation and p_e = p_a lines; design marker coloured by verdict | Axes | KEEP |
+| Wall pressure against separation pressure (Explore) | Where exactly does the jet leave the wall, and with what margin? | Yes — the crossing is the separation point; the gap is the margin | Sees how much ε or p_c must change | Crossing, inviscid shock | Axes with units | KEEP (new) |
+| Thrust against ambient pressure (Explore) | How does thrust change from launch to vacuum, and where does it separate? | Yes — regime boundaries along the climb | Checks the lowest firing altitude | p_e = p_a, separation, shock-at-exit lines | Axes with units | KEEP (redesigned with regimes) |
+| Divergence efficiency against length (Explore) | Bell or cone, and how long? | Yes — Huzel & Huang fig. 4-12 for the user's ε | Chooses ~80 % bell or a 15° cone | Your nozzle marked | Axes | KEEP (replaces λ vs α) |
+
 ## Lessons learned
+
+### After Nozzle (Phase 2)
+- **Digitise charts from a high-resolution render with pixel tracing, then calibrate on a known point** (here Malina 98.3 %) — a visual read was off by 0.5 %.
+- **Re-derive regime limits from the source**: the old choke check (p_a < p*) was a textbook slip that refused valid designs.
+- **A shared-x strip figure inside the drawing** beats stacking separate charts when the x is a physical position on the drawing.
 
 ### After Fin Flutter (Phase 1)
 - **Check the source's constants against the most recent correction:** the widely copied 1.337 form is wrong by √2.

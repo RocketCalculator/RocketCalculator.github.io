@@ -56,46 +56,8 @@ export function profile(inp, hmin, hmax, n = 120, opts) {
   return out;
 }
 
-// ---------------------------------------------------------------------------------------------------------------
-// U.S. Standard Atmosphere, 1976 (NOAA/NASA/USAF, NASA-TM-X-74335), 0–86 km, SI units. Read for this work:
-// constants p. 3–4 (R* = 8.31432e3 J/(kmol·K), g0 = 9.80665 m/s², r0 = 6356.766 km, T0 = 288.15 K, β, S), table 4
-// (layers), eq. (5) (hydrostatics). M0 = 28.9644 kg/kmol checks against table I (ρ R* T / P = 28.964 at 11 km).
-// Printing errors noted in the NASA copy's erratum: S is 110.4 K (printed 110), β is 1.458e-6 (printed 1.458e6).
-export const STD = { R: 8.31432e3, M0: 28.9644, g0: 9.80665, r0: 6356766, T0: 288.15, P0: 101325, beta: 1.458e-6, S: 110.4, gamma: 1.4 };
-const LAYERS = [[0, -6.5], [11, 0], [20, 1], [32, 2.8], [47, 0], [51, -2.8], [71, -2], [84.852, 0]];   // H_b (km'), L_M,b (K/km')
-// base temperatures and pressures of each layer, built once from T0, P0 by the layer formulas
-const BASES = (() => {
-  const out = [];
-  let T = STD.T0, P = STD.P0;
-  for (let i = 0; i < LAYERS.length; i++) {
-    out.push({ H: LAYERS[i][0] * 1000, L: LAYERS[i][1] / 1000, T, P });
-    if (i + 1 < LAYERS.length) { const dH = (LAYERS[i + 1][0] - LAYERS[i][0]) * 1000; ({ T, P } = layerState(out[i], dH)); }
-  }
-  return out;
-})();
-function layerState(b, dH) {
-  const k = (STD.g0 * STD.M0) / STD.R;                      // g0' M0 / R*, K/m
-  if (b.L === 0) return { T: b.T, P: b.P * Math.exp((-k * dH) / b.T) };
-  const T = b.T + b.L * dH;
-  return { T, P: b.P * (b.T / T) ** (k / b.L) };
-}
-/** Geopotential altitude H (m') from geometric altitude Z (m). */
-export const geopotential = (Z) => (STD.r0 * Z) / (STD.r0 + Z);
-/** Standard atmosphere at geometric altitude Z (m), valid −5 to 86 km: T (K), P (Pa), rho (kg/m³), a (m/s), mu (Pa·s). */
-export function std1976(Z) {
-  const H = geopotential(Z);
-  let i = BASES.length - 1; while (i > 0 && H < BASES[i].H) i--;
-  const { T, P } = layerState(BASES[i], H - BASES[i].H);
-  const rho = (P * STD.M0) / (STD.R * T);
-  return { Z, H, T, P, rho, a: Math.sqrt((STD.gamma * STD.R * T) / STD.M0), mu: sutherland(T) };
-}
-/** Dynamic viscosity by Sutherland's law (US 1976 eq. 51 form), Pa·s, T in K. */
-export const sutherland = (T) => (STD.beta * T ** 1.5) / (T + STD.S);
-/** Geometric altitude (m) at which the standard atmosphere has the given value of key ('rho' or 'P'); null outside −5…86 km. */
-export function stdAltitudeOf(key, value) {
-  let lo = -5000, hi = 86000;
-  const f = (z) => std1976(z)[key];
-  if (!(value <= f(lo) && value >= f(hi))) return null;
-  for (let k = 0; k < 100; k++) { const mid = (lo + hi) / 2; if (f(mid) > value) lo = mid; else hi = mid; }
-  return (lo + hi) / 2;
-}
+// Dynamic viscosity of air by Sutherland's law, with the constants of the U.S. Standard Atmosphere, 1976
+// (NASA-TM-X-74335, p. 4; the NASA copy misprints β as 1.458e6 and S as 110 — its erratum gives S = 110.4 K).
+export const SUTHERLAND = { beta: 1.458e-6, S: 110.4 };
+/** μ (Pa·s) at temperature T (K). */
+export const sutherland = (T) => (SUTHERLAND.beta * T ** 1.5) / (T + SUTHERLAND.S);

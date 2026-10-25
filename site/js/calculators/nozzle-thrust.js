@@ -5,7 +5,7 @@ import {
   contour, nozzleFlow, separationRatio, bellEfficiency, conicalLength, convergentLength, solveDecreasing, cStar,
 } from '../calc/nozzle.js';
 import { s, fmt, InputError } from '../util.js';
-import { dim, path, text } from '../ui/svg.js';
+import { path, text } from '../ui/svg.js';
 import { toDisplay, displayUnit, unitTex } from '../units.js';
 
 const PRES = { dim: 'pressure', internal: 'psi', units: { si: 'kPa', us: 'psi' } };
@@ -22,29 +22,35 @@ const G0 = 9.80665, PSI = 6894.757293168, IN2 = 0.00064516, RU = 8314.462618;
 const SAFE_MARGIN = 1.15;            // exit pressure ≥ 1.15 × separation pressure counts as attached with margin (D21)
 const CRITS = { schmucker: 'Schmucker (eq. 11, wall Mach number)', summerfield: 'Summerfield (0.4 of ambient)', kalt: 'Kalt–Bendall (pressure ratio)' };
 const CRIT_SHORT = { schmucker: 'Schmucker', summerfield: 'Summerfield', kalt: 'Kalt–Bendall' };
-const THETA_C = [10, 80], ALPHA = [3, 45], LF = [50, 120];   // accepted ranges of the derived angles / bell length
+const THETA_C = [2, 88], ALPHA = [1, 80], LF = [20, 200];   // buildable ranges of the derived angles / bell length (warned outside the usual)
 
 /**
  * Derived design: ε from the diameters, the convergent angle from L_c, the cone angle or bell length from L_d.
- * Throws InputError with the achievable range when a length cannot be built.
+ * A length that no angle can produce is not refused: the nearest buildable length is used and a warning says so.
  */
 function derive(v) {
-  const rt = v.dt / 2, rc = v.din / 2, eps = (v.de / v.dt) ** 2, R2 = 0.382 * rt;
+  const rt = v.dt / 2, rc = v.din / 2, eps = (v.de / v.dt) ** 2, R2 = 0.382 * rt, notes = [];
   const ul = (x) => `${fmt(toDisplay(x, LEN), { digits: 3 })} ${displayUnit(LEN)}`;
   const fc = (t) => convergentLength(rt, rc, t);
-  const thetaC = solveDecreasing(fc, v.Lc, THETA_C[0], THETA_C[1]);
-  if (thetaC == null) throw new InputError(`With these diameters the convergent length must be between ${ul(fc(THETA_C[1]))} and ${ul(fc(THETA_C[0]))} (half angle ${THETA_C[1]}° to ${THETA_C[0]}°).`);
+  let thetaC = solveDecreasing(fc, v.Lc, THETA_C[0], THETA_C[1]);
+  if (thetaC == null) {
+    thetaC = v.Lc < fc(THETA_C[1]) ? THETA_C[1] : THETA_C[0];
+    notes.push({ level: 'warn', text: `A convergent ${ul(v.Lc)} long cannot be built with these diameters and the 1.5 $r_t$ throat rounding; it is drawn ${ul(fc(thetaC))} long (half angle ${thetaC}°).`, fix: `Use a convergent length between ${ul(fc(THETA_C[1]))} and ${ul(fc(THETA_C[0]))}.` });
+  }
   let alpha = 15, Lf = 80;
   const L15 = conicalLength(rt, eps, 15, R2);
   if (v.type === 'cone') {
     const fd = (a) => conicalLength(rt, eps, a, R2);
     alpha = solveDecreasing(fd, v.Ld, ALPHA[0], ALPHA[1]);
-    if (alpha == null) throw new InputError(`For a cone with these diameters the divergent length must be between ${ul(fd(ALPHA[1]))} and ${ul(fd(ALPHA[0]))} (half angle ${ALPHA[1]}° to ${ALPHA[0]}°).`);
+    if (alpha == null) {
+      alpha = v.Ld < fd(ALPHA[1]) ? ALPHA[1] : ALPHA[0];
+      notes.push({ level: 'warn', text: `A cone ${ul(v.Ld)} long cannot reach this exit diameter; it is drawn ${ul(fd(alpha))} long (half angle ${alpha}°).`, fix: `Use a divergent length between ${ul(fd(ALPHA[1]))} and ${ul(fd(ALPHA[0]))}.` });
+    }
   } else {
-    Lf = (100 * v.Ld) / L15;
-    if (Lf < LF[0] || Lf > LF[1]) throw new InputError(`For a bell with these diameters the divergent length must be between ${ul((LF[0] / 100) * L15)} and ${ul((LF[1] / 100) * L15)} (${LF[0]}–${LF[1]} % of a 15° cone, ${ul(L15)}).`);
+    Lf = Math.min(LF[1], Math.max(LF[0], (100 * v.Ld) / L15));
+    if (Math.abs(Lf - (100 * v.Ld) / L15) > 1e-9) notes.push({ level: 'warn', text: `A bell ${ul(v.Ld)} long is ${fmt((100 * v.Ld) / L15, { digits: 3 })} % of a 15° cone; it is drawn at ${Lf} % (${ul((Lf / 100) * L15)}).`, fix: `Bells are usually 60–100 % of a 15° cone: ${ul(0.6 * L15)} to ${ul(L15)} here.` });
   }
-  return { ...v, eps, thetaC, alpha, Lf, L15 };
+  return { ...v, eps, thetaC, alpha, Lf, L15, notes };
 }
 /** Divergence efficiency λ: Malina for a cone, Huzel & Huang fig. 4-12 for a Rao bell. */
 const lambdaOf = (w, eps = w.eps) => (w.type === 'bell' ? bellEfficiency(eps, w.Lf) : malina(w.alpha));
@@ -70,6 +76,35 @@ function epsForMargin(w, margin) {
 }
 
 const lenField = (id, label, sym, def, slider, text) => ({ id, label, sym, ...LEN, default: def, min: 0, minExclusive: true, max: 400, slider, info: { text, doc: 'contour' } });
+
+/** The nozzle half-sections drawn on the flow chart's x scale (display length units): walls, gas shaded by Mach
+ *  number, station diameters, the two lengths with their angles, the inviscid shock and the separation point. */
+function drawNozzle(g, X, Y, box, out, ul) {
+  const { w, geo, fl } = out.o, u = (x) => ul.v(x), L = (x) => `${fmt(ul.v(x), { digits: 3 })} ${ul.plain}`;
+  const pts = fl.prof, xin = -geo.Lconv, xmax = geo.Ln, rmax = Math.max(geo.rc, geo.re);
+  const P = (x, r) => [X(u(x)), Y(u(r))];
+  for (let i = 0; i < pts.length - 1; i++) {
+    const a = pts[i], b = pts[i + 1], op = (0.06 + 0.32 * Math.min(1, (a.M + b.M) / 2 / Math.max(1.5, fl.Me))).toFixed(3);
+    g.append(s('path', { d: path([P(a.x, a.r), P(b.x, b.r), P(b.x, -b.r), P(a.x, -a.r)], true), fill: 'var(--red)', 'fill-opacity': op, stroke: 'none', 'shape-rendering': 'crispEdges' }));
+  }
+  for (const sg of [1, -1]) g.append(s('path', { d: path(pts.map((q) => P(q.x, sg * q.r))), fill: 'none', stroke: 'var(--text)', 'stroke-width': 2.2 }));
+  g.append(s('line', { x1: box.left, x2: box.right, y1: Y(0), y2: Y(0), class: 'sc-thin', 'stroke-dasharray': '10 4 2 4' }));
+  // stations: diameter labels above the wall (left out on narrow screens, where they would collide)
+  const narrow = box.right - box.left < 520;
+  const yTop = Y(u(rmax)) - 8;
+  const lab = (x, str, anchor, dx = 0) => g.append(text(X(u(x)) + dx, yTop, str, { anchor, size: 11 }));
+  if (!narrow) {
+    lab(xin, `d_{in} = ${L(w.din)}`, 'middle');
+    lab(0, `d_t = ${L(w.dt)}`, 'start', 6);
+    lab(xmax, `d_e = ${L(w.de)}`, 'end');
+  }
+  // lengths and angles under the wall
+  const yBot = Y(-u(rmax)) + 16;
+  if (!narrow) g.append(text((X(u(xin)) + X(0)) / 2, yBot, `L_c = ${L(geo.Lconv)} · θ_c = ${fmt(w.thetaC, { digits: 3 })}°`, { anchor: 'middle', size: 10.5, cls: 'sc-dim-text' }));
+  if (!narrow) g.append(text((X(0) + X(u(xmax))) / 2, yBot, w.type === 'bell' ? `L_d = ${L(xmax)} · bell ${fmt(w.Lf, { digits: 3 })} % · θ_n ${fmt(geo.thn, { digits: 3 })}° → θ_e ${fmt(geo.the, { digits: 3 })}°` : `L_d = ${L(xmax)} · cone α = ${fmt(w.alpha, { digits: 3 })}°`, { anchor: 'middle', size: 10.5, cls: 'sc-dim-text' }));
+  if (fl.shock) { const rr = geo.rt * Math.sqrt(fl.shock.eps); g.append(s('line', { x1: X(u(fl.shock.x)), x2: X(u(fl.shock.x)), y1: Y(u(rr)), y2: Y(-u(rr)), stroke: 'var(--text)', 'stroke-width': 2, 'stroke-dasharray': '5 3' })); }
+  if (fl.sep) { const rr = geo.rt * Math.sqrt(fl.sep.eps); for (const sg of [1, -1]) g.append(s('circle', { cx: X(u(fl.sep.x)), cy: Y(sg * u(rr)), r: 5, fill: 'var(--surface)', stroke: 'var(--red)', 'stroke-width': 2 })); }
+}
 
 export default {
   slug: 'nozzle-thrust',
@@ -116,11 +151,11 @@ export default {
       fields: [
         { id: 'type', label: 'Divergent contour', kind: 'select', default: 'bell', options: [{ value: 'bell', label: 'Bell — Rao parabolic approximation' }, { value: 'cone', label: 'Conical' }],
           info: { text: 'A cone is simplest to machine. A bell expands fast after the throat, then turns the flow back towards the axis: about 1 % more thrust than a 15° cone in 80 % of its length (Huzel & Huang fig. 4-12).', doc: 'contour' } },
-        lenField('din', 'Inlet diameter', 'd_{in}', 2.5, { min: 0.3, max: 12, step: 0.01 }, 'Inside diameter where the convergent starts — the motor case or grain bore end.'),
-        lenField('dt', 'Throat diameter', 'd_t', 1, { min: 0.1, max: 6, step: 0.005 }, 'Diameter of the narrowest section. It sets the thrust and mass flow for a given chamber pressure, not the thrust coefficient.'),
-        lenField('de', 'Exit diameter', 'd_e', 2.828, { min: 0.12, max: 20, step: 0.005 }, 'Diameter of the exit plane. The expansion ratio is $\\varepsilon=(d_e/d_t)^2$; sea-level motors use 4–10, upper stages 20–100.'),
-        lenField('Lc', 'Convergent length (inlet → throat)', 'L_c', 1.5, { min: 0.05, max: 12, step: 0.005 }, 'Axial length from the end of the inlet to the throat. With the diameters it sets the convergent half angle (20–45° is usual, Huzel & Huang). The convergent carries slow gas, so its shape costs little.'),
-        lenField('Ld', 'Divergent length (throat → exit)', 'L_d', 2.75, { min: 0.05, max: 40, step: 0.005 }, 'Axial length from the throat to the exit. For a cone it sets the half angle (12–18° usual); for a bell, the length as a percentage of a 15° cone (60–100 %, 80 % common).'),
+        lenField('din', 'Inlet diameter', 'd_{in}', 2.5, { min: 0.3, max: 8, step: 0.01 }, 'Inside diameter where the convergent starts — the motor case or grain bore end.'),
+        lenField('dt', 'Throat diameter', 'd_t', 1, { min: 0.1, max: 2.5, step: 0.005 }, 'Diameter of the narrowest section. It sets the thrust and mass flow for a given chamber pressure, not the thrust coefficient.'),
+        lenField('de', 'Exit diameter', 'd_e', 2.828, { min: 0.15, max: 8, step: 0.005 }, 'Diameter of the exit plane. The expansion ratio is $\\varepsilon=(d_e/d_t)^2$; sea-level motors use 4–10, upper stages 20–100.'),
+        lenField('Lc', 'Convergent length (inlet → throat)', 'L_c', 1.5, { min: 0.05, max: 8, step: 0.005 }, 'Axial length from the end of the inlet to the throat. With the diameters it sets the convergent half angle (20–45° is usual, Huzel & Huang). The convergent carries slow gas, so its shape costs little.'),
+        lenField('Ld', 'Divergent length (throat → exit)', 'L_d', 2.75, { min: 0.05, max: 20, step: 0.005 }, 'Axial length from the throat to the exit. For a cone it sets the half angle (12–18° usual); for a bell, the length as a percentage of a 15° cone (60–100 %, 80 % common).'),
       ],
     },
     {
@@ -152,9 +187,9 @@ export default {
     { id: 'Lf', label: 'Bell length, % of a 15° cone', sym: 'L_f', dim: 'percent', digits: 3, when: (v) => v.type === 'bell', info: { doc: 'contour' } },
     { id: 'thn', label: 'Bell initial angle', sym: '\\theta_n', ...ANG, digits: 3, when: (v) => v.type === 'bell', info: { text: 'From Huzel & Huang fig. 4-14.', doc: 'contour' } },
     { id: 'the', label: 'Bell exit angle', sym: '\\theta_e', ...ANG, digits: 3, when: (v) => v.type === 'bell', info: { text: 'From Huzel & Huang fig. 4-14.', doc: 'contour' } },
-    { id: 'deMax', label: 'Largest exit diameter with margin here', sym: 'd_{e,max}', ...LEN, when: (v) => v.pa > 0, info: { text: `Largest exit diameter whose exit pressure is still ${SAFE_MARGIN} times the separation pressure at this ambient pressure.`, doc: 'separation' } },
-    { id: 'deOpt', label: 'Exit diameter for ideal expansion', sym: 'd_{e,opt}', ...LEN, when: (v) => v.pa > 0, info: { text: 'Gives $p_e=p_a$, the largest one-dimensional thrust coefficient at this ambient pressure.', doc: 'thrust' } },
-    { id: 'pcMin', label: 'Chamber pressure that keeps the margin', sym: 'p_{c,min}', ...PRES, when: (v) => v.pa > 0, info: { text: `Lowest chamber pressure at which this nozzle’s exit pressure is ${SAFE_MARGIN} times the separation pressure.`, doc: 'separation' } },
+    { id: 'deMax', label: 'Largest exit diameter with margin here', sym: 'd_{e,max}', ...LEN, info: { text: `Largest exit diameter whose exit pressure is still ${SAFE_MARGIN} times the separation pressure at this ambient pressure.`, doc: 'separation' } },
+    { id: 'deOpt', label: 'Exit diameter for ideal expansion', sym: 'd_{e,opt}', ...LEN, info: { text: 'Gives $p_e=p_a$, the largest one-dimensional thrust coefficient at this ambient pressure.', doc: 'thrust' } },
+    { id: 'pcMin', label: 'Chamber pressure that keeps the margin', sym: 'p_{c,min}', ...PRES, info: { text: `Lowest chamber pressure at which this nozzle’s exit pressure is ${SAFE_MARGIN} times the separation pressure.`, doc: 'separation' } },
     { id: 'mdot', label: 'Mass flow rate', sym: '\\dot m', ...MDOT, digits: 4, info: { tex: '\\dot m=\\frac{p_c A_t}{c^*}', doc: 'performance' } },
     { id: 'cstar', label: 'Characteristic velocity', sym: 'c^*', ...SPD, digits: 5, info: { tex: 'c^*=\\frac{\\sqrt{RT_c/\\gamma}}{\\left(\\frac{2}{\\gamma+1}\\right)^{\\frac{\\gamma+1}{2(\\gamma-1)}}}', doc: 'performance' } },
     { id: 'Ve', label: 'Exhaust velocity at the exit (attached)', sym: 'V_e', ...SPD, digits: 5, info: { tex: 'V_e=M_e\\sqrt{\\gamma R T_e}', doc: 'performance' } },
@@ -168,8 +203,8 @@ export default {
     { id: 'pStar', label: 'Throat (critical) pressure', sym: 'p^*', ...PRES, info: { tex: 'p^*=p_c\\left(\\frac{2}{\\gamma+1}\\right)^{\\frac{\\gamma}{\\gamma-1}}', doc: 'isentropic' } },
     { id: 'peSub', label: 'Ambient pressure that unchokes the nozzle', sym: 'p_{a,1}', ...PRES, info: { text: 'Above this the flow is subsonic everywhere and the nozzle is a venturi.', doc: 'shock' } },
     { id: 'peNS', label: 'Ambient pressure that puts a normal shock at the exit', sym: 'p_{a,2}', ...PRES, info: { text: 'Between this and $p_{a,1}$ the ideal (inviscid) solution has a normal shock inside the divergent.', doc: 'shock' } },
-    { id: 'xShock', label: 'Inviscid normal shock (from the throat)', sym: 'x_s', ...LEN, when: (v, out) => !!out?.o?.fl?.shock, info: { doc: 'shock' } },
-    { id: 'xSep', label: 'Separation point (from the throat)', sym: 'x_{sep}', ...LEN, when: (v, out) => !!out?.o?.fl?.sep, info: { doc: 'separation' } },
+    { id: 'xShock', label: 'Inviscid normal shock (from the throat; — if none)', sym: 'x_s', ...LEN, info: { doc: 'shock' } },
+    { id: 'xSep', label: 'Separation point (from the throat; — if attached)', sym: 'x_{sep}', ...LEN, info: { doc: 'separation' } },
     { id: 'At', label: 'Throat area', sym: 'A_t', ...AREA, info: { tex: 'A_t=\\frac{\\pi d_t^2}{4}', doc: 'thrust' } },
     { id: 'Mc', label: 'Inlet Mach number', sym: 'M_{in}', ...NONE, digits: 3, info: { text: 'Gas speed where the convergent starts. The model takes $p_c$ as the stagnation pressure, which is accurate only while this is small.', doc: 'isentropic' } },
   ],
@@ -213,7 +248,9 @@ export default {
       fixes,
     };
 
-    const warnings = [];
+    const warnings = [...w.notes];
+    if (geo.R1 < 1.5 * geo.rt * (1 - 1e-9)) warnings.push({ level: 'info', text: `The inlet is barely wider than the throat: the upstream throat rounding is reduced from 1.5 $r_t$ to ${fmt(geo.R1 / geo.rt, { digits: 3 })} $r_t$ to fit.` });
+    if (w.type === 'bell' && Math.abs(geo.Ln - (w.Lf / 100) * w.L15) > 1e-3 * geo.Ln) warnings.push({ level: 'warn', text: `The exit is reached on the throat rounding: the divergent is drawn ${L(geo.Ln)} long.` });
     if (fl.sep) warnings.push({ level: 'err', text: `The jet separates ${L(fl.sep.x)} after the throat. Separation is uneven and unsteady: side loads on the nozzle and the motor mount, and less thrust than attached (the value shown is an estimate for a nozzle cut at the separation point).`, fix: fixes[0]?.replace(/, or$/, '.') });
     else if (fl.regime === 'shock') warnings.push({ level: 'err', text: 'The ideal solution has a normal shock inside the nozzle: a real nozzle separates before that.', fix: fixes[0]?.replace(/, or$/, '.') });
     if (fl.sep && (fl.sep.M < 2 || fl.sep.M > 5) && w.crit === 'schmucker') warnings.push({ level: 'info', text: `Separation is predicted at Mach ${fmt(fl.sep.M, { digits: 3 })}; Schmucker’s fit rests on data near Mach 3–4.6, so its position is extrapolated.` });
@@ -237,8 +274,8 @@ export default {
   },
   plots: [
     {
-      id: 'flow', title: 'Flow along the nozzle', height: 620, wide: true,
-      info: { text: 'Cross-section area, Mach number, static pressure, temperature and density along the nozzle, on one axial scale (zero at the throat). Hover anywhere: the read-out gives each value and its ratio to the sonic (critical, starred) value at the throat. Vertical lines mark the throat, the inviscid normal shock and the separation point.', doc: 'isentropic' },
+      id: 'flow', title: 'Nozzle and the flow along it', height: 940, wide: true,
+      info: { text: 'The nozzle to scale (top) and, on the same axial scale, its cross-section area, Mach number, static pressure, temperature and density (zero at the throat). Hover anywhere: the read-out gives each value and its ratio to the sonic (critical, starred) value at the throat. The dashed lines through every panel mark the throat, the inviscid normal shock and the separation point.', doc: 'isentropic' },
       build(v, out, { U }) {
         const o = out.o, w = o.w, fl = o.fl, ul = U(LEN), ua = U(AREA), up = U(PRES), ut = U(TEMP), ud = U(DENS);
         const At = o.At, pS = w.pc * throatRatio(w.g), TS = w.Tc * temperatureRatio(1, w.g), rhoC = (w.pc * PSI) / (o.R * w.Tc), rS = rhoC * densityRatio(1, w.g);
@@ -251,6 +288,7 @@ export default {
         return {
           x: { label: 'Distance from the throat $x$', unit: ul.label }, vlines, xDomain: [ul.v(fl.prof[0].x), ul.v(fl.prof[fl.prof.length - 1].x)],
           panels: [
+            { y: { label: 'Nozzle', scaleNote: 'radius not to scale' }, yDomain: [-1.18 * Math.max(o.geo.rc, o.geo.re), 1.18 * Math.max(o.geo.rc, o.geo.re)].map(ul.v), equalAspect: true, minHeight: 120, maxHeight: 240, draw: (g, X, Y, box) => drawNozzle(g, X, Y, box, out, ul) },
             { y: { label: 'Area $A$', unit: ua.label }, ratio: { label: '$A/A^*$' }, includeZero: true, series: [{ name: '$A$', points: ser((q) => [ua.v(q.A * At), q.A]) }] },
             { y: { label: 'Mach $M$' }, includeZero: true, series: [{ name: '$M$', points: brk(ser((q) => [q.M])) }], hlines: [{ y: 1, label: '$M=1$' }] },
             { y: { label: 'Pressure $p$', unit: up.label }, ratio: { label: '$p/p^*$' }, includeZero: true, series: [{ name: '$p$', points: brk(ser((q) => [up.v(q.p * w.pc), (q.p * w.pc) / pS])) }], hlines: w.pa > 0 ? [{ y: up.v(w.pa), label: '$p_a$', color: 'var(--red)' }] : [] },
@@ -276,7 +314,7 @@ export default {
       },
     },
     {
-      id: 'wall', title: 'Wall pressure against the separation pressure', explore: true, when: (v) => v.pa > 0,
+      id: 'wall', title: 'Wall pressure against the separation pressure', explore: true,
       info: { text: 'Attached (isentropic) wall pressure along the divergent, and the pressure at which the boundary layer separates by the chosen criterion, both divided by $p_a$. Where the wall curve drops below the criterion the jet leaves the wall.', doc: 'separation' },
       build(v, out, { U }) {
         const w = out.o.w, fl = out.o.fl;
@@ -329,79 +367,6 @@ export default {
       },
     },
   ],
-  schematicTitle: 'Nozzle section',
-  schematicHint: 'Half-section of the nozzle with its dimensions; the gas is shaded by Mach number. Drag the exit lip to change the exit diameter and the divergent length, and the inlet corner to change the inlet diameter and the convergent length',
-  schematic(ctx, v, out) {
-    const o = out.o, w = o.w, geo = o.geo, fl = o.fl, W = 760;
-    const ul = ctx.U(LEN), L = (x) => `${fmt(ul.v(x), { digits: 3 })} ${ul.plain}`, up = ctx.U(PRES), P = (x) => `${fmt(up.v(x), { digits: 3 })} ${up.plain}`;
-    // inlet stub → exit drawn to one scale in both directions; the plume to the right is context
-    const xin = -geo.Lconv, xmin = xin - Math.min(geo.rc, 0.25 * (geo.Ln + geo.Lconv)), xmax = geo.Ln, rmax = Math.max(geo.rc, geo.re);
-    const x0 = 150, k = Math.min((W - x0 - 150) / (xmax - xmin), 120 / rmax);
-    const X = (x) => x0 + (x - xmin) * k, top = 64, cy = top + rmax * k + 6, R = (r) => r * k;
-    const H = Math.round(cy + rmax * k + 112);
-    const fr = ctx.frame({ width: W, height: H, label: 'Nozzle half-section with inlet, throat and exit diameters and the convergent and divergent lengths' });
-    const g = fr.layer('main'); g.replaceChildren();
-    // the inlet stub is a cylinder: start it at the left edge of the drawing
-    const pts = [{ ...fl.prof[0], x: xmin }, ...fl.prof.filter((q) => q.x > xmin)];
-    // gas shaded by Mach number
-    for (let i = 0; i < pts.length - 1; i++) {
-      const a = pts[i], b = pts[i + 1], op = (0.06 + 0.3 * Math.min(1, (a.M + b.M) / 2 / Math.max(1.5, fl.Me))).toFixed(3);
-      g.append(s('path', { d: path([[X(a.x), cy - R(a.r) - 0.5], [X(b.x), cy - R(b.r) - 0.5], [X(b.x), cy + R(b.r) + 0.5], [X(a.x), cy + R(a.r) + 0.5]], true), fill: 'var(--red)', 'fill-opacity': op, stroke: 'none', 'shape-rendering': 'crispEdges' }));
-    }
-    // plume: flares when under-expanded, necks when over-expanded, leaves the wall where it separates
-    const rs0 = fl.sep ? R(geo.rt * Math.sqrt(fl.sep.eps)) : R(geo.re), xs0 = fl.sep ? X(fl.sep.x) : X(xmax);
-    const pl = W - 20 - X(xmax), tilt = Math.max(-0.4, Math.min(0.4, 0.3 * Math.log(Math.max(1e-6, fl.pe / Math.max(w.pa, 1e-9 * w.pc)))));
-    const plume = [[xs0, rs0]]; for (let i = 1; i <= 16; i++) { const f = i / 16; plume.push([X(xmax) + pl * f, Math.max(0.35 * rs0, rs0 + tilt * pl * f * (1.3 - f))]); }
-    g.append(s('path', { d: path([...plume.map(([x, h]) => [x, cy - h]), ...plume.slice().reverse().map(([x, h]) => [x, cy + h])], true), fill: 'var(--red)', 'fill-opacity': 0.05, stroke: 'var(--red)', 'stroke-opacity': 0.4, 'stroke-dasharray': '4 3', 'data-field': 'pa' }));
-    // walls
-    const tw = 5;
-    for (const sg of [-1, 1]) g.append(s('path', { d: path([...pts.map((q) => [X(q.x), cy + sg * R(q.r)]), ...pts.slice().reverse().map((q) => [X(q.x), cy + sg * (R(q.r) + tw)])], true), class: 'sc-body-2', 'data-field': 'din dt de Lc Ld type' }));
-    g.append(s('line', { x1: X(xmin) - 12, x2: W - 16, y1: cy, y2: cy, class: 'sc-thin', 'stroke-dasharray': '10 4 2 4' }));
-    // station planes
-    for (const [x, r, f] of [[xin, geo.rc, 'din'], [0, geo.rt, 'dt'], [xmax, geo.re, 'de']]) g.append(s('line', { x1: X(x), x2: X(x), y1: cy - R(r), y2: cy + R(r), class: 'sc-thin', 'stroke-dasharray': '3 3', opacity: 0.7, 'data-field': f }));
-    // station names on one row above, Mach under each
-    const yName = top - 34, yVal = top - 18;
-    const station = (x, name, val, f, anchor = 'middle') => { g.append(text(x, yName, name, { anchor, size: 11.5, field: f })); g.append(text(x, yVal, val, { anchor, size: 10.5, cls: 'sc-dim-text', field: f })); };
-    station(X(xin), 'inlet', `M = ${fmt(fl.prof.find((q) => q.x >= xin - 1e-9)?.M ?? 0, { digits: 2 })}`, 'din');
-    station(X(0), 'throat', 'M = 1', 'dt');
-    station(X(xmax), 'exit', `M = ${fmt(fl.prof[fl.prof.length - 1].M, { digits: 3 })}`, 'de');
-    station(W - 16, 'ambient', w.pa > 0 ? P(w.pa) : 'vacuum', 'pa', 'end');
-    // diameters: vertical dimension lines, labels beside them
-    g.append(dim(fr, X(xmin) - 22, cy + R(geo.rc), X(xmin) - 22, cy - R(geo.rc), null, { field: 'din' }));
-    g.append(text(X(xmin) - 30, cy - R(geo.rc) / 2 + 4, `d_{in} = ${L(w.din)}`, { anchor: 'end', size: 11, field: 'din' }));
-    g.append(dim(fr, X(0), cy + R(geo.rt), X(0), cy - R(geo.rt), null, { field: 'dt' }));
-    g.append(text(X(0) - 6, cy + R(rmax) + tw + 18, `d_t = ${L(w.dt)}`, { anchor: 'end', size: 11, field: 'dt' }));
-    g.append(dim(fr, X(xmax) + 14, cy + R(geo.re), X(xmax) + 14, cy - R(geo.re), null, { field: 'de' }));
-    g.append(text(X(xmax) + 22, cy - R(geo.re) / 2 + 4, `d_e = ${L(w.de)}`, { size: 11, field: 'de' }));
-    // lengths on one baseline below, angles above it
-    const yb = cy + R(rmax) + tw + 58;
-    for (const x of [xin, 0, xmax]) g.append(s('line', { x1: X(x), x2: X(x), y1: cy + R(x === 0 ? geo.rt : x === xin ? geo.rc : geo.re) + tw + 3, y2: yb + 4, class: 'sc-thin', opacity: 0.3 }));
-    g.append(dim(fr, X(xin), yb, X(0), yb, `L_c = ${L(w.Lc)}`, { field: 'Lc', textOff: 16 }));
-    g.append(dim(fr, X(0), yb, X(xmax), yb, `L_d = ${L(w.Ld)}`, { field: 'Ld', textOff: 16 }));
-    g.append(text((X(xin) + X(0)) / 2, yb - 8, `θ_c = ${fmt(w.thetaC, { digits: 3 })}°`, { anchor: 'middle', size: 10.5, cls: 'sc-dim-text', field: 'Lc' }));
-    g.append(text((X(0) + X(xmax)) / 2, yb - 8, w.type === 'bell' ? `bell ${fmt(w.Lf, { digits: 3 })} % · θ_n = ${fmt(geo.thn, { digits: 3 })}°, θ_e = ${fmt(geo.the, { digits: 3 })}°` : `cone α = ${fmt(w.alpha, { digits: 3 })}°`, { anchor: 'middle', size: 10.5, cls: 'sc-dim-text', field: 'Ld' }));
-    // shock and separation on the wall
-    if (fl.shock) {
-      const xs = X(fl.shock.x), rr = R(geo.rt * Math.sqrt(fl.shock.eps));
-      g.append(s('line', { x1: xs, x2: xs, y1: cy - rr, y2: cy + rr, stroke: 'var(--text-2)', 'stroke-width': 1.5, 'stroke-dasharray': '5 3' }));
-    }
-    if (fl.sep) {
-      for (const sg of [-1, 1]) g.append(s('circle', { cx: xs0, cy: cy + sg * rs0, r: 4.5, fill: 'none', stroke: 'var(--red)', 'stroke-width': 1.8 }));
-      g.append(text(xs0, cy - rs0 - 10, 'separation', { anchor: 'middle', size: 10.5, field: 'pa crit' }));
-    }
-    g.append(text(16, H - 8, `to scale · gas shaded by Mach number${fl.shock ? ' · dashed: inviscid normal shock' : ''}${fl.sep ? ' · circles: separation point' : ''}`, { size: 10, cls: 'sc-dim-text' }));
-
-    ctx.handle('lip', X(xmax), cy - R(geo.re), {
-      field: 'de', title: 'Drag up or down for the exit diameter, along the axis for the divergent length',
-      onDrag: (px, py) => { ctx.setValue('de', Math.max(w.dt * 1.01, (2 * (cy - py)) / k)); ctx.setValue('Ld', Math.max(1e-3, (px - X(0)) / k)); },
-      onKey: (dx, dy) => { if (dy) ctx.setValue('de', w.de * (1 + 0.02 * dy)); if (dx) ctx.setValue('Ld', w.Ld * (1 + 0.02 * dx)); },
-    });
-    ctx.handle('inlet', X(xin), cy - R(geo.rc), {
-      field: 'din', title: 'Drag up or down for the inlet diameter, along the axis for the convergent length',
-      onDrag: (px, py) => { ctx.setValue('din', Math.max(w.dt * 1.1, (2 * (cy - py)) / k)); ctx.setValue('Lc', Math.max(1e-3, (X(0) - px) / k)); },
-      onKey: (dx, dy) => { if (dy) ctx.setValue('din', w.din * (1 + 0.02 * dy)); if (dx) ctx.setValue('Lc', w.Lc * (1 - 0.02 * dx)); },
-    });
-  },
   symbols: {
     '\\gamma': 'ratio of specific heats of the exhaust gas', T_c: 'chamber (stagnation) temperature', M_w: 'molar mass of the exhaust', R: 'gas constant of the exhaust, $R_u/M_w$',
     'd_{in}': 'inlet diameter', d_t: 'throat diameter', d_e: 'exit diameter', L_c: 'convergent length, inlet to throat', L_d: 'divergent length, throat to exit',

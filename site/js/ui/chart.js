@@ -56,6 +56,8 @@ export function linePath(P, smooth) {
  * Stacked panels with one shared x axis: spec = { x, xDomain, vlines, panels: [{ y: {label, unit}, series, hlines, yDomain,
  *          includeZero, ratio: {label} }] }. A point may carry a third value [x, y, r] (e.g. the ratio to a reference); the
  *          hover read-out then shows "y unit · ratio-label = r" for every panel at the crosshair.
+ *          A panel may instead be a drawing: { draw(g, X, Y, box), yDomain, equalAspect, maxHeight } — drawn with the same x
+ *          scale (and, with equalAspect, the same y scale, so shapes are true to scale); its height then follows from it.
  */
 export function createChart(host, opts = {}) {
   const wrap = h('div.chart');
@@ -202,18 +204,37 @@ export function createChart(host, opts = {}) {
     const W = Math.max(280, svgHost.clientWidth || 600), n = spec.panels.length;
     const m = { l: 64, r: 18, t: 10, b: 44 }, gap = 14;
     const H = Math.round(opts.height ?? 120 * n + m.t + m.b);
-    const ph = (H - m.t - m.b - gap * (n - 1)) / n;
-    const allX = spec.panels.flatMap((p) => p.series.flatMap((se) => (se.points || []).map((q) => q[0]))).filter(Number.isFinite);
+    const allX = spec.panels.flatMap((p) => (p.series || []).flatMap((se) => (se.points || []).map((q) => q[0]))).filter(Number.isFinite);
     const xd = spec.xDomain || niceDomain([Math.min(...allX), Math.max(...allX)], 7);
     const X = (v) => m.l + ((v - xd[0]) / (xd[1] - xd[0] || 1)) * (W - m.l - m.r);
+    // drawing panels with equalAspect take the height their y range needs at the x scale (capped); the rest share what is left
+    const kx = (W - m.l - m.r) / (xd[1] - xd[0] || 1), avail = H - m.t - m.b - gap * (n - 1);
+    const fixedH = spec.panels.map((p) => (p.draw && p.equalAspect ? Math.max(p.minHeight ?? 0, Math.min(p.maxHeight ?? avail / 2, (p.yDomain[1] - p.yDomain[0]) * kx)) : null));
+    const rest = (avail - fixedH.reduce((a, h) => a + (h || 0), 0)) / Math.max(1, fixedH.filter((h) => h == null).length);
+    const heights = fixedH.map((h) => h ?? rest);
     const xLabelW = Math.max(...xd.map((v) => fmt(v, { digits: 4 }).length)) * 7 + 22;
     const xt = niceTicks(xd[0], xd[1], Math.max(3, Math.min(8, Math.floor((W - m.l - m.r) / xLabelW))));
     const tickFmt = (v, ticks) => { const st = Math.abs(ticks[1] - ticks[0]) || 1; const d = Math.max(0, -Math.floor(Math.log10(st) + 1e-9)); return Math.abs(v) >= 1e5 || (Math.abs(v) < 1e-3 && v !== 0) ? fmt(v, { digits: 3 }) : v.toFixed(Math.min(d, 6)).replace(/^-/, '−'); };
     const lab = (a) => (a ? a.label + (a.unit ? ` (${a.unit})` : '') : '');
     svg = s('svg', { viewBox: `0 0 ${W} ${H}`, role: 'img', 'aria-label': opts.title || spec.title || 'Chart', preserveAspectRatio: 'xMidYMid meet' });
+    let yCursor = m.t;
     const bands = spec.panels.map((p, i) => {
-      const top = m.t + i * (ph + gap), bot = top + ph;
-      const series = p.series.map((se, j) => ({ ...se, col: se.color || 'var(--series-2)', points: (se.points || []).filter(Array.isArray), j }));
+      const ph = heights[i], top = yCursor, bot = top + ph; yCursor = bot + gap;
+      if (p.draw) {
+        // a drawing on the shared x scale: y centred in the band, same scale as x when equalAspect
+        // the band height is the true-scale height unless capped (min/max), so ky equals kx exactly when it fits
+        const ky = ph / (p.yDomain[1] - p.yDomain[0]), toScale = Math.abs(ky - kx) <= 1e-9 * kx;
+        const mid = (p.yDomain[0] + p.yDomain[1]) / 2, Y = (v) => (top + bot) / 2 - (v - mid) * ky;
+        const g = s('g', {}), clipId = 'clip' + Math.random().toString(36).slice(2, 8);
+        const body = s('g', { 'clip-path': `url(#${clipId})` });
+        g.append(s('defs', {}, s('clipPath', { id: clipId }, s('rect', { x: 0, y: top - 2, width: W, height: ph + 4 }))), body);
+        p.draw(body, X, Y, { top, bot, left: m.l, right: W - m.r, W, toScale });
+        for (const l of spec.vlines || []) if (Number.isFinite(l.x)) body.append(s('line', { class: 'hline', y1: top, y2: bot, x1: X(l.x), x2: X(l.x), stroke: l.color || 'var(--text-3)' }));
+        if (p.y?.label) g.append(svgRich(s('text', { class: 'axis-label', transform: `translate(14 ${(top + bot) / 2}) rotate(-90)`, 'text-anchor': 'middle' }), p.equalAspect && !toScale && p.y.scaleNote ? `${p.y.label} (${p.y.scaleNote})` : lab(p.y), 11.5));
+        svg.append(g);
+        return { p, series: [], Y, top, bot };
+      }
+      const series = p.series.map((se, j) => ({ ...se, col: se.color || color(j), points: (se.points || []).filter(Array.isArray), j }));
       const ys = [...series.flatMap((se) => se.points.map((q) => q[1])), ...(p.hlines || []).map((l) => l.y)].filter(Number.isFinite);
       let yd = p.yDomain || [Math.min(...ys), Math.max(...ys)];
       if (!ys.length) yd = [0, 1];
@@ -238,7 +259,7 @@ export function createChart(host, opts = {}) {
       for (const l of spec.vlines || []) {
         if (!Number.isFinite(l.x)) continue;
         plot.append(s('line', { class: 'hline', y1: top, y2: bot, x1: X(l.x), x2: X(l.x), stroke: l.color || 'var(--text-3)' }));
-        if (l.label && i === 0) plot.append(svgRich(s('text', { x: X(l.x) + 5, y: top + 11, fill: l.color || 'var(--text-3)', 'font-size': 10.5 }), l.label, 10.5));
+        if (l.label && i === spec.panels.findIndex((q) => !q.draw)) plot.append(svgRich(s('text', { x: X(l.x) + 5, y: top + 11, fill: l.color || 'var(--text-3)', 'font-size': 10.5 }), l.label, 10.5));
       }
       for (const se of series) {
         let d = '', run = [];
@@ -311,13 +332,13 @@ export function createChart(host, opts = {}) {
     toSheets() {
       if (!spec) return [];
       const P = texToPlain, col = (ax, d) => `${P(ax?.label || d)}${ax?.unit ? ' (' + P(ax.unit) + ')' : ''}`;
-      if (spec.panels) return spec.panels.flatMap((p) => p.series.map((se) => ({ name: P(se.name || p.y.label).slice(0, 31), rows: [[col(spec.x, 'x'), col(p.y, 'y'), ...(p.ratio ? [P(p.ratio.label)] : [])], ...se.points.map((q) => q.slice(0, p.ratio ? 3 : 2).map(num))] })));
+      if (spec.panels) return spec.panels.filter((p) => p.series).flatMap((p) => p.series.map((se) => ({ name: P(se.name || p.y.label).slice(0, 31), rows: [[col(spec.x, 'x'), col(p.y, 'y'), ...(p.ratio ? [P(p.ratio.label)] : [])], ...se.points.map((q) => q.slice(0, p.ratio ? 3 : 2).map(num))] })));
       return spec.series.map((se) => ({ name: P(se.name), rows: [[col(spec.x, 'x'), col(spec.y, 'y')], ...se.points.map(([x, y]) => [num(x), num(y)])] }));
     },
     toJSON(title) {
       if (!spec) return {};
       const P = texToPlain, ax = (a) => ({ label: P(a?.label || ''), unit: P(a?.unit || '') });
-      if (spec.panels) return { title: P(title || ''), x: ax(spec.x), panels: spec.panels.map((p) => ({ y: ax(p.y), series: p.series.map((se) => ({ name: P(se.name || p.y.label), points: se.points.filter((q) => q.every(Number.isFinite)) })) })) };
+      if (spec.panels) return { title: P(title || ''), x: ax(spec.x), panels: spec.panels.filter((p) => p.series).map((p) => ({ y: ax(p.y), series: p.series.map((se) => ({ name: P(se.name || p.y.label), points: se.points.filter((q) => q.every(Number.isFinite)) })) })) };
       return { title: P(title || ''), x: ax(spec.x), y: ax(spec.y), series: spec.series.map((se) => ({ name: P(se.name), points: se.points.filter((p) => p.every(Number.isFinite)) })) };
     },
     svgEl: () => svg,

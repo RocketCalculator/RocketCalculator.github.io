@@ -149,9 +149,11 @@ const RAD = Math.PI / 180;
 
 /** Inlet-to-throat length of the convergent: cone at half angle θc (deg) from radius rc into the 1.5 r_t throat arc. */
 export const convergentLength = (rt, rc, thetaCdeg) => {
-  const t = thetaCdeg * RAD, R1 = 1.5 * rt;
+  const t = thetaCdeg * RAD, R1 = upstreamArc(rt, rc, thetaCdeg);
   return R1 * Math.sin(t) + (rc - rt - R1 * (1 - Math.cos(t))) / Math.tan(t);
 };
+/** Upstream throat arc: 1.5 r_t (Huzel & Huang), reduced when the inlet is too narrow for it at this convergent angle. */
+export const upstreamArc = (rt, rc, thetaCdeg) => Math.min(1.5 * rt, (0.95 * (rc - rt)) / (1 - Math.cos(thetaCdeg * RAD)));
 /** Root of f(x) = target for f decreasing on [lo, hi] (bisection); null when the target lies outside [f(hi), f(lo)]. */
 export function solveDecreasing(f, target, lo, hi) {
   if (!(target <= f(lo) && target >= f(hi))) return null;
@@ -165,7 +167,7 @@ export function solveDecreasing(f, target, lo, hi) {
  * downstream (Huzel & Huang fig. 4-13). Returns sampled points [x, r] and the stations.
  */
 export function contour({ rt, rc, thetaC, eps, type, alpha, Lf }) {
-  const R1 = 1.5 * rt, R2 = 0.382 * rt, re = rt * Math.sqrt(eps), tc = thetaC * RAD;
+  const R1 = upstreamArc(rt, rc, thetaC), R2 = 0.382 * rt, re = rt * Math.sqrt(eps), tc = thetaC * RAD;
   // convergent: chamber cylinder, cone at θc, arc R1 into the throat
   const xa = -R1 * Math.sin(tc), ra = rt + R1 * (1 - Math.cos(tc));
   if (!(rc > ra)) throw new RangeError('chamber too narrow for the convergent');

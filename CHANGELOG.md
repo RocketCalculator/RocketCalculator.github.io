@@ -3,6 +3,16 @@
 Newest first, in the spirit of [Keep a Changelog](https://keepachangelog.com/). From 2026-10-25 every entry names its
 branch, tag and commit range. Live site: https://rocketcalculator.github.io/.
 
+## 2026-10-25 — Nozzle drawing with exhaust plume (`feat/nozzle-drawing-plume`, tag `nozzle-thrust/v3.2.0`)
+
+### Added
+- A "Nozzle and exhaust plume" drawing above the flow box (which is unchanged): the wall with its thickness and an
+  inlet flange, dimension arrows for the inlet, throat and exit diameters and both lengths, angle arcs for the
+  convergent and the cone or bell angles, the gas shaded by Mach number, and the exhaust plume after the exit —
+  bulging with shock cells when under-expanded, necking with oblique shocks (and a Mach disk when strongly
+  over-expanded) when over-expanded, fanning out in vacuum, starting at the separation point when the jet separates.
+  The plume waves are qualitative and labelled so. Drag handles on the exit lip and the inlet corner are back.
+
 ## 2026-10-25 — Nozzle Design and Thrust, cycle 3 (`fix/nozzle-cycle-3`, tags `nozzle-thrust/v3.1.0`, `v1.7.1`)
 
 ### Fixed

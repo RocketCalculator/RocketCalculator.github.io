@@ -5,7 +5,7 @@ import {
   contour, nozzleFlow, separationRatio, bellEfficiency, conicalLength, convergentLength, solveDecreasing, cStar,
 } from '../calc/nozzle.js';
 import { s, fmt, InputError } from '../util.js';
-import { path, text } from '../ui/svg.js';
+import { dim, path, text } from '../ui/svg.js';
 import { toDisplay, displayUnit, unitTex } from '../units.js';
 
 const PRES = { dim: 'pressure', internal: 'psi', units: { si: 'kPa', us: 'psi' } };
@@ -367,6 +367,106 @@ export default {
       },
     },
   ],
+  schematicTitle: 'Nozzle and exhaust plume',
+  schematicHint: 'Half-sections of the nozzle wall with its dimensions, and the exhaust plume after the exit with its wave pattern (drawn qualitatively). Drag the exit lip to change the exit diameter and the divergent length, and the inlet corner to change the inlet diameter and the convergent length',
+  schematic(ctx, v, out) {
+    const o = out.o, w = o.w, geo = o.geo, fl = o.fl, W = 760, H = 430;
+    const fr = ctx.frame({ width: W, height: H, label: 'Nozzle half-section with dimensions and the exhaust plume' });
+    const g = fr.layer('main'); g.replaceChildren();
+    const ul = ctx.U(LEN), L = (x) => `${fmt(ul.v(x), { digits: 3 })} ${ul.plain}`, up = ctx.U(PRES), P = (x) => `${fmt(up.v(x), { digits: 3 })} ${up.plain}`;
+    // layout: nozzle on the left ~60 % (same scale both ways), plume to the right edge
+    const xin = -geo.Lconv, xch = xin - Math.min(geo.rc, 0.2 * (geo.Ln + geo.Lconv)), xmax = geo.Ln, rmax = Math.max(geo.rc, geo.re);
+    const x0 = 120, cy = 205, k = Math.min(380 / (xmax - xch), 112 / rmax);
+    const X = (x) => x0 + (x - xch) * k, R = (r) => r * k, xe = X(xmax), re = R(geo.re);
+    const tw = Math.max(5, Math.min(12, 0.18 * R(geo.rt)));                 // wall thickness on screen
+    const pts = [{ ...fl.prof[0], x: xch }, ...fl.prof.filter((q) => q.x > xch)];
+    const clip = 'nzclip' + Math.random().toString(36).slice(2, 7);
+    g.append(s('defs', {}, s('clipPath', { id: clip }, s('rect', { x: 0, y: 40, width: W - 12, height: 330 }))));
+    const body = s('g', { 'clip-path': `url(#${clip})` }); g.append(body);
+
+    // ---- exhaust plume: boundary and shock cells (qualitative) ----
+    const sepX = fl.sep ? X(fl.sep.x) : xe, r0 = fl.sep ? R(geo.rt * Math.sqrt(fl.sep.eps)) : re;
+    const ratio = w.pa > 0 ? fl.pe / w.pa : Infinity;
+    const amp = w.pa > 0 ? Math.max(-0.35, Math.min(0.35, 0.22 * Math.log(Math.max(1e-3, ratio)))) : 0;   // + bulge, − neck
+    const cell = r0 * Math.min(2.2, Math.max(1, 0.9 * Math.sqrt(Math.max(0.3, fl.Me * fl.Me - 1))));          // cell length on screen (qualitative)
+    const xEnd = W - 14, decay = (d) => Math.exp(-d / (3.5 * cell));
+    const rj = (d) => (w.pa > 0 ? r0 * (1 + amp * Math.sin((Math.PI * d) / cell) * decay(d)) * (1 + 0.04 * d / cell) : r0 + d * Math.tan((18 * Math.PI) / 180));
+    const bnd = []; for (let x = sepX; x <= xEnd + 1; x += 3) bnd.push([x, x < xe ? r0 : rj(x - xe)]);
+    body.append(s('path', { d: path([...bnd.map(([x, r]) => [x, cy - r]), ...bnd.slice().reverse().map(([x, r]) => [x, cy + r])], true), fill: 'var(--red)', 'fill-opacity': 0.08, stroke: 'none', 'data-field': 'pa' }));
+    for (const sg of [-1, 1]) body.append(s('path', { d: path(bnd.map(([x, r]) => [x, cy + sg * r])), fill: 'none', stroke: 'var(--red)', 'stroke-width': 1.4, 'stroke-opacity': 0.75, 'stroke-dasharray': '5 3', 'data-field': 'pa' }));
+    if (w.pa > 0) {
+      // shock diamonds: crossing waves from the boundary nodes, fading downstream
+      for (let i = 0, xs = xe; xs < xEnd && i < 12; i++, xs += cell) {
+        const a = rj(xs - xe), b = rj(Math.min(xEnd, xs + cell) - xe), xm = Math.min(xEnd, xs + cell), op = (0.75 * decay(xs - xe)).toFixed(2);
+        for (const sg of [-1, 1]) body.append(s('line', { x1: xs, y1: cy + sg * a, x2: xm, y2: cy - sg * b, stroke: 'var(--red)', 'stroke-width': 1.2, 'stroke-opacity': op }));
+      }
+      if (ratio < 0.5) { const xm = xe + cell / 2, h = 0.35 * rj(cell / 2); body.append(s('line', { x1: xm, x2: xm, y1: cy - h, y2: cy + h, stroke: 'var(--red)', 'stroke-width': 2.2 })); body.append(text(xm + 6, cy - h - 6, 'Mach disk', { size: 10, cls: 'sc-dim-text' })); }
+    }
+    body.append(text(xEnd, 58, w.pa > 0 ? (fl.sep ? 'jet separated inside the nozzle' : ratio > 1.05 ? 'under-expanded: jet bulges, then shock cells' : ratio < 0.95 ? 'over-expanded: jet necks, oblique shocks' : 'ideally expanded: weak waves') : 'vacuum: plume fans out', { anchor: 'end', size: 10.5, cls: 'sc-dim-text', field: 'pa' }));
+
+    // ---- gas inside the nozzle, shaded by Mach number ----
+    for (let i = 0; i < pts.length - 1; i++) {
+      const a = pts[i], b = pts[i + 1], op = (0.06 + 0.3 * Math.min(1, (a.M + b.M) / 2 / Math.max(1.5, fl.Me))).toFixed(3);
+      body.append(s('path', { d: path([[X(a.x), cy - R(a.r) - 0.5], [X(b.x), cy - R(b.r) - 0.5], [X(b.x), cy + R(b.r) + 0.5], [X(a.x), cy + R(a.r) + 0.5]], true), fill: 'var(--red)', 'fill-opacity': op, stroke: 'none', 'shape-rendering': 'crispEdges' }));
+    }
+    // ---- outer shell: walls with thickness, inlet flange ----
+    const fl0 = X(xch), flW = Math.max(6, 1.4 * tw), flH = R(geo.rc) + tw + Math.max(10, 0.25 * R(geo.rc));
+    for (const sg of [-1, 1]) {
+      body.append(s('path', { d: path([...pts.map((q) => [X(q.x), cy + sg * R(q.r)]), ...pts.slice().reverse().map((q) => [X(q.x), cy + sg * (R(q.r) + tw)])], true), class: 'sc-body-2', 'data-field': 'din dt de Lc Ld type' }));
+      body.append(s('rect', { x: fl0, y: sg < 0 ? cy - flH : cy + R(geo.rc), width: flW, height: flH - R(geo.rc), class: 'sc-body-2' }));
+    }
+    body.append(s('line', { x1: X(xch) - 14, x2: W - 14, y1: cy, y2: cy, class: 'sc-thin', 'stroke-dasharray': '10 4 2 4' }));
+    if (fl.shock) { const xs = X(fl.shock.x), rr = R(geo.rt * Math.sqrt(fl.shock.eps)); body.append(s('line', { x1: xs, x2: xs, y1: cy - rr, y2: cy + rr, stroke: 'var(--text)', 'stroke-width': 1.6, 'stroke-dasharray': '5 3' })); }
+    if (fl.sep) for (const sg of [-1, 1]) body.append(s('circle', { cx: sepX, cy: cy + sg * r0, r: 4.5, fill: 'var(--surface)', stroke: 'var(--red)', 'stroke-width': 1.8 }));
+
+    // ---- stations (one row) ----
+    const st = (x, name, val, f, anchor = 'middle') => { g.append(text(x, 20, name, { anchor, size: 11.5, field: f })); g.append(text(x, 35, val, { anchor, size: 10.5, cls: 'sc-dim-text', field: f })); };
+    st(X(xin), 'inlet', `M = ${fmt(fl.prof.find((q) => q.x >= xin - 1e-9)?.M ?? 0, { digits: 2 })}`, 'din');
+    st(X(0), 'throat', 'M = 1', 'dt');
+    st(xe, 'exit', fl.sep || fl.shock ? 'separated jet' : `M = ${fmt(fl.Me, { digits: 3 })} · ${P(fl.pe)}`, 'de');
+    st(W - 14, 'ambient', w.pa > 0 ? P(w.pa) : 'vacuum', 'pa', 'end');
+
+    // ---- dimensions: diameters (vertical ↔), lengths (horizontal ↔ on one baseline) ----
+    g.append(dim(fr, X(xch) - 24, cy + R(geo.rc), X(xch) - 24, cy - R(geo.rc), null, { field: 'din' }));
+    g.append(text(X(xch) - 30, cy - R(geo.rc) / 2, `d_{in}`, { anchor: 'end', size: 11.5, field: 'din' }));
+    g.append(text(X(xch) - 30, cy - R(geo.rc) / 2 + 14, L(w.din), { anchor: 'end', size: 10.5, cls: 'sc-dim-text', field: 'din' }));
+    g.append(dim(fr, X(0), cy + R(geo.rt), X(0), cy - R(geo.rt), null, { field: 'dt' }));
+    g.append(dim(fr, xe + 8, cy + re, xe + 8, cy - re, null, { field: 'de' }));
+    const yb = cy + R(rmax) + tw + 34;
+    for (const [x, r] of [[xin, geo.rc], [0, geo.rt], [xmax, geo.re]]) g.append(s('line', { x1: X(x), x2: X(x), y1: cy + R(r) + tw + 3, y2: yb + 5, class: 'sc-thin', opacity: 0.35 }));
+    g.append(dim(fr, X(xin), yb, X(0), yb, `L_c = ${L(geo.Lconv)}`, { field: 'Lc', textOff: 16 }));
+    g.append(dim(fr, X(0), yb, xe, yb, `L_d = ${L(geo.Ln)}`, { field: 'Ld', textOff: 16 }));
+    g.append(text(X(0), yb + 34, `d_t = ${L(w.dt)}`, { anchor: 'middle', size: 11, field: 'dt' }));
+    g.append(text(xe, yb + 34, `d_e = ${L(w.de)} · ε = ${fmt(w.eps, { digits: 3 })}`, { anchor: 'middle', size: 11, field: 'de' }));
+
+    // ---- angles: arcs on the upper wall ----
+    const arc = (x, y, a0, a1, rad, label, f, lx, ly) => {   // angles in degrees, counter-clockwise from +x (screen y down)
+      const p = (a) => [x + rad * Math.cos((a * Math.PI) / 180), y - rad * Math.sin((a * Math.PI) / 180)];
+      const [ax, ay] = p(a0), [bx, by] = p(a1);
+      g.append(s('line', { x1: x, y1: y, x2: x + rad + 8, y2: y, class: 'sc-thin', opacity: 0.6, 'data-field': f }));
+      g.append(s('path', { d: `M${ax},${ay} A${rad},${rad} 0 0 ${a1 > a0 ? 0 : 1} ${bx},${by}`, class: 'sc-accent', fill: 'none', 'data-field': f }));
+      g.append(text(lx, ly, label, { size: 10.5, cls: 'sc-dim-text', field: f }));
+    };
+    const xcvS = X(geo.xcv);                                                    // start of the convergent cone
+    arc(xcvS, cy - R(geo.rc), 0, -w.thetaC, 30, `θ_c ${fmt(w.thetaC, { digits: 3 })}°`, 'Lc', xcvS + 34, cy - R(geo.rc) + 18);
+    if (w.type === 'cone') arc(X(geo.xN), cy - R(geo.rN), 0, w.alpha, 34, `α ${fmt(w.alpha, { digits: 3 })}°`, 'Ld', X(geo.xN) + 38, cy - R(geo.rN) + 4);
+    else {
+      arc(X(geo.xN), cy - R(geo.rN), 0, geo.thn, 30, `θ_n ${fmt(geo.thn, { digits: 3 })}°`, 'Ld', X(geo.xN) + 34, cy - R(geo.rN) + 6);
+      arc(xe, cy - re, 0, geo.the, 26, `θ_e ${fmt(geo.the, { digits: 3 })}°`, 'Ld', xe + 30, cy - re + 14);
+    }
+    g.append(text(14, H - 8, `wall to scale · gas shaded by Mach number · plume waves qualitative${fl.shock ? ' · dashed: inviscid normal shock' : ''}${fl.sep ? ' · circles: separation' : ''}`, { size: 10, cls: 'sc-dim-text' }));
+
+    ctx.handle('lip', xe, cy - re, {
+      field: 'de', title: 'Drag up or down for the exit diameter, along the axis for the divergent length',
+      onDrag: (px, py) => { ctx.setValue('de', Math.max(w.dt * 1.01, (2 * (cy - py)) / k)); ctx.setValue('Ld', Math.max(1e-3, (px - X(0)) / k)); },
+      onKey: (dx, dy) => { if (dy) ctx.setValue('de', w.de * (1 + 0.02 * dy)); if (dx) ctx.setValue('Ld', w.Ld * (1 + 0.02 * dx)); },
+    });
+    ctx.handle('inlet', X(xin), cy - R(geo.rc), {
+      field: 'din', title: 'Drag up or down for the inlet diameter, along the axis for the convergent length',
+      onDrag: (px, py) => { ctx.setValue('din', Math.max(w.dt * 1.1, (2 * (cy - py)) / k)); ctx.setValue('Lc', Math.max(1e-3, (X(0) - px) / k)); },
+      onKey: (dx, dy) => { if (dy) ctx.setValue('din', w.din * (1 + 0.02 * dy)); if (dx) ctx.setValue('Lc', w.Lc * (1 - 0.02 * dx)); },
+    });
+  },
   symbols: {
     '\\gamma': 'ratio of specific heats of the exhaust gas', T_c: 'chamber (stagnation) temperature', M_w: 'molar mass of the exhaust', R: 'gas constant of the exhaust, $R_u/M_w$',
     'd_{in}': 'inlet diameter', d_t: 'throat diameter', d_e: 'exit diameter', L_c: 'convergent length, inlet to throat', L_d: 'divergent length, throat to exit',

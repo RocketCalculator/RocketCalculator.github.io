@@ -4,6 +4,22 @@ Newest first, in the spirit of [Keep a Changelog](https://keepachangelog.com/). 
 branch, tag and commit range. Live site: https://darasamii.github.io/RocketCalculator/ (moving to
 https://rocketcalculator.github.io/, see `BLOCKERS.md` B1).
 
+## 2026-10-25 — Shared inputs/results layout and recompute pipeline (`shared/number-field`, tag `v1.1.0`)
+
+### Changed
+- Sliders and schematic handles recompute at most once per frame; key results and the drawing follow every frame,
+  charts and the results table when the input pauses (and off-screen charts when scrolled to). At ×4 CPU: Subsonic
+  CP 86 → 21 ms per drag step, Fin Flutter 50 → 18 ms, no long tasks.
+- Results table with fixed value/unit columns (label on its own line on phones); key-result notes keep two lines;
+  validation messages float under the input; plot cards keep their size when a plot has no data and say so;
+  legends keep one row and a fixed height.
+
+### Added
+- `npm run test:ui-layout` (`scripts/ui-layout.mjs`): layout-stability acceptance test (sliders swept at 320/768/1280
+  px in SI and US, extreme values typed into every field) — 0 failures with the drawings excluded; the drawings are
+  fixed by `DiagramViewport`.
+- `puppeteer-core` devDependency.
+
 ## 2026-10-25 — Hosting preparation (`chore/hosting-migration`)
 
 ### Added

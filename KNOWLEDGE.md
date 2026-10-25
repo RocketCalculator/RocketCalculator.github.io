@@ -25,3 +25,63 @@ Notes for anyone (human or AI) working on this repository. Read this, `PROGRESS.
 - **Retired after the move:** `https://darasamii.github.io/RocketCalculator/...` (Pages does not redirect project
   sites after a transfer; D4). The old repo URL redirects automatically as long as no new repo takes its name.
 - **Migration status:** pending (B1). Checklist for finishing it is in `BLOCKERS.md`.
+
+## Project architecture and file map
+
+See `DISCOVERY.md` §1 for the full map. In short: `site/js/calc/*.js` pure physics (tested in `tests/`),
+`site/js/calculators/<slug>.js` the calculator definition, `site/js/calculator-page.js` the generic page,
+`site/js/ui/*` shared UI, `scripts/` page generation and browser tests.
+
+**Adding a calculator:** write `calc/<name>.js` and `tests/<name>.test.js`; write the definition
+(`slug, topic, title, subtitle, intro, info, groups[].fields[], results[], compute(v) → { results, warnings },
+plots[].build(v, out, { U }), schematic(ctx, v, out), symbols, report(v, out, R), references, examples`); add the
+`CALCULATORS` line in `scripts/seed_registry.py`; run `python3 scripts/seed_registry.py && node
+scripts/generate_pages.mjs`; write `site/docs/<slug>.html`; add REPAIR/INVARIANTS/trend entries in
+`tests/aggressive.test.js`; run `npm test` and `npm run test:ui-layout -- --only <slug>`.
+
+## Shared component reference
+
+### Recompute pipeline (`calculator-page.js`)
+- `requestRecompute()` — continuous input (sliders, schematic handles) recomputes **at most once per animation
+  frame**. Key-result cards and the schematic follow every frame; the results table and the charts follow after the
+  input pauses for 140 ms (`slowSoon`), and only charts within 300 px of the viewport (IntersectionObserver); the rest
+  are drawn when they scroll into view.
+- `recompute()` (no `live`) — typing (debounced 110 ms), buttons, unit/theme switch, load: everything, all charts.
+- Never call `recompute()` from a pointer or slider handler directly.
+
+### NumberField / SliderInput (`ui/form.js` → `numberField`)
+- One grid row: label column `minmax(0, 1fr)`, control column `160px`; the unit sits in its own `min-width: 5ch`
+  cell inside the control and never wraps (`white-space: nowrap`).
+- Slider (`field.slider = { min, max, step }`) in its own full-width row; `step` snaps the value.
+- Validation messages float under the control (`.err-msg`, absolutely positioned, `role="alert"`), so an error
+  never moves the fields below.
+
+### ResultValue (`calculator-page.js` → key-result cards `.kr` and results-table rows)
+- **Central formatter:** `fmt(x, { digits })` in `util.js` (significant digits; scientific `×10ⁿ` beyond 1e7 or
+  below 1e-4; at most 13 characters). Every displayed result goes through `toDisplay()` then `fmt()`.
+  Invalid/pending values show "—".
+- Key-result card: value + unit on one line (`nowrap`), value font scales with the card (`11cqi`); the note area
+  always reserves two lines (clamped, full text in the tooltip) when the result defines a note.
+- Results table: `table-layout: fixed`; value column `13ch + 32px`, unit column `8ch + 24px`; on phones each row is
+  a grid with the label on its own line and the value/unit in fixed cells below.
+- `scrollbar-gutter: stable` on the page and the inputs panel.
+
+## UI performance and layout lessons
+
+- **Lag cause (measured, DISCOVERY.md §6):** synchronous full recompute and rebuild of every chart on every
+  pointer/slider event — not SVG node count. Fix: frame coalescing + deferred, visibility-gated charts. Result at ×4
+  CPU: Subsonic CP 86 → 21 ms per drag step, Fin Flutter 50 → 18 ms (60 fps), no long tasks.
+- **Layout-shift causes (DISCOVERY.md §7):** auto-layout table, wrapping card notes, input-dependent schematic
+  height, validation rows. Each fixed as above; the diagram height is fixed by `DiagramViewport`.
+- **Charts that change height:** a plot builder returning `null` used to hide its card (everything below jumped
+  600–900 px); a legend that appears/disappears with the number of non-empty series, wraps when labels change, grows
+  a horizontal scrollbar, or contains maths that changes the line height all moved the page. Now: `chart.empty()`
+  keeps the card; the legend lists the defined series, stays on one row with fixed-height buttons, no scrollbar, and
+  keeps its row once shown.
+- **Test flakiness:** under parallel runs a page may still be drawing when the baseline is taken; the test waits
+  until two snapshots 200 ms apart are identical.
+- **Lazy rendering trap:** a chart that has never rendered has no height, so lazily drawing it on first scroll moves
+  the page. Every chart is drawn on a full recompute; only *updates* are deferred.
+- **Check:** `npm run test:ui-layout` (scripts/ui-layout.mjs) — sweeps every slider at 320/768/1280 px in SI and US
+  and types 0.001, 1e6, −1 and empty into every number field at 320 px; fails on > 1 px movement, a wrapped unit, or
+  NaN/undefined/Infinity on screen. Needs `npm install` (puppeteer-core) and `CHROME=/path/to/chromium`.

@@ -3,6 +3,18 @@
 Newest first, in the spirit of [Keep a Changelog](https://keepachangelog.com/). From 2026-10-25 every entry names its
 branch, tag and commit range. Live site: https://rocketcalculator.github.io/.
 
+## 2026-10-25 — Nozzle plots readable; "Final" badge (`feat/final-badge-nozzle-plots`, tags `nozzle-thrust/v3.3.0`, `v1.8.0`)
+
+### Changed
+- Thrust against ambient pressure: the axis stops at about twice the largest pressure that matters (ambient, exit,
+  separation onset) instead of the unchoking pressure, so the regimes are spread out; line labels no longer overlap.
+- Wall pressure against the separation pressure: the axis stops at 3 × ambient, where the crossing is.
+- Flow panels: more space and a rule between panels; one colour per quantity, also on its axis label.
+
+### Added
+- A purple "Final" badge on the home page for Fin Flutter, Reliability Growth and Nozzle Design and Thrust.
+- Shared: vertical-line labels can be stacked (`row`); panels take a `color`.
+
 ## 2026-10-25 — Nozzle drawing with exhaust plume (`feat/nozzle-drawing-plume`, tag `nozzle-thrust/v3.2.0`)
 
 ### Added

@@ -49,7 +49,7 @@ export default {
           info: { text: 'Distance from the body centre line to the fin tip: body radius plus exposed span.', doc: 'derivatives' } },
         { id: 'cR', shared: 'finCr', label: 'Root chord', sym: 'c_R', ...LEN, default: 10, min: 0, minExclusive: true, info: { text: 'Fin chord at the body.', doc: 'derivatives' } },
         { id: 'cT', shared: 'finCt', label: 'Tip chord', sym: 'c_T', ...LEN, default: 2, min: 0, info: { text: 'Fin chord at the tip.', doc: 'derivatives' } },
-        { id: 'N', shared: 'finN', label: 'Number of fins', sym: 'N', dim: 'none', default: 4, min: 1, max: 12, info: { text: 'Number of identical fin panels, all at the same cant.', doc: 'derivatives' } },
+        { id: 'N', backView: (v) => ({ R: v.R, span: v.b - v.R, nominal: { t: true }, unit: LEN, range: [3, 8], note: 'Driving and damping both scale with N: the steady roll wave number is the same for any N; how fast it is reached is not.' }), shared: 'finN', label: 'Number of fins', sym: 'N', dim: 'none', default: 4, min: 1, max: 12, info: { text: 'Number of identical fin panels, all at the same cant.', doc: 'derivatives' } },
         { id: 'cNa', label: 'Airfoil normal-force slope', sym: 'c_{N\\alpha}', dim: 'perAngle', internal: 'perrad', default: 3.5, min: 0, minExclusive: true,
           info: { text: 'Section lift-curve slope of a fin strip, per radian. About 2π for thin subsonic sections; a lower panel average allows for root and tip losses.', doc: 'derivatives' } },
         { id: 'delta', label: 'Cant angle (each fin)', sym: '\\delta', dim: 'angle', default: 0.2, min: -5, max: 5, slider: { min: 0, max: 1, step: 0.01 },

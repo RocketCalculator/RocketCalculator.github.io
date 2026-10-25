@@ -97,7 +97,7 @@ export default {
     {
       id: 'fins', title: 'Fin set',
       fields: [
-        { id: 'N', shared: 'finN', label: 'Number of fin panels', sym: 'N', dim: 'none', default: 6, min: 1, max: 8, info: { text: 'Number of identical panels. The model treats each opposite pair as a wing.', doc: 'fins' } },
+        { id: 'N', backView: (v) => ({ R: v.R, span: v.b, nominal: { t: true }, unit: LEN, range: [3, 4], note: 'Fin normal-force slope grows as N/2 (Barrowman’s form for 3 and 4 fins; with more fins mutual interference makes it optimistic).' }), shared: 'finN', label: 'Number of fin panels', sym: 'N', dim: 'none', default: 6, min: 1, max: 8, info: { text: 'Number of identical panels. The model treats each opposite pair as a wing.', doc: 'fins' } },
         { id: 'xLE', label: 'Root leading-edge station', sym: 'x_R', ...LEN, default: 83.16, min: 0, info: { text: 'Station of the root chord leading edge, from the nose tip.', doc: 'fins' } },
         { id: 'cR', shared: 'finCr', label: 'Root chord', sym: 'c_R', ...LEN, default: 10, min: 0, minExclusive: true, info: { text: 'Fin chord at the body.', doc: 'fins' } },
         { id: 'xTipLE', label: 'Tip leading-edge station', sym: 'x_T', ...LEN, default: 90.16, min: 0, info: { text: 'Station of the tip chord leading edge. Its difference from the root LE station sets the sweep.', doc: 'fins' } },

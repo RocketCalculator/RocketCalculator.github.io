@@ -73,7 +73,7 @@ export default {
     {
       id: 'fins', title: 'Fins',
       fields: [
-        { id: 'N', shared: 'finN', label: 'Number of fins', sym: 'N', dim: 'none', default: 4, min: 1, max: 12, info: { text: 'Number of fin panels.', doc: 'skin-friction' } },
+        { id: 'N', backView: (v) => ({ R: v.bodyRadius, span: v.b, t: v.t, unit: LEN, range: [1, 12], note: 'Fin skin friction, trailing-edge base drag and leading-edge drag all grow in proportion to N.' }), shared: 'finN', label: 'Number of fins', sym: 'N', dim: 'none', default: 4, min: 1, max: 12, info: { text: 'Number of fin panels.', doc: 'skin-friction' } },
         { id: 'cR', shared: 'finCr', label: 'Root chord', sym: 'c_R', ...LEN, default: 11.8, min: 0, minExclusive: true, info: { text: 'Fin chord at the body.', doc: 'skin-friction' } },
         { id: 'cT', shared: 'finCt', label: 'Tip chord', sym: 'c_T', ...LEN, default: 4.5, min: 0, info: { text: 'Fin chord at the tip.', doc: 'skin-friction' } },
         { id: 'b', shared: 'finSpan', label: 'Exposed semispan', sym: 'b', ...LEN, default: 5.84, min: 0, minExclusive: true, info: { text: 'Fin height from the body surface to the tip.', doc: 'skin-friction' } },

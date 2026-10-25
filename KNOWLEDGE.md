@@ -192,7 +192,7 @@ scripts/generate_pages.mjs`; write `site/docs/<slug>.html`; add REPAIR/INVARIANT
 | Safety factor vs thickness (Explore) | How thick must the fins be? | Yes — shows how steeply SF rises (t^1.5) and where the target is crossed | Picks a stock thickness above t_req | t_req line, target and unsafe lines | Axes with units | KEEP |
 | Safety factor vs semi-span (Explore) | How long may the fins be? | Yes — the trade between span (stability) and flutter | Trims span or accepts a thicker fin | b_max line, target line | Axes with units | KEEP |
 | Fin planform and root section (drawing) | Is my geometry what I think, and what sets ε and t/c? | Partly — it shows the centroid/quarter-chord geometry behind ε, which numbers hide; coloured by verdict | Checks the sweep input; sees the fin's thinness to scale | Centroid, ε, t/c, SF on the drawing | Planform to scale; section thickness ≥ 1.5 px (labelled) | KEEP (redesigned: was 75 %-span section) |
-| Rear view (under N) | How are the fins arranged? | Context only: fin count does not enter flutter — the note says so | Nothing for flutter; confirms the layout | — | To scale | KEEP (required for every fin-count input) |
+| *Removed:* rear view and the fin-count / body-radius inputs | N and R did not enter the calculation, so the inputs only added a drawing that changed nothing | | | | | REMOVE (2026-10-25: a back view is required only for inputs that affect the result; the docs and report still say fin count does not enter) |
 | *Removed:* "Margin of safety vs thickness" (old) | replaced by the SF plot with target lines | | | | | REMOVE → REDESIGN |
 | *Removed:* "Flutter Mach vs altitude" (old, single horizontal flight-Mach line) | replaced by the flight-envelope plot | | | | | REDESIGN |
 

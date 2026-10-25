@@ -126,3 +126,18 @@ Decisions taken while the owner was unavailable. Each entry: date, question, opt
   diagram interaction, 320/768/1280 × SI/US) and the smoke / uifuzz / LaTeX sweeps are deferred, not dropped.
 - **Subsonic CP cycle 1** was the last one run with the full set (all passed after the fixes in its CHANGELOG entry).
 - **Reverse:** when the user starts the testing stage, run every suite over all calculators changed since this entry.
+
+## D21 — 2026-10-25 — Nozzle verdict: separation margin 1.15
+- **Choice:** SAFE when the attached exit pressure is ≥ 1.15 × the separation pressure at the exit Mach number (or in
+  vacuum), MARGINAL from 1 to 1.15, UNSAFE when the wall separates inside, an inviscid shock sits inside, or C_F ≤ 0.
+- **Why 1.15:** Schmucker (NASA TM-77396) shows criteria and averaged data differing by roughly 10 % (cold gas ~10 %
+  lower than hot gas). **Not a published limit**: this project's choice, stated as such on the theory page.
+- **Reverse:** `SAFE_MARGIN` in `calculators/nozzle-thrust.js`.
+
+## D22 — 2026-10-25 — Nozzle: Schmucker's eq. (11) is the default separation criterion
+- Summerfield's p_e < 0.4 p_a (the previous rule) is, per Schmucker, a guide for p_c/p_a ≈ 15–20 that decreases at
+  higher ratios; eq. (11) fits chemical-engine data in terms of the wall Mach number. Summerfield and Kalt–Bendall
+  stay selectable. Held at M = 5 (data limit); a warning flags separation predicted outside M 2–5.
+- The choke limit was also corrected: from p* to the subsonic-exit pressure (the regime in between is a normal shock
+  inside, now solved). BREAKING for designs with p* < p_a < p_sub, which used to be refused.
+

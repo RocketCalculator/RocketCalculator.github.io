@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Nozzle Thrust Coefficient — Theory & documentation — Rocket Calculator</title>
-<meta name="description" content="Thrust coefficient of a conical de Laval nozzle from one-dimensional isentropic flow (NACA Report 1135), with the Malina divergence correction and the flow-separation limit.">
+<title>Nozzle Design and Thrust — Theory & documentation — Rocket Calculator</title>
+<meta name="description" content="De Laval nozzle design: conical and Rao bell contours, one-dimensional flow along the nozzle, normal shocks, flow separation (Schmucker), thrust coefficient, mass flow and specific impulse.">
 <meta name="color-scheme" content="light dark">
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="../css/site.css">
@@ -14,8 +14,8 @@
 <main id="main">
 <div class="wrap">
   <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Home</a><span class="sep">/</span><a href="../index.html#area-prop">Propulsion &amp; Vehicle Design</a><span class="sep">/</span><a href="../calculators/nozzle-thrust.html">Nozzle Thrust Coefficient</a><span class="sep">/</span><span>Documentation</span></nav>
-  <div class="calc-title"><h1>Nozzle Thrust Coefficient — theory</h1></div>
-  <p class="calc-sub">Performance of a conical converging–diverging nozzle. Based on the one-dimensional isentropic flow relations of NACA Report 1135 and F. J. Malina’s correction for conical source flow, as used by C. P. Hoult (Rocket Science and Technology).</p>
+  <div class="calc-title"><h1>Nozzle Design and Thrust — theory</h1></div>
+  <p class="calc-sub">Contour, flow and thrust of a converging–diverging nozzle. Based on NACA Report 1135 (compressible-flow relations and normal shocks), Huzel &amp; Huang, NASA SP-125 (nozzle contours, Rao’s bell and its efficiency) and Schmucker, NASA TM-77396 (flow separation in over-expanded nozzles).</p>
   <div class="calc-badges"><a class="btn small primary" href="../calculators/nozzle-thrust.html">Open the calculator</a></div>
   <div class="doc-layout">
     <nav class="doc-toc" aria-label="Contents"></nav>
@@ -23,81 +23,126 @@
 
       <section id="overview">
         <h2>Overview</h2>
-        <p>A rocket motor nozzle is a de Laval, or converging–diverging, duct. Hot gas leaves the chamber at stagnation pressure <span class="tex">p_c</span>, reaches sound speed at the throat and keeps accelerating in the diverging section. The thrust it produces is written as</p>
+        <p>A rocket nozzle is a de Laval, or converging–diverging, duct. Hot gas leaves the chamber at stagnation pressure <span class="tex">p_c</span> and temperature <span class="tex">T_c</span>, reaches sound speed at the throat and keeps accelerating in the diverging section. The thrust is written as</p>
         <div class="eq"><div class="tex-display">T=C_F\,p_c\,A_t</div></div>
-        <p>where <span class="tex">A_t</span> is the throat area and <span class="tex">C_F</span> is the thrust coefficient. <span class="tex">C_F</span> depends only on the gas, the nozzle shape and the ratio of ambient to chamber pressure. It measures how well the nozzle turns chamber pressure into thrust, independent of motor size. For <span class="tex">\gamma=1.4</span> it runs from 1.27 for a sonic exit in vacuum to 1.81 for an infinitely long nozzle.</p>
-        <p>The calculator assumes the following:</p>
+        <p>where <span class="tex">A_t</span> is the throat area and <span class="tex">C_F</span> the thrust coefficient, which depends only on the gas, the nozzle shape and <span class="tex">p_a/p_c</span>. The calculator answers three design questions:</p>
         <ul>
-          <li>the exhaust is a perfect gas with a constant ratio of specific heats <span class="tex">\gamma</span>;</li>
-          <li>the flow is steady and isentropic (no friction, heat loss or shock) from the chamber to the exit;</li>
-          <li>the throat is sonic, so the ambient pressure is below the throat pressure;</li>
-          <li>the diverging section is a straight cone of half angle <span class="tex">\alpha</span>.</li>
+          <li><strong>What shape?</strong> It draws the wall from the chamber to the exit — a cone, or the parabolic approximation of Rao’s thrust-optimised bell (<a href="#contour">Contour</a>).</li>
+          <li><strong>What happens inside?</strong> It solves the one-dimensional flow along that wall: area ratio, Mach number, pressure, temperature and density (<a href="#isentropic">Isentropic flow</a>), with a normal shock if the ambient pressure forces one (<a href="#shock">Shocks</a>).</li>
+          <li><strong>Is it safe at this ambient pressure?</strong> It checks whether the wall boundary layer separates (<a href="#separation">Separation</a>) and gives the verdict, the thrust, the mass flow and the specific impulse (<a href="#performance">Performance</a>).</li>
         </ul>
+        <p>Assumptions: a perfect gas with constant (frozen) <span class="tex">\gamma</span> and molar mass, steady quasi-one-dimensional flow (each cross-section uniform), no friction or heat loss, and the chamber pressure taken as the stagnation pressure.</p>
       </section>
 
       <section id="isentropic">
         <h2>One-dimensional isentropic flow</h2>
-        <p>For isentropic flow of a perfect gas the pressure and the duct area at Mach number <span class="tex">M</span> are tied to the chamber (stagnation) state and to the sonic throat by</p>
-        <div class="eq"><div class="tex-display">\frac{p}{p_c}=\left(1+\frac{\gamma-1}{2}M^2\right)^{-\frac{\gamma}{\gamma-1}},\qquad \frac{A}{A_t}=\frac{1}{M}\left[\frac{2}{\gamma+1}\left(1+\frac{\gamma-1}{2}M^2\right)\right]^{\frac{\gamma+1}{2(\gamma-1)}}</div></div>
-        <p>At the throat <span class="tex">M=1</span>, so the throat pressure is <span class="tex">p_t=p_c\,(2/(\gamma+1))^{\gamma/(\gamma-1)}</span>, about 0.53 <span class="tex">p_c</span> for <span class="tex">\gamma=1.4</span>. If the ambient pressure exceeds it, the throat cannot be sonic and the nozzle is only a venturi; the calculator refuses such a design.</p>
-        <p>The area relation has two roots for each area ratio. The supersonic one, with the expansion ratio <span class="tex">\varepsilon=A_e/A_t</span>, gives the exit Mach number <span class="tex">M_e</span>. The calculator finds it by bisection in <span class="tex">\ln M</span> to machine precision, then the exit pressure <span class="tex">p_e</span> from the pressure relation. Both depend only on <span class="tex">\varepsilon</span> and <span class="tex">\gamma</span>, not on the ambient pressure.</p>
-        <p>The jet momentum per unit chamber force is</p>
-        <div class="eq"><div class="tex-display">C_{F,m}=\sqrt{\frac{2\gamma^2}{\gamma-1}\left(\frac{2}{\gamma+1}\right)^{\frac{\gamma+1}{\gamma-1}}\left[1-\left(\frac{p_e}{p_c}\right)^{\frac{\gamma-1}{\gamma}}\right]}</div></div>
-        <p>The first factor under the root is the thrust coefficient of an infinitely long nozzle in vacuum. It is 1.81 for <span class="tex">\gamma=1.4</span> and about 2.2 for <span class="tex">\gamma=1.2</span>.</p>
+        <p>Between the chamber and any section without a shock, the flow is isentropic and every ratio to the chamber state is a function of the local Mach number alone (NACA 1135):</p>
+        <div class="eq"><div class="tex-display">\frac{T}{T_c}=\left(1+\frac{\gamma-1}{2}M^2\right)^{-1},\qquad \frac{p}{p_c}=\left(\frac{T}{T_c}\right)^{\frac{\gamma}{\gamma-1}},\qquad \frac{\rho}{\rho_c}=\left(\frac{T}{T_c}\right)^{\frac{1}{\gamma-1}}</div></div>
+        <p>and the Mach number follows from the local area ratio</p>
+        <div class="eq"><div class="tex-display">\frac{A}{A^*}=\frac{1}{M}\left[\frac{2}{\gamma+1}\left(1+\frac{\gamma-1}{2}M^2\right)\right]^{\frac{\gamma+1}{2(\gamma-1)}}</div></div>
+        <p>Each area ratio has a subsonic and a supersonic root. Upstream of the throat the calculator takes the subsonic one, downstream the supersonic one (both by bisection to machine precision). The figure plots these five quantities against the same axial position as the drawn wall, so you can see the gas accelerate through the throat and cool and thin out in the bell.</p>
+        <p>At the throat <span class="tex">M=1</span> and <span class="tex">p^*=p_c\,(2/(\gamma+1))^{\gamma/(\gamma-1)}</span>, about 0.56 <span class="tex">p_c</span> for <span class="tex">\gamma=1.2</span>.</p>
+        <p>The gas entering the convergent moves at the subsonic Mach number of the chamber-to-throat area ratio. If the chamber is narrow, this is no longer small, <span class="tex">p_c</span> is no longer the stagnation pressure, and the calculator warns (above about Mach 0.3, a rule of thumb).</p>
+      </section>
+
+      <section id="contour">
+        <h2>Nozzle contour: cone or bell</h2>
+        <p>The convergent carries slow gas, so its shape costs little (Huzel &amp; Huang): a cone of half angle <span class="tex">\theta_c</span> (usually 20–45°) runs into a circular arc of radius <span class="tex">1.5\,r_t</span> that meets the throat. Downstream, a second arc of radius <span class="tex">R_2=0.382\,r_t</span> starts the expansion.</p>
+        <p><strong>Cone.</strong> After the arc, a straight wall at half angle <span class="tex">\alpha</span> (usually 12–18°) runs to the exit radius <span class="tex">r_e=r_t\sqrt\varepsilon</span>. Its length is Huzel &amp; Huang’s eq. (4-7):</p>
+        <div class="eq"><div class="tex-display">L_n=\frac{r_t(\sqrt\varepsilon-1)+R_2(\sec\alpha-1)}{\tan\alpha}</div></div>
+        <p>The gas leaves along rays from the cone’s apex, so only part of its momentum is axial. The thrust efficiency is Malina’s factor, as given by Huzel &amp; Huang eq. (4-8): <span class="tex">\lambda=(1+\cos\alpha)/2</span>, 0.983 for 15°.</p>
+        <p><strong>Bell (Rao, parabolic approximation).</strong> A bell expands the gas fast just after the throat and then turns it back towards the axis, so the exit flow is nearly parallel in a shorter length. Huzel &amp; Huang (fig. 4-13) approximate Rao’s optimum contour by the <span class="tex">0.382\,r_t</span> arc up to an angle <span class="tex">\theta_n</span>, then a parabola tangent to it that reaches the exit at angle <span class="tex">\theta_e</span>. Its length is a fraction <span class="tex">L_f</span> of a 15° cone with the same throat, arc and expansion ratio, and the angles come from their fig. 4-14:</p>
+        <table class="sym-table">
+          <thead><tr><th><span class="tex">\varepsilon</span></th><th><span class="tex">\theta_n</span>, 60 %</th><th>80 %</th><th>100 %</th><th><span class="tex">\theta_e</span>, 60 %</th><th>80 %</th><th>100 %</th></tr></thead>
+          <tbody>
+            <tr><td>10</td><td>31.9°</td><td>25.8°</td><td>22.4°</td><td>16.9°</td><td>10.9°</td><td>6.7°</td></tr>
+            <tr><td>20</td><td>35.4°</td><td>29.1°</td><td>25.7°</td><td>14.7°</td><td>9.0°</td><td>5.2°</td></tr>
+            <tr><td>40</td><td>38.3°</td><td>31.8°</td><td>28.7°</td><td>13.3°</td><td>8.2°</td><td>5.0°</td></tr>
+          </tbody>
+        </table>
+        <p>These values were digitised from the scanned chart in this project (curves read to about ±0.2°). Between grid points the calculator interpolates linearly in <span class="tex">L_f</span> and in <span class="tex">\ln\varepsilon</span>. Outside the chart (ε 5–50, <span class="tex">L_f</span> 60–100 %) it holds the edge values and warns. The parabola is drawn as the quadratic Bézier curve through the two end points and the intersection of their tangents.</p>
+        <p>The bell’s thrust efficiency comes from Huzel &amp; Huang fig. 4-12: about 97 % at 60 % length, 98.6–98.9 % at 80 % and 99.15 % at full length, against 98.3 % for a full 15° cone. Beyond about 80 % a longer bell gains little, which is why 80 % is common. The <em>Divergence efficiency against nozzle length</em> plot redraws that figure for your expansion ratio.</p>
       </section>
 
       <section id="thrust">
         <h2>Thrust coefficient and ideal expansion</h2>
-        <p>The pressure difference between the exit and the surroundings acts on the exit area and adds</p>
-        <div class="eq"><div class="tex-display">C_{F,p}=\frac{p_e-p_a}{p_c}\,\varepsilon,\qquad C_{F,1D}=C_{F,m}+C_{F,p}</div></div>
-        <p>A nozzle with <span class="tex">p_e&gt;p_a</span> is <em>under-expanded</em>: a longer nozzle would extract more thrust. One with <span class="tex">p_e&lt;p_a</span> is <em>over-expanded</em>: the surroundings push back on the exit. The one-dimensional thrust coefficient is largest when <span class="tex">p_e=p_a</span>. The calculator reports the expansion ratio that gives this <em>ideal expansion</em> at your ambient pressure.</p>
-        <p>Because <span class="tex">p_e</span> does not depend on <span class="tex">p_a</span>, thrust falls linearly as the ambient pressure rises. In vacuum (<span class="tex">p_a=0</span>) thrust is largest, and <span class="tex">C_F</span> keeps growing with <span class="tex">\varepsilon</span> towards the infinite-expansion limit. A nozzle sized for sea level therefore wastes performance at altitude, and an altitude nozzle is over-expanded at launch.</p>
+        <div class="eq"><div class="tex-display">C_F=\lambda\sqrt{\frac{2\gamma^2}{\gamma-1}\left(\frac{2}{\gamma+1}\right)^{\frac{\gamma+1}{\gamma-1}}\left[1-\left(\frac{p_e}{p_c}\right)^{\frac{\gamma-1}{\gamma}}\right]}+\frac{p_e-p_a}{p_c}\,\varepsilon</div></div>
+        <p>The first term is the jet momentum, reduced by the divergence efficiency <span class="tex">\lambda</span>; the second is the pressure difference on the exit area. With <span class="tex">p_e&gt;p_a</span> the nozzle is <em>under-expanded</em> (a longer nozzle would add thrust); with <span class="tex">p_e&lt;p_a</span> it is <em>over-expanded</em>. The one-dimensional value peaks at <span class="tex">p_e=p_a</span>, and the calculator reports that expansion ratio. A nozzle sized for sea level wastes performance at altitude, and one sized for altitude is over-expanded at launch.</p>
       </section>
 
-      <section id="malina">
-        <h2>Malina divergence correction</h2>
-        <p>In a conical nozzle the gas at the exit flows along rays from the cone apex, not parallel to the axis. Malina (1940) integrated the axial momentum of this source flow over a spherical exit surface. Only the fraction</p>
-        <div class="eq"><div class="tex-display">\lambda=\frac{1+\cos\alpha}{2}</div></div>
-        <p>of the jet momentum is axial. The pressure term is unchanged, so the three-dimensional thrust coefficient is</p>
-        <div class="eq"><div class="tex-display">C_F=\lambda\,C_{F,m}+\frac{p_e-p_a}{p_c}\,\varepsilon</div></div>
-        <p>A 15° cone gives <span class="tex">\lambda=0.983</span>, a loss of 1.7 % of the jet momentum. A wider cone is shorter and lighter but loses more; a narrower one is long and heavy. With the correction the best expansion ratio is slightly smaller than the ideal-expansion value.</p>
-        <p>The diverging cone has exit diameter <span class="tex">d_e=d_t\sqrt\varepsilon</span> and length <span class="tex">L_d=(d_e-d_t)/(2\tan\alpha)</span>. The drawing shows the throat and the cone to scale; the chamber, the converging section and the exhaust plume are drawn only for context and do not enter the calculation. The gas in the cone is shaded by the static pressure of the local area ratio, and the plume flares when the nozzle is under-expanded and necks when it is over-expanded. When the jet would separate, the drawing marks the point on the wall where the pressure falls to <span class="tex">0.4\,p_a</span>.</p>
+      <section id="shock">
+        <h2>Shocks inside the nozzle</h2>
+        <p>With the throat sonic, the exit pressure of the supersonic solution, <span class="tex">p_e</span>, does not depend on <span class="tex">p_a</span>. As the ambient pressure rises past it, the ideal (inviscid) flow passes through these regimes:</p>
+        <ol>
+          <li><span class="tex">p_a&lt;p_e</span>: under-expanded; expansion waves outside.</li>
+          <li><span class="tex">p_e&lt;p_a&lt;p_{a,2}</span>: over-expanded; oblique shocks outside, the flow inside unchanged. Here <span class="tex">p_{a,2}=p_e\,\frac{2\gamma M_e^2-(\gamma-1)}{\gamma+1}</span> is the pressure behind a normal shock standing at the exit (NACA 1135 eq. 93).</li>
+          <li><span class="tex">p_{a,2}&lt;p_a&lt;p_{a,1}</span>: a <strong>normal shock inside</strong> the divergent. Across it the Mach number drops to <span class="tex">M_2^2=\frac{(\gamma-1)M_1^2+2}{2\gamma M_1^2-(\gamma-1)}</span> (eq. 96) and the stagnation pressure to <span class="tex">p_{c2}/p_c</span> from eq. (99). Behind it the flow is subsonic and decelerates to the exit. Because the stagnation pressure fell, the sonic area grows to <span class="tex">A_2^*=A_t\,p_c/p_{c2}</span>. The calculator moves the shock (bisection on its area ratio) until the subsonic exit pressure equals <span class="tex">p_a</span>.</li>
+          <li><span class="tex">p_a&gt;p_{a,1}</span>: <span class="tex">p_{a,1}</span> is the exit pressure of the fully subsonic solution. Above it the throat is no longer sonic and the nozzle is a venturi; the calculator stops and asks for a higher chamber pressure.</li>
+        </ol>
+        <p>The figure draws the inviscid shock as a dashed line through every profile; the jump in Mach number, pressure and density is visible there, while the temperature is continuous because the stagnation temperature does not change across a shock. A test checks that the mass flux <span class="tex">\rho VA</span> is the same at every station, through the shock.</p>
+        <p>A real nozzle rarely reaches this regime. The boundary layer separates first, well upstream (next section).</p>
       </section>
 
       <section id="separation">
         <h2>Flow separation</h2>
-        <p>When a nozzle is strongly over-expanded, the pressure rise at the exit travels upstream through the wall boundary layer and the jet leaves the wall inside the nozzle. Separation sets in when <span class="tex">p_e&lt;0.4\,p_a</span>. It is usually uneven round the circumference, so it produces side loads as well as a change in thrust.</p>
-        <p>The calculator warns when this happens and reports the expansion ratio at which it begins at your ambient pressure. The thrust coefficient is not valid once the jet has separated: use a smaller expansion ratio or a higher chamber pressure for a sea-level motor.</p>
+        <p>In an over-expanded nozzle the pressure rise at the exit travels upstream through the slow wall boundary layer. When the wall pressure has fallen to a fraction of <span class="tex">p_a</span>, the boundary layer separates and the jet leaves the wall. Separation is uneven around the circumference and moves about: it causes <strong>side loads</strong> on the nozzle and the motor mount, and the thrust differs from the attached value. Schmucker (NASA TM-77396) reviewed rocket-engine separation data and the criteria that fit it:</p>
+        <ul>
+          <li>Summerfield, eq. (7): <span class="tex">p_i/p_a=0.4</span>, a guide for low pressure ratios (<span class="tex">p_c/p_a</span> about 15–20) that decreases at higher ones;</li>
+          <li>Kalt and Bendall, eq. (10): <span class="tex">p_i/p_a=0.667\,(p_c/p_a)^{-0.2}</span>;</li>
+          <li>Schmucker, eq. (11): <span class="tex">p_i/p_a=(1.88\,M_i-1)^{-0.64}</span>, where <span class="tex">M_i</span> is the wall Mach number where separation begins. Fitted to averaged chemical-engine data, which lie near <span class="tex">M_i</span> 3–4.6; not to be used above <span class="tex">M_i=5</span>.</li>
+        </ul>
+        <p>Schmucker found the criterion lowered by a higher Mach number at separation, and little affected by divergence angle, contour (bell or plug), wall temperature or propellant. The calculator uses his eq. (11) by default. It walks down the attached wall-pressure distribution and reports the first station where <span class="tex">p_{wall}\le p_i</span>. The <em>Wall pressure against the separation pressure</em> plot shows the crossing.</p>
+        <p><strong>Verdict.</strong> The calculator compares the attached exit pressure with the separation pressure at the exit Mach number:</p>
+        <table class="sym-table">
+          <thead><tr><th>Verdict</th><th>Condition</th></tr></thead>
+          <tbody>
+            <tr><td>SAFE</td><td><span class="tex">p_e/p_{sep}\ge1.15</span>, or vacuum</td></tr>
+            <tr><td>MARGINAL</td><td><span class="tex">1\le p_e/p_{sep}&lt;1.15</span></td></tr>
+            <tr><td>UNSAFE</td><td>separation inside the nozzle, an inviscid shock inside, or no net thrust</td></tr>
+          </tbody>
+        </table>
+        <p>The 1.15 band is this project’s choice (DECISIONS D21), sized to the scatter between Schmucker’s criteria and data. It is <strong>not a published limit</strong>. When the design is not safe, the calculator gives the largest expansion ratio and the lowest chamber pressure that restore the margin.</p>
+        <p><strong>Thrust after separation.</strong> Downstream of separation the wall pressure is close to <span class="tex">p_a</span>, so the nozzle acts roughly like one cut at the separation point. The calculator reports that estimate and marks it as such.</p>
+      </section>
+
+      <section id="performance">
+        <h2>Mass flow, exhaust velocity and specific impulse</h2>
+        <p>With the gas constant <span class="tex">R=R_u/\mathcal{M}</span>, the choked mass flow and the characteristic velocity follow from the isentropic relations at the sonic throat:</p>
+        <div class="eq"><div class="tex-display">c^*=\frac{\sqrt{RT_c/\gamma}}{\left(\frac{2}{\gamma+1}\right)^{\frac{\gamma+1}{2(\gamma-1)}}},\qquad \dot m=\frac{p_cA_t}{c^*},\qquad I_{sp}=\frac{C_F\,c^*}{g_0},\qquad V_e=M_e\sqrt{\gamma RT_e}</div></div>
+        <p>These are ideal values. Two-phase flow (particles in aluminised or sugar propellants), friction, heat loss and incomplete combustion lower them by several percent in real motors. Take <span class="tex">\gamma</span>, <span class="tex">T_c</span> and <span class="tex">\mathcal{M}</span> for your propellant from a thermochemistry code (NASA CEA, ProPEP, OpenMotor). The calculator’s defaults are round example values, not a particular propellant.</p>
       </section>
 
       <section id="verification">
         <h2>Verification</h2>
         <p><code>tests/nozzle.test.js</code> checks the following:</p>
         <ul>
-          <li>every value of the RS&amp;T example (<span class="tex">\gamma=1.4</span>, <span class="tex">\varepsilon=6</span>, 15°, 600 psia into 14.7 psia), giving <span class="tex">M_e=3.3679</span>, <span class="tex">C_{F,1D}=1.4573</span> and <span class="tex">C_F=1.4316</span>;</li>
-          <li>area and pressure ratios against the NACA 1135 tables;</li>
-          <li>the sonic-exit limit <span class="tex">C_F=(\gamma+1)(2/(\gamma+1))^{\gamma/(\gamma-1)}</span> and the infinite-expansion limit;</li>
-          <li>that the one-dimensional thrust coefficient peaks where <span class="tex">p_e=p_a</span>;</li>
-          <li>that the Malina factor reduces only the momentum term.</li>
+          <li>every value of the RS&amp;T THRUSTCF example (<span class="tex">\gamma=1.4</span>, <span class="tex">\varepsilon=6</span>, 15°, 600 psia into 14.7 psia): <span class="tex">M_e=3.3679</span>, <span class="tex">C_F=1.4316</span>, also through the calculator as a cone;</li>
+          <li>Huzel &amp; Huang’s worked example (80 % bell, <span class="tex">\varepsilon=14</span>, <span class="tex">r_t</span> = 12.45 in): 15° cone length 128 in, <span class="tex">L_n</span> = 102.4 in, <span class="tex">\theta_n</span> = 27.4°, <span class="tex">\theta_e</span> = 9.8° (the chart gives 27.5° and 9.9°), point N at (2.19, 12.99) in;</li>
+          <li>normal shock at <span class="tex">M_1=2</span>: <span class="tex">M_2=0.5774</span>, <span class="tex">p_2/p_1=4.5</span>, <span class="tex">p_{c2}/p_c=0.7209</span> (NACA 1135 table II);</li>
+          <li>Schmucker eq. (11) at <span class="tex">M_i=3</span> (0.374, as in his fig. 25);</li>
+          <li>with a shock inside, the exit pressure equals <span class="tex">p_a</span> and the mass flux is conserved at every station; separation lies upstream of the inviscid shock;</li>
+          <li>the suggested expansion ratio and chamber pressure restore the 1.15 margin exactly, and <span class="tex">\dot m\,c^*=p_cA_t</span>;</li>
+          <li>area and pressure ratios against the NACA 1135 tables, and the sonic and infinite-expansion limits of <span class="tex">C_F</span>.</li>
         </ul>
       </section>
 
       <section id="known-differences">
         <h2>Notes on the method</h2>
         <ul class="diff-list">
-          <li><strong>Exit Mach number.</strong> It is solved to machine precision. The original example stops a fixed-end false-position iteration after 50 steps, which leaves the Mach number 6 × 10⁻¹⁰ too high; the thrust coefficients agree to 10⁻¹¹.</li>
-          <li><strong>Ideal values.</strong> Friction, heat loss, two-phase flow and changes of gas composition along the nozzle are not modelled. Measured thrust coefficients are somewhat lower than these ideal values.</li>
-          <li><strong>Exhaust properties.</strong> Use the ratio of specific heats of the actual exhaust. Air (1.4) is right only for cold-flow tests.</li>
-          <li><strong>Added results.</strong> Thrust, vacuum values, the ideal-expansion ratio, the separation limit and the cone dimensions follow from the same relations.</li>
+          <li><strong>Separation criterion (changed).</strong> The previous version used <span class="tex">p_e&lt;0.4\,p_a</span> (Summerfield) at the exit only. The default is now Schmucker’s Mach-number criterion along the wall, which agrees better with rocket data at high pressure ratios (Schmucker). Summerfield and Kalt–Bendall remain selectable.</li>
+          <li><strong>Choking limit (corrected).</strong> The previous version refused any ambient pressure above the throat pressure <span class="tex">p^*</span>. A converging–diverging nozzle stays choked up to the subsonic-exit pressure <span class="tex">p_{a,1}</span>, which is higher. The range in between (normal shock inside) is now solved.</li>
+          <li><strong>Bell efficiency</strong> is read from Huzel &amp; Huang’s chart, not computed by the method of characteristics.</li>
+          <li><strong>Exit Mach number.</strong> It is solved to machine precision. The original example’s 50-step iteration is 6 × 10⁻¹⁰ high, and the thrust coefficients agree to 10⁻¹¹.</li>
         </ul>
       </section>
 
       <section id="references">
         <h2>References</h2>
         <ol class="refs">
-          <li>Ames Research Staff, “Equations, Tables, and Charts for Compressible Flow,” NACA Report 1135, 1953.</li>
-          <li>F. J. Malina, “Characteristics of the Rocket Motor Unit Based on the Theory of Perfect Gases,” <em>Journal of the Franklin Institute</em> 230, 1940.</li>
-          <li>G. P. Sutton and O. Biblarz, <em>Rocket Propulsion Elements</em>, Wiley.</li>
+          <li>Ames Research Staff, “Equations, Tables, and Charts for Compressible Flow,” NACA Report 1135, 1953. <a href="https://ntrs.nasa.gov/citations/19930091059" rel="noopener">NTRS</a></li>
+          <li>D. K. Huzel and D. H. Huang, <em>Design of Liquid Propellant Rocket Engines</em>, NASA SP-125, 2nd ed., 1971, §4.3. <a href="https://ntrs.nasa.gov/citations/19710019929" rel="noopener">NTRS</a></li>
+          <li>R. H. Schmucker, “Flow processes in overexpanded chemical rocket nozzles, Part 1: Flow separation,” NASA TM-77396, 1984. <a href="https://ntrs.nasa.gov/citations/19840011402" rel="noopener">NTRS</a></li>
+          <li>F. J. Malina, “Characteristics of the Rocket Motor Unit Based on the Theory of Perfect Gases,” <em>Journal of the Franklin Institute</em> 230, 1940 — cited through Huzel &amp; Huang eq. (4-8); not read directly.</li>
           <li>C. P. Hoult, nozzle thrust coefficient calculation (THRUSTCF), Rocket Science and Technology. <a href="http://www.rsandt.com/media/THRUSTCF.xls" rel="noopener">Source file</a></li>
         </ol>
       </section>

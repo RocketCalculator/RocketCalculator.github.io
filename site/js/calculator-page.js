@@ -79,7 +79,17 @@ export async function mountCalculator(def) {
   const compatBox = null;
   const inputsCard = h('aside.card.calc-inputs', { 'aria-label': 'Inputs' },
     h('div.card-head', h('h2', 'Inputs'), h('span.spacer'), h('div.form-actions', exampleSel, exampleBtn, resetBtn, linkBtn)),
-    h('div.form-scroll', form.el));
+    h('div.form-scroll', form.el, def.actions?.length ? h('div.def-actions', def.actions.map((a) => {
+      // def.actions: [{ label, title, run(values) → Promise<{ values, message }> }] e.g. fill inputs from another calculator
+      const b = h('button.btn.small', { type: 'button', title: a.title || null }, a.label);
+      b.addEventListener('click', async () => {
+        b.disabled = true;
+        try { const r = await a.run(clone(state.values)); if (r?.values) { Object.assign(state.values, r.values); form.refresh(); recompute(); } if (r?.message) toast(r.message); }
+        catch (err) { toast(err.message || String(err)); }
+        finally { b.disabled = false; }
+      });
+      return b;
+    })) : null));
 
   // ---------- design bar: shared rocket, design files, baseline comparison ----------
   const nameInput = h('input.rocket-name', { type: 'text', value: getRocket().name, maxlength: 80, 'aria-label': 'Rocket name', title: 'Rocket name (saved with the design file)' });
@@ -213,12 +223,16 @@ export async function mountCalculator(def) {
     h('h2', 'Theory & references'),
     h('p', 'The full derivation, every equation, symbol definitions and assumptions are on the ',
       h('a', { href: docHref(), target: '_blank', rel: 'noopener' }, 'documentation page ↗'), '.'),
-    refList.length ? h('ul.refs-list', refList.map((r) => h('li', h('div', h('div.t', r.title), h('div.a', [r.authors, r.venue].filter(Boolean).join(' · '))),
-      h('div.go', h('a.btn.small', { href: url(`references/index.html#${r.id}`) }, 'Go to reference'),
-        h('a.btn.small.ghost', { href: url(r.file), target: '_blank', rel: 'noopener', title: 'Open PDF in a new tab' }, 'PDF', ICONS.external()))))) : null,
+    refList.length || def.externalRefs?.length ? h('ul.refs-list', [
+      ...refList.map((r) => h('li', h('div', h('div.t', r.title), h('div.a', [r.authors, r.venue].filter(Boolean).join(' · '))),
+        h('div.go', h('a.btn.small', { href: url(`references/index.html#${r.id}`) }, 'Go to reference'),
+          h('a.btn.small.ghost', { href: url(r.file), target: '_blank', rel: 'noopener', title: 'Open PDF in a new tab' }, 'PDF', ICONS.external())))),
+      // def.externalRefs: sources outside the library (web pages, papers not held here), linked rather than copied
+      ...(def.externalRefs || []).map((r) => h('li', h('div', h('div.t', r.title), h('div.a', [r.authors, r.venue].filter(Boolean).join(' · '))),
+        h('div.go', r.url ? h('a.btn.small.ghost', { href: r.url, target: '_blank', rel: 'noopener', title: 'Open the source in a new tab' }, 'Open', ICONS.external()) : null)))]) : null,
     null);
 
-  const report = reportCard({ def, state, refList, docHref, getSystem });
+  const report = reportCard({ def, state, refList: [...refList, ...(def.externalRefs || []).map((r) => ({ ...r, venue: [r.venue, r.url].filter(Boolean).join(', ') }))], docHref, getSystem });
   const idx = reg.calculators.findIndex((c) => c.slug === def.slug);
   const prev = reg.calculators[(idx - 1 + reg.calculators.length) % reg.calculators.length];
   const next = reg.calculators[(idx + 1) % reg.calculators.length];

@@ -245,9 +245,9 @@ export default {
         }
         const wst = out.o.mg.worst;
         return { x: { label: 'Mach number $M$', unit: '' }, y: { label: 'Static margin', unit: 'cal' }, includeZero: true, series: ser,
-          hlines: [{ y: v.targetSM, label: `target ${fmt(v.targetSM, { digits: 2 })}`, color: 'var(--warn)' }, { y: UNSAFE_SM, label: 'unsafe below 1', color: 'var(--red)' }],
+          hlines: [{ y: v.targetSM, label: `target ${fmt(v.targetSM, { digits: 2 })}`, color: 'var(--warn)' }, { y: UNSAFE_SM, label: 'unsafe below 1', color: 'var(--danger)' }],
           vlines: v.M > 0 ? [{ x: v.M, label: 'highest Mach', color: 'var(--text-3)' }] : [],
-          markers: [{ x: wst.M, y: wst.SM, label: `worst ${fmt(wst.SM, { digits: 3 })}`, color: wst.SM < UNSAFE_SM ? 'var(--red)' : wst.SM < v.targetSM ? 'var(--warn)' : 'var(--ok)' }] };
+          markers: [{ x: wst.M, y: wst.SM, label: `worst ${fmt(wst.SM, { digits: 3 })}`, color: wst.SM < UNSAFE_SM ? 'var(--danger)' : wst.SM < v.targetSM ? 'var(--warn)' : 'var(--ok)' }] };
       },
     },
     {
@@ -257,7 +257,7 @@ export default {
         const ul = U(LEN), prof = profileOf(v), b1 = Math.max(2 * v.b, 1.3 * (typeof out.results.bNeed === 'number' ? out.results.bNeed : 0)), pts = [];
         for (let i = 1; i <= 40; i++) { const b = (b1 * i) / 40; pts.push([ul.v(b), margins({ ...v, b }, prof).worst.SM]); }
         return { x: { label: 'Exposed semispan $b$', unit: ul.label }, y: { label: 'Worst-case static margin', unit: 'cal' }, series: [{ name: 'SM', points: pts, smooth: true }],
-          hlines: [{ y: v.targetSM, label: 'target', color: 'var(--warn)' }, { y: UNSAFE_SM, label: 'unsafe below 1', color: 'var(--red)' }],
+          hlines: [{ y: v.targetSM, label: 'target', color: 'var(--warn)' }, { y: UNSAFE_SM, label: 'unsafe below 1', color: 'var(--danger)' }],
           markers: [{ x: ul.v(v.b), y: out.results.margin, label: 'your fins' }] };
       },
     },

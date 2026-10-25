@@ -287,7 +287,7 @@ export default {
         const brk = (pts) => { if (!fl.shock) return pts; const xs = ul.v(fl.shock.x), i = pts.findIndex((q) => q[0] >= xs); return i > 0 ? [...pts.slice(0, i), [NaN, NaN, NaN], ...pts.slice(i)] : pts; };
         const vlines = [{ x: 0, label: 'throat', color: 'var(--text-3)' }];
         if (fl.shock) vlines.push({ x: ul.v(fl.shock.x), label: 'shock', color: 'var(--text-2)' });
-        if (fl.sep) vlines.push({ x: ul.v(fl.sep.x), label: 'separation', color: 'var(--red)' });
+        if (fl.sep) vlines.push({ x: ul.v(fl.sep.x), label: 'separation', color: 'var(--danger)' });
         return {
           x: { label: 'Distance from the throat $x$', unit: ul.label }, vlines, xDomain: [ul.v(fl.prof[0].x), ul.v(fl.prof[fl.prof.length - 1].x)],
           panels: [
@@ -311,8 +311,8 @@ export default {
         for (let i = 0; i <= 160; i++) { const e = 1.02 + ((top - 1.02) * i) / 160; series[0].points.push([e, cfAt(w, e, pac)]); series[1].points.push([e, cfAt(w, e, 0)]); }
         const vlines = [];
         if (Number.isFinite(epsOpt) && epsOpt <= top) vlines.push({ x: epsOpt, label: '$p_e=p_a$', color: 'var(--text-3)' });
-        if (epsSep && epsSep <= top) vlines.push({ x: epsSep, label: 'separation', color: 'var(--red)' });
-        const col = out.verdict.level === 'unsafe' ? 'var(--red)' : out.verdict.level === 'marginal' ? 'var(--warn)' : 'var(--ok)';
+        if (epsSep && epsSep <= top) vlines.push({ x: epsSep, label: 'separation', color: 'var(--danger)' });
+        const col = out.verdict.level === 'unsafe' ? 'var(--danger)' : out.verdict.level === 'marginal' ? 'var(--warn)' : 'var(--ok)';
         return { x: { label: 'Expansion ratio $\\varepsilon$' }, y: { label: 'Thrust coefficient $C_F$' }, series, vlines, markers: [{ x: w.eps, y: out.results.cf, label: 'your nozzle', color: col }] };
       },
     },
@@ -329,11 +329,11 @@ export default {
           wall.push([ul.v(q.x), (pressureRatio(M, w.g) * w.pc) / w.pa]); crit.push([ul.v(q.x), separationRatio(w.crit, M, w.pc / w.pa)]);
         }
         const vlines = [];
-        if (fl.sep) vlines.push({ x: ul.v(fl.sep.x), label: 'separation', color: 'var(--red)' });
+        if (fl.sep) vlines.push({ x: ul.v(fl.sep.x), label: 'separation', color: 'var(--danger)' });
         if (fl.shock) vlines.push({ x: ul.v(fl.shock.x), label: 'inviscid shock', color: 'var(--text-3)' });
         // near the throat the wall pressure is tens of times p_a; the decision is made near 1, so the axis stops at 3
         return { x: { label: 'Distance from the throat $x$', unit: ul.label }, y: { label: 'Pressure / ambient $p/p_a$' }, yDomain: [0, 3],
-          series: [{ name: 'wall pressure (attached)', points: wall, smooth: true }, { name: 'separation pressure', points: crit, dashed: true, color: 'var(--red)' }],
+          series: [{ name: 'wall pressure (attached)', points: wall, smooth: true }, { name: 'separation pressure', points: crit, dashed: true, color: 'var(--danger)' }],
           hlines: [{ y: 1, label: '$p_a$' }], vlines };
       },
     },
@@ -351,7 +351,7 @@ export default {
         }
         if (sep.length && att.length) sep.unshift(att[att.length - 1]);
         const vlines = [{ x: up.v(o.fl.pe), label: '$p_e=p_a$', color: 'var(--text-3)', row: 0 }];
-        if (Number.isFinite(paSep) && paSep < top) vlines.push({ x: up.v(paSep), label: 'separation', color: 'var(--red)', row: 1 });
+        if (Number.isFinite(paSep) && paSep < top) vlines.push({ x: up.v(paSep), label: 'separation', color: 'var(--danger)', row: 1 });
         if (o.fl.peNS < top) vlines.push({ x: up.v(o.fl.peNS), label: 'shock at exit', color: 'var(--text-3)', row: 2 });
         return { x: { label: 'Ambient pressure $p_a$', unit: up.label }, y: { label: 'Thrust $T$', unit: uf.label }, includeZero: true,
           series: [{ name: 'attached', points: att }, { name: 'separated (estimate)', points: sep, dashed: true, color: 'var(--red)' }], vlines,

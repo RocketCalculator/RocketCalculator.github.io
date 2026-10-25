@@ -20,6 +20,11 @@ adapted for an engineering tool used by student rocket clubs preparing PDR/FDR d
 
 ## 2. Colour
 
+**Accent colour (2026-10-25):** the header has an accent picker (red, blue, purple, pink, orange, green; stored as
+`rc-accent`, applied as `[data-accent]` before paint). The accent replaces the brand red (`--red`, `--red-text`,
+`--series-1/4/6`). **Danger is always red:** use `var(--danger)` for anything that means unsafe, error, separation or a
+limit, never `var(--red)`.
+
 Single accent, ink and greys — no second accent colour.
 
 | Token | Light | Dark | Use |

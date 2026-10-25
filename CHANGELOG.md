@@ -3,6 +3,11 @@
 Newest first, in the spirit of [Keep a Changelog](https://keepachangelog.com/). From 2026-10-25 every entry names its
 branch, tag and commit range. Live site: https://rocketcalculator.github.io/.
 
+## 2026-10-25 — Accent colour picker (`feat/accent-colour`)
+- Header picker next to dark mode: red, blue, purple, pink, orange or green replaces the brand red site-wide, remembered
+  and applied before the page paints. Danger (UNSAFE, errors, separation and limit lines) stays red (`--danger`).
+- Header fits from 320 to 1440 px: the nav collapses below 1000 px, the search label and tagline hide below 1240 px.
+
 ## 2026-10-25 — Parachute Recovery cycle 1 (`improve/recovery-cycle-1`)
 
 ### Added

@@ -177,8 +177,8 @@ export default {
           vlines: tDR != null ? [{ x: tDR, label: 'disreef', color: 'var(--text-3)' }] : [],
           panels: [
             { y: { label: 'Height above ground', unit: ua.label }, color: 'var(--series-2)', includeZero: true, series: [{ name: 'height', points: H.map((q) => [q.t, ua.v(q.h)]) }] },
-            { y: { label: 'Descent speed', unit: us.label }, color: 'var(--series-1)', includeZero: true, series: [{ name: 'speed', points: H.map((q) => [q.t, us.v(q.V)]) }], hlines: [{ y: us.v(v.vT), label: 'your landing speed', color: 'var(--red)' }] },
-            { y: { label: 'Drift', unit: ud.label }, color: 'var(--series-4)', includeZero: true, series: [{ name: 'drift', dash: '7 4', points: H.map((q) => [q.t, ud.v(q.x)]) }], hlines: [{ y: ud.v(v.Rf), label: 'edge of the recovery area', color: 'var(--red)' }] },
+            { y: { label: 'Descent speed', unit: us.label }, color: 'var(--series-1)', includeZero: true, series: [{ name: 'speed', points: H.map((q) => [q.t, us.v(q.V)]) }], hlines: [{ y: us.v(v.vT), label: 'your landing speed', color: 'var(--danger)' }] },
+            { y: { label: 'Drift', unit: ud.label }, color: 'var(--series-4)', includeZero: true, series: [{ name: 'drift', dash: '7 4', points: H.map((q) => [q.t, ud.v(q.x)]) }], hlines: [{ y: ud.v(v.Rf), label: 'edge of the recovery area', color: 'var(--danger)' }] },
           ],
         };
       },
@@ -193,8 +193,8 @@ export default {
         return {
           x: { label: 'Parachute flat diameter $D_0$', unit: ul.label }, vlines: [{ x: ul.v(v.D0), label: 'your parachute', color: 'var(--text-3)' }],
           panels: [
-            { y: { label: 'Aft landing speed', unit: us.label }, color: 'var(--series-1)', includeZero: true, series: [{ name: '$V_{aft}$', points: sp1 }], hlines: [{ y: us.v(v.vT), label: 'your landing speed', color: 'var(--red)' }] },
-            { y: { label: 'Drift', unit: ud.label }, color: 'var(--series-4)', includeZero: true, series: [{ name: '$x_w$', dash: '7 4', points: dr }], hlines: [{ y: ud.v(v.Rf), label: 'edge of the area', color: 'var(--red)' }] },
+            { y: { label: 'Aft landing speed', unit: us.label }, color: 'var(--series-1)', includeZero: true, series: [{ name: '$V_{aft}$', points: sp1 }], hlines: [{ y: us.v(v.vT), label: 'your landing speed', color: 'var(--danger)' }] },
+            { y: { label: 'Drift', unit: ud.label }, color: 'var(--series-4)', includeZero: true, series: [{ name: '$x_w$', dash: '7 4', points: dr }], hlines: [{ y: ud.v(v.Rf), label: 'edge of the area', color: 'var(--danger)' }] },
           ],
         };
       },
@@ -207,7 +207,7 @@ export default {
         const ua = U(ALT), ud = U(DIST), pts = [];
         for (let i = 0; i <= 60; i++) { const hR = (0.98 * v.hD * i) / 60; pts.push([ua.v(hR), ud.v(recovery({ ...v, hR }).drift)]); }
         return { x: { label: 'Disreef height above ground $h_{DR}$', unit: ua.label }, y: { label: 'Drift $x_w$', unit: ud.label }, includeZero: true,
-          series: [{ name: 'drift', points: pts }], hlines: [{ y: ud.v(v.Rf), label: 'edge of the area', color: 'var(--red)' }],
+          series: [{ name: 'drift', points: pts }], hlines: [{ y: ud.v(v.Rf), label: 'edge of the area', color: 'var(--danger)' }],
           markers: [{ x: ua.v(v.hR), y: ud.v(out.o.drift), label: 'your disreef' }] };
       },
     },
@@ -218,7 +218,7 @@ export default {
         const o = out.o, us = U(SPEED), ud = U(DIST), top = Math.max(3 * v.L, 3 * (o.m2 / (o.CdS * o.rhoG)), 30), pts = [];
         for (let i = 0; i <= 80; i++) { const L = (top * i) / 80; pts.push([ud.v(L), us.v(aftImpact(o.m1, o.m2, o.CdS, o.rhoG, L))]); }
         return { x: { label: 'Tether length $L$', unit: ud.label }, y: { label: 'Aft landing speed', unit: us.label }, includeZero: true, series: [{ name: '$V_{aft}$', points: pts, smooth: true }],
-          hlines: [{ y: us.v(o.vAftMin), label: 'endless tether', color: 'var(--text-3)' }, { y: us.v(v.vT), label: 'your landing speed', color: 'var(--red)' }], markers: [{ x: ud.v(v.L), y: us.v(o.vAft), label: 'your tether' }] };
+          hlines: [{ y: us.v(o.vAftMin), label: 'endless tether', color: 'var(--text-3)' }, { y: us.v(v.vT), label: 'your landing speed', color: 'var(--danger)' }], markers: [{ x: ud.v(v.L), y: us.v(o.vAft), label: 'your tether' }] };
       },
     },
     {
@@ -237,7 +237,7 @@ export default {
     const fr = ctx.frame({ width: W, height: H, label: 'Descent path with drift and wind, recovery area, and the landing' });
     const g = fr.layer('main'); g.replaceChildren();
     const ua = ctx.U(ALT), ud = ctx.U(DIST), us = ctx.U(SPEED), A = (h) => `${fmt(ua.v(h), { digits: 3 })} ${ua.plain}`, Sp = (x) => `${fmt(us.v(x), { digits: 3 })} ${us.plain}`, Dd = (x) => `${fmt(ud.v(x), { digits: 3 })} ${ud.plain}`;
-    const col = lv === 'unsafe' ? 'var(--red)' : lv === 'marginal' ? 'var(--warn)' : 'var(--ok)';
+    const col = lv === 'unsafe' ? 'var(--danger)' : lv === 'marginal' ? 'var(--warn)' : 'var(--ok)';
     // ---- descent panel: height and drift to one scale ----
     const bx0 = 92, bx1 = 470, yt = 58, yg = 362, span = Math.max(o.drift, v.Rf) * 1.08 || 1;
     const k = Math.min((bx1 - bx0) / span, (yg - yt) / v.hD), X = (x) => bx0 + x * k, Y = (h) => yg - h * k;

@@ -258,11 +258,11 @@ export default {
         const fl = flight.rows.map((r) => [ua.v(r.h), us.v(r.V)]);
         return { x: { label: 'Altitude above the launch site $h$', unit: ua.label }, y: { label: 'Speed', unit: us.label }, includeZero: true,
           series: [
-            { name: 'flutter speed $V_f$ (danger above)', points: pts, area: 'above', color: 'var(--red)', smooth: true },
+            { name: 'flutter speed $V_f$ (danger above)', points: pts, area: 'above', color: 'var(--danger)', smooth: true },
             { name: `$V_f$ / ${fmt(target, { digits: 3 })} (target)`, points: pts.map(([x, y]) => [x, y / target]), dashed: true, color: 'var(--warn)', smooth: true },
             { name: 'your flight', points: fl, color: 'var(--text)', width: 2.4, dots: fl.length < 40 },
           ],
-          markers: [{ x: ua.v(worst.h), y: us.v(worst.V), label: `worst: SF ${fmt(worst.SF, { digits: 3 })}`, color: worst.SF < UNSAFE_SF ? 'var(--red)' : worst.SF < target ? 'var(--warn)' : 'var(--ok)' }] };
+          markers: [{ x: ua.v(worst.h), y: us.v(worst.V), label: `worst: SF ${fmt(worst.SF, { digits: 3 })}`, color: worst.SF < UNSAFE_SF ? 'var(--danger)' : worst.SF < target ? 'var(--warn)' : 'var(--ok)' }] };
       },
     },
     {
@@ -272,7 +272,7 @@ export default {
         const ul = U(LEN), { fin, fix, target, flight } = out.o, tMax = Math.max(2 * fin.t, 1.3 * fix.tNeed), pts = [];
         for (let i = 1; i <= 60; i++) { const t = (tMax * i) / 60; pts.push([ul.v(t), checkFlight({ ...fin, t }, flight.rows, { h0: v.h0, TslF: out.o.TslF }).worst.SF]); }
         return { x: { label: 'Fin thickness $t$', unit: ul.label }, y: { label: 'Safety factor $SF$', unit: '' }, includeZero: true, series: [{ name: 'SF', points: pts, smooth: true }],
-          hlines: [{ y: target, label: `target ${fmt(target, { digits: 3 })}`, color: 'var(--warn)' }, { y: UNSAFE_SF, label: 'unsafe below 1.2', color: 'var(--red)' }],
+          hlines: [{ y: target, label: `target ${fmt(target, { digits: 3 })}`, color: 'var(--warn)' }, { y: UNSAFE_SF, label: 'unsafe below 1.2', color: 'var(--danger)' }],
           vlines: [{ x: ul.v(fix.tNeed), label: 't_{req}', color: 'var(--text-3)' }], markers: [{ x: ul.v(fin.t), y: out.results.SF, label: 'your fin' }] };
       },
     },
@@ -283,7 +283,7 @@ export default {
         const ul = U(LEN), { fin, fix, target, flight } = out.o, bTop = Math.max(2 * fin.b, 1.3 * (fix.bMax || 0)), pts = [];
         for (let i = 1; i <= 60; i++) { const b = (bTop * i) / 60; pts.push([ul.v(b), checkFlight({ ...fin, b }, flight.rows, { h0: v.h0, TslF: out.o.TslF }).worst.SF]); }
         return { x: { label: 'Semi-span $b$', unit: ul.label }, y: { label: 'Safety factor $SF$', unit: '' }, includeZero: true, series: [{ name: 'SF', points: pts, smooth: true }],
-          hlines: [{ y: target, label: `target ${fmt(target, { digits: 3 })}`, color: 'var(--warn)' }, { y: UNSAFE_SF, label: 'unsafe below 1.2', color: 'var(--red)' }],
+          hlines: [{ y: target, label: `target ${fmt(target, { digits: 3 })}`, color: 'var(--warn)' }, { y: UNSAFE_SF, label: 'unsafe below 1.2', color: 'var(--danger)' }],
           ...(fix.bMax ? { vlines: [{ x: ul.v(fix.bMax), label: 'b_{max}', color: 'var(--text-3)' }] } : {}), markers: [{ x: ul.v(fin.b), y: out.results.SF, label: 'your fin' }] };
       },
     },
@@ -299,7 +299,7 @@ export default {
     const k = Math.min(420 / Math.max(x1 - x0, 1e-9), 200 / v.b), bodyY = 262, ox = 60 - x0 * k;
     const P = (x, y) => [ox + x * k, bodyY - y * k];
     const rootLE = P(0, 0), rootTE = P(v.cR, 0), tipLE = P(v.m, v.b), tipTE = P(v.m + v.cT, v.b);
-    const col = out.verdict?.level === 'unsafe' ? 'var(--red)' : out.verdict?.level === 'marginal' ? 'var(--warn)' : 'var(--ok)';
+    const col = out.verdict?.level === 'unsafe' ? 'var(--danger)' : out.verdict?.level === 'marginal' ? 'var(--warn)' : 'var(--ok)';
     g.append(s('rect', { x: 30, y: bodyY, width: 480, height: 26, class: 'sc-body-2' }));
     g.append(text(38, bodyY + 18, 'body', { cls: 'sc-dim-text', size: 10 }));
     g.append(s('path', { d: path([rootLE, rootTE, tipTE, tipLE], true), fill: col, 'fill-opacity': 0.14, stroke: col, 'stroke-width': 2, 'data-field': 'cR cT b m' }));

@@ -8,7 +8,7 @@ import { buildModel, toLaTeX, toMarkdown } from '../site/js/ui/report.js';
 import { InputError } from '../site/js/util.js';
 import { niceTicks } from '../site/js/ui/chart.js';
 
-globalThis.location ??= { href: 'https://darasamii.github.io/RocketCalculator/', origin: 'https://darasamii.github.io', pathname: '/RocketCalculator/' };
+globalThis.location ??= { href: 'http://localhost/', origin: 'http://localhost', pathname: '/' };   // reports only read location.href
 const dir = new URL('../site/js/calculators/', import.meta.url);
 const defs = await Promise.all(readdirSync(dir).filter((f) => f.endsWith('.js')).sort().map(async (f) => (await import(new URL(f, dir))).default));
 const bySlug = Object.fromEntries(defs.map((d) => [d.slug, d]));

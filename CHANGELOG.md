@@ -1,6 +1,24 @@
 # Changelog
 
-Every commit adds an entry here, newest first. Live site: https://darasamii.github.io/RocketCalculator/
+Newest first, in the spirit of [Keep a Changelog](https://keepachangelog.com/). From 2026-10-25 every entry names its
+branch, tag and commit range. Live site: https://darasamii.github.io/RocketCalculator/ (moving to
+https://rocketcalculator.github.io/, see `BLOCKERS.md` B1).
+
+## 2026-10-25 — Hosting preparation (`chore/hosting-migration`)
+
+### Added
+- `site/404.html`: GitHub Pages serves it for any missing path. It picks its base path (`/RocketCalculator/` now, `/`
+  after the move) so old or mistyped links lead back to the home page.
+- `BLOCKERS.md`, `DECISIONS.md`, `PROGRESS.md`, `KNOWLEDGE.md`: run logs and the knowledge base for the overhaul.
+
+### Changed
+- README names the planned organization address; the aggressive-test location stub no longer uses the old path.
+
+### Not done (blocked)
+- The move itself (old `https://darasamii.github.io/RocketCalculator/` → new `https://rocketcalculator.github.io/`):
+  the `RocketCalculator` organization does not exist and cannot be created from here (B1). Audit result: every asset
+  and link is already relative, so nothing on the site breaks when it moves; browser storage (theme, units, saved
+  designs) resets with the new origin.
 
 ## 2026-10-22
 

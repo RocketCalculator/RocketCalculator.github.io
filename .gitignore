@@ -4,3 +4,11 @@ source/rsandt/media/Sounding Rocket Design to Mitigate Roll Lock-In Voice.ppt
 *.lock
 .~lock*
 node_modules/
+# editor/OS junk and test output
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.log
+test-results/
+playwright-report/

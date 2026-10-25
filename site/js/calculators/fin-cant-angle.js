@@ -41,7 +41,7 @@ export default {
           info: { text: 'Distance from the body centre line to the fin tip — body radius plus the exposed span.', doc: 'strip-theory' } },
         { id: 'cR', shared: 'finCr', label: 'Root chord', sym: 'c_R', ...LEN, default: 10, min: 0, minExclusive: true, info: { text: 'Fin chord at the body.', doc: 'strip-theory' } },
         { id: 'cT', shared: 'finCt', label: 'Tip chord', sym: 'c_T', ...LEN, default: 2, min: 0, info: { text: 'Fin chord at the tip.', doc: 'strip-theory' } },
-        { id: 'N', shared: 'finN', label: 'Number of fins', sym: 'N', dim: 'none', default: 4, min: 1, max: 12,
+        { id: 'N', backView: (v) => ({ R: v.R, span: v.b - v.R, nominal: { t: true }, unit: LEN, range: [3, 8], note: 'Driving and damping moments both scale with N, so the steady cant angle for a roll rate does not depend on N; the roll-inertia lag does.' }), shared: 'finN', label: 'Number of fins', sym: 'N', dim: 'none', default: 4, min: 1, max: 12,
           info: { text: 'Number of identical panels. Three or more set to a common cant give zero net pitch/yaw moment.', doc: 'fin-adjustment' } },
         { id: 'cNa', label: 'Airfoil normal-force slope', sym: 'c_{N\\alpha}', dim: 'perAngle', internal: 'perrad', default: 3.5, min: 0, minExclusive: true,
           info: { text: 'Section lift-curve slope of a strip, per radian. Thin-airfoil theory gives 2π subsonic and 4/√(M²−1) supersonic; a panel average lower than 2π accounts for root and tip losses.', doc: 'strip-theory' } },

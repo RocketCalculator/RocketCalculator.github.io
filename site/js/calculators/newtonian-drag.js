@@ -87,7 +87,7 @@ export default {
       id: 'fing', title: 'Fin leading edges',
       fields: [
         { id: 'fins', label: 'Rounded fin leading edges', kind: 'bool', default: true, info: { text: 'Fins with a round (hemicylindrical) leading edge — a flat plate with its edge rounded.', doc: 'leading-edge' } },
-        { id: 'N', shared: 'finN', label: 'Number of fins', sym: 'N', dim: 'none', default: 4, min: 1, max: 12, when: on('fins'), info: { text: 'Number of fin panels.', doc: 'leading-edge' } },
+        { id: 'N', backView: (v) => ({ R: v.bodyR, span: 1.5 * v.bodyR, t: 2 * v.rLE, nominal: { span: true }, unit: LEN, range: [1, 12], note: 'Leading-edge wave drag is N × one fin’s; span is not an input here, so it is drawn nominal.' }), shared: 'finN', label: 'Number of fins', sym: 'N', dim: 'none', default: 4, min: 1, max: 12, when: on('fins'), info: { text: 'Number of fin panels.', doc: 'leading-edge' } },
         { id: 'rLE', shared: { key: 'finT', get: (v) => 2 * v.rLE, set: (v, t) => { v.rLE = t / 2; } }, label: 'Leading-edge radius', sym: 'R_{LE}', ...LEN, default: 0.0625, min: 0, minExclusive: true, when: on('fins'),
           info: { text: 'Radius of the rounded edge — half the thickness for a fully rounded plate.', doc: 'leading-edge' } },
         { id: 'lLE', label: 'Leading-edge length', sym: 'l', ...LEN, default: 15, min: 0, minExclusive: true, when: on('fins'),

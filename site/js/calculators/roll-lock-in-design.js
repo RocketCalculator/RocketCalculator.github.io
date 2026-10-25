@@ -66,7 +66,7 @@ export default {
     {
       id: 'fins', title: 'Fins',
       fields: [
-        { id: 'N', label: 'Number of fins', sym: 'N', ...NONE, default: 4, min: 3, max: 8, slider: { min: 3, max: 8, step: 1 }, info: { text: 'Six fins are much better than four, and eight better still; three and four differ little.', doc: 'design' } },
+        { id: 'N', backView: (v) => ({ R: v.R, span: v.b, nominal: { t: true }, unit: LEN, range: [3, 8], note: 'The induced roll moment sums N fins 2π/N apart: more fins smooth it out, raising the lock-in angle (six or eight fins markedly).' }), label: 'Number of fins', sym: 'N', ...NONE, default: 4, min: 3, max: 8, slider: { min: 3, max: 8, step: 1 }, info: { text: 'Six fins are much better than four, and eight better still; three and four differ little.', doc: 'design' } },
         { id: 'xF', label: 'Fin centre of pressure', sym: 'x_{CPF}', ...LEN, default: 108 * IN, min: 0, info: { doc: 'fins' } },
         { id: 'b', label: 'Exposed semispan', sym: 'b', ...LEN, default: 6 * IN, min: 1e-6, info: { doc: 'fins' } },
         { id: 'lam', label: 'Taper ratio', sym: '\\lambda', ...NONE, default: 0.3, min: 0, max: 1, slider: { min: 0, max: 1, step: 0.05 }, info: { text: 'Tip chord / root chord.', doc: 'fins' } },

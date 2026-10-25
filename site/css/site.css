@@ -316,6 +316,21 @@ a.topic-card:hover .chip { background: rgba(127, 127, 127, 0.25); color: inherit
 .field .err-msg:empty { display: none; }
 .field.invalid .ctl { border-color: var(--err); }
 .field.bool { grid-template-columns: minmax(0, 1fr) auto; }
+/* RocketBackView (js/ui/backview.js) under fin-count inputs */
+.field .backview { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 220px) minmax(0, 1fr); gap: 4px 12px; align-items: center; margin-top: 4px; }
+.backview .bv-svg svg { display: block; width: 100%; height: auto; }
+.backview .bv-text { margin: 0; font-size: 0.78rem; line-height: 1.35; color: var(--text-2); min-height: 5.4em; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 4; line-clamp: 4; overflow: hidden; }
+.backview .bv-text.warn { color: var(--warn); font-weight: 600; }
+@media (max-width: 420px) { .field .backview { grid-template-columns: minmax(0, 1fr); } .backview .bv-svg svg { max-width: 240px; margin: 0 auto; } }
+.rbv-body { fill: var(--schem-fill); stroke: var(--schem-stroke); stroke-width: 1.4; }
+.rbv-inner { fill: none; stroke: var(--schem-dim); stroke-width: 1; stroke-dasharray: 3 2; }
+.rbv-fin { fill: var(--schem-fill-2); stroke: var(--schem-stroke); stroke-width: 1; }
+.rbv-fin1 { fill: var(--red); stroke: var(--red); }
+.rbv-dim { fill: none; stroke: var(--schem-dim); stroke-width: 1; }
+.rbv-label, .rbv-one { fill: var(--text); font: 500 11px var(--font-sans); font-variant-numeric: tabular-nums; }
+.rbv-one { fill: var(--red-text, var(--red)); font-weight: 700; }
+.rbv-caption { fill: var(--text-2); font: 700 10.5px var(--font-sans); text-transform: uppercase; letter-spacing: 0.04em; }
+.rbv-note { fill: var(--text-3); font: 10px var(--font-sans); }
 .field input[type="range"] { grid-column: 1 / -1; width: 100%; accent-color: var(--red); margin: 0; height: 18px; }
 .switch { position: relative; width: 44px; height: 26px; flex: none; }
 .switch input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }

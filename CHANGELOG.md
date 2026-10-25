@@ -4,6 +4,14 @@ Newest first, in the spirit of [Keep a Changelog](https://keepachangelog.com/). 
 branch, tag and commit range. Live site: https://darasamii.github.io/RocketCalculator/ (moving to
 https://rocketcalculator.github.io/, see `BLOCKERS.md` B1).
 
+## 2026-10-25 — RocketBackView (`shared/rocket-back-view`, tag `v1.3.0`)
+
+### Added
+- A to-scale rear view ("Viewed from behind") under every fin-count input: body, N fins with fin 1 marked, 360/N,
+  span and body diameter, a one-line note on how N enters that calculator, and a warning for 0–2 fins or counts
+  outside what its equations cover. In all seven fin-count calculators.
+- `tests/backview.test.js`: every fin-count input must have a back view.
+
 ## 2026-10-25 — DiagramViewport (`shared/diagram-viewport`, tag `v1.2.0`)
 
 ### Added

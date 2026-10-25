@@ -50,7 +50,7 @@ export default {
     {
       id: 'veh', title: 'Fins on the rocket (for the drag coefficient)',
       fields: [
-        { id: 'N', shared: 'finN', label: 'Number of fins', sym: 'N', dim: 'none', default: 4, min: 1, max: 12, info: { text: 'Number of fin panels.', doc: 'drag' } },
+        { id: 'N', backView: (v) => ({ R: v.bodyR, span: v.b, nominal: { t: true }, unit: LEN, range: [1, 12], note: 'The whole-rocket wave-drag increment is N × (one fin’s increment).' }), shared: 'finN', label: 'Number of fins', sym: 'N', dim: 'none', default: 4, min: 1, max: 12, info: { text: 'Number of fin panels.', doc: 'drag' } },
         { id: 'cR', shared: 'finCr', label: 'Root chord', sym: 'c_R', ...LEN, default: 10, min: 0, minExclusive: true, info: { text: 'Fin root chord.', doc: 'drag' } },
         { id: 'cT', shared: 'finCt', label: 'Tip chord', sym: 'c_T', ...LEN, default: 4, min: 0, info: { text: 'Fin tip chord.', doc: 'drag' } },
         { id: 'b', shared: 'finSpan', label: 'Exposed semispan', sym: 'b', ...LEN, default: 5, min: 0, minExclusive: true, info: { text: 'Span of one exposed panel.', doc: 'drag' } },

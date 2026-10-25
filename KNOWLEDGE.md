@@ -73,6 +73,23 @@ scripts/generate_pages.mjs`; write `site/docs/<slug>.html`; add REPAIR/INVARIANT
   with frame p95 ≤ 20 ms and no long tasks, view kept on input change, Reset/double-click return to fit, plain wheel
   scrolls the page, Ctrl+wheel zooms, touch-action values.
 
+### RocketBackView (`ui/backview.js` → `rocketBackView()`, `finCountWarning()`)
+- Every fin-count field declares `backView: (v) => ({ R, span, t?, Rin?, unit, nominal?, note, range })` (lengths
+  in the calculator's internal unit given by `unit`; `nominal: { span | t: true }` for dimensions the calculator does
+  not take, drawn nominal and labelled so; `note` = one line on how N enters this calculator's physics; `range` =
+  the fin counts its equations cover). `ui/form.js` draws it under the field and redraws only when its inputs change.
+- Drawing: body tube (and motor tube when `Rin`), N fins equally spaced, fin 1 at 12 o'clock in red, clockwise as
+  seen from behind; body radius, span and thickness to one scale (thickness at least ~1 px, labelled when
+  exaggerated); labels: 360/N, span, body ⌀, "1", "Viewed from behind".
+- Fixed-size drawing and a fixed 4-line text box that shows the note, or the warning (`finCountWarning`): 0, 1, 2 fins
+  (no / asymmetric / one-plane stability) and counts outside `range`; an invalid input shows a placeholder of the
+  same size.
+- **Check:** `tests/backview.test.js` asserts every fin-count field in every definition has a complete back view;
+  the layout test covers its stability (extreme N and R included).
+- **Rollout (Step 0 inventory, all done):** Subsonic CP [3–4], Zero-Lift Drag [1–12], Fin Cant Angle [3–8], Roll Rate
+  History [3–8], Single Wedge [1–12], Modified Newtonian [1–12, span nominal], Roll Lock-In [3–8]. The new Fin
+  Flutter adds the eighth.
+
 ### NumberField / SliderInput (`ui/form.js` → `numberField`)
 - One grid row: label column `minmax(0, 1fr)`, control column `160px`; the unit sits in its own `min-width: 5ch`
   cell inside the control and never wraps (`white-space: nowrap`).

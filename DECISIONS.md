@@ -65,3 +65,17 @@ Decisions taken while the owner was unavailable. Each entry: date, question, opt
 - **Question:** the plan suggests Playwright "or similar"; the repo's browser scripts already use puppeteer-core.
 - **Choice:** puppeteer-core 23.11.1 as the only devDependency; Chromium-family browser via `CHROME`.
 - **Reverse:** port `scripts/ui-*.mjs` to Playwright.
+
+## D11 — 2026-10-25 — Back view rolled out in the shared branch
+- **Question:** the plan migrates calculators to shared components "during their own cycle", but also requires every
+  fin-count input to use `RocketBackView`.
+- **Choice:** add the one-line `backView` config to all seven fin-count definitions in `shared/rocket-back-view`, so
+  the requirement holds site-wide immediately and a test enforces it; physics is untouched.
+- **Reverse:** remove the `backView` lines.
+
+## D12 — 2026-10-25 — Fin-count ranges in the notes are conservative
+- **Question:** which fin counts each calculator's equations cover.
+- **Choice:** Subsonic CP 3–4 (Barrowman's N/2 form; more fins interfere — **the size of that interference was not
+  verified from a source in this session**, so 5–8 are flagged "indicative"); drag/Newtonian/wedge 1–12 (terms
+  linear in N); roll calculators and Roll Lock-In 3–8 (the lock-in paper studies 3, 4, 6, 8).
+- **Reverse:** edit `range` in the definitions.

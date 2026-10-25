@@ -200,6 +200,7 @@ scripts/generate_pages.mjs`; write `site/docs/<slug>.html`; add REPAIR/INVARIANT
 - **Test cases (tests/nozzle.test.js):** THRUSTCF R5 through the new definition; Huzel & Huang 128 in / 102.4 in /
   N (2.19, 12.99); NACA M1 = 2 → 0.5774 / 4.5 / 0.7209; Schmucker 0.374 at M 3; p_exit = p_a behind the shock and
   ρVA conserved at every station; ε_max and p_c,min restore the 1.15 margin exactly.
+- **Cycle 2 (branch `improve/nozzle-cycle-2`):** geometry entered as d_in, d_t, d_e, L_c, L_d (angles solved by bisection, achievable ranges in the refusal message); flow profiles as a stacked-panel chart with hover (value + ratio to the throat value); chart labels use `$…$` (bare TeX in a name made the tooltip typeset whole phrases as maths); ε_max search no longer capped at 4ε; doc error fixed (static T does jump across a shock).
 - **Open questions:** two-phase losses (sugar/aluminised motors); method-of-characteristics contour instead of the
   parabola; side-load magnitude after separation; a chamber-Mach threshold with a source (0.3 is a rule of thumb).
 
@@ -227,7 +228,8 @@ scripts/generate_pages.mjs`; write `site/docs/<slug>.html`; add REPAIR/INVARIANT
 **Nozzle Design and Thrust**
 | Diagram | 1 Question it answers | 2 Better than a number? | 3 What the user does differently | 4 Shows the problem/change | 5 Scale | Verdict |
 |---|---|---|---|---|---|---|
-| Contour with A/A*, M, p, T, ρ strips (shared x) | What happens to the gas along my nozzle, and where does it go wrong? | Yes — shows where the flow chokes, how fast p and T fall, and the shock/separation station on the wall itself | Moves the exit (ε, length) or raises p_c until the separation line leaves the nozzle | Separation (red) and inviscid shock (dashed) through every strip; hover read-out | Wall to scale while the radius fits (else labelled "radius drawn smaller"); x shared exactly | KEEP (redesigned: was a cone sketch with a not-to-scale convergent). Phone: text small, use zoom |
+| Nozzle section (drawing) | What does my nozzle look like, and where does the jet leave the wall? | Yes — the five dimensions the user enters, the derived angles, and the shock/separation on the wall | Drags the exit lip (d_e, L_d) or inlet corner (d_in, L_c) | Separation circles, dashed shock, Mach shading | To scale, both axes | KEEP (cycle 2: dimensioned like a drawing — d_in/d_t/d_e verticals, L_c/L_d on one baseline, stations on one row; profile strips moved out) |
+| Flow along the nozzle (main, stacked panels, shared x) | How do A, M, p, T, ρ change along the nozzle? | Yes — the throat, shock jump and separation line up across all quantities; hover gives value and ratio to the sonic value | Sees where pressure crosses p_a and how hot/dense the exit gas is | Throat, shock, separation lines; p_a line | Axes with units | KEEP (cycle 2: real chart with hover, replaces the hand-drawn strips; new shared `panels` mode in chart.js) |
 | C_F against ε (main) | Which expansion ratio should I pick? | Yes — the optimum, the vacuum gain and the separation limit in one view | Picks ε left of the separation line, near p_e = p_a | Separation and p_e = p_a lines; design marker coloured by verdict | Axes | KEEP |
 | Wall pressure against separation pressure (Explore) | Where exactly does the jet leave the wall, and with what margin? | Yes — the crossing is the separation point; the gap is the margin | Sees how much ε or p_c must change | Crossing, inviscid shock | Axes with units | KEEP (new) |
 | Thrust against ambient pressure (Explore) | How does thrust change from launch to vacuum, and where does it separate? | Yes — regime boundaries along the climb | Checks the lowest firing altitude | p_e = p_a, separation, shock-at-exit lines | Axes with units | KEEP (redesigned with regimes) |
@@ -236,6 +238,8 @@ scripts/generate_pages.mjs`; write `site/docs/<slug>.html`; add REPAIR/INVARIANT
 ## Lessons learned
 
 ### After Nozzle (Phase 2)
+- **Chart labels: wrap maths in `$…$`.** A label with bare TeX and words (`'Expansion ratio \\varepsilon'`) is typeset whole as maths in the tooltip — no spaces, italic.
+- **Let users enter what they would measure or machine** (diameters, lengths), and derive the angles; give the achievable range when a value cannot be built.
 - **Digitise charts from a high-resolution render with pixel tracing, then calibrate on a known point** (here Malina 98.3 %) — a visual read was off by 0.5 %.
 - **Re-derive regime limits from the source**: the old choke check (p_a < p*) was a textbook slip that refused valid designs.
 - **A shared-x strip figure inside the drawing** beats stacking separate charts when the x is a physical position on the drawing.

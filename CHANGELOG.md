@@ -3,6 +3,26 @@
 Newest first, in the spirit of [Keep a Changelog](https://keepachangelog.com/). From 2026-10-25 every entry names its
 branch, tag and commit range. Live site: https://rocketcalculator.github.io/.
 
+## 2026-10-25 — Nozzle Design and Thrust, cycle 2 (`improve/nozzle-cycle-2`, tags `nozzle-thrust/v3.0.0`, `v1.7.0`)
+
+### Changed (BREAKING: inputs)
+- Geometry is entered directly: inlet, throat and exit diameters, convergent and divergent lengths (D23). The
+  expansion ratio, convergent angle and cone angle or bell length are derived results. All inputs are bounded and most
+  have sliders.
+- The flow profiles are a proper chart: stacked panels for area, Mach number, pressure, temperature and density on a
+  shared x axis, with a hover read-out of each value and its ratio to the sonic (throat) value.
+- The nozzle drawing is dimensioned like a drawing (inlet/throat/exit diameters, both lengths, one row of stations);
+  drag the exit lip or the inlet corner.
+
+### Fixed
+- Chart labels and legends typeset whole phrases as maths ("Expansionratioε"); maths is now delimited.
+- The largest separation-free expansion ratio was capped at 4× the design value.
+- The theory page said the temperature is continuous across a normal shock; the static temperature jumps.
+
+### Added (shared)
+- `chart.js`: stacked panels with a shared x axis and a combined read-out (`spec.panels`); the read-out stays inside
+  the chart on narrow screens.
+
 ## 2026-10-25 — Nozzle Design and Thrust (`improve/nozzle-cycle-1`, tags `nozzle-thrust/v2.0.0`, `v1.6.0`)
 
 ### Changed (BREAKING: new default, renamed, results changed for separated or shocked flow)

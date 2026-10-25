@@ -108,7 +108,8 @@ plots and a drawing. The shared page code does the rest, so every calculator beh
 
 ## Working on it
 - Read [KNOWLEDGE.md](KNOWLEDGE.md) first (architecture, shared components, lessons), then [DECISIONS.md](DECISIONS.md),
-  [PROGRESS.md](PROGRESS.md) and [BLOCKERS.md](BLOCKERS.md). UI rules: [docs/DESIGN-GUIDE.md](docs/DESIGN-GUIDE.md).
+  [PROGRESS.md](PROGRESS.md) and [BLOCKERS.md](BLOCKERS.md). UI rules: [docs/DESIGN-GUIDE.md](docs/DESIGN-GUIDE.md); what every calculator page must contain and how it is
+  checked: [docs/CALCULATOR-SPEC.md](docs/CALCULATOR-SPEC.md).
 - Deploys on every push to `main` that touches `site/` ([workflow](.github/workflows/pages.yml)).
 - Branches `type/description`, Conventional Commits, merges by pull request; releases are annotated tags
   (`<calculator>/vX.Y.Z`, site `vX.Y.Z`). History: [CHANGELOG.md](CHANGELOG.md).

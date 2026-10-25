@@ -42,6 +42,7 @@ export const UNITS = {
   perrad: { label: '/rad', ...lin(1) }, perdeg: { label: '/°', ...lin(180 / Math.PI) },
   perm: { label: '1/m', ...lin(1) }, perft: { label: '1/ft', ...lin(1 / FT) },
   pct: { label: '%', ...lin(1) }, none: { label: '', ...lin(1) },
+  gmol: { label: 'g/mol', ...lin(1) }, kgs: { label: 'kg/s', ...lin(1) }, lbs: { label: 'lb/s', ...lin(LBM) },
   // structural: joint compliance and bending stiffness
   radpernm: { label: 'rad/(N·m)', ...lin(1) }, radperlbin: { label: 'rad/(lbf·in)', ...lin(1 / (LBF * IN)) },
   Nm2: { label: 'N·m²', ...lin(1) }, lbfin2: { label: 'lbf·in²', ...lin(LBF * IN * IN) },
@@ -79,6 +80,8 @@ export const DIMS = {
   perAngle: { si: 'perrad', us: 'perrad' },
   wavenumber: { si: 'perm', us: 'perft' },
   percent: { si: 'pct', us: 'pct' },
+  molarMass: { si: 'gmol', us: 'gmol' },
+  massFlow: { si: 'kgs', us: 'lbs' },
   compliance: { si: 'radpernm', us: 'radperlbin' },
   stiffness: { si: 'Nm2', us: 'lbfin2' },
   areaInertia: { si: 'cm4', us: 'in4' },
@@ -130,5 +133,6 @@ export const UNIT_TEX = {
   s: '\\mathrm{s}', deg: '{}^{\\circ}', rad: '\\mathrm{rad}', perrad: '\\mathrm{rad^{-1}}', perdeg: '{}^{\\circ\\,-1}',
   radpernm: '\\mathrm{rad\\,N^{-1}\\,m^{-1}}', radperlbin: '\\mathrm{rad\\,lbf^{-1}\\,in^{-1}}', Nm2: '\\mathrm{N\\,m^{2}}', lbfin2: '\\mathrm{lbf\\,in^{2}}', cm4: '\\mathrm{cm^{4}}', in4: '\\mathrm{in^{4}}', Nm: '\\mathrm{N\\,m}', lbfin: '\\mathrm{lbf\\,in}',
   perm: '\\mathrm{m^{-1}}', perft: '\\mathrm{ft^{-1}}', pct: '\\%', none: '',
+  gmol: '\\mathrm{g\\,mol^{-1}}', kgs: '\\mathrm{kg\\,s^{-1}}', lbs: '\\mathrm{lb\\,s^{-1}}',
 };
 export const unitTex = (key) => UNIT_TEX[key] ?? `\\mathrm{${key}}`;

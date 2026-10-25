@@ -364,8 +364,21 @@ table.ptable button:hover { color: var(--red); }
 .kr.flash .kr-value { animation: flash 0.6s var(--ease); }
 @keyframes flash { from { color: var(--red); } }
 .kr.hl { outline: 2px solid var(--red); }
-.schem-host { position: relative; padding: 12px 14px 14px; }
-.schem-host svg { display: block; width: 100%; height: auto; touch-action: none; }
+/* DiagramViewport (js/ui/viewport.js): fixed box (aspect ratio set from the first canvas), drawing fitted inside;
+   the controls sit in a fixed-height bar below so they never cover the drawing */
+.dv-wrap { margin: 6px 14px 10px; }
+.dv { position: relative; border-radius: var(--radius); overflow: hidden; outline: none; }
+.dv > .schem-host { position: absolute; inset: 0; padding: 4px; }
+.dv:focus-visible, .dv.dv-active { box-shadow: 0 0 0 2px var(--accent-soft), inset 0 0 0 1px var(--border-strong); }
+.dv.dv-zoomed { cursor: grab; } .dv.dv-panning { cursor: grabbing; }
+.schem-host svg { display: block; width: 100%; height: 100%; touch-action: pan-y; }   /* one finger scrolls the page */
+.sc-handle { touch-action: none; }                                                    /* handles still drag */
+.dv-bar { display: flex; align-items: center; gap: 4px; height: 34px; margin-top: 4px; }
+.dv-btn { min-width: 30px; height: 28px; padding: 0 8px; border: 1px solid var(--border-strong); border-radius: var(--pill); background: var(--surface); color: var(--text); font: 600 0.95rem/1 var(--font-sans); cursor: pointer; }
+.dv-btn.dv-reset { font-size: 0.78rem; }
+.dv-btn:disabled { opacity: 0.4; cursor: default; }
+.dv-btn:not(:disabled):hover { border-color: var(--red); }
+.dv-hint { font-size: 0.75rem; color: var(--text-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 .sc-body { fill: var(--schem-fill); stroke: var(--schem-stroke); stroke-width: 1.5; vector-effect: non-scaling-stroke; transition: fill 0.2s; }
 .sc-body-2 { fill: var(--schem-fill-2); stroke: var(--schem-stroke); stroke-width: 1.2; vector-effect: non-scaling-stroke; }
 .sc-line { fill: none; stroke: var(--schem-stroke); stroke-width: 1.5; vector-effect: non-scaling-stroke; }

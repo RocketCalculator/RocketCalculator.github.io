@@ -54,7 +54,7 @@ export function linePath(P, smooth) {
  * spec = { x: {label, unit}, y: {label, unit}, series: [{name, points:[[x,y]], dashed, color, smooth, dots}], markers:[{x,y,label,color}],
  *          hlines:[{y,label,color}], vlines:[{x,label,color,row}], xDomain, yDomain, includeZero, hover: 'x'|'y', aspect }
  * Stacked panels with one shared x axis: spec = { x, xDomain, vlines, panels: [{ y: {label, unit}, series, hlines, yDomain, color,
- *          includeZero, ratio: {label} }] }. A point may carry a third value [x, y, r] (e.g. the ratio to a reference); the
+ *          includeZero, ratio: {label} }] } (a series may set dash: '6 3' for its own pattern). A point may carry a third value [x, y, r] (e.g. the ratio to a reference); the
  *          hover read-out then shows "y unit · ratio-label = r" for every panel at the crosshair.
  *          A panel may instead be a drawing: { draw(g, X, Y, box), yDomain, equalAspect, maxHeight } — drawn with the same x
  *          scale (and, with equalAspect, the same y scale, so shapes are true to scale); its height then follows from it.
@@ -267,7 +267,7 @@ export function createChart(host, opts = {}) {
         const flush = () => { d += linePath(run, se.smooth); run = []; };
         for (const [x, y] of se.points) { if (!Number.isFinite(x) || !Number.isFinite(y)) { flush(); continue; } run.push([X(x), Y(y)]); }
         flush();
-        plot.append(s('path', { class: `series${se.dashed ? ' dashed' : ''}`, d, stroke: se.col, 'stroke-width': se.width || 2 }));
+        plot.append(s('path', { class: `series${se.dashed ? ' dashed' : ''}`, d, stroke: se.col, 'stroke-width': se.width || 2, style: se.dash ? `stroke-dasharray:${se.dash}` : null }));
       }
       g.append(s('defs', {}, s('clipPath', { id: clipId }, s('rect', { x: m.l, y: top - 2, width: W - m.l - m.r, height: ph + 4 }))), grid,
         s('path', { class: 'axis', d: `M${m.l},${top}V${bot}H${W - m.r}`, fill: 'none' }), ticks,

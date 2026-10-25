@@ -33,8 +33,8 @@ Single accent, ink and greys — no second accent colour.
 | `--text` / `--text-2` / `--text-3` | `#25282b` / `#4b4f53` / `#6b6e71` | `#fff` / `#d0d2d4` / `#a9acaf` | Text hierarchy (the spec’s `#7e7e7e` is too light for small text — keep AA) |
 
 - **Plots** use a red / ink / grey / slate family: `--series-1…6`. Distinguish series by dashes as well as colour.
-  Exception (owner's request, 2026-10-25): stacked flow panels may give each physical quantity its own colour
-  (nozzle: area ink, Mach red, pressure blue, temperature amber, density green), with the axis label in that colour.
+  Stacked panels: each quantity keeps one series colour and its own line pattern (nozzle: area ink solid, Mach red
+  solid, pressure dark red dashed, temperature red dotted, density dark red dash-dot), axis label in that colour.
 - **Final badge:** calculators the owner has signed off carry a purple "Final" chip on the home page
   (`FINAL` in `scripts/seed_registry.py` → `final: true` in the registry).
 - **Status**: green (ok), amber (warning), red (error) — only on borders, small text and notices.

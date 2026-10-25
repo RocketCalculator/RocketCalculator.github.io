@@ -107,7 +107,14 @@ export function buildForm(def, state, { onChange, onHighlight, infoFor }) {
   }
 
   function selectField(f) {
-    const sel = h('select', { id: `f-${f.id}` }, f.options.map((o) => h('option', { value: String(o.value) }, o.label)));
+    // options with a `group` are gathered into <optgroup>s (in order of first appearance); others stay at the top level
+    const opt = (o) => h('option', { value: String(o.value) }, o.label), groups = new Map(), items = [];
+    for (const o of f.options) {
+      if (!o.group) { items.push(opt(o)); continue; }
+      if (!groups.has(o.group)) { const og = h('optgroup', { label: o.group }); groups.set(o.group, og); items.push(og); }
+      groups.get(o.group).append(opt(o));
+    }
+    const sel = h('select', { id: `f-${f.id}` }, items);
     const lab = h('label', { for: `f-${f.id}` }, L(f), SYM(f), SHARED_MARK(f), infoButton(() => infoFor(f), { label: f.label }));
     const el = h('div.field', { 'data-for': f.id }, lab, h('div.ctl', sel));
     sel.addEventListener('change', () => {

@@ -75,3 +75,15 @@ test('Flight check and remedies: the worst point, and each remedy reaches the ta
 });
 
 after(() => console.log(`flutter: ${stats.compared} values compared, max rel err ${stats.maxRel.toExponential(2)}`));
+
+test('Fin materials: every preset computes; OpenRocket woods agree with Bennett; printed and foam fins are flagged', async () => {
+  const def = (await import('../site/js/calculators/fin-flutter.js')).default;
+  const f = def.groups.flatMap((g) => g.fields).find((x) => x.id === 'material');
+  const base = Object.fromEntries(def.groups.flatMap((g) => g.fields).map((x) => [x.id, structuredClone(x.default)]));
+  for (const o of f.options) { const r = def.compute({ ...base, material: o.value }, {}).results; assert.ok(Number.isFinite(r.SF) && r.SF > 0, o.value); }
+  const sf = (m) => def.compute({ ...base, material: m }, {}).results.SF;
+  assert.ok(Math.abs(sf('or-plywood-birch') / sf('birchply') - 1) < 1e-3, 'OpenRocket plywood ≈ Bennett plywood');
+  assert.ok(Math.abs(sf('or-balsa') / sf('balsa') - 1) < 1e-3, 'OpenRocket balsa = Bennett balsa');
+  assert.ok(def.compute({ ...base, material: 'or-pla-100-infill' }, {}).warnings.some((w) => /3D-printed/.test(w.text)));
+  assert.ok(def.compute({ ...base, material: 'or-depron-xps' }, {}).warnings.some((w) => /not structural/.test(w.text)));
+});

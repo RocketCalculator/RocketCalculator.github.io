@@ -59,7 +59,8 @@ export function createChart(host, opts = {}) {
   const svgHost = h('div.chart-body');
   const tip = h('div.chart-tip', { 'aria-hidden': 'true' });
   const legend = h('div.chart-legend');
-  wrap.append(svgHost, tip, legend);
+  const emptyMsg = h('div.chart-empty-msg', { role: 'status' });
+  wrap.append(svgHost, tip, legend, emptyMsg);
   host.append(wrap);
   const hidden = new Set();
   let spec = null, drawn = false, svg = null, geom = null;
@@ -179,12 +180,17 @@ export function createChart(host, opts = {}) {
     hit.addEventListener('pointerdown', onMove);
     hit.addEventListener('pointerleave', onLeave);
 
-    legend.replaceChildren(...(series.length > 1 || spec.legend ? series.map((se) => {
-      const b = h('button', { type: 'button', 'aria-pressed': String(!hidden.has(se.name)) },
+    // the legend follows the series the plot defines, not the ones that happen to have points: a legend that comes and
+    // goes with the data changed the card's height (empty series are listed, dimmed)
+    const all = spec.series.map((se, i) => series.find((x) => x.idx === i) || { ...se, idx: i, col: se.color || color(i), points: [], empty: true });
+    legend.replaceChildren(...(all.length > 1 || spec.legend ? all.map((se) => {
+      const b = h('button', { type: 'button', 'aria-pressed': String(!hidden.has(se.name)), disabled: se.empty || null, title: se.empty ? 'No points for these inputs' : null },
         h('i', { style: `background:${se.col}${se.dashed ? ';background:repeating-linear-gradient(90deg,' + se.col + ' 0 4px,transparent 4px 7px)' : ''}` }), h('span', { html: nameHTML(se.name) }));
       b.addEventListener('click', () => { hidden.has(se.name) ? hidden.delete(se.name) : hidden.add(se.name); render(); });
       return b;
     }) : []));
+    // a plot whose number of series depends on the inputs keeps the legend row once it has had one
+    if (legend.childElementCount) legend.style.minHeight = `${Math.max(legend.offsetHeight, parseFloat(legend.style.minHeight) || 0)}px`;
   }
 
   const ro = new ResizeObserver(() => { if (svg && Math.abs((svgHost.clientWidth || 0) - (geom?.W || 0)) > 4) render(); });
@@ -193,7 +199,12 @@ export function createChart(host, opts = {}) {
 
   return {
     el: wrap,
-    update(next) { spec = next; render(); },
+    update(next) { spec = next; wrap.classList.remove('is-empty'); svgHost.style.minHeight = ''; render(); },
+    /** No plot for these inputs: keep the card's size (dim the last drawing, or reserve the usual height) and say so. */
+    empty(msg = 'Not available for these inputs.') {
+      if (!svg) { const W = Math.max(280, svgHost.clientWidth || 600); svgHost.style.minHeight = `${Math.round(opts.height ?? Math.min(360, Math.max(230, W * 0.56)))}px`; }
+      emptyMsg.textContent = msg; wrap.classList.add('is-empty');
+    },
     /** One sheet per series: header row then [x, y] rows (plain-text labels with units). */
     toSheets() {
       if (!spec) return [];

@@ -290,4 +290,4 @@ on the calculator. Fin Flutter is Phase 1.
   `https://darasamii.github.io/RocketCalculator/`, Pages from Actions.
 - No path in the site depends on `/RocketCalculator/` (except the intentional fallback in `404.html`).
 - Remaining references to the retired address (to change after B1): `site/js/app.js` `REPO_URL`, `README.md`,
-  `CHANGELOG.md` header, `docs/BRIEF.md`, `docs/OPUS_PROMPT.md`.
+  `CHANGELOG.md` header.

@@ -5,12 +5,12 @@ Notes for anyone (human or AI) working on this repository. Read this, `PROGRESS.
 
 ## Hosting
 
-| | Now | Target (after B1) |
-|---|---|---|
-| Organization / owner | `DaraSamii` (personal) | `RocketCalculator` |
-| Repository | `DaraSamii/RocketCalculator` | `RocketCalculator/RocketCalculator.github.io` |
-| Site | `https://darasamii.github.io/RocketCalculator/` | `https://rocketcalculator.github.io/` |
-| Pages source | GitHub Actions (`.github/workflows/pages.yml`, uploads `site/`) | same |
+| | |
+|---|---|
+| Organization | `RocketCalculator` |
+| Repository | `RocketCalculator/RocketCalculator.github.io` (public) |
+| Site | `https://rocketcalculator.github.io/` |
+| Pages source | GitHub Actions (`.github/workflows/pages.yml`, uploads `site/`) |
 
 - **Deploy:** push to `main` with changes under `site/**` (or run the workflow by hand). The workflow does a sparse
   checkout of `site/` and publishes it as is; there is no build step. `data/`, `derived/`, `source/` are never deployed.
@@ -18,13 +18,13 @@ Notes for anyone (human or AI) working on this repository. Read this, `PROGRESS.
   `ROOT = new URL('../', import.meta.url)` (`site/js/util.js`); HTML pages use relative links; share links are
   `location.origin + location.pathname + '#s=…'`. Do not introduce root-absolute paths (`/css/...`) — they break the
   project-page address — or hard-coded hosts.
-- **404:** `site/404.html` chooses `<base href>` from the path (D5).
+- **404:** `site/404.html` sets `<base href="/">` (the site is at the domain root).
 - **Browser storage** (all `localStorage`, via `storage` in `util.js`): `rc-theme`, `rc-units`, `rc-rocket`,
   `rc-flash`, `rc-anim-paused`, `rc-home-status`, `rc-calc-<slug>` (last inputs), `rc-base-<slug>` (pinned baseline).
-  Storage is per origin, so all of it resets when the site moves to the organization address.
+  Storage is per origin, so it did not carry over from the old address.
 - **Retired after the move:** `https://darasamii.github.io/RocketCalculator/...` (Pages does not redirect project
   sites after a transfer; D4). The old repo URL redirects automatically as long as no new repo takes its name.
-- **Migration status:** pending (B1). Checklist for finishing it is in `BLOCKERS.md`.
+- **Migration status:** done 2026-10-25 (B1, B2 resolved). A private repo cannot serve Pages on the org's Free plan; keep it public.
 
 ## Project architecture and file map
 

@@ -10,7 +10,7 @@ Pages from GitHub Actions (`pages.yml`, publishes `site/`). Organization `Rocket
 be created (no public API, no `admin:org` scope, no browser connected) → B1. Proceeded at the current address (D2).
 
 **Audit (read-only):**
-- Old-address references: `README.md` (Live line), `docs/BRIEF.md`, `docs/OPUS_PROMPT.md` (planning docs),
+- Old-address references: `README.md` (Live line),
   `site/js/app.js` `REPO_URL` (must stay until the move, D3), `tests/aggressive.test.js` location stub, CHANGELOG header.
 - Root-absolute paths in `site/`: none. `<base>`, service worker, web manifest, sitemap, canonical/OG URLs: none
   (canonical links exist only in generated redirect pages and are relative).

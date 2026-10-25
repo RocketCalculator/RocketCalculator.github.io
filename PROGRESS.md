@@ -38,3 +38,18 @@ HTTP errors; the custom 404 is served for a missing deep path with styles and a 
 
 **Next:** Phase 0 — `shared/number-field` (layout-stable inputs/results + recompute per frame), then
 `shared/diagram-viewport`, then `shared/rocket-back-view`, each with tests, merged and tagged before Phase 1.
+
+## 2026-10-25 — Phase 0: shared foundations (done)
+
+| Tag | PR | What |
+|---|---|---|
+| `v1.1.0` | #3 `shared/number-field` | per-frame recompute, deferred visible-only charts; fixed results table, reserved notes, floating validation, stable legends; `npm run test:ui-layout` |
+| `v1.2.0` | #4 `shared/diagram-viewport` | every drawing in a fixed, fitted, zoomable, scroll-safe viewport; `plots[].when`; `npm run test:ui-diagrams` |
+| `v1.3.0` | #5 `shared/rocket-back-view` | to-scale rear view under all 7 fin-count inputs; `tests/backview.test.js` |
+
+**Verified:** `npm test` 283/283; layout stable for 29 calculators × 320/768/1280 px × SI/US (slider sweeps and extreme
+values); diagram interaction 29/29 on laptop and ×4-CPU phone profiles (pan p95 ≤ 20 ms); smoke 83 pages × 3 configs;
+live pages checked after each deploy.
+**Uncertain:** Barrowman fin-interference beyond 4 fins (D12). Handle drags still redraw the drawing each frame
+(≈30 fps at ×4 CPU on Subsonic CP).
+**Next:** `shared/verdict-tiers` (verdict banner + Explore section, opt-in), then Phase 1 Fin Flutter.

@@ -4,6 +4,14 @@ Newest first, in the spirit of [Keep a Changelog](https://keepachangelog.com/). 
 branch, tag and commit range. Live site: https://darasamii.github.io/RocketCalculator/ (moving to
 https://rocketcalculator.github.io/, see `BLOCKERS.md` B1).
 
+## 2026-10-25 — Verdict banner and two tiers (`shared/verdict-tiers`, tag `v1.4.0`)
+
+### Added
+- Opt-in verdict banner (SAFE / MARGINAL / UNSAFE with icon, word and colour, summary and up to three fixes, fixed
+  height) and an Explore section (extra plots, every result, assumptions and limits) for the calculator cycles.
+- Warnings can carry a "Fix:" line and are shown most severe first.
+- The layout test now watches the verdict banner and opens the Explore sections before measuring.
+
 ## 2026-10-25 — RocketBackView (`shared/rocket-back-view`, tag `v1.3.0`)
 
 ### Added

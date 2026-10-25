@@ -18,6 +18,8 @@ const SPD = { dim: 'speed', internal: 'ms' };
 const MDOT = { dim: 'massFlow', internal: 'kgs' };
 const DENS = { dim: 'density', internal: 'kgm3' };
 const NONE = { dim: 'none' };
+// one colour per quantity on the flow chart (user request): area ink, Mach red, pressure blue, temperature amber, density green
+const QCOL = { A: 'var(--text)', M: 'var(--red)', p: '#2f6fd6', T: '#d9822b', rho: '#2e9e6a' };
 const G0 = 9.80665, PSI = 6894.757293168, IN2 = 0.00064516, RU = 8314.462618;
 const SAFE_MARGIN = 1.15;            // exit pressure ≥ 1.15 × separation pressure counts as attached with margin (D21)
 const CRITS = { schmucker: 'Schmucker (eq. 11, wall Mach number)', summerfield: 'Summerfield (0.4 of ambient)', kalt: 'Kalt–Bendall (pressure ratio)' };
@@ -289,11 +291,11 @@ export default {
           x: { label: 'Distance from the throat $x$', unit: ul.label }, vlines, xDomain: [ul.v(fl.prof[0].x), ul.v(fl.prof[fl.prof.length - 1].x)],
           panels: [
             { y: { label: 'Nozzle', scaleNote: 'radius not to scale' }, yDomain: [-1.18 * Math.max(o.geo.rc, o.geo.re), 1.18 * Math.max(o.geo.rc, o.geo.re)].map(ul.v), equalAspect: true, minHeight: 120, maxHeight: 240, draw: (g, X, Y, box) => drawNozzle(g, X, Y, box, out, ul) },
-            { y: { label: 'Area $A$', unit: ua.label }, ratio: { label: '$A/A^*$' }, includeZero: true, series: [{ name: '$A$', points: ser((q) => [ua.v(q.A * At), q.A]) }] },
-            { y: { label: 'Mach $M$' }, includeZero: true, series: [{ name: '$M$', points: brk(ser((q) => [q.M])) }], hlines: [{ y: 1, label: '$M=1$' }] },
-            { y: { label: 'Pressure $p$', unit: up.label }, ratio: { label: '$p/p^*$' }, includeZero: true, series: [{ name: '$p$', points: brk(ser((q) => [up.v(q.p * w.pc), (q.p * w.pc) / pS])) }], hlines: w.pa > 0 ? [{ y: up.v(w.pa), label: '$p_a$', color: 'var(--red)' }] : [] },
-            { y: { label: 'Temperature $T$', unit: ut.label }, ratio: { label: '$T/T^*$' }, includeZero: true, series: [{ name: '$T$', points: brk(ser((q) => [ut.v(q.T * w.Tc), (q.T * w.Tc) / TS])) }] },
-            { y: { label: 'Density $\\rho$', unit: ud.label }, ratio: { label: '$\\rho/\\rho^*$' }, includeZero: true, series: [{ name: '$\\rho$', points: brk(ser((q) => [ud.v(q.rho * rhoC), (q.rho * rhoC) / rS])) }] },
+            { y: { label: 'Area $A$', unit: ua.label }, color: QCOL.A, ratio: { label: '$A/A^*$' }, includeZero: true, series: [{ name: '$A$', points: ser((q) => [ua.v(q.A * At), q.A]) }] },
+            { y: { label: 'Mach $M$' }, color: QCOL.M, includeZero: true, series: [{ name: '$M$', points: brk(ser((q) => [q.M])) }], hlines: [{ y: 1, label: '$M=1$' }] },
+            { y: { label: 'Pressure $p$', unit: up.label }, color: QCOL.p, ratio: { label: '$p/p^*$' }, includeZero: true, series: [{ name: '$p$', points: brk(ser((q) => [up.v(q.p * w.pc), (q.p * w.pc) / pS])) }], hlines: w.pa > 0 ? [{ y: up.v(w.pa), label: '$p_a$', color: 'var(--red)' }] : [] },
+            { y: { label: 'Temperature $T$', unit: ut.label }, color: QCOL.T, ratio: { label: '$T/T^*$' }, includeZero: true, series: [{ name: '$T$', points: brk(ser((q) => [ut.v(q.T * w.Tc), (q.T * w.Tc) / TS])) }] },
+            { y: { label: 'Density $\\rho$', unit: ud.label }, color: QCOL.rho, ratio: { label: '$\\rho/\\rho^*$' }, includeZero: true, series: [{ name: '$\\rho$', points: brk(ser((q) => [ud.v(q.rho * rhoC), (q.rho * rhoC) / rS])) }] },
           ],
         };
       },
@@ -315,7 +317,7 @@ export default {
     },
     {
       id: 'wall', title: 'Wall pressure against the separation pressure', explore: true,
-      info: { text: 'Attached (isentropic) wall pressure along the divergent, and the pressure at which the boundary layer separates by the chosen criterion, both divided by $p_a$. Where the wall curve drops below the criterion the jet leaves the wall.', doc: 'separation' },
+      info: { text: 'Attached (isentropic) wall pressure along the divergent, and the pressure at which the boundary layer separates by the chosen criterion, both divided by $p_a$ (axis cut at 3: near the throat the wall pressure is far higher). Where the wall curve drops below the criterion the jet leaves the wall.', doc: 'separation' },
       build(v, out, { U }) {
         const w = out.o.w, fl = out.o.fl;
         if (!(w.pa > 0)) return null;
@@ -328,7 +330,8 @@ export default {
         const vlines = [];
         if (fl.sep) vlines.push({ x: ul.v(fl.sep.x), label: 'separation', color: 'var(--red)' });
         if (fl.shock) vlines.push({ x: ul.v(fl.shock.x), label: 'inviscid shock', color: 'var(--text-3)' });
-        return { x: { label: 'Distance from the throat $x$', unit: ul.label }, y: { label: 'Pressure / ambient $p/p_a$' }, includeZero: true,
+        // near the throat the wall pressure is tens of times p_a; the decision is made near 1, so the axis stops at 3
+        return { x: { label: 'Distance from the throat $x$', unit: ul.label }, y: { label: 'Pressure / ambient $p/p_a$' }, yDomain: [0, 3],
           series: [{ name: 'wall pressure (attached)', points: wall, smooth: true }, { name: 'separation pressure', points: crit, dashed: true, color: 'var(--red)' }],
           hlines: [{ y: 1, label: '$p_a$' }], vlines };
       },
@@ -337,17 +340,21 @@ export default {
       id: 'pa', title: 'Thrust against ambient pressure', explore: true,
       info: { text: 'Thrust of your nozzle from vacuum up to the pressure at which it unchokes. Attached, it falls in a straight line (only the back-pressure on the exit changes); once the jet separates, the estimate follows a nozzle cut at the separation point.', doc: 'shock' },
       build(v, out, { U }) {
-        const o = out.o, w = o.w, up = U(PRES), uf = U(FORCE), top = 0.98 * o.fl.peSub, att = [], sep = [];
+        const o = out.o, w = o.w, up = U(PRES), uf = U(FORCE), att = [], sep = [];
+        // up to about twice the largest pressure that matters here (ambient, exit, separation onset), not the unchoking pressure
+        const paSep = w.crit !== 'kalt' ? o.fl.pe / separationRatio(w.crit, o.fl.Me, 1) : NaN;
+        const top = Math.min(0.98 * o.fl.peSub, 2 * Math.max(w.pa, o.fl.pe, Number.isFinite(paSep) ? paSep : 0));
         for (let i = 0; i <= 80; i++) {
           const pa = (top * i) / 80, fl = nozzleFlow(o.geo, w.g, w.pc, pa, w.crit), c = cfActual({ ...w, pa }, fl);
           (fl.sep || fl.shock ? sep : att).push([up.v(pa), uf.v(c.cf * w.pc * o.At)]);
         }
         if (sep.length && att.length) sep.unshift(att[att.length - 1]);
-        const vlines = [{ x: up.v(o.fl.pe), label: '$p_e=p_a$', color: 'var(--text-3)' }, { x: up.v(o.fl.peNS), label: 'shock at exit', color: 'var(--text-3)' }];
-        if (w.crit !== 'kalt') { const paSep = o.fl.pe / separationRatio(w.crit, o.fl.Me, 1); if (paSep < top) vlines.push({ x: up.v(paSep), label: 'separation', color: 'var(--red)' }); }
+        const vlines = [{ x: up.v(o.fl.pe), label: '$p_e=p_a$', color: 'var(--text-3)', row: 0 }];
+        if (Number.isFinite(paSep) && paSep < top) vlines.push({ x: up.v(paSep), label: 'separation', color: 'var(--red)', row: 1 });
+        if (o.fl.peNS < top) vlines.push({ x: up.v(o.fl.peNS), label: 'shock at exit', color: 'var(--text-3)', row: 2 });
         return { x: { label: 'Ambient pressure $p_a$', unit: up.label }, y: { label: 'Thrust $T$', unit: uf.label }, includeZero: true,
           series: [{ name: 'attached', points: att }, { name: 'separated (estimate)', points: sep, dashed: true, color: 'var(--red)' }], vlines,
-          markers: w.pa > 0 ? [{ x: up.v(w.pa), y: uf.v(out.results.thrust), label: 'your nozzle' }] : [] };
+          markers: w.pa > 0 && w.pa <= top ? [{ x: up.v(w.pa), y: uf.v(out.results.thrust), label: 'your nozzle' }] : [] };
       },
     },
     {

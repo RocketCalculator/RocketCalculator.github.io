@@ -90,7 +90,7 @@ const REPAIR = {
   'fin-cant-angle': (v, r) => { if (v.b <= v.R) v.b = v.R * (1.1 + 2 * r()); },
   'yo-yo-despin': (v, r) => { if (v.ff >= v.f0) v.ff = v.f0 * r(); v.mu = r() < 0.8 ? 0 : Math.min(v.mu, 1e-5 * r()); },
   'newtonian-drag': (v, r) => { if (v.r2 <= v.r1) v.r2 = v.r1 * (1.05 + 3 * r()) + 1e-3; },
-  'nozzle-thrust': (v, r) => { if (r() < 0.8) v.pa = Math.min(v.pa, 0.45 * r() * v.pc); },
+  'nozzle-thrust': (v, r) => { if (r() < 0.8) v.pa = Math.min(v.pa, 0.45 * r() * v.pc); if (v.dc < 2.6 * v.dt) v.dc = v.dt * (2.6 + 3 * r()); },
   'wind-compensation': (v, r) => { for (const k of ['WI', 'WC', 'R']) if (Math.abs(v[k]) > 5500) v[k] = Math.sign(v[k]) * 5500 * r(); },
   'roll-rate-history': (v, r) => { if (v.b <= v.R) v.b = v.R * (1.1 + r()); if (v.hB <= v.L) v.hB = v.L * (2 + 20 * r()); },
   'parachute-recovery': (v, r) => { if (v.hG + v.hD > 36000) { v.hG = 6000 * r(); v.hD = 1000 + 25000 * r(); } if (v.reef && v.hR >= v.hD) v.hR = v.hD * r(); },
@@ -115,7 +115,8 @@ const INVARIANTS = {
   'newtonian-drag': (v, R) => [R.CD >= 0, R.CDnose >= 0, R.CDfins >= 0, R.cpt > 0 && R.cpt < 2, !v.cap || (R.capXcp >= 0 && R.capXcp <= v.capR), !v.cone || (R.coneXcp >= 0 && R.coneXcp <= v.coneL)],
   'single-wedge': (v, R, warned) => [R.K >= 1 - 1e-12, R.CDw >= 0, R.CDvehicle >= 0, R.MN > 0, R.thetaMax == null || (R.thetaMax > 0 && R.thetaMax < 46)],
   'yo-yo-despin': (v, R) => [R.weightEach > 0 || !Number.isFinite(R.weightEach), R.T1 >= 0, R.T2 >= 0, R.tRelease > 0, R.r >= 0 && R.r < 1],
-  'nozzle-thrust': (v, R) => [R.Me >= 1, R.pe > 0 && R.pe <= R.pStar * (1 + 1e-12), R.lambda >= 0.5 && R.lambda <= 1, R.cf <= R.cf1D + 1e-12, R.cfVac >= R.cf - 1e-12, R.thrust < R.thrustVac * (1 + 1e-12) || v.pa === 0],
+  'nozzle-thrust': (v, R) => [R.Me >= 1, R.pStar > 0 && R.pStar < v.pc, R.lambda >= 0.5 && R.lambda <= 1, R.cfVac >= R.cf - 1e-12, (R.sepMargin === '—') === !(v.pa > 0),
+    typeof R.sepMargin !== 'number' || R.sepMargin >= 1 || R.xSep !== '—' || R.xShock !== '—', Math.abs(R.isp - (R.cf * R.cstar) / 9.80665) <= 1e-9 * Math.abs(R.isp), R.peNS < R.peSub],
   'propellant-slosh': (v, R) => [R.f1 > 0 && R.f2 > R.f1 && R.f3 > R.f2, R.m1frac > 0 && R.m1frac <= 100, R.fixedFrac >= -1e-9 && R.fixedFrac <= 100, R.L1 > 0],
   'reliability-growth': (v, R) => [R.RT >= R.R0 && R.RT <= 1, R.R0 >= 0, R.DT >= 0 && R.DT <= v.D0, R.F >= 0 && R.F <= v.N + 1e-9, R.Tstar === 'never' || (Number.isInteger(R.Tstar) && (R.Tstar > v.N) === (R.RT < v.Rt))],
   'wind-compensation': (v, R) => [R.QE > 0 && R.QE <= 90, R.AZT >= 0 && R.AZT < 360, Math.abs(Math.hypot(R.tiltI, R.tiltC) - R.tilt) <= 1e-9 * Math.max(1, R.tilt), Math.abs(R.QE + R.tilt - 90) < 1e-9, R.offAxis >= 0 && R.offAxis <= 90],
@@ -325,8 +326,9 @@ test('Subsonic CP: the worst-case margin is the minimum of the cases; the CG shi
 
 test('Nozzle: thrust falls with ambient pressure, a wider cone loses thrust, the 1-D C_F peaks at p_e = p_a', () => {
   increasing([200, 100, 50, 14.7, 0].map((pa) => run('nozzle-thrust', { pa }).thrust), 'T vs falling p_a');
-  increasing([40, 30, 20, 10, 2].map((alpha) => run('nozzle-thrust', { alpha }).cf), 'C_F vs narrowing cone');
-  increasing([1, 2, 4, 8, 16].map((eps) => run('nozzle-thrust', { pa: 0, eps }).cf), 'vacuum C_F vs ε');
+  increasing([40, 30, 20, 10, 2].map((alpha) => run('nozzle-thrust', { type: 'cone', alpha }).cf), 'C_F vs narrowing cone');
+  increasing([60, 70, 80, 90, 100].map((Lf) => run('nozzle-thrust', { Lf }).cf), 'C_F vs longer bell');
+  increasing([1.5, 2, 4, 8, 16].map((eps) => run('nozzle-thrust', { pa: 0, eps }).cf), 'vacuum C_F vs ε');
   const opt = run('nozzle-thrust', {}).epsOpt;
   for (const f of [0.7, 1.4]) assert.ok(run('nozzle-thrust', { eps: opt * f }).cf1D < run('nozzle-thrust', { eps: opt }).cf1D, `C_F off-optimum ×${f}`);
 });

@@ -353,6 +353,31 @@ table.ptable button:hover { color: var(--red); }
 .compat { margin-top: 18px; padding: 14px; border-radius: var(--radius); background: var(--surface-2); border: 1px dashed var(--border-strong); }
 .compat .field { margin: 0; padding: 0; }
 .compat p { margin: 6px 0 0; font-size: 0.82rem; color: var(--text-3); }
+/* Verdict banner (def.verdict): icon + word + colour, a one-line summary and up to three fixes, in a box of fixed
+   height so a changing verdict never moves the content below */
+.verdict { display: grid; grid-template-rows: auto auto 1fr; gap: 4px; min-height: 9.6rem; max-height: 9.6rem; overflow: hidden; padding: 14px 18px; border-radius: var(--radius); border: 1px solid var(--border-strong); border-left-width: 6px; background: var(--surface-2); }
+.verdict-head { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.verdict-icon { flex: none; display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; font: 800 0.95rem/1 var(--font-sans); color: #fff; background: var(--text-3); }
+.verdict-word { flex: none; font: 800 1.15rem/1 var(--font-sans); letter-spacing: 0.02em; }
+.verdict-title { min-width: 0; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.verdict-text { font-size: 0.9rem; color: var(--text-2); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; }
+.verdict-fixes { margin: 0; padding-left: 1.1em; font-size: 0.86rem; overflow: hidden; }
+.verdict-fixes li { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.verdict-safe { border-left-color: var(--ok); } .verdict-safe .verdict-icon { background: var(--ok); } .verdict-safe .verdict-word { color: var(--ok); }
+.verdict-marginal { border-left-color: var(--warn); } .verdict-marginal .verdict-icon { background: var(--warn); } .verdict-marginal .verdict-word { color: var(--warn); }
+.verdict-unsafe { border-left-color: var(--red); background: var(--err-soft); } .verdict-unsafe .verdict-icon { background: var(--red); } .verdict-unsafe .verdict-word { color: var(--red-text); }
+@media (max-width: 600px) { .verdict { min-height: 12.5rem; max-height: 12.5rem; } .verdict-title { white-space: normal; } .verdict-fixes li { white-space: normal; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; } }
+.notice .notice-fix { margin-top: 4px; }
+/* Explore (def.tiers): the second tier, closed by default */
+.explore { border-radius: var(--radius); border: 1px solid var(--border-strong); background: var(--surface); }
+.explore > summary { cursor: pointer; list-style: none; display: flex; align-items: baseline; gap: 10px; padding: 14px 18px; }
+.explore > summary::-webkit-details-marker { display: none; }
+.explore > summary::before { content: "▸"; transition: transform 0.15s; }
+.explore[open] > summary::before { transform: rotate(90deg); }
+.explore-title { font: 800 1rem var(--font-sans); text-transform: uppercase; letter-spacing: 0.03em; }
+.explore-sub { font-size: 0.86rem; color: var(--text-3); }
+.explore-body { display: grid; gap: 20px; padding: 0 14px 14px; }
+.limits ul { margin: 6px 0 0; padding-left: 1.2em; } .limits li { margin: 4px 0; font-size: 0.9rem; }
 .key-results { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; }
 .kr { position: relative; padding: 16px 18px 14px; border-radius: var(--radius); background: var(--surface-2); color: var(--text); border: 1px solid var(--border-strong); border-left: 4px solid var(--red); }
 .kr .kr-label { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 0.82rem; font-weight: 600; color: var(--text-2); margin-bottom: 6px; }

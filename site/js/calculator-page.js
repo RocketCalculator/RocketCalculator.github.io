@@ -191,10 +191,14 @@ export async function mountCalculator(def) {
       h('span.spacer'), animBtn,
       exportMenu({ formats: ['svg', 'pdf', 'eps', 'png', 'jpeg'], onExport: (f) => { const el = schemHost.querySelector('svg.schem'); if (el) viewport.withBase(() => exportFigure(el, f, `${def.slug}-schematic`)); } })), viewport.el) : null;
   const plotGrid = h('div.plot-grid');
+  // Two tiers (def.tiers): the glance view keeps the verdict, key results, the drawing and the main plots; plots marked
+  // explore, every result and the assumptions go into an Explore section the user opens.
+  const exploreGrid = h('div.plot-grid');
+  const verdictBox = def.verdict ? h('div.verdict', { role: 'status', 'aria-live': 'polite' }) : null;
   const charts = (def.plots || []).map((p) => {
     const info = p.info ? infoButton(() => ({ eyebrow: 'Plot', title: p.title, ...p.info, where: whereList(p.info.tex), doc: docHref(p.info.doc || '') }), { label: p.title }) : null;
     const c = chartCard({ title: p.title, info, height: p.height, exportName: `${def.slug}-${p.id}` });
-    (p.wide ? plotGrid : plotGrid).append(c.card);
+    (def.tiers && p.explore ? exploreGrid : plotGrid).append(c.card);
     if (p.wide) c.card.style.gridColumn = '1 / -1';
     return { def: p, ...c };
   });
@@ -232,7 +236,12 @@ export async function mountCalculator(def) {
     intro,
     designBar,
     h('div.calc-layout', inputsCard,
-      h('div.calc-outputs', keyBox, schemCard, plotGrid, resultsCard)),
+      def.tiers
+        ? h('div.calc-outputs', verdictBox, keyBox, plotGrid, schemCard,
+          h('details.explore', h('summary', h('span.explore-title', 'Explore'), h('span.explore-sub', 'more plots, every result, assumptions and limits of validity')),
+            h('div.explore-body', exploreGrid, resultsCard, def.limits?.length ? h('section.card.card-pad.limits', h('h3', 'Assumptions and limits of validity'),
+              h('ul', def.limits.map((l) => h('li', { html: rich(l, { html: true }) })))) : null)))
+        : h('div.calc-outputs', verdictBox, keyBox, schemCard, plotGrid, resultsCard)),
     h('div', { style: 'margin-top:20px' }, theory),
     h('div', { style: 'margin-top:20px' }, report.card),
     prevnext));
@@ -365,6 +374,7 @@ export async function mountCalculator(def) {
     if (!ok) {
       warnBox.append(h('div.notice.err', 'Some inputs need attention — see the highlighted fields.'));
       keyBox.style.opacity = 0.45;
+      if (verdictBox) renderVerdict(null);
       return;
     }
     let out;
@@ -374,11 +384,16 @@ export async function mountCalculator(def) {
       if (!(err instanceof InputError)) console.error(err);
       warnBox.append(h('div.notice.err', err instanceof InputError ? err.message : `Could not compute: ${err.message}`));
       keyBox.style.opacity = 0.45;
+      if (verdictBox) renderVerdict(null);
       return;
     }
     keyBox.style.opacity = 1;
     state.out = out;
-    for (const w of out.warnings || []) warnBox.append(h(`div.notice.${w.level || 'warn'}`, { html: rich(w.text, { html: true }) }));
+    // most severe first; each says what is wrong (text) and, when it can, what to change (fix)
+    const rank = { err: 0, warn: 1, info: 2 };
+    for (const w of [...(out.warnings || [])].sort((a, b) => (rank[a.level] ?? 1) - (rank[b.level] ?? 1)))
+      warnBox.append(h(`div.notice.${w.level || 'warn'}`, h('div', { html: rich(w.text, { html: true }) }), w.fix ? h('div.notice-fix', { html: `<b>Fix:</b> ${rich(w.fix, { html: true })}` }) : null));
+    if (verdictBox) renderVerdict(out.verdict);
     renderResults(out, { cards: true });
     if (def.schematic) {
       try { def.schematic(ctx, state.values, out); } catch (err) { console.error(err); }
@@ -431,6 +446,17 @@ export async function mountCalculator(def) {
   for (const c of charts) { c.visible = false; io.observe(c.card); }
 
   const renderTable = (out) => renderResults(out, { table: true });
+  const VERDICT = { safe: ['✓', 'SAFE'], marginal: ['!', 'MARGINAL'], unsafe: ['✕', 'UNSAFE'] };
+  /** Verdict banner: icon + word + colour (never colour alone), one-line summary, up to three fixes; fixed height. */
+  function renderVerdict(v) {
+    if (!v) { verdictBox.className = 'verdict'; verdictBox.replaceChildren(h('div.verdict-word', '—'), h('div.verdict-text', 'No verdict for these inputs.')); return; }
+    const [icon, word] = VERDICT[v.level] || VERDICT.marginal;
+    verdictBox.className = `verdict verdict-${v.level}`;
+    verdictBox.replaceChildren(
+      h('div.verdict-head', h('span.verdict-icon', { 'aria-hidden': 'true' }, icon), h('span.verdict-word', v.word || word), h('span.verdict-title', { html: rich(v.title || '', { html: true }) })),
+      h('div.verdict-text', { html: rich(v.text || '', { html: true }) }),
+      h('ul.verdict-fixes', (v.fixes || []).slice(0, 3).map((f) => h('li', { html: rich(f, { html: true }) }))));
+  }
   function renderResults(out, { cards: doCards = false, table: doTable = false } = {}) {
     const R = out.results || {}, B = baseline()?.out?.results;
     const cards = [], rows = [];

@@ -71,24 +71,11 @@
         <div class="eq"><div class="tex-display">g(\varphi,h)=g(\varphi,0)\left(\frac{R_E}{R_E+h}\right)^2 .</div></div>
       </section>
 
-      <section id="standard">
-        <h2>Comparison with the US Standard Atmosphere 1976</h2>
-        <p>Next to your launch-site atmosphere, the calculator evaluates the <em>U.S. Standard Atmosphere, 1976</em> at the same geometric altitude. The standard is defined up to 86 km by seven layers of linear temperature against <em>geopotential</em> altitude <span class="tex">H</span>. Each layer has a base height and a lapse rate from its table 4:</p>
-        <table class="sym-table">
-          <thead><tr><th>Base <span class="tex">H_b</span> (km′)</th><th>0</th><th>11</th><th>20</th><th>32</th><th>47</th><th>51</th><th>71</th></tr></thead>
-          <tbody><tr><td>Lapse rate (K/km′)</td><td>−6.5</td><td>0</td><td>+1.0</td><td>+2.8</td><td>0</td><td>−2.8</td><td>−2.0</td></tr></tbody>
-        </table>
-        <p>Geopotential altitude is <span class="tex">H=r_0Z/(r_0+Z)</span> with <span class="tex">r_0</span> = 6356.766 km. Pressure integrates the hydrostatic equation (its eq. 5) layer by layer from <span class="tex">T_0</span> = 288.15 K and <span class="tex">P_0</span> = 101 325 Pa:</p>
-        <div class="eq"><div class="tex-display">P=P_b\left(\frac{T_b}{T}\right)^{g_0M_0/(R^*L_b)}\ (L_b\neq0),\qquad P=P_b\exp\left[-\frac{g_0M_0(H-H_b)}{R^*T_b}\right]\ (L_b=0)</div></div>
-        <p>The constants are <span class="tex">g_0</span> = 9.80665 m/s², <span class="tex">R^*</span> = 8.31432 × 10³ J/(kmol·K) and <span class="tex">M_0</span> = 28.9644 kg/kmol. The NASA scan of the standard prints some constants wrongly, as its bound-in erratum notes: R* in table 2, Sutherland’s S as 110 instead of 110.4 K, and β as 10⁶ instead of 10⁻⁶. The values above are the corrected ones. They reproduce the standard’s table I, for example 22 632 Pa and 0.36392 kg/m³ at 11 000 m′ and 1586.2 Pa at 28 000 m′; the tests check these values.</p>
-        <p><strong>Density altitude</strong> is the standard-atmosphere altitude with the same density as your air at <span class="tex">h</span>, and <strong>pressure altitude</strong> the same for pressure. A density altitude above your altitude means thinner air than a standard-day simulation assumes: less drag and a higher apogee, but less aerodynamic damping and fin authority. The <em>Your air against the standard day</em> plot shows the difference at every altitude.</p>
-      </section>
-
       <section id="flight">
         <h2>Flight condition: Mach, dynamic pressure, Reynolds number</h2>
         <p>For a flight speed <span class="tex">V</span> at altitude <span class="tex">h</span>, the calculator gives the quantities the drag, stability and loads calculators need:</p>
         <div class="eq"><div class="tex-display">M=\frac{V}{a},\qquad q=\tfrac12\rho V^2,\qquad \mu=\frac{\beta\,T^{3/2}}{T+S},\qquad \nu=\frac{\mu}{\rho},\qquad Re=\frac{\rho VL}{\mu}</div></div>
-        <p>The viscosity uses Sutherland’s law with the 1976 standard’s constants, <span class="tex">\beta</span> = 1.458 × 10⁻⁶ kg/(s·m·K<sup>1/2</sup>) and <span class="tex">S</span> = 110.4 K, which gives 1.7894 × 10⁻⁵ Pa·s at 288.15 K. Use the body diameter as <span class="tex">L</span> for the nose and fins, or the overall length for the skin friction of the whole rocket.</p>
+        <p>The viscosity uses Sutherland’s law with the constants of the U.S. Standard Atmosphere, 1976 (its NASA copy misprints them; the erratum bound into it gives S = 110.4 K), <span class="tex">\beta</span> = 1.458 × 10⁻⁶ kg/(s·m·K<sup>1/2</sup>) and <span class="tex">S</span> = 110.4 K, which gives 1.7894 × 10⁻⁵ Pa·s at 288.15 K. Use the body diameter as <span class="tex">L</span> for the nose and fins, or the overall length for the skin friction of the whole rocket.</p>
       </section>
 
       <section id="assumptions">

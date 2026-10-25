@@ -59,7 +59,8 @@
    "slug": "geophysics",
    "title": "Atmosphere & Gravity",
    "topic": "geophysics",
-   "description": "Temperature, pressure, density, sound speed and gravity at any altitude and latitude."
+   "description": "Temperature, pressure, density, sound speed and gravity at any altitude and latitude.",
+   "final": true
   },
   {
    "slug": "ogive-nose",

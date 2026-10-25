@@ -115,7 +115,6 @@ function footer() {
         h('a', { href: url('index.html#guide') }, 'How to use'),
         h('a', { href: url('about.html') }, 'About'),
         h('a', { href: `${REPO_URL}/issues`, rel: 'noopener' }, 'Report a problem'),
-        h('a', { href: 'https://www.linkedin.com/in/dara-samii', rel: 'noopener' }, 'LinkedIn'),
         h('a', { href: REPO_URL, rel: 'noopener' }, 'GitHub'))));
 }
 

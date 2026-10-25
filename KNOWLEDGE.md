@@ -211,8 +211,9 @@ scripts/generate_pages.mjs`; write `site/docs/<slug>.html`; add REPAIR/INVARIANT
   table 4 (layers), eq. (5), table I rows at H = 1500, 11 000, 28 000 m′ (page images; no text layer). The NASA copy
   carries an erratum: table 2's R* (×10⁶), r₀ (×1000), S = 110.4 K (printed 110), σ; β is also printed 1.458 × 10⁶
   (must be 10⁻⁶ — gives μ₀ = 1.7894 × 10⁻⁵ Pa·s). M₀ = 28.9644 checked from table I (ρR*T/P).
-- **Model:** Hoult's two-layer launch-site atmosphere unchanged (workbook tests); the 1976 standard beside it for
-  density/pressure altitude and the difference plot; Sutherland viscosity for Mach/q/Re.
+- **Model:** Hoult's two-layer launch-site atmosphere unchanged (workbook tests); Sutherland viscosity (1976 constants)
+  for Mach/q/Re. The 1976 standard comparison was built, verified (table I) and then removed at the owner's request
+  (2026-10-25: "not meaningful" for users); it is in git history (merge 878f6d9) if wanted back.
 - **Not done (no primary source read):** humidity (virtual temperature, saturation vapour pressure); WGS-84
   Somigliana gravity instead of Potsdam; winds.
 
@@ -250,7 +251,7 @@ scripts/generate_pages.mjs`; write `site/docs/<slug>.html`; add REPAIR/INVARIANT
 **Atmosphere & Gravity**
 | Diagram | 1 Question | 2 Better than a number? | 3 What the user does | 4 Shows the problem | 5 Scale | Verdict |
 |---|---|---|---|---|---|---|
-| Your air against the standard day (new, main) | How different is today's air from the standard day my simulation assumes? | Yes — the sign changes with altitude (thinner near a hot ground, denser aloft), which one number hides | Runs the simulation with the site temperature | Marker at h; standard line | Axes with units | KEEP |
+| *Removed:* Your air against the standard day | owner's request | | | | | REMOVE
 | Temperature profile (main) | What is the temperature at each altitude? | Yes, with the standard overlay and both tropopauses | Sees the local tropopause | Tropopause, launch site | Axes | KEEP (standard overlay added) |
 | Dynamic pressure and Mach at your speed (new, Explore) | What loads would this speed give at each altitude? | Yes — q falls with altitude; marker shows Mach | Picks the max-q altitude for loads | Marker | Axes | KEEP |
 | Ratios, tropopause vs latitude, gravity vs latitude | Context | Partly | — | — | Axes | KEEP, moved to Explore |

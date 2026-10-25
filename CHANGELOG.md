@@ -3,6 +3,12 @@
 Newest first, in the spirit of [Keep a Changelog](https://keepachangelog.com/). From 2026-10-25 every entry names its
 branch, tag and commit range. Live site: https://rocketcalculator.github.io/.
 
+## 2026-10-25 — Atmosphere & Gravity final (`fix/geophysics-final`)
+- The US Standard Atmosphere 1976 comparison (density and pressure altitude, standard-day values, overlay lines and the
+  "your air against the standard day" plot) is removed at the owner's request; the flight condition (Mach, q,
+  viscosity, Reynolds number) stays. Pressure and density ratios are back in the main view.
+- Atmosphere & Gravity gets the purple Final badge. LinkedIn removed from the footer (still on the About page).
+
 ## 2026-10-25 — About page; Atmosphere & Gravity: standard-day comparison and flight condition (PRs #22, #23)
 
 ### Added

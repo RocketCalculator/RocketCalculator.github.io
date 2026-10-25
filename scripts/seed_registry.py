@@ -234,7 +234,9 @@ def main():
             'wasSoon': t['id'] in calc_by_topic and t['id'] not in RELEASE1_TOPICS,
             'references': ref_ids, 'sourceFiles': other,
         })
-    calcs = [{'slug': s, 'title': ti, 'topic': TOPICS[tid][0], 'description': d} for s, ti, tid, d in CALCULATORS]
+    # calculators the owner has reviewed and signed off: shown with a purple "Final" badge on the home page
+    FINAL = {'fin-flutter', 'reliability-growth', 'nozzle-thrust'}
+    calcs = [{'slug': s, 'title': ti, 'topic': TOPICS[tid][0], 'description': d, **({'final': True} if s in FINAL else {})} for s, ti, tid, d in CALCULATORS]
     reg = {
         'source': 'http://www.rsandt.com/reports.html',
         'areas': [{'id': a, 'title': ti, 'description': d} for a, ti, d in AREAS],

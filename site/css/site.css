@@ -197,6 +197,8 @@ select.btn { appearance: none; -webkit-appearance: none; padding-right: 30px; ba
 .chip.ok { color: var(--ok); }
 .chip.soon { color: var(--text-3); }
 .chip.warn { color: var(--warn); }
+.chip.final, .card .chip.final, a.topic-card:hover .chip.final { background: #6d28d9; color: #fff; }
+.calc-links .chip.final { margin-left: 8px; padding: 1px 9px; font-size: 0.7rem; vertical-align: middle; }
 .chip.accent { background: var(--red) !important; color: #fff; }
 .chip .dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
 .info-btn { width: 22px; height: 22px; flex: none; display: inline-grid; place-items: center; padding: 0; border-radius: 50%; border: 1.5px solid currentColor; background: transparent; color: var(--text-2);

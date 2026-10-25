@@ -152,17 +152,20 @@ export async function mountHome() {
   if (new URLSearchParams(location.search).get('search') != null) openPalette();
 }
 
+/** Purple badge for calculators the owner has reviewed and signed off (registry `final`). */
+const finalChip = () => h('span.chip.final', { title: 'Reviewed and finalised' }, h('span.dot'), 'Final');
+
 function topicCard(t, reg) {
   const calcs = t.calculators.map((slug) => reg.calculators.find((c) => c.slug === slug));
   if (t.status === 'available' && calcs.length === 1) {
     return h('a.card.topic-card.available', { href: url(`calculators/${calcs[0].slug}.html`) },
       h('h4', calcs[0].title), h('p', t.summary),
-      h('div.meta', h('span.chip.ok', h('span.dot'), 'Available'), h('span.chip', t.title)));
+      h('div.meta', calcs[0].final ? finalChip() : h('span.chip.ok', h('span.dot'), 'Available'), h('span.chip', t.title)));
   }
   if (t.status === 'available') {
     return h('div.card.topic-card.available',
       h('h4', t.title), h('p', t.summary),
-      h('div.calc-links', calcs.map((c) => h('a', { href: url(`calculators/${c.slug}.html`) }, h('span', '→ '), c.title))),
+      h('div.calc-links', calcs.map((c) => h('a', { href: url(`calculators/${c.slug}.html`) }, h('span', '→ '), c.title, c.final ? finalChip() : null))),
       h('div.meta', h('span.chip.ok', h('span.dot'), `${calcs.length} calculators`)));
   }
   return h('a.card.topic-card', { href: url(`calculators/${t.slug}.html`) },

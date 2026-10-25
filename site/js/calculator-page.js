@@ -254,7 +254,7 @@ export async function mountCalculator(def) {
     designBar,
     h('div.calc-layout', inputsCard,
       def.tiers
-        ? h('div.calc-outputs', verdictBox, keyBox, plotGrid, schemCard,
+        ? h('div.calc-outputs', verdictBox, keyBox, schemCard, plotGrid,
           h('details.explore', h('summary', h('span.explore-title', 'Explore'), h('span.explore-sub', 'more plots, every result, assumptions and limits of validity')),
             h('div.explore-body', exploreGrid, resultsCard, def.limits?.length ? h('section.card.card-pad.limits', h('h3', 'Assumptions and limits of validity'),
               h('ul', def.limits.map((l) => h('li', { html: rich(l, { html: true }) })))) : null)))

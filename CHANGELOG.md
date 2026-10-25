@@ -3,6 +3,12 @@
 Newest first, in the spirit of [Keep a Changelog](https://keepachangelog.com/). From 2026-10-25 every entry names its
 branch, tag and commit range. Live site: https://rocketcalculator.github.io/.
 
+## 2026-10-25 — Back-view note, drawing before plots (`fix/backview-note-flutter-order`)
+- The note under the fin-count rear view was cut off after four lines in a narrow column. The note now sits under the
+  drawing at full width, with room reserved for five lines, so nothing is clipped and nothing moves.
+- Calculators with the verdict layout show the drawing before the plots (Fin Flutter: planform above the flutter
+  speed through the flight; Subsonic CP: side view above the margin plot).
+
 ## 2026-10-25 — Site moved to https://rocketcalculator.github.io/ (`chore/org-site-readme`)
 - The repository is `RocketCalculator/RocketCalculator.github.io`; the old `darasamii.github.io/RocketCalculator/` address is retired.
 - Removed the build-prompt documents (`docs/OPUS_PROMPT.md`, `docs/BRIEF.md`); new README with screenshots and maps.

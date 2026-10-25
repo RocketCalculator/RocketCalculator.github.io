@@ -64,7 +64,8 @@ function header(active) {
     h('a', { href: url('index.html'), 'aria-current': active === 'home' ? 'page' : null }, 'Home'),
     h('a', { href: url('index.html#calculators'), 'aria-current': active === 'calculators' ? 'page' : null }, 'Calculators'),
     h('a', { href: url('references/index.html'), 'aria-current': active === 'references' ? 'page' : null }, 'References'),
-    h('a', { href: url('index.html#guide') }, 'How to use'));
+    h('a', { href: url('index.html#guide') }, 'How to use'),
+    h('a', { href: url('about.html'), 'aria-current': active === 'about' ? 'page' : null }, 'About'));
   const unitsSeg = h('div.seg', { role: 'group', 'aria-label': 'Unit system' },
     h('button', { type: 'button', 'data-sys': 'si', title: 'SI units (metres, kilograms, pascals)' }, 'SI'),
     h('button', { type: 'button', 'data-sys': 'us', title: 'US customary units (inches, feet, pounds)' }, 'US'));
@@ -105,12 +106,16 @@ function footer() {
     h('div.wrap',
       h('p.credit', 'Built from the rocket-engineering reports of ',
         h('a', { href: 'http://www.rsandt.com/reports.html', rel: 'noopener' }, 'Rocket Science and Engineering Technologies'),
-        ' (C. P. Hoult). Engineering estimates only — verify before flight.'),
+        ' (C. P. Hoult). Website by ',
+        h('a', { href: 'https://darasamii.github.io/', rel: 'noopener' }, 'Dara Rahmat Samii'),
+        '. Engineering estimates only — verify before flight.'),
       h('nav.foot-links', { 'aria-label': 'Footer' },
         h('a', { href: url('index.html#calculators') }, 'Calculators'),
         h('a', { href: url('references/index.html') }, 'References'),
         h('a', { href: url('index.html#guide') }, 'How to use'),
-        h('a', { href: 'http://www.rsandt.com/bio.html', rel: 'noopener' }, 'About the author'),
+        h('a', { href: url('about.html') }, 'About'),
+        h('a', { href: `${REPO_URL}/issues`, rel: 'noopener' }, 'Report a problem'),
+        h('a', { href: 'https://www.linkedin.com/in/dara-samii', rel: 'noopener' }, 'LinkedIn'),
         h('a', { href: REPO_URL, rel: 'noopener' }, 'GitHub'))));
 }
 

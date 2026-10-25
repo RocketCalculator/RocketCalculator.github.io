@@ -3,8 +3,8 @@ import { h } from './util.js';
 import { initShell } from './app.js';
 import { renderAll } from './math.js';
 
-export async function mountDocs() {
-  const main = initShell({ active: 'calculators' });
+export async function mountDocs({ active = 'calculators' } = {}) {
+  const main = initShell({ active });
   const article = main.querySelector('article.doc');
   const toc = main.querySelector('.doc-toc');
   const sections = [...article.querySelectorAll(':scope > section[id]')];

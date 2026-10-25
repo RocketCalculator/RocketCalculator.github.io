@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>About — Rocket Calculator</title>
+<meta name="description" content="Why Rocket Calculator exists: C. P. Hoult's rocket-engineering reports and spreadsheets, rebuilt as visual, interactive calculators by Dara Rahmat Samii. How to report a problem or contribute.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/site.css">
+<script>try{var t=JSON.parse(localStorage.getItem('rc-theme'));if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<main id="main">
+<div class="wrap">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="index.html">Home</a><span class="sep">/</span><span>About</span></nav>
+  <div class="calc-title"><h1>About Rocket Calculator</h1></div>
+  <p class="calc-sub">Sounding-rocket engineering, made visual: the rocket-engineering reports and spreadsheets of C. P. Hoult, rebuilt as interactive calculators that show what the numbers mean.</p>
+  <div class="doc-layout">
+    <nav class="doc-toc" aria-label="Contents"></nav>
+    <article class="doc">
+
+      <section id="hoult">
+        <h2>C. P. Hoult and Rocket Science and Engineering Technologies</h2>
+        <p>Every calculator on this site starts from the work of <strong>Charles P. Hoult</strong>, published on his site <a href="http://www.rsandt.com/reports.html" rel="noopener">Rocket Science and Engineering Technologies</a> (RS&amp;T): rocket-engineering memos, many with an Excel workbook that implements the theory, plus papers by his students.</p>
+        <p>His <a href="http://www.rsandt.com/bio.html" rel="noopener">biography</a> describes a career that ran from the first sounding rockets to their modern descendants:</p>
+        <ul>
+          <li>In 1958 he joined the Air Force Cambridge Research Laboratory as a newly commissioned lieutenant. He stayed until 1968, doing systems engineering and flight tests of new sounding rockets from Nike-Cajun to the Aerolab Argo D-4.</li>
+          <li>He then worked on the Aerobee and Astrobee families at Space General, and on the Aries guided sounding rocket at Space Vector.</li>
+          <li>From 1977 to 2007 he was at The Aerospace Corporation and TRW, supporting the Titan launch vehicle and satellite and missile-defence programmes.</li>
+          <li>From 2006 he returned to sounding rockets as a mentor, and later adjunct professor, in Mechanical &amp; Aerospace Engineering at California State University, Long Beach.</li>
+        </ul>
+        <p>He took part in launches from White Sands, Fort Churchill, Eglin, Barreira do Inferno in Brazil, Vandenberg, Cape Canaveral and the Mojave desert. He was educated at MIT and UCLA and has written 17 papers on sounding-rocket mission planning, structural loads, trajectory dispersion and post-burnout attitude.</p>
+        <p>The theory, the methods and the worked examples are his. This site re-implements them, checks every calculator against his workbooks, and cites his memos in each theory page and in the <a href="references/index.html">reference library</a>.</p>
+      </section>
+
+      <section id="author">
+        <h2>Why I built this</h2>
+        <div class="about-author">
+          <img src="assets/dara-rahmat-samii.jpg" alt="Dara Rahmat Samii holding his yellow and purple high-power rocket at a launch field" width="280" height="373" loading="lazy">
+          <div>
+            <p>I’m <strong>Dara Rahmat Samii</strong>, a CFD and machine-learning researcher and an amateur rocketeer.</p>
+            <p>I found Hoult’s Excel workbooks excellent but steep to learn and use. The physics is all there, but it is spread across cells, colour codes and macros. It is hard to see what an input does, or why a design passes or fails.</p>
+            <p>So I rebuilt them as a website. Each calculator gives a verdict and tells you what to change. It draws your design to scale, plots how the answer moves with every input, and shows the equations with your numbers in them. The aim is to help other rocketeers do their calculations faster and more easily, and to build their intuition for rocket engineering along the way.</p>
+            <p class="about-links">
+              <a class="btn small" href="https://darasamii.github.io/" rel="noopener" target="_blank">My website</a>
+              <a class="btn small" href="https://www.linkedin.com/in/dara-samii" rel="noopener" target="_blank">LinkedIn</a>
+              <a class="btn small" href="https://github.com/RocketCalculator/RocketCalculator.github.io" rel="noopener" target="_blank">Source on GitHub</a>
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section id="issues">
+        <h2>Found a problem?</h2>
+        <p>If a result looks wrong, a page misbehaves, or a calculator is missing something you need, please <a href="https://github.com/RocketCalculator/RocketCalculator.github.io/issues/new" rel="noopener" target="_blank">open an issue on GitHub</a>. These details help:</p>
+        <ul>
+          <li>the calculator and what you expected to see;</li>
+          <li>the <strong>Share</strong> link from the calculator, which reproduces your exact inputs;</li>
+          <li>your browser and device, and a screenshot if it is a display problem.</li>
+        </ul>
+        <p>You can browse <a href="https://github.com/RocketCalculator/RocketCalculator.github.io/issues" rel="noopener" target="_blank">existing issues</a> first, in case someone has already reported it.</p>
+      </section>
+
+      <section id="contribute">
+        <h2>How to contribute</h2>
+        <p>Contributions are welcome: bug fixes, a better plot, a new check against a published source, or a whole calculator.</p>
+        <ol>
+          <li>Fork <a href="https://github.com/RocketCalculator/RocketCalculator.github.io" rel="noopener" target="_blank">the repository</a> and read <code>KNOWLEDGE.md</code>. It explains how a calculator is put together, the shared components and the conventions.</li>
+          <li>Run it locally: <code>npm run serve</code>, then open <code>http://localhost:8000</code>. It is a static site with no build step.</li>
+          <li>Make your change on a branch. Add or update a test in <code>tests/</code>, and run <code>npm test</code>.</li>
+          <li>Open a pull request that says what you changed, why, and which source you checked it against.</li>
+        </ol>
+        <p>Physics changes need a source: the paper, the equation, and a worked example that the test reproduces.</p>
+      </section>
+
+      <section id="disclaimer">
+        <h2>Use with judgement</h2>
+        <p>These are engineering estimates for education and design, not flight-safety certification. Check results against your own judgement and your range’s rules before flying anything.</p>
+      </section>
+    </article>
+  </div>
+</div>
+</main>
+<script type="module">
+import { mountDocs } from './js/docs.js';
+mountDocs({ active: 'about' });
+</script>
+</body>
+</html>

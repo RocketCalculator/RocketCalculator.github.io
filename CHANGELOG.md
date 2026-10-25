@@ -3,6 +3,9 @@
 Newest first, in the spirit of [Keep a Changelog](https://keepachangelog.com/). From 2026-10-25 every entry names its
 branch, tag and commit range. Live site: https://rocketcalculator.github.io/.
 
+## 2026-10-25 — Fin Flutter: fin count removed (`fix/flutter-drop-fin-count`)
+- The number of fins and body radius (rear view only) are gone: neither changes the flutter speed. Saved links that carry them still load.
+
 ## 2026-10-25 — Back-view note, drawing before plots (`fix/backview-note-flutter-order`)
 - The note under the fin-count rear view was cut off after four lines in a narrow column. The note now sits under the
   drawing at full width, with room reserved for five lines, so nothing is clipped and nothing moves.

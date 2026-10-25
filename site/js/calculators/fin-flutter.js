@@ -31,7 +31,7 @@ const G_OF = (v) => (v.material === 'custom' ? v.Gc : MATERIALS.find((m) => m.va
 // flight is supersonic (altimetercloud); MARGINAL between.
 const UNSAFE_SF = 1.2;
 // Bennett's worked example (Peak of Flight 615): Aerotech L1090W, launch site 4500 ft on a standard day
-const BENNETT = { cR: 7.5, cT: 2.5, b: 3, m: 4.285, t: 0.125, N: 4, R: 1.5, material: 'g10', Gc: 600000, tipToTip: false, h0: 4500, Tsite: 42.98, mode: 'point', Vmax: 1500, hMax: 14000, target: 1.5,
+const BENNETT = { cR: 7.5, cT: 2.5, b: 3, m: 4.285, t: 0.125, material: 'g10', Gc: 600000, tipToTip: false, h0: 4500, Tsite: 42.98, mode: 'point', Vmax: 1500, hMax: 14000, target: 1.5,
   profile: [{ h: 0, V: 0 }, { h: 2000, V: 800 }, { h: 7000, V: 1300 }, { h: 14000, V: 1500 }, { h: 20000, V: 1100 }, { h: 26000, V: 500 }] };
 const targetFor = (v, M) => Math.max(v.target, M >= 1 ? 2 : 0);
 
@@ -84,10 +84,6 @@ export default {
         { id: 'm', label: 'Sweep length', sym: 'm', ...LEN, default: 4.285, min: -100, info: { text: 'Axial distance from the root leading edge to the tip leading edge (OpenRocket/RockSim “sweep length”). It moves the fin centroid, which Martin’s correlation corrects for.', doc: 'centroid' } },
         { id: 't', shared: 'finT', label: 'Thickness', sym: 't', ...LEN, default: 0.125, min: 0, minExclusive: true, slider: { min: 0.03, max: 0.5, step: 0.005 },
           info: { text: 'Fin thickness. If it tapers, use the average or the thickness at mid-span (Bennett). Flutter speed grows as t^1.5, so thickness is the strongest fix.', range: '1/16–1/4 in (1.5–6 mm) on most high-power rockets.', doc: 'geometry' } },
-        { id: 'N', label: 'Number of fins', sym: 'N', ...NONE, default: 4, min: 1, max: 12,
-          backView: (v) => ({ R: v.R, span: v.b, t: v.t, unit: LEN, range: [1, 12], note: 'Each panel flutters on its own: N does not change the flutter speed, only how many fins you could lose.' }),
-          info: { text: 'Number of fin panels. The correlation is per panel.', doc: 'overview' } },
-        { id: 'R', shared: 'bodyR', label: 'Body radius (for the rear view)', sym: 'R', ...LEN, default: 1.5, min: 0, minExclusive: true, info: { text: 'Only used to draw the rear view to scale.', doc: 'overview' } },
       ],
     },
     {
@@ -348,6 +344,6 @@ export default {
     { name: 'Bennett’s example: G10, 1/8 in, 1500 ft/s at 14 000 ft AGL', values: BENNETT },
     { name: 'Same fin, 3/16 in thick (Bennett’s choice)', values: { ...BENNETT, t: 0.1875 } },
     { name: 'Same, 3/16 in on a 95 °F day', values: { ...BENNETT, t: 0.1875, Tsite: 95 } },
-    { name: 'Mid-power plywood fin, 650 ft/s', values: { ...BENNETT, cR: 5, cT: 2, b: 3, m: 2.5, t: 0.125, material: 'birchply', h0: 600, Tsite: 70, Vmax: 650, hMax: 1500, R: 1.3 } },
+    { name: 'Mid-power plywood fin, 650 ft/s', values: { ...BENNETT, cR: 5, cT: 2, b: 3, m: 2.5, t: 0.125, material: 'birchply', h0: 600, Tsite: 70, Vmax: 650, hMax: 1500 } },
   ],
 };

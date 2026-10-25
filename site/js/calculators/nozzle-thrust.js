@@ -18,8 +18,9 @@ const SPD = { dim: 'speed', internal: 'ms' };
 const MDOT = { dim: 'massFlow', internal: 'kgs' };
 const DENS = { dim: 'density', internal: 'kgm3' };
 const NONE = { dim: 'none' };
-// one colour per quantity on the flow chart (user request): area ink, Mach red, pressure blue, temperature amber, density green
-const QCOL = { A: 'var(--text)', M: 'var(--red)', p: '#2f6fd6', T: '#d9822b', rho: '#2e9e6a' };
+// flow-chart quantities in the design system's reds, told apart by shade and line pattern (DESIGN-GUIDE: series family)
+const QCOL = { A: 'var(--series-2)', M: 'var(--series-1)', p: 'var(--series-4)', T: 'var(--series-1)', rho: 'var(--series-4)' };
+const QDASH = { A: null, M: null, p: '7 4', T: '2 3', rho: '10 3 2 3' };
 const G0 = 9.80665, PSI = 6894.757293168, IN2 = 0.00064516, RU = 8314.462618;
 const SAFE_MARGIN = 1.15;            // exit pressure ≥ 1.15 × separation pressure counts as attached with margin (D21)
 const CRITS = { schmucker: 'Schmucker (eq. 11, wall Mach number)', summerfield: 'Summerfield (0.4 of ambient)', kalt: 'Kalt–Bendall (pressure ratio)' };
@@ -291,11 +292,11 @@ export default {
           x: { label: 'Distance from the throat $x$', unit: ul.label }, vlines, xDomain: [ul.v(fl.prof[0].x), ul.v(fl.prof[fl.prof.length - 1].x)],
           panels: [
             { y: { label: 'Nozzle', scaleNote: 'radius not to scale' }, yDomain: [-1.18 * Math.max(o.geo.rc, o.geo.re), 1.18 * Math.max(o.geo.rc, o.geo.re)].map(ul.v), equalAspect: true, minHeight: 120, maxHeight: 240, draw: (g, X, Y, box) => drawNozzle(g, X, Y, box, out, ul) },
-            { y: { label: 'Area $A$', unit: ua.label }, color: QCOL.A, ratio: { label: '$A/A^*$' }, includeZero: true, series: [{ name: '$A$', points: ser((q) => [ua.v(q.A * At), q.A]) }] },
-            { y: { label: 'Mach $M$' }, color: QCOL.M, includeZero: true, series: [{ name: '$M$', points: brk(ser((q) => [q.M])) }], hlines: [{ y: 1, label: '$M=1$' }] },
-            { y: { label: 'Pressure $p$', unit: up.label }, color: QCOL.p, ratio: { label: '$p/p^*$' }, includeZero: true, series: [{ name: '$p$', points: brk(ser((q) => [up.v(q.p * w.pc), (q.p * w.pc) / pS])) }], hlines: w.pa > 0 ? [{ y: up.v(w.pa), label: '$p_a$', color: 'var(--red)' }] : [] },
-            { y: { label: 'Temperature $T$', unit: ut.label }, color: QCOL.T, ratio: { label: '$T/T^*$' }, includeZero: true, series: [{ name: '$T$', points: brk(ser((q) => [ut.v(q.T * w.Tc), (q.T * w.Tc) / TS])) }] },
-            { y: { label: 'Density $\\rho$', unit: ud.label }, color: QCOL.rho, ratio: { label: '$\\rho/\\rho^*$' }, includeZero: true, series: [{ name: '$\\rho$', points: brk(ser((q) => [ud.v(q.rho * rhoC), (q.rho * rhoC) / rS])) }] },
+            { y: { label: 'Area $A$', unit: ua.label }, color: QCOL.A, ratio: { label: '$A/A^*$' }, includeZero: true, series: [{ name: '$A$', dash: QDASH.A, points: ser((q) => [ua.v(q.A * At), q.A]) }] },
+            { y: { label: 'Mach $M$' }, color: QCOL.M, includeZero: true, series: [{ name: '$M$', dash: QDASH.M, points: brk(ser((q) => [q.M])) }], hlines: [{ y: 1, label: '$M=1$' }] },
+            { y: { label: 'Pressure $p$', unit: up.label }, color: QCOL.p, ratio: { label: '$p/p^*$' }, includeZero: true, series: [{ name: '$p$', dash: QDASH.p, points: brk(ser((q) => [up.v(q.p * w.pc), (q.p * w.pc) / pS])) }], hlines: w.pa > 0 ? [{ y: up.v(w.pa), label: '$p_a$', color: 'var(--red)' }] : [] },
+            { y: { label: 'Temperature $T$', unit: ut.label }, color: QCOL.T, ratio: { label: '$T/T^*$' }, includeZero: true, series: [{ name: '$T$', dash: QDASH.T, points: brk(ser((q) => [ut.v(q.T * w.Tc), (q.T * w.Tc) / TS])) }] },
+            { y: { label: 'Density $\\rho$', unit: ud.label }, color: QCOL.rho, ratio: { label: '$\\rho/\\rho^*$' }, includeZero: true, series: [{ name: '$\\rho$', dash: QDASH.rho, points: brk(ser((q) => [ud.v(q.rho * rhoC), (q.rho * rhoC) / rS])) }] },
           ],
         };
       },

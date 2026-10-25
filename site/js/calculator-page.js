@@ -7,6 +7,7 @@ import { buildForm } from './ui/form.js';
 import { infoButton, openInfo } from './ui/drawer.js';
 import { chartCard } from './ui/chart.js';
 import { frame } from './ui/svg.js';
+import { diagramViewport } from './ui/viewport.js';
 import { renderAll, loadKatex, texHTML, rich, texToPlain, hasTeX } from './math.js';
 import { exportMenu, exportFigure, exportData, DATA_FORMATS } from './ui/export.js';
 import { reportCard, symbolsIn } from './ui/report.js';
@@ -171,6 +172,7 @@ export async function mountCalculator(def) {
   }).observe(warnBox, { childList: true });
   const keyBox = h('div.key-results', { 'aria-live': 'polite' });
   const schemHost = h('div.schem-host');
+  const viewport = def.schematic ? diagramViewport(schemHost, { label: def.schematicTitle || 'Drawing' }) : null;
   const ANIM_KEY = 'rc-anim-paused';
   const animBtn = h('button.btn.small', { type: 'button', style: 'visibility:hidden', 'aria-pressed': 'false' });
   const syncAnim = () => {
@@ -187,7 +189,7 @@ export async function mountCalculator(def) {
     h('div.card-head', h('h3', def.schematicTitle || 'Schematic'),
       infoButton(() => ({ eyebrow: 'Drawing', title: def.schematicTitle || 'Schematic', text: [def.schematicHint ? def.schematicHint + '.' : '', 'Hover a dimension to find its input; click it to jump there. The drawing updates with every change.', ...(def.schematicInfo?.text ? [def.schematicInfo.text] : [])].filter(Boolean), doc: docHref(def.info?.doc || '') }), { label: 'drawing' }),
       h('span.spacer'), animBtn,
-      exportMenu({ formats: ['svg', 'pdf', 'eps', 'png', 'jpeg'], onExport: (f) => { const el = schemHost.querySelector('svg.schem'); if (el) exportFigure(el, f, `${def.slug}-schematic`); } })), schemHost) : null;
+      exportMenu({ formats: ['svg', 'pdf', 'eps', 'png', 'jpeg'], onExport: (f) => { const el = schemHost.querySelector('svg.schem'); if (el) viewport.withBase(() => exportFigure(el, f, `${def.slug}-schematic`)); } })), viewport.el) : null;
   const plotGrid = h('div.plot-grid');
   const charts = (def.plots || []).map((p) => {
     const info = p.info ? infoButton(() => ({ eyebrow: 'Plot', title: p.title, ...p.info, where: whereList(p.info.tex), doc: docHref(p.info.doc || '') }), { label: p.title }) : null;
@@ -288,18 +290,25 @@ export async function mountCalculator(def) {
     el.querySelectorAll('.sc-handle, animate, animateTransform, animateMotion').forEach((n) => n.remove());
     el.querySelectorAll('.hl').forEach((n) => n.classList.remove('hl'));
     el.removeAttribute('data-id');
+    if (src.dataset.base) el.setAttribute('viewBox', src.dataset.base);   // the copy starts from the whole drawing
     if (!ids.length) return { el, caption: 'The current drawing, to scale with your inputs.' };
     if (!live.length) return null;
     const hits = new Set(sel(el));
     for (const g of hits) { g.classList.add('hl'); g.querySelectorAll('line,path,text,rect,circle,polygon,ellipse').forEach((c) => c.classList.add('hl')); }
     const inHit = (n) => { for (let p = n; p && p !== el; p = p.parentNode) if (hits.has(p)) return true; return false; };
     el.querySelectorAll('line,path,text,rect,circle,polygon,ellipse').forEach((n) => { if (!inHit(n) && !n.closest('defs')) n.classList.add('dimmed'); });
-    // zoom: union of the live elements' screen boxes, mapped back to viewBox units
-    const vb = src.viewBox.baseVal, r = src.getBoundingClientRect(), sx = vb.width / r.width, sy = vb.height / r.height;
+    // zoom: union of the live elements' screen boxes, mapped to drawing units through the screen matrix (correct
+    // whatever the user's zoom and the letterboxing), clamped to the whole drawing
+    const [vx, vy, vw, vh] = (src.dataset.base || '').split(' ').map(Number), vbb = src.viewBox.baseVal;
+    const vb = Number.isFinite(vw) ? { x: vx, y: vy, width: vw, height: vh } : { x: vbb.x, y: vbb.y, width: vbb.width, height: vbb.height };
+    const inv = src.getScreenCTM()?.inverse(), toUser = (x, y) => { const p = src.createSVGPoint(); p.x = x; p.y = y; return p.matrixTransform(inv); };
     let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
-    for (const n of live) { const b = n.getBoundingClientRect(); if (!b.width && !b.height) continue; x0 = Math.min(x0, b.left); y0 = Math.min(y0, b.top); x1 = Math.max(x1, b.right); y1 = Math.max(y1, b.bottom); }
+    for (const n of live) {
+      const b = n.getBoundingClientRect(); if ((!b.width && !b.height) || !inv) continue;
+      for (const q of [toUser(b.left, b.top), toUser(b.right, b.bottom)]) { x0 = Math.min(x0, q.x); y0 = Math.min(y0, q.y); x1 = Math.max(x1, q.x); y1 = Math.max(y1, q.y); }
+    }
     if (Number.isFinite(x0)) {
-      let bx = vb.x + (x0 - r.left) * sx, by = vb.y + (y0 - r.top) * sy, bw = (x1 - x0) * sx, bh = (y1 - y0) * sy;
+      let bx = x0, by = y0, bw = x1 - x0, bh = y1 - y0;
       const minW = vb.width * 0.42, minH = vb.height * 0.42, pad = 28;
       const w = Math.max(bw + 2 * pad, minW), hgt = Math.max(bh + 2 * pad, minH, w * 0.45);
       bx = Math.max(vb.x, Math.min(vb.x + vb.width - w, bx + bw / 2 - w / 2));
@@ -373,6 +382,8 @@ export async function mountCalculator(def) {
     renderResults(out, { cards: true });
     if (def.schematic) {
       try { def.schematic(ctx, state.values, out); } catch (err) { console.error(err); }
+      const sv = schemHost.querySelector('svg.schem');
+      if (sv) viewport.attach(sv);
       syncAnim();
     }
     for (const c of charts) c.dirty = true;
@@ -391,6 +402,10 @@ export async function mountCalculator(def) {
     c.dirty = false;
     const out = state.out, bl = baseline();
     if (!out) return;
+    // a plot that only makes sense for some input choices (plot.when, like field.when) is hidden for the others;
+    // a plot with no data for these inputs keeps its card and says so (below)
+    c.card.hidden = !!c.def.when && !c.def.when(state.values);
+    if (c.card.hidden) return;
     try {
       let sp = c.def.build(state.values, out, ctx);
       // a plot card never disappears once on the page (that moved everything below it): it says why it is empty

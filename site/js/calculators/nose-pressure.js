@@ -130,7 +130,7 @@ export default {
       },
     },
     {
-      id: 'shapes', title: 'Other nose shapes of the same length',
+      id: 'shapes', title: 'Other nose shapes of the same length', when: notCustom,
       info: { text: 'Incompressible pressure distribution for other standard nose shapes with your nose length and radius, near the shoulder. Blunter shoulders dip deeper and recover more steeply.', doc: 'gradient' },
       build(v, out, { U }) {
         if (custom(v)) return null;

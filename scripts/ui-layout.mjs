@@ -60,7 +60,7 @@ const probe = (sel) => {
   const bad = (txt.match(/\bNaN\b|\bundefined\b|\bInfinity\b/g) || []).slice(0, 3);
   // which fields and key results are shown: an input can legitimately show or hide other inputs (a boat-tail length
   // shows the boat-tail angle) and results; that is the question changing, not the layout jumping
-  const shown = [...document.querySelectorAll('.calc-inputs .field, .kr')].filter((e) => e.offsetParent).map((e) => e.dataset.for || e.dataset.result).join(',');
+  const shown = [...document.querySelectorAll('.calc-inputs .field, .kr, .plot-grid > .card')].filter((e) => e.offsetParent).map((e) => e.dataset.for || e.dataset.result || e.querySelector('h3')?.textContent).join(',');
   return { boxes, wraps, bad, shown };
 };
 const compare = (a, b) => {

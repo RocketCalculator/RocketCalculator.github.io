@@ -110,7 +110,7 @@ export default {
   },
   plots: [
     {
-      id: 'alpha', title: 'Strip angle of attack along the span',
+      id: 'alpha', title: 'Strip angle of attack along the span', when: (v) => v.mode === 'rate',
       info: { text: 'In steady roll each strip sees α = δ − py/U. Inboard strips still drive the roll, outboard strips damp it, and the total moment is zero.', doc: 'strip-theory' },
       build(v, out, { U }) {
         if (v.mode !== 'rate') return null;
@@ -122,7 +122,7 @@ export default {
       },
     },
     {
-      id: 'rate', title: 'Cant angle vs target roll rate',
+      id: 'rate', title: 'Cant angle vs target roll rate', when: (v) => v.mode === 'rate',
       info: { text: 'Steady-state cant and the version including roll-inertia lag. Both grow linearly with roll rate.', doc: 'fin-adjustment' },
       build(v, out) {
         if (v.mode !== 'rate') return null;
@@ -139,7 +139,7 @@ export default {
       },
     },
     {
-      id: 'cycles', title: 'Cant angle vs roll cycles to burnout',
+      id: 'cycles', title: 'Cant angle vs roll cycles to burnout', when: (v) => v.mode === 'cycles',
       info: { text: 'Cant angle needed for each whole number of roll cycles between launcher exit and burnout.', doc: 'roll-rate-selection' },
       build(v, out) {
         if (v.mode !== 'cycles') return null;

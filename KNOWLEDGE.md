@@ -34,7 +34,7 @@ See `DISCOVERY.md` §1 for the full map. In short: `site/js/calc/*.js` pure phys
 
 **Adding a calculator:** write `calc/<name>.js` and `tests/<name>.test.js`; write the definition
 (`slug, topic, title, subtitle, intro, info, groups[].fields[], results[], compute(v) → { results, warnings },
-plots[].build(v, out, { U }), schematic(ctx, v, out), symbols, report(v, out, R), references, examples`); add the
+plots[].build(v, out, { U }) [+ plots[].when(v)], schematic(ctx, v, out), symbols, report(v, out, R), references, examples`); add the
 `CALCULATORS` line in `scripts/seed_registry.py`; run `python3 scripts/seed_registry.py && node
 scripts/generate_pages.mjs`; write `site/docs/<slug>.html`; add REPAIR/INVARIANTS/trend entries in
 `tests/aggressive.test.js`; run `npm test` and `npm run test:ui-layout -- --only <slug>`.
@@ -48,6 +48,30 @@ scripts/generate_pages.mjs`; write `site/docs/<slug>.html`; add REPAIR/INVARIANT
   are drawn when they scroll into view.
 - `recompute()` (no `live`) — typing (debounced 110 ms), buttons, unit/theme switch, load: everything, all charts.
 - Never call `recompute()` from a pointer or slider handler directly.
+
+### DiagramViewport (`ui/viewport.js` → `diagramViewport(host, { label })`)
+- Wraps every schematic (`calculator-page.js` creates it; definitions do not change). Returns
+  `{ el, stage, attach(svg), reset(), zoomBy(f, px, py), withBase(fn), state() }`; the page calls `attach(svg)` after
+  every `def.schematic()` redraw.
+- **Fixed box:** the stage's `aspect-ratio` is set from the drawing's canvas (viewBox) the first time it is drawn and
+  never changes; a canvas that changes size later is letterboxed (`preserveAspectRatio: meet`). This removed the
+  136 px schematic-height shifts.
+- **View:** opens fitted to the canvas (`svg.dataset.base`); zoom 1×–8×; pan/zoom only rewrite the viewBox inside
+  `requestAnimationFrame`. The relative zoom and centre are kept across redraws (moving a slider never resets it).
+- **Input:** wheel zooms only while the stage is active (clicked/focused) or with Ctrl/⌘; mouse drag pans when
+  zoomed; touch: `touch-action: pan-y` on the drawing (one finger scrolls the page), two fingers pinch/pan;
+  `.sc-handle` keeps `touch-action: none` (one-finger drag). Controls (− + Reset view) in a fixed 34 px bar below the
+  stage; double-click and `0` reset; `+`/`−`, arrows when focused; Esc leaves.
+- `withBase(fn)` runs `fn` with the fitted view — used by Export so a zoomed view still exports the whole drawing.
+  The ⓘ drawer copy maps element boxes through `getScreenCTM()` and starts from `dataset.base`.
+- **Plots** are deliberately *not* in a viewport: the Quality Gate found no plot that gains from pan/zoom; they are
+  fixed-height, fit-to-box figures with hover read-outs.
+- `plots[].when(v)` hides a plot that only applies to some input choices (like `fields[].when`); a plot whose
+  `build` returns `null` for the current data keeps its card and says "Not available for these inputs".
+- **Check:** `npm run test:ui-diagrams` (`scripts/ui-diagrams.mjs`), laptop (×1 CPU, 1280 px) and phone
+  (×4 CPU, 375 px, touch) profiles: fitted on load, fixed box under a slider sweep, ≥5× zoom, mouse/two-finger pan
+  with frame p95 ≤ 20 ms and no long tasks, view kept on input change, Reset/double-click return to fit, plain wheel
+  scrolls the page, Ctrl+wheel zooms, touch-action values.
 
 ### NumberField / SliderInput (`ui/form.js` → `numberField`)
 - One grid row: label column `minmax(0, 1fr)`, control column `160px`; the unit sits in its own `min-width: 5ch`
@@ -80,6 +104,12 @@ scripts/generate_pages.mjs`; write `site/docs/<slug>.html`; add REPAIR/INVARIANT
   keeps its row once shown.
 - **Test flakiness:** under parallel runs a page may still be drawing when the baseline is taken; the test waits
   until two snapshots 200 ms apart are identical.
+- **Drawings:** the "forced full zoom" was `width: 100%; height: auto` (always scaled to the card) plus
+  `touch-action: none` (no pinch, page scroll trapped on phones). DiagramViewport fixes both; pan/zoom never
+  recomputes. Dragging a *handle* still redraws the drawing every frame (≈ 30 fps at ×4 CPU on Subsonic CP).
+- **Fixed overlays cover controls:** the warning dock (bottom-right, fixed) can sit over a diagram's Reset button
+  when that bar is near the bottom of the screen; the test scrolls the bar up first. Backlog: offset the dock or
+  move controls when overlapped.
 - **Lazy rendering trap:** a chart that has never rendered has no height, so lazily drawing it on first scroll moves
   the page. Every chart is drawn on a full recompute; only *updates* are deferred.
 - **Check:** `npm run test:ui-layout` (scripts/ui-layout.mjs) — sweeps every slider at 320/768/1280 px in SI and US

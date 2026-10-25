@@ -3,9 +3,11 @@
 Things that stopped a task, what was tried, and what the owner needs to do. Newest first. Resolved blockers are
 struck through with the date and commit that resolved them.
 
-## B2 — Site down: the transferred repo is private (opened 2026-10-25)
+## ~~B2 — Site down: the transferred repo is private (opened 2026-10-25)~~
 
-**Status:** open — **every address returns 404** (`rocketcalculator.github.io/RocketCalculator/`, the org root, and
+**Resolved 2026-10-25:** the owner made the repo public and renamed it `RocketCalculator.github.io`.
+
+**Status (was):** open — **every address returns 404** (`rocketcalculator.github.io/RocketCalculator/`, the org root, and
 the old `darasamii.github.io/RocketCalculator/`).
 
 **What happened**
@@ -27,7 +29,9 @@ the old `darasamii.github.io/RocketCalculator/`).
 
 **Waiting on it:** live verification and the tags `subsonic-cp/v1.1.0` and `v1.5.1` for PR #8 (merged as 9218a07).
 
-## B1 — Pending manual step: hosting migration (opened 2026-10-25)
+## ~~B1 — Hosting migration (opened 2026-10-25)~~
+
+**Resolved 2026-10-25** (org, transfer, rename, public). Follow-ups done in `chore/org-site-readme`.
 
 **Status:** partly done (2026-10-25): the org exists and the repo was transferred to `RocketCalculator/RocketCalculator`.
 Still open: step 3 (rename to `RocketCalculator.github.io`), step 5, and the follow-ups below. See also B2.
@@ -51,7 +55,7 @@ Still open: step 3 (rename to `RocketCalculator.github.io`), step 5, and the fol
 
 **What the next session must do once the migration is done** (Phase −1 steps 1–8 re-run)
 - Change `REPO_URL` in `site/js/app.js` to `https://github.com/RocketCalculator/RocketCalculator.github.io`.
-- Replace the remaining old URLs: `README.md` (Live line), `docs/BRIEF.md`, `docs/OPUS_PROMPT.md` (historical
+- Replace the remaining old URLs: `README.md` (Live line), (the retired planning docs, now deleted
   planning docs; the URL lines only). `grep -rn -i "darasamii\|DaraSamii/RocketCalculator"` must return only
   CHANGELOG/KNOWLEDGE history entries.
 - `site/404.html`: the `/RocketCalculator/` branch of the base-href script can then be removed.

@@ -15,7 +15,7 @@ function setTheme(t) {
   window.dispatchEvent(new CustomEvent('themechange', { detail: t }));
 }
 
-export const REPO_URL = 'https://github.com/DaraSamii/RocketCalculator';
+export const REPO_URL = 'https://github.com/RocketCalculator/RocketCalculator.github.io';
 
 export const ICONS = {
   github: () => s('svg', { viewBox: '0 0 16 16', fill: 'currentColor', 'aria-hidden': 'true' },

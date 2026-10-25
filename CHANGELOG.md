@@ -4,6 +4,28 @@ Newest first, in the spirit of [Keep a Changelog](https://keepachangelog.com/). 
 branch, tag and commit range. Live site: https://darasamii.github.io/RocketCalculator/ (moving to
 https://rocketcalculator.github.io/, see `BLOCKERS.md` B1).
 
+## 2026-10-25 — Fin Flutter rebuilt (`feat/fin-flutter-calculator`, tags `fin-flutter/v1.0.0`, `v1.5.0`)
+
+### Changed (BREAKING: results and inputs changed; old links fall back to the new defaults)
+- Fin Flutter now uses Martin's correlation as corrected by Bennett (Peak of Flight 615, 2023): root-chord t/c,
+  centroid (sweep) correction of the constant, Bennett's atmosphere tied to the launch-site temperature. The previous
+  version (Hoult's workbook: 75 %-span chord, fixed constant, 92 °F default) was optimistic for swept or tapered fins.
+- Inputs: sweep length, material presets (Bennett's working values), tip-to-tip option, launch site, speed and
+  altitude of maximum velocity or a whole flight profile ("Fill from the Trajectory Simulation"), target safety
+  factor, number of fins with the rear view.
+- Results: verdict (SAFE / MARGINAL / UNSAFE) with the thickness, span or shear modulus that reaches the target;
+  safety factor at the worst point; hot-day safety factor; sensitivity to ±10 % of each input; cross-checks against
+  altimetercloud.com's form and Hoult's workbook.
+- Plots: flutter speed through the flight with a shaded danger zone (main), safety factor against thickness and
+  against span (Explore).
+
+### Verified
+- Bennett's worked example (every printed intermediate, 1425 / 1991.7 / 2618.1 ft/s and hot-day values),
+  altimetercloud's code for three designs, Hoult's workbook row 6, remedies exact (`tests/flutter.test.js`).
+
+### Added (shared)
+- `def.actions`, `def.externalRefs`, chart `area: 'above'`; LaTeX export handles thin spaces.
+
 ## 2026-10-25 — Verdict banner and two tiers (`shared/verdict-tiers`, tag `v1.4.0`)
 
 ### Added

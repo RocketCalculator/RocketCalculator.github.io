@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Fin Flutter Margin — Theory & documentation — Rocket Calculator</title>
-<meta name="description" content="Bending-torsion fin flutter margin from the NACA TN-4197 correlation: geometry, correlation, pressure ratio, margin of safety and minimum thickness.">
+<title>Fin Flutter — Theory & documentation — Rocket Calculator</title>
+<meta name="description" content="Fin flutter speed through the flight from Martin's NACA TN 4197 correlation as corrected by Bennett (2023): centroid correction, atmosphere, safety factor, verdict thresholds and remedies.">
 <meta name="color-scheme" content="light dark">
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="../css/site.css">
@@ -13,107 +13,107 @@
 <body>
 <main id="main">
 <div class="wrap">
-  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Home</a><span class="sep">/</span><a href="../index.html#area-struct">Structures &amp; Aeroelasticity</a><span class="sep">/</span><a href="../calculators/fin-flutter.html">Fin Flutter Margin</a><span class="sep">/</span><span>Documentation</span></nav>
-  <div class="calc-title"><h1>Fin Flutter Margin — theory</h1></div>
-  <p class="calc-sub">An approximate bending-torsion flutter check for fin panels, using the correlation of D. J. Martin, <em>Summary of Flutter Experiences as a Guide to the Preliminary Design of Lifting Surfaces on Missiles</em>, NACA TN-4197, 1958.</p>
-  <div class="calc-badges"><a class="btn small primary" href="../calculators/fin-flutter.html">Open the calculator</a><a class="btn small" href="../references/index.html#fin-aeroelasticity">Related memo: fin static aeroelasticity</a></div>
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Home</a><span class="sep">/</span><a href="../index.html#area-struct">Structures &amp; Aeroelasticity</a><span class="sep">/</span><a href="../calculators/fin-flutter.html">Fin Flutter</a><span class="sep">/</span><span>Documentation</span></nav>
+  <div class="calc-title"><h1>Fin Flutter — theory</h1></div>
+  <p class="calc-sub">Bending–torsion flutter speed of a fin panel from D. J. Martin’s correlation (NACA TN 4197, 1958), as restated and corrected by J. K. Bennett, <em>Fin Flutter Analysis Revisited (Again)</em>, Apogee Components Peak of Flight newsletter 615, 2023.</p>
+  <div class="calc-badges"><a class="btn small primary" href="../calculators/fin-flutter.html">Open the calculator</a><a class="btn small" href="https://www.apogeerockets.com/education/downloads/Newsletter615.pdf" target="_blank" rel="noopener">Bennett 2023 (Apogee PDF) ↗</a></div>
   <div class="doc-layout">
     <nav class="doc-toc" aria-label="Contents"></nav>
     <article class="doc">
 
       <section id="overview">
         <h2>Overview</h2>
-        <p>Aeroelasticity covers the static twisting of fins under load and a dynamic phenomenon, <strong>flutter</strong>, in which a fin’s bending and torsion modes couple with the airflow and extract energy from it. Once flutter starts the amplitude grows within a few cycles and the fin usually fails. After the Prospector P-8 fin-flutter failure, the rsandt.com notes say, “everyone should be sensitive to the possibility of flutter”.</p>
-        <p>The model here is a rough approximation, intended to be good enough to keep the designer out of trouble. It reduces flight and wind-tunnel experience to one correlation for the flutter Mach number of a fin panel. The output is a <strong>margin of safety</strong> against the flight Mach number.</p>
+        <p>Flutter is a self-excited vibration: a fin’s bending and twisting modes couple with the airflow and draw energy from it until the fin breaks, often in a fraction of a second. Martin’s 1958 NACA note distilled flight and wind-tunnel experience into a working estimate of the speed at which it starts. Bennett (2023) re-derived the amateur-rocketry form of it, corrected a factor of two that earlier newsletter articles introduced, and showed how the fin’s centroid changes a constant Martin had fixed.</p>
+        <p>The calculator evaluates the flutter speed at every point of your flight (or at the point of maximum velocity), finds the worst point, compares it with your speed and tells you what to change. It is an estimate for preliminary design, not a guarantee.</p>
+      </section>
+
+      <section id="correlation">
+        <h2>The flutter speed</h2>
+        <div class="eq"><div class="tex-display">V_f=a\sqrt{\dfrac{G}{\dfrac{DN\,A^3}{(t/c)^3(A+2)}\cdot\dfrac{\lambda+1}{2}\cdot\dfrac{p}{p_0}}},\qquad DN=\frac{24\,\varepsilon\,\kappa\,p_0}{\pi}</div></div>
+        <p>where <span class="tex">a</span> is the speed of sound and <span class="tex">p</span> the pressure at the altitude considered, <span class="tex">p_0=14.696</span> psi, <span class="tex">G</span> the shear modulus of the fin, <span class="tex">\kappa=1.4</span>. With <span class="tex">\varepsilon=0.25</span>, <span class="tex">DN=39.294</span> psi, which Martin rounded to 39.3. Any consistent units can be used; <span class="tex">G</span>, <span class="tex">p_0</span> and <span class="tex">DN</span> must share the pressure unit.</p>
+        <p><strong>The widely copied “1.337” form is not used.</strong> 1.337 is 39.3/14.696/2, but those articles divided by two once more, which overstates <span class="tex">V_f</span> by <span class="tex">\sqrt2</span> (Bennett). This matters because the overstated speed is unsafe.</p>
       </section>
 
       <section id="geometry">
         <h2>Panel geometry</h2>
-        <p>For one exposed trapezoidal panel with root chord <span class="tex">c_R</span>, tip chord <span class="tex">c_T</span>, exposed semispan <span class="tex">b</span> and uniform thickness <span class="tex">t</span>:</p>
-        <div class="eq"><div class="tex-display">\lambda=\frac{c_T}{c_R},\qquad S=\frac{(c_R+c_T)\,b}{2},\qquad A\!R=\frac{b^2}{S}.</div></div>
-        <p>The thickness ratio is taken at the chord three-quarters of the way out along the span, which for a straight-tapered panel is</p>
-        <div class="eq"><div class="tex-display">c_{0.75}=\tfrac14c_R+\tfrac34c_T,\qquad \frac{t}{c}=\frac{t}{c_{0.75}}.</div></div>
-        <p>Sweep does not appear in the correlation.</p>
+        <div class="eq"><div class="tex-display">S=\frac{(c_R+c_T)\,b}{2},\qquad A=\frac{b^2}{S},\qquad \lambda=\frac{c_T}{c_R},\qquad \frac{t}{c}=\frac{t}{c_R}</div></div>
+        <p>for one exposed panel, with <span class="tex">b</span> the semi-span (RockSim) or height (OpenRocket). The thickness ratio uses the <strong>root</strong> chord (Bennett, and altimetercloud.com). For an elliptical fin use the trapezoid of the same root chord, span and area: tip chord <span class="tex">c_T=2S/b-c_R</span>. If the thickness tapers, use its average or the value at mid-span.</p>
       </section>
 
-      <section id="correlation">
-        <h2>The flutter correlation</h2>
-        <p>The geometry enters through one parameter,</p>
-        <div class="eq"><div class="tex-display">X=\frac{39.3\,A\!R^3}{(t/c)^3\,(A\!R+2)},</div></div>
-        <p>and the flutter Mach number is</p>
-        <div class="eq"><div class="tex-display">M_f=\sqrt{\frac{G}{X\,\dfrac{\lambda+1}{2}\,\dfrac{p}{p_0}}},</div></div>
-        <p>with the material shear modulus <span class="tex">G</span> in psi and <span class="tex">p/p_0</span> the ratio of static pressure at the flight altitude to sea-level pressure. The flutter <em>speed</em> is <span class="tex">M_f</span> times the local speed of sound.</p>
-        <p>The trends are worth remembering: <span class="tex">M_f\propto\sqrt{G}</span> (stiffer material helps), <span class="tex">M_f\propto(t/c)^{3/2}</span> (thickness helps most), and <span class="tex">M_f\propto(p/p_0)^{-1/2}</span> (low altitude is the critical place).</p>
-        <h3>Pressure ratio</h3>
-        <p>The pressure ratio uses a single-layer tropospheric law:</p>
-        <div class="eq"><div class="tex-display">\frac{p}{p_0}=\left(1-\frac{0.0035662\,h}{T_{SL}}\right)^{32.174/(1716\times0.0035662)}=\left(1-\frac{0.0035662\,h}{T_{SL}}\right)^{5.2575},</div></div>
-        <p>with altitude <span class="tex">h</span> in feet above sea level and <span class="tex">T_{SL}=551.8</span> °R (about 92 °F, a hot day). The calculator exposes <span class="tex">T_{SL}</span> as an input so a standard day (518.67 °R) can be used. The law holds in the troposphere. Above the tropopause (36 089 ft) the calculator continues it as an isothermal layer, <span class="tex">p/p_0=(p/p_0)_T\,e^{-g(h-h_T)/(RT_T)}</span>, matching the standard atmosphere; the single-layer law alone would turn negative near 120 000–155 000 ft.</p>
+      <section id="centroid">
+        <h2>Centroid correction</h2>
+        <p>Martin’s 39.3 assumes the fin’s centroid is half a chord behind the leading edge, i.e. <span class="tex">\varepsilon=0.25</span> chord behind the quarter chord. For a swept trapezoid with sweep length <span class="tex">m</span> (root leading edge to tip leading edge, along the body), Bennett gives</p>
+        <div class="eq"><div class="tex-display">C_x=\frac{2c_Tm+c_T^2+mc_R+c_Tc_R+c_R^2}{3(c_T+c_R)},\qquad \varepsilon=\frac{C_x}{c_R}-0.25</div></div>
+        <p>A swept fin has <span class="tex">\varepsilon&gt;0.25</span>, a larger <span class="tex">DN</span> and a lower flutter speed (Bennett’s example: <span class="tex">\varepsilon=0.349</span>, <span class="tex">DN=54.88</span> psi, 40 % above 39.3). A centroid ahead of mid-chord would give <span class="tex">\varepsilon&lt;0.25</span> and a <em>higher</em> speed; the calculator does not credit that and uses 0.25.</p>
       </section>
 
-      <section id="margin">
-        <h2>Margin of safety and minimum thickness</h2>
-        <p>The margin of safety compares the flutter Mach number with the flight Mach number <span class="tex">M</span>:</p>
-        <div class="eq"><div class="tex-display">MS=\frac{M_f-M}{M}.</div></div>
-        <p>A negative margin means flutter is predicted. Check the worst point on the trajectory: usually maximum velocity at low altitude.</p>
-        <p>Setting <span class="tex">M_f=M</span> and solving for the thickness gives the thickness at which the margin is zero — the calculator’s <em>thickness for zero margin</em>:</p>
-        <div class="eq"><div class="tex-display">X_{crit}=\frac{G}{M^2\,\frac{\lambda+1}{2}\,\frac{p}{p_0}},\qquad t_{min}=c_{0.75}\left[\frac{39.3\,A\!R^3}{X_{crit}\,(A\!R+2)}\right]^{1/3}.</div></div>
-        <p>This inversion uses the same correlation. Choose a design thickness comfortably above <span class="tex">t_{min}</span>.</p>
+      <section id="atmosphere">
+        <h2>Atmosphere</h2>
+        <p>Bennett’s standard atmosphere for the troposphere: temperature falls 0.00356 °F per foot from the sea-level value,</p>
+        <div class="eq"><div class="tex-display">T_F=T_{SL}-0.00356\,h,\qquad a=49.03\sqrt{T_F+459.7}\ \text{ft/s},\qquad p=14.696\left(\frac{T_F+459.7}{518.7}\right)^{5.256}\ \text{psi}</div></div>
+        <p>with <span class="tex">h</span> above sea level. The calculator ties the lapse line to your launch-site temperature, <span class="tex">T_{SL}=T_0+0.00356\,h_0</span>, so a standard site gives exactly <span class="tex">T_{SL}=59</span> °F. Above 36 089 ft, where Bennett’s equations stop, the standard isothermal layer continues the pressure. Hot days lower the flutter speed (higher speed of sound, but much higher pressure); the calculator reports the safety factor on a day 20 °F hotter.</p>
+        <p>Bennett’s own hot-day numbers (1580 and 2077 ft/s) put the site temperature in as the sea-level value and use the altitude above ground, i.e. they treat the site as if it were at sea level; that is a little more pessimistic than the lapse-line method above.</p>
       </section>
 
-      <section id="assumptions">
-        <h2>Assumptions and limits</h2>
+      <section id="material">
+        <h2>Shear modulus</h2>
+        <p>The shear modulus dominates the answer, and is the least certain input. Bennett’s suggested working values, chosen with margin (psi): balsa 33 359; birch aircraft plywood 89 000; G10/G12 fibreglass 600 000; carbon-fibre epoxy 600 000; 6061-T6 aluminium 3 800 000; 6Al-4V titanium 6 200 000; 4130 steel 12 000 000. Measured values for G10 range from 425 000 to 1 700 000 psi; in-plane shear of a laminate depends mostly on the epoxy, so carbon and glass behave alike. From Young’s modulus and Poisson’s ratio, <span class="tex">G=E/(2(1+\nu))</span>, which overestimates <span class="tex">G</span> for composites. For tip-to-tip reinforcement Bennett suggests doubling <span class="tex">G</span> as a rough allowance.</p>
+      </section>
+
+      <section id="flight">
+        <h2>The flight</h2>
+        <p>Flutter is most likely low in dense air at high speed — usually at motor burnout. Give either the maximum velocity and its altitude above the launch site, or a flight profile (altitude above ground and speed at several points); the calculator evaluates every point and reports the worst. “Fill from the Trajectory Simulation” runs that calculator with your saved inputs and takes its speed and altitude history.</p>
+      </section>
+
+      <section id="verdict">
+        <h2>Safety factor and verdict</h2>
+        <div class="eq"><div class="tex-display">SF=\min_{\text{flight}}\frac{V_f(h)}{V(h)}</div></div>
+        <table class="sym-table">
+          <thead><tr><th>Verdict</th><th>Condition</th><th>Source</th></tr></thead>
+          <tbody>
+            <tr><td>UNSAFE</td><td><span class="tex">SF&lt;1.2</span></td><td>Bennett: a margin under 20 % is “potentially unsafe”; altimetercloud.com: below 1.2 “danger”.</td></tr>
+            <tr><td>MARGINAL</td><td><span class="tex">1.2\le SF&lt;</span> target</td><td>Bennett: under 25 % is “a poor risk”.</td></tr>
+            <tr><td>SAFE</td><td><span class="tex">SF\ge</span> target</td><td>Target default 1.5 — altimetercloud.com’s minimum recommendation; raised to 2 when the flight is supersonic (altimetercloud.com).</td></tr>
+          </tbody>
+        </table>
+        <p>The target can be raised; it is never lowered below 2 for a supersonic flight. These thresholds are judgement from the two sources, not from Martin.</p>
+      </section>
+
+      <section id="remedies">
+        <h2>What to change</h2>
+        <p>Because <span class="tex">V_f\propto t^{3/2}</span> and <span class="tex">V_f\propto\sqrt G</span> exactly, the thickness and shear modulus that reach a target safety factor at the worst point are</p>
+        <div class="eq"><div class="tex-display">t_{req}=t\left(\frac{SF_{target}}{SF}\right)^{2/3},\qquad G_{req}=G\left(\frac{SF_{target}}{SF}\right)^{2}</div></div>
+        <p>The semi-span enters through the aspect ratio and the area, so the longest span is found by bisection (the safety factor falls monotonically as the span grows). The Explore section also ranks the inputs by how much ±10 % of each moves the safety factor; thickness and span usually dominate, then the material.</p>
+      </section>
+
+      <section id="crosscheck">
+        <h2>Cross-checks</h2>
         <ul>
-          <li>An empirical correlation for thin, flat, cantilevered panels of uniform thickness and isotropic material. For composites, <span class="tex">G</span> should be the laminate’s in-plane shear modulus, which can be far below its tensile modulus.</li>
-          <li>Root fixity is assumed. Flexible fin attachments lower the true flutter speed.</li>
-          <li>Static aeroelastic twist (loss of roll control or divergence) is a separate effect, covered by the related memo “Effects of Fin Static Aeroelasticity on Roll Rate” (not yet a calculator here).</li>
-          <li>The calculator highlights margins below 0.5 as “thin”. That threshold is a rule of thumb.</li>
+          <li><strong>Bennett’s worked example</strong> (7.5 in root, 2.5 in tip, 3 in span, 4.285 in sweep, G10, 1500 ft/s at 18 500 ft ASL): the tests reproduce <span class="tex">C_x=4.49</span> in, <span class="tex">\varepsilon=0.349</span>, <span class="tex">DN=54.88</span>, −6.86 °F, 1043.36 ft/s, 7.2 psi, and <span class="tex">V_f=</span> 1425, 1991.7 and 2618.1 ft/s for 1/8, 5/32 and 3/16 in, and his hot-day figures with his method.</li>
+          <li><strong>altimetercloud.com</strong> (formula read from its page code on 25 October 2026): <span class="tex">V_f=a\sqrt{G(t/c)^3/(1.337\,A^3p\,(\lambda+1)/2)}</span>. It has no <span class="tex">(A+2)</span> term and no centroid correction, so it equals Martin’s form times <span class="tex">\sqrt{2/(A+2)}</span> for a symmetric fin (lower by 12 % at <span class="tex">A=0.6</span>, 29 % at <span class="tex">A=2</span>). The tests reproduce its code for three designs; the calculator shows its value in Explore. The tool could not be queried interactively, so its code is the reference.</li>
+          <li><strong>FLUTTER MARGIN1</strong> (Hoult’s workbook): <span class="tex">t/c</span> on the chord at 75 % span and <span class="tex">DN=39.3</span>, which is less conservative for tapered or swept fins; reproduced to 12 digits and shown in Explore.</li>
         </ul>
       </section>
 
-      <section id="worked-example">
-        <h2>Worked example (Gold Rush III)</h2>
-        <p>Aluminium 6061 fins, <span class="tex">G=3.8\times10^6</span> psi, <span class="tex">c_R=10</span> in, <span class="tex">c_T=2</span> in, <span class="tex">b=5.5</span> in, <span class="tex">t=0.125</span> in, at <span class="tex">M=0.915</span> and 7,686 ft:</p>
-        <ol>
-          <li><span class="tex">\lambda=0.2</span>, <span class="tex">S=33</span> in², <span class="tex">A\!R=0.9167</span>, <span class="tex">c_{0.75}=4</span> in, <span class="tex">t/c=0.03125</span>.</li>
-          <li><span class="tex">X=39.3(0.9167)^3/\big((0.03125)^3(2.9167)\big)=340{,}087</span>.</li>
-          <li><span class="tex">p/p_0=0.76501</span>.</li>
-          <li><span class="tex">M_f=\sqrt{3.8\times10^6/(340087\times0.6\times0.76501)}=4.934</span>.</li>
-          <li><span class="tex">MS=(4.934-0.915)/0.915=4.39</span>; zero margin would need only <span class="tex">t_{min}=0.041</span> in.</li>
-        </ol>
-      </section>
-
-      <section id="code-map">
-        <h2>Equations ↔ code</h2>
-        <table class="sym-table">
-          <thead><tr><th>Quantity</th><th>Code (<code>js/calc/flutter.js</code>)</th></tr></thead>
-          <tbody>
-            <tr><td>Taper ratio, area, aspect ratio</td><td class="mono">lambda, S, AR</td></tr>
-            <tr><td>Effective chord</td><td class="mono">c75</td></tr>
-            <tr><td><span class="tex">X</span></td><td class="mono">Xparam()</td></tr>
-            <tr><td><span class="tex">p/p_0</span></td><td class="mono">pressureRatio()</td></tr>
-            <tr><td>Flutter Mach number</td><td class="mono">Mf</td></tr>
-            <tr><td>Margin of safety</td><td class="mono">MS</td></tr>
-            <tr><td>Thickness for zero margin</td><td class="mono">tMin</td></tr>
-          </tbody>
-        </table>
-        <p><strong>Verification:</strong> <code>tests/flutter.test.js</code> reproduces the reference example to 10⁻¹², and checks that <span class="tex">t_{min}</span> gives exactly zero margin.</p>
-      </section>
-
-      <section id="known-differences">
-        <h2>Notes on the method</h2>
-        <ul class="diff-list">
-          <li><strong>Flight condition.</strong> The correlation needs only the flight Mach number, so no flight speed is asked for.</li>
-          <li><strong>Sea-level temperature.</strong> The pressure ratio defaults to 551.8 °R, a hot day; it is an input so other days can be used. The lapse rate (0.0035662 °R/ft) is the 1976 standard value, slightly different from the Geophysics memo’s 0.00357448.</li>
-          <li><strong>Additions.</strong> Thickness for zero margin and the two plots are derived from the same correlation.</li>
+      <section id="limits">
+        <h2>Assumptions and limits</h2>
+        <ul>
+          <li>An estimate for preliminary design (Martin’s stated purpose), not a guarantee: keep a margin.</li>
+          <li>Flat plates of constant thickness, trapezoidal (or equivalent) planform, cantilevered rigidly from the body. Fin–body flexibility, attachment, fin cans and tip-to-tip layups are not modelled.</li>
+          <li>Validated to about Mach 1.5 (Bennett); beyond is extrapolation.</li>
+          <li>Bennett’s atmosphere is tropospheric (below about 36 000 ft); the calculator continues it isothermally.</li>
+          <li>Each panel is independent; the number of fins does not enter.</li>
+          <li><strong>Not verified in this build:</strong> Martin’s NACA TN 4197 itself was not available; its form and constants are taken from Bennett’s restatement. (Bennett’s reference list prints “TN 4917”; the note is TN 4197.)</li>
         </ul>
       </section>
 
       <section id="references">
         <h2>References</h2>
         <ol class="refs">
-          <li>D. J. Martin, “Summary of Flutter Experiences as a Guide to the Preliminary Design of Lifting Surfaces on Missiles,” NACA TN-4197, 1958 (not hosted here).</li>
-          <li>C. P. Hoult, “Effects of Fin Static Aeroelasticity on Roll Rate,” RS&amp;T memo, 5 October 2013. <a href="../references/index.html#fin-aeroelasticity">View in library</a></li>
-          <li>Source file: <a href="http://www.rsandt.com/media/FLUTTER%20MARGIN1.xls" rel="noopener">FLUTTER MARGIN1.xls</a> (rsandt.com).</li>
+          <li>J. K. Bennett, “Fin Flutter Analysis Revisited (Again),” <em>Peak of Flight</em> newsletter 615, Apogee Components, 19 December 2023. <a href="https://www.apogeerockets.com/education/downloads/Newsletter615.pdf" target="_blank" rel="noopener">PDF ↗</a></li>
+          <li>Altimeter Cloud, “Rocket Fin Flutter Calculator,” altimetercloud.com (formula and thresholds read 25 October 2026). <a href="https://www.altimetercloud.com/tools/fin_flutter/" target="_blank" rel="noopener">Page ↗</a></li>
+          <li>D. J. Martin, “Summary of Flutter Experiences as a Guide to the Preliminary Design of Lifting Surfaces on Missiles,” NACA TN 4197, 1958 — through Bennett.</li>
+          <li>C. P. Hoult, FLUTTER MARGIN1 workbook (RS&amp;T) — the previous version of this calculator.</li>
         </ol>
       </section>
     </article>

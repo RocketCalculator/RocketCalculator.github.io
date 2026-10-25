@@ -168,6 +168,21 @@ scripts/generate_pages.mjs`; write `site/docs/<slug>.html`; add REPAIR/INVARIANT
 - **Open questions:** Martin's original constants and the ε correction's derivation (needs TN 4197); a better G for
   composites; tip-to-tip ×2 allowance unverified.
 
+### Subsonic CP (`subsonic-cp`) — Phase 2 cycle 1, branch `improve/subsonic-cp-cycle-1`, tag `subsonic-cp/v1.1.0`
+- **Sources:** Hoult's *Barrowman Equations* and *Normal Force Acting on a Hemispherical Nose Tip* memos and the NACA
+  1307 supplement, as extracted into the repo for the original build (`tests/subsonic-cp.test.js` compares the Gold
+  Rush III cases to them). **Not re-read in this cycle**: the physics did not change, only the stability layer on top.
+- **Hand checks added:** a pointed cone gives C_Nα = 2 with the CP at 2L/3; K_W(B) + K_B(W) = (1 + r/s)² (the
+  slender-body total; stated from memory, not re-read this session) and exceeds Barrowman's 1 + r/(r + b).
+- **Worst case (D18):** minimum margin over Mach {0, M_max} × CG {launch, burnout} × carry-over {with, without}.
+  On the GR3 example the carry-over lift moves the CP ≈ 0.64 cal aft, so dropping it is the binding case.
+- **Thresholds (D19):** UNSAFE < 1 cal, MARGINAL 1 to target, SAFE ≥ target (default 1.5). Rules of thumb, **not
+  traced to a source**; labelled so in the docs. > 4 cal is an info note (weathercocking), not a verdict.
+- **Remedies:** CG shift (SM_target − SM)·d is exact because d is fixed; fin span by bisection on the whole worst-case
+  search (tip LE station held).
+- **Open questions:** a sourced stability criterion (e.g. a NAR/Tripoli or NASA SL handbook figure); CP shift at angle
+  of attack (viscous cross-flow), which the linear model omits.
+
 ### Diagram Quality Gate log
 
 **Fin Flutter**
@@ -180,6 +195,14 @@ scripts/generate_pages.mjs`; write `site/docs/<slug>.html`; add REPAIR/INVARIANT
 | Rear view (under N) | How are the fins arranged? | Context only: fin count does not enter flutter — the note says so | Nothing for flutter; confirms the layout | — | To scale | KEEP (required for every fin-count input) |
 | *Removed:* "Margin of safety vs thickness" (old) | replaced by the SF plot with target lines | | | | | REMOVE → REDESIGN |
 | *Removed:* "Flutter Mach vs altitude" (old, single horizontal flight-Mach line) | replaced by the flight-envelope plot | | | | | REDESIGN |
+
+**Subsonic CP**
+| Diagram | 1 Question it answers | 2 Better than a number? | 3 What the user does differently | 4 Shows the problem/change | 5 Scale | Verdict |
+|---|---|---|---|---|---|---|
+| Static margin through the flight (new main) | Is the rocket stable all the way from the rail to max Mach, at both CGs? | Yes — four cases and both thresholds at once; a single margin hides which case binds | Sees whether burnout CG or the carry-over assumption is the problem; moves CG or grows fins | Worst point marked and coloured by verdict; red unsafe line, orange target line; curves in ink/slate so red means only "unsafe" | Axes with units | KEEP (new) |
+| Static margin against fin span (Explore, new) | How big must the fins be? | Yes — shows the diminishing return of span | Picks a span above the crossing | Target/unsafe lines, "your fins" marker | Span in display units | KEEP (new) |
+| Side view with CP and CG | Where are CP and CG on my rocket? | Yes — the margin as a distance on the body | Checks geometry input; sees the CG burnout marker | Margin label coloured by verdict | To scale (radius exaggerated, labelled) | KEEP (end view removed: now the back view under N) |
+| CP / C_Nα vs Mach, build-up (Explore) | How does each part contribute, and how does Mach move them? | Yes for the build-up; Mach plots are secondary | Finds which component dominates | Burnout CG vline on the build-up | Axes with units | KEEP, moved to Explore |
 
 ## Lessons learned
 

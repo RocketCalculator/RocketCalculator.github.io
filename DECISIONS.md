@@ -104,3 +104,25 @@ Decisions taken while the owner was unavailable. Each entry: date, question, opt
 - `def.actions`, `def.externalRefs`, chart `area: 'above'`, LaTeX thin-space mapping were added in
   `feat/fin-flutter-calculator` as separate commits (opt-in, no change to other calculators), instead of separate
   shared branches, to avoid a 30-minute full test cycle per one-line feature. All suites re-run before merge.
+
+## D18 — 2026-10-25 — Subsonic CP verdict uses the worst case, including no carry-over lift
+- **Question:** which margin to judge — the nominal NACA 1307 one, or something more conservative?
+- **Choice:** the minimum over Mach {0, M_max}, CG {launch, burnout}, and with/without the body carry-over lift.
+  The carry-over is real lift in slender-body theory, but Barrowman's method uses the smaller 1 + r/(r + b); a design
+  that only passes with it is relying on lift that the method most builders use does not count.
+- **Cost:** stricter than the nominal margin (≈ 0.64 cal on the GR3 example). The nominal and no-carry margins are
+  both shown as results.
+- **Reverse:** `margins()` in `calculators/subsonic-cp.js` (drop the `carry` loop).
+
+## D19 — 2026-10-25 — Static-margin thresholds are rules of thumb
+- UNSAFE < 1 cal, MARGINAL 1 cal to target, SAFE ≥ target (default 1.5, slider 1–3). Common amateur practice; **no
+  primary source read this session** — the docs table says so. > 4 cal gives an info note only.
+- Adds a `none` verdict level (no CG entered yet) to the shared banner: neutral "i" badge.
+
+
+## D20 — 2026-10-25 — Bare-minimum testing until the user calls the testing stage
+- **Who:** the user, mid-cycle: keep only the bare-minimum tests for now; full testing starts at a later stage.
+- **Choice:** per calculator, `npm test` plus a quick browser look. The plan's DoD items 6–8 (layout-stability sweep,
+  diagram interaction, 320/768/1280 × SI/US) and the smoke / uifuzz / LaTeX sweeps are deferred, not dropped.
+- **Subsonic CP cycle 1** was the last one run with the full set (all passed after the fixes in its CHANGELOG entry).
+- **Reverse:** when the user starts the testing stage, run every suite over all calculators changed since this entry.

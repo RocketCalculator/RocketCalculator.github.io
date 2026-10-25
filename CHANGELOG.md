@@ -4,6 +4,20 @@ Newest first, in the spirit of [Keep a Changelog](https://keepachangelog.com/). 
 branch, tag and commit range. Live site: https://darasamii.github.io/RocketCalculator/ (moving to
 https://rocketcalculator.github.io/, see `BLOCKERS.md` B1).
 
+## 2026-10-25 — DiagramViewport (`shared/diagram-viewport`, tag `v1.2.0`)
+
+### Added
+- Every drawing sits in a fixed-size box that opens fitted; zoom (+ / − buttons, Ctrl/⌘+wheel, or wheel after
+  clicking the drawing), pan by dragging or with two fingers, Reset view / double-click. Panning and zooming only move
+  the view, they never recompute; the view stays put while inputs change. One finger on a phone scrolls the page.
+- `npm run test:ui-diagrams`: diagram-interaction acceptance test (laptop and ×4-CPU phone profiles).
+- `plots[].when(v)`: plots that only apply to some input choices are hidden for the others.
+
+### Fixed
+- Drawings no longer change height with the inputs (Ogive Nose moved the page by 136 px).
+- Exports and the ⓘ close-ups use the whole drawing even when the view is zoomed.
+- Layout test: 29 calculators × 320/768/1280 px × SI/US stable *including* the drawings.
+
 ## 2026-10-25 — Shared inputs/results layout and recompute pipeline (`shared/number-field`, tag `v1.1.0`)
 
 ### Changed

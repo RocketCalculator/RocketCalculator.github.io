@@ -147,6 +147,18 @@ export const conicalLength = (rt, eps, alphaDeg, R) => {
 };
 const RAD = Math.PI / 180;
 
+/** Inlet-to-throat length of the convergent: cone at half angle θc (deg) from radius rc into the 1.5 r_t throat arc. */
+export const convergentLength = (rt, rc, thetaCdeg) => {
+  const t = thetaCdeg * RAD, R1 = 1.5 * rt;
+  return R1 * Math.sin(t) + (rc - rt - R1 * (1 - Math.cos(t))) / Math.tan(t);
+};
+/** Root of f(x) = target for f decreasing on [lo, hi] (bisection); null when the target lies outside [f(hi), f(lo)]. */
+export function solveDecreasing(f, target, lo, hi) {
+  if (!(target <= f(lo) && target >= f(hi))) return null;
+  for (let k = 0; k < 100; k++) { const mid = (lo + hi) / 2; if (f(mid) > target) lo = mid; else hi = mid; }
+  return (lo + hi) / 2;
+}
+
 /**
  * Wall contour, x = 0 at the throat. { rt, rc (chamber radius), thetaC (convergent half angle, deg), eps,
  * type: 'cone' | 'bell', alpha (cone half angle), Lf (bell length, %) }. Throat arcs 1.5 r_t upstream and 0.382 r_t

@@ -3,6 +3,26 @@
 Newest first, in the spirit of [Keep a Changelog](https://keepachangelog.com/). From 2026-10-25 every entry names its
 branch, tag and commit range. Live site: https://rocketcalculator.github.io/.
 
+## 2026-10-25 — Parachute Recovery cycle 1 (`improve/recovery-cycle-1`)
+
+### Added
+- Verdict against your own limits (landing speed you accept, recovery-area radius) with fixes: the parachute diameter
+  and tether length for your landing speed, and the disreef height that keeps the drift inside the area (D25).
+- Main plots: "The descent, second by second" (height, descent speed and drift on one time axis, with your limits)
+  and "Choosing the parachute size" (landing speed and drift against diameter). Explore: drift against disreef height.
+  Landing energies.
+- Drawing: height and drift to the same scale, time dots, wind arrows, the recovery area and a landing point
+  coloured by the verdict, canopy sized by its diameter and narrowed by the reefing ratio; drag the opening and
+  disreef points, the wind arrow and the edge of the area.
+- Info tabs rewritten to the new standard (DESIGN-GUIDE 6a): what it is, where the number comes from, what changing
+  it does, symbols with units, typical values — for a reader with high-school science.
+- Units: energy (J, ft·lbf).
+
+### Fixed
+- Plots: the descent-speed plot showed two disjoint bands with a clipped axis; replaced.
+- Shared: drag handles the drawing no longer asks for (e.g. disreef with reefing off) stayed on screen.
+- A disreef height above the opening height refused the whole calculation; it now means "no reefed phase" (warning).
+
 ## 2026-10-25 — Atmosphere & Gravity final (`fix/geophysics-final`)
 - The US Standard Atmosphere 1976 comparison (density and pressure altitude, standard-day values, overlay lines and the
   "your air against the standard day" plot) is removed at the owner's request; the flight condition (Mach, q,

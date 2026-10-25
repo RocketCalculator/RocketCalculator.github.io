@@ -151,3 +151,10 @@ Decisions taken while the owner was unavailable. Each entry: date, question, opt
   deleted (all verified merged into `main`; the commits remain in its history). Releases are recorded in CHANGELOG.md
   with their PR and merge commit; PRs are merged with `--delete-branch`. Supersedes the tag scheme of the original plan.
 
+## D25 — 2026-10-25 — Parachute verdict against the user's own limits
+- The memos give no recommended landing speed or drift, so the user sets both (landing speed accepted, recovery-area
+  radius). SAFE: V_aft ≤ V_T and drift ≤ 0.8 R_f; MARGINAL: up to 1.25 V_T / R_f; UNSAFE beyond. The 1.25 / 0.8 bands
+  are this project's margin for wind and C_D uncertainty — not published limits (stated on the theory page).
+- Coupled inputs degrade instead of refusing: a disreef height at or above the opening height means no reefed phase,
+  with a warning.
+

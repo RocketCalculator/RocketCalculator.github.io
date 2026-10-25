@@ -53,6 +53,9 @@ export function linePath(P, smooth) {
  * createChart(host, { height, title }) → { update(spec), el }
  * spec = { x: {label, unit}, y: {label, unit}, series: [{name, points:[[x,y]], dashed, color, smooth, dots}], markers:[{x,y,label,color}],
  *          hlines:[{y,label,color}], vlines:[{x,label,color}], xDomain, yDomain, includeZero, hover: 'x'|'y', aspect }
+ * Stacked panels with one shared x axis: spec = { x, xDomain, vlines, panels: [{ y: {label, unit}, series, hlines, yDomain,
+ *          includeZero, ratio: {label} }] }. A point may carry a third value [x, y, r] (e.g. the ratio to a reference); the
+ *          hover read-out then shows "y unit · ratio-label = r" for every panel at the crosshair.
  */
 export function createChart(host, opts = {}) {
   const wrap = h('div.chart');
@@ -67,6 +70,7 @@ export function createChart(host, opts = {}) {
 
   function render() {
     if (!spec) return;
+    if (spec.panels) return renderPanels();
     const W = Math.max(280, svgHost.clientWidth || 600);
     const H = Math.round(opts.height ?? Math.min(360, Math.max(230, W * (spec.aspect ?? 0.56))));
     const m = { l: 58, r: 18, t: 14, b: 44 };
@@ -194,6 +198,103 @@ export function createChart(host, opts = {}) {
     if (legend.childElementCount) legend.style.minHeight = `${Math.max(legend.offsetHeight, parseFloat(legend.style.minHeight) || 0)}px`;
   }
 
+  function renderPanels() {
+    const W = Math.max(280, svgHost.clientWidth || 600), n = spec.panels.length;
+    const m = { l: 64, r: 18, t: 10, b: 44 }, gap = 14;
+    const H = Math.round(opts.height ?? 120 * n + m.t + m.b);
+    const ph = (H - m.t - m.b - gap * (n - 1)) / n;
+    const allX = spec.panels.flatMap((p) => p.series.flatMap((se) => (se.points || []).map((q) => q[0]))).filter(Number.isFinite);
+    const xd = spec.xDomain || niceDomain([Math.min(...allX), Math.max(...allX)], 7);
+    const X = (v) => m.l + ((v - xd[0]) / (xd[1] - xd[0] || 1)) * (W - m.l - m.r);
+    const xLabelW = Math.max(...xd.map((v) => fmt(v, { digits: 4 }).length)) * 7 + 22;
+    const xt = niceTicks(xd[0], xd[1], Math.max(3, Math.min(8, Math.floor((W - m.l - m.r) / xLabelW))));
+    const tickFmt = (v, ticks) => { const st = Math.abs(ticks[1] - ticks[0]) || 1; const d = Math.max(0, -Math.floor(Math.log10(st) + 1e-9)); return Math.abs(v) >= 1e5 || (Math.abs(v) < 1e-3 && v !== 0) ? fmt(v, { digits: 3 }) : v.toFixed(Math.min(d, 6)).replace(/^-/, '−'); };
+    const lab = (a) => (a ? a.label + (a.unit ? ` (${a.unit})` : '') : '');
+    svg = s('svg', { viewBox: `0 0 ${W} ${H}`, role: 'img', 'aria-label': opts.title || spec.title || 'Chart', preserveAspectRatio: 'xMidYMid meet' });
+    const bands = spec.panels.map((p, i) => {
+      const top = m.t + i * (ph + gap), bot = top + ph;
+      const series = p.series.map((se, j) => ({ ...se, col: se.color || 'var(--series-2)', points: (se.points || []).filter(Array.isArray), j }));
+      const ys = [...series.flatMap((se) => se.points.map((q) => q[1])), ...(p.hlines || []).map((l) => l.y)].filter(Number.isFinite);
+      let yd = p.yDomain || [Math.min(...ys), Math.max(...ys)];
+      if (!ys.length) yd = [0, 1];
+      if (p.includeZero && !p.yDomain) yd = [Math.min(0, yd[0]), Math.max(0, yd[1])];
+      if (!p.yDomain) yd = niceDomain(yd, 3);
+      const yt = niceTicks(yd[0], yd[1], 3);
+      const Y = (v) => bot - ((v - yd[0]) / (yd[1] - yd[0] || 1)) * ph;
+      const g = s('g', {});
+      const grid = s('g', { class: 'grid' });
+      for (const v of yt) grid.append(s('line', { x1: m.l, x2: W - m.r, y1: Y(v), y2: Y(v) }));
+      for (const v of xt) grid.append(s('line', { y1: top, y2: bot, x1: X(v), x2: X(v), opacity: 0.6 }));
+      const ticks = s('g', { class: 'tick' });
+      for (const v of yt) ticks.append(s('text', { x: m.l - 7, y: Y(v) + 3.5, 'text-anchor': 'end' }, tickFmt(v, yt)));
+      if (i === n - 1) for (const v of xt) ticks.append(s('text', { x: X(v), y: bot + 15, 'text-anchor': 'middle' }, tickFmt(v, xt)));
+      const clipId = 'clip' + Math.random().toString(36).slice(2, 8);
+      const plot = s('g', { 'clip-path': `url(#${clipId})` });
+      for (const l of p.hlines || []) {
+        if (!Number.isFinite(l.y) || l.y < yd[0] || l.y > yd[1]) continue;
+        plot.append(s('line', { class: 'hline', x1: m.l, x2: W - m.r, y1: Y(l.y), y2: Y(l.y), stroke: l.color || 'var(--text-3)' }));
+        if (l.label) plot.append(svgRich(s('text', { x: W - m.r - 4, y: Y(l.y) - 4, 'text-anchor': 'end', fill: l.color || 'var(--text-3)', 'font-size': 10.5 }), l.label, 10.5));
+      }
+      for (const l of spec.vlines || []) {
+        if (!Number.isFinite(l.x)) continue;
+        plot.append(s('line', { class: 'hline', y1: top, y2: bot, x1: X(l.x), x2: X(l.x), stroke: l.color || 'var(--text-3)' }));
+        if (l.label && i === 0) plot.append(svgRich(s('text', { x: X(l.x) + 5, y: top + 11, fill: l.color || 'var(--text-3)', 'font-size': 10.5 }), l.label, 10.5));
+      }
+      for (const se of series) {
+        let d = '', run = [];
+        const flush = () => { d += linePath(run, se.smooth); run = []; };
+        for (const [x, y] of se.points) { if (!Number.isFinite(x) || !Number.isFinite(y)) { flush(); continue; } run.push([X(x), Y(y)]); }
+        flush();
+        plot.append(s('path', { class: `series${se.dashed ? ' dashed' : ''}`, d, stroke: se.col, 'stroke-width': se.width || 2 }));
+      }
+      g.append(s('defs', {}, s('clipPath', { id: clipId }, s('rect', { x: m.l, y: top - 2, width: W - m.l - m.r, height: ph + 4 }))), grid,
+        s('path', { class: 'axis', d: `M${m.l},${top}V${bot}H${W - m.r}`, fill: 'none' }), ticks,
+        svgRich(s('text', { class: 'axis-label', transform: `translate(14 ${(top + bot) / 2}) rotate(-90)`, 'text-anchor': 'middle' }), lab(p.y), 11.5), plot);
+      svg.append(g);
+      return { p, series, Y, top, bot };
+    });
+    svg.append(svgRich(s('text', { class: 'axis-label', x: (m.l + W - m.r) / 2, y: H - 6, 'text-anchor': 'middle' }), lab(spec.x), 12));
+    const cross = s('line', { class: 'crosshair', y1: m.t, y2: H - m.b, visibility: 'hidden' });
+    const dots = s('g');
+    const hit = s('rect', { x: m.l, y: m.t, width: W - m.l - m.r, height: H - m.t - m.b, fill: 'transparent' });
+    svg.append(cross, dots, hit);
+    svgHost.replaceChildren(svg);
+    legend.replaceChildren();
+    geom = { W, H };
+    drawn = true;
+    const onMove = (ev) => {
+      const r = svg.getBoundingClientRect(), px = ((ev.clientX - r.left) / r.width) * W;
+      const xv = xd[0] + ((px - m.l) / (W - m.l - m.r)) * (xd[1] - xd[0]);
+      dots.replaceChildren();
+      const rows = [];
+      for (const b of bands) for (const se of b.series) {
+        const v = interp(se.points, xv, false);
+        if (v == null) continue;
+        dots.append(s('circle', { class: 'hover-dot', cx: X(xv), cy: b.Y(v), r: 4, fill: se.col }));
+        const rv = se.points[0]?.length > 2 ? interp(se.points.map((q) => [q[0], q[2]]), xv, false) : null;
+        const name = se.name || b.p.y.label;
+        rows.push(h('div', h('i', { style: `background:${se.col}` }), h('span', { html: nameHTML(name) }),
+          ` = ${fmt(v, { digits: 4 })}${b.p.y.unit ? ' ' : ''}`, b.p.y.unit ? h('span', { html: nameHTML(b.p.y.unit) }) : '',
+          rv != null && b.p.ratio ? h('span', { style: 'opacity:.75', html: ` · ${nameHTML(b.p.ratio.label)} = ${fmt(rv, { digits: 4 })}` }) : ''));
+      }
+      cross.setAttribute('x1', X(xv)); cross.setAttribute('x2', X(xv)); cross.setAttribute('visibility', 'visible');
+      tip.replaceChildren(h('div', { style: 'opacity:.7', html: `${nameHTML(spec.x?.label || 'x')} = ${fmt(xv, { digits: 4 })}${spec.x?.unit ? ' ' + nameHTML(spec.x.unit) : ''}` }), ...rows);
+      const hr = svgHost.getBoundingClientRect(), wr = wrap.getBoundingClientRect();
+      const left = ev.clientX - wr.left;
+      tip.style.top = `${ev.clientY - wr.top}px`;
+      tip.classList.add('show');
+      // right of the cursor if it fits, else left of it, else (narrow screens) clamped inside the chart
+      const tw = tip.offsetWidth;
+      if (left + tw + 20 <= hr.width) { tip.style.left = `${left}px`; tip.style.transform = 'translate(12px, -50%)'; }
+      else if (left - tw - 12 >= 0) { tip.style.left = `${left}px`; tip.style.transform = 'translate(calc(-100% - 12px), -50%)'; }
+      else { tip.style.left = `${Math.max(4, hr.width - tw - 4)}px`; tip.style.transform = 'translate(0, -50%)'; }
+    };
+    const onLeave = () => { tip.classList.remove('show'); cross.setAttribute('visibility', 'hidden'); dots.replaceChildren(); };
+    hit.addEventListener('pointermove', onMove);
+    hit.addEventListener('pointerdown', onMove);
+    hit.addEventListener('pointerleave', onLeave);
+  }
+
   const ro = new ResizeObserver(() => { if (svg && Math.abs((svgHost.clientWidth || 0) - (geom?.W || 0)) > 4) render(); });
   ro.observe(svgHost);
   window.addEventListener('themechange', () => render());
@@ -210,17 +311,19 @@ export function createChart(host, opts = {}) {
     toSheets() {
       if (!spec) return [];
       const P = texToPlain, col = (ax, d) => `${P(ax?.label || d)}${ax?.unit ? ' (' + P(ax.unit) + ')' : ''}`;
+      if (spec.panels) return spec.panels.flatMap((p) => p.series.map((se) => ({ name: P(se.name || p.y.label).slice(0, 31), rows: [[col(spec.x, 'x'), col(p.y, 'y'), ...(p.ratio ? [P(p.ratio.label)] : [])], ...se.points.map((q) => q.slice(0, p.ratio ? 3 : 2).map(num))] })));
       return spec.series.map((se) => ({ name: P(se.name), rows: [[col(spec.x, 'x'), col(spec.y, 'y')], ...se.points.map(([x, y]) => [num(x), num(y)])] }));
     },
     toJSON(title) {
       if (!spec) return {};
       const P = texToPlain, ax = (a) => ({ label: P(a?.label || ''), unit: P(a?.unit || '') });
+      if (spec.panels) return { title: P(title || ''), x: ax(spec.x), panels: spec.panels.map((p) => ({ y: ax(p.y), series: p.series.map((se) => ({ name: P(se.name || p.y.label), points: se.points.filter((q) => q.every(Number.isFinite)) })) })) };
       return { title: P(title || ''), x: ax(spec.x), y: ax(spec.y), series: spec.series.map((se) => ({ name: P(se.name), points: se.points.filter((p) => p.every(Number.isFinite)) })) };
     },
     svgEl: () => svg,
     /** Temporarily draw title + legend into the SVG while fn(svg) runs synchronously (used for image export). */
     withLegend(fn, title) {
-      if (!svg || !geom) return fn(svg);
+      if (!svg || !geom || spec.panels) return fn(svg);
       const vis = spec.series.filter((se) => se.points?.length && !hidden.has(se.name));
       const vb = svg.getAttribute('viewBox');
       const g = s('g', {});

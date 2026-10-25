@@ -22,6 +22,7 @@ const PARTS = {
   table: '.results-table td.v, .results-table td.u',
   plots: '.plot-grid > .card',
   diagrams: '.schem-host',
+  verdict: '.verdict',
 };
 const parts = arg('parts', Object.keys(PARTS).join(',')).split(',');
 const reg = JSON.parse(readFileSync(join(SITE, 'js/registry.json'), 'utf8'));
@@ -95,6 +96,7 @@ async function run({ slug, sys, w }) {
       await page.goto(`${BASE}calculators/${slug}.html`, { waitUntil: 'networkidle0' });
       // --hide-diagrams isolates the inputs/results layout from the drawings (used before DiagramViewport existed)
       if (process.argv.includes('--hide-diagrams')) await page.addStyleTag({ content: '.schem-host { display: none !important; }' });
+      await page.evaluate(() => document.querySelectorAll('details.explore').forEach((d) => { d.open = true; }));   // tier 2 is measured too
       // a run from top to bottom makes every chart visible once, then the sweep happens with the page at rest
       await page.evaluate(async () => { for (let y = 0; y < document.body.scrollHeight; y += 600) { scrollTo(0, y); await new Promise((r) => setTimeout(r, 30)); } scrollTo(0, 0); });
       // the baseline is taken only once the page has stopped changing (fonts, KaTeX, charts drawn after load)

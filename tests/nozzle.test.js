@@ -124,19 +124,24 @@ test('Flow along the nozzle: shock position satisfies p_exit = p_a; mass flow is
   assert.equal(nozzleFlow(geo, g, pc, 0.99 * f0.peSub * 1.02).regime, 'unchoked');
 });
 
-test('Calculator: the THRUSTCF example as a cone reproduces the workbook; verdict and fixes', () => {
+test('Calculator: the THRUSTCF example as a cone reproduces the workbook; geometry inverts; verdict and fixes', () => {
   const base = Object.fromEntries(def.groups.flatMap((gr) => gr.fields).map((f) => [f.id, f.default]));
-  const v = { ...base, type: 'cone', g: inp.g, eps: inp.eps, alpha: inp.alpha, pc: inp.pc, pa: inp.pa, dt: 1 };
+  const v = { ...base, type: 'cone', g: inp.g, dt: 1, de: Math.sqrt(inp.eps), Ld: conicalLength(0.5, inp.eps, inp.alpha, 0.191), pc: inp.pc, pa: inp.pa };
   const o = def.compute(v);
+  close(o.results.alpha, 15, 1e-9, 'half angle recovered from L_d'); close(o.results.eps, 6, 1e-12, 'ε from the diameters');
   close(o.results.cf, W('R5'), 1e-9, 'R5 3-D thrust coefficient');
   assert.equal(o.verdict.level, 'safe');
-  close(o.results.cstar, cStar(v.g, v.Tc, v.Mw), 1e-15);
+  close(o.results.thetaC, 30, 1e-6, 'default L_c gives θc = 30°');
   close(o.results.mdot * o.results.cstar, v.pc * 6894.757293168 * o.results.At * 0.00064516, 1e-12, 'ṁ c* = p_c A_t');
-  // an over-expanded bell: unsafe, and the suggested ε and p_c each restore the 1.15 margin exactly
-  const bad = { ...base, type: 'bell', eps: 25, pc: 500, pa: 14.7 }, ob = def.compute(bad);
-  assert.equal(ob.verdict.level, 'unsafe');
-  close(def.compute({ ...bad, eps: ob.results.epsMax }).results.sepMargin, 1.15, 1e-6, 'ε_max gives margin 1.15');
+  // an over-expanded bell: unsafe, and the suggested exit diameter and p_c each restore the 1.15 margin exactly
+  const bad = { ...base, type: 'bell', dt: 0.75, de: 3.75, Lc: 1.2, Ld: 0.8 * conicalLength(0.375, 25, 15, 0.14325), pc: 500, pa: 14.7 }, ob = def.compute(bad);
+  assert.equal(ob.verdict.level, 'unsafe'); close(ob.results.Lf, 80, 1e-9, 'bell length 80 %');
+  const d2 = ob.results.deMax, L2 = 0.8 * conicalLength(0.375, (d2 / 0.75) ** 2, 15, 0.14325);
+  close(def.compute({ ...bad, de: d2, Ld: L2 }).results.sepMargin, 1.15, 1e-6, 'd_e,max gives margin 1.15');
   close(def.compute({ ...bad, pc: ob.results.pcMin }).results.sepMargin, 1.15, 1e-6, 'p_c,min gives margin 1.15');
+  // impossible lengths are refused with the achievable range
+  assert.throws(() => def.compute({ ...base, Lc: 0.01 }), /convergent length must be between/);
+  assert.throws(() => def.compute({ ...base, type: 'cone', Ld: 0.05 }), /divergent length must be between/);
 });
 
 after(() => console.log(`# nozzle: ${stats.compared} comparisons, max rel err ${stats.maxRel.toExponential(2)}`));

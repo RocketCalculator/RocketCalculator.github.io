@@ -141,3 +141,8 @@ Decisions taken while the owner was unavailable. Each entry: date, question, opt
 - The choke limit was also corrected: from p* to the subsonic-exit pressure (the regime in between is a normal shock
   inside, now solved). BREAKING for designs with p* < p_a < p_sub, which used to be refused.
 
+## D23 — 2026-10-25 — Nozzle geometry entered as diameters and lengths (user request)
+- Inputs d_in, d_t, d_e, L_c, L_d replace ε, θc, α and L_f; those become results, solved by bisection with accepted
+  ranges θc 10–80°, cone α 3–45°, bell 50–120 % of a 15° cone (outside: refused with the achievable lengths).
+- BREAKING for saved links and designs of the previous version (the old fields are ignored; defaults are used).
+

@@ -92,3 +92,14 @@ live pages checked after each deploy.
 
 **Next:** Parachute Recovery (`improve/parachute-cycle-1`) once B2 is resolved, or locally in the meantime.
 
+
+## 2026-10-25 — Site live at https://rocketcalculator.github.io/
+
+- The owner made the repo public and renamed it `RocketCalculator.github.io` (B1, B2 resolved). Local remote updated.
+- PR #10: `REPO_URL` and the 404 base now use the new address; `docs/OPUS_PROMPT.md` and `docs/BRIEF.md` removed;
+  new README with screenshots, a flow diagram and the repository tree.
+- Deploy succeeded; live check of home, Subsonic CP, Fin Flutter, Trajectory and the Subsonic CP docs page: no page
+  errors or 4xx; unknown paths return the 404 page with the right base.
+- Tagged `subsonic-cp/v1.1.0` and `v1.5.1` (merge `9218a07`).
+
+**Next:** Parachute Recovery (`improve/parachute-cycle-1`), with the bare-minimum testing from D20.

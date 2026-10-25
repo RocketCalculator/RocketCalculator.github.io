@@ -367,7 +367,13 @@ table.ptable button:hover { color: var(--red); }
 .verdict-safe { border-left-color: var(--ok); } .verdict-safe .verdict-icon { background: var(--ok); } .verdict-safe .verdict-word { color: var(--ok); }
 .verdict-marginal { border-left-color: var(--warn); } .verdict-marginal .verdict-icon { background: var(--warn); } .verdict-marginal .verdict-word { color: var(--warn); }
 .verdict-unsafe { border-left-color: var(--red); background: var(--err-soft); } .verdict-unsafe .verdict-icon { background: var(--red); } .verdict-unsafe .verdict-word { color: var(--red-text); }
-@media (max-width: 600px) { .verdict { min-height: 12.5rem; max-height: 12.5rem; } .verdict-title { white-space: normal; } .verdict-fixes li { white-space: normal; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; } }
+/* phones: the title gets its own line and the box room for three two-line fixes (still a fixed height) */
+@media (max-width: 600px) {
+  .verdict { min-height: 19rem; max-height: 19rem; padding: 12px 14px; }
+  .verdict-head { flex-wrap: wrap; row-gap: 4px; }
+  .verdict-title { flex-basis: 100%; white-space: normal; font-size: 0.95rem; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
+  .verdict-fixes li { white-space: normal; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
+}
 .notice .notice-fix { margin-top: 4px; }
 /* Explore (def.tiers): the second tier, closed by default */
 .explore { border-radius: var(--radius); border: 1px solid var(--border-strong); background: var(--surface); }

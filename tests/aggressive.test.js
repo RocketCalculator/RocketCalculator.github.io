@@ -120,7 +120,7 @@ const INVARIANTS = {
   'propellant-slosh': (v, R) => [R.f1 > 0 && R.f2 > R.f1 && R.f3 > R.f2, R.m1frac > 0 && R.m1frac <= 100, R.fixedFrac >= -1e-9 && R.fixedFrac <= 100, R.L1 > 0],
   'reliability-growth': (v, R) => [R.RT >= R.R0 && R.RT <= 1, R.R0 >= 0, R.DT >= 0 && R.DT <= v.D0, R.F >= 0 && R.F <= v.N + 1e-9, R.Tstar === 'never' || (Number.isInteger(R.Tstar) && (R.Tstar > v.N) === (R.RT < v.Rt))],
   'wind-compensation': (v, R) => [R.QE > 0 && R.QE <= 90, R.AZT >= 0 && R.AZT < 360, Math.abs(Math.hypot(R.tiltI, R.tiltC) - R.tilt) <= 1e-9 * Math.max(1, R.tilt), Math.abs(R.QE + R.tilt - 90) < 1e-9, R.offAxis >= 0 && R.offAxis <= 90],
-  'pitch-yaw-wavenumber': (v, R) => [R.L > 0, Math.abs(R.L * R.lam - 2 * Math.PI) < 1e-9, R.f > 0, Math.abs(R.P * R.f - 1) < 1e-9, R.Cma < 0, R.I > 0],
+  'pitch-yaw-wavenumber': (v, R) => [R.L > 0, Math.abs(R.L * R.lam - 2 * Math.PI) < 1e-9, R.f > 0, Math.abs(R.P * R.f - 1) < 1e-9, R.Cma < 0, R.I > 0, Math.abs(R.ratio * R.f - v.fR) <= 1e-9 * Math.max(1, v.fR), R.amp === '—' || R.amp >= 1, R.Lsim > 0, R.fFix > 0],
   'roll-rate-history': (v, R) => [R.fB * Math.sign(v.delta || 1) >= -1e-12, Math.abs(R.fB) <= Math.abs(R.fB0) * (1 + 1e-9) + 1e-12, Math.abs(R.fA) <= Math.abs(R.fB0) * (1 + 1e-9) + 1e-12, R.JB <= 0, R.k <= 0, R.X >= 0, R.CLp < 0],
   'parachute-recovery': (v, R) => [R.t > 0, R.drift >= 0, R.vAft <= R.vNose * (1 + 1e-12), R.vAft >= R.vAftMin * (1 - 1e-12), R.vDeploy > 0, !v.reef || (R.k > 0 && R.k <= 1 && R.tReefed > 0)],
   'upper-stage-divergence': (v, R) => [R.qD > 0, typeof R.amp !== 'number' || R.amp >= 1, typeof R.margin !== 'number' || Math.abs(R.margin - R.qD / v.q) <= 1e-9 * R.margin, v.mode !== 'tube' || Math.abs(R.lmax - v.l * Math.sqrt(R.qD / v.q)) <= 1e-9 * R.lmax],
@@ -378,7 +378,9 @@ test('Wind compensation: more range or more drift needs more tilt; the tilt oppo
 test('Pitch-yaw wave number: stiffer or lighter rockets have shorter wavelengths; speed changes only the frequency', () => {
   increasing([4, 3, 2, 1, 0.5].map((SM) => run('pitch-yaw-wavenumber', { SM }).L), 'L vs falling margin');
   increasing([10, 20, 40].map((m) => run('pitch-yaw-wavenumber', { m }).L), 'L vs mass');
-  increasing([1.225, 0.9, 0.5].map((rho) => -run('pitch-yaw-wavenumber', { rho }).lam), 'λ vs thinner air');
+  increasing([1.225, 0.9, 0.5].map((rho) => -run('pitch-yaw-wavenumber', { atmMode: 'rho', rho }).lam), 'λ vs thinner air');
+  increasing([0, 5000, 20000, 60000].map((h) => run('pitch-yaw-wavenumber', { h }).L), 'L vs altitude');
+  increasing([0, 0.2, 0.5, 0.9].map((fR) => run('pitch-yaw-wavenumber', { fR }).amp), 'response vs roll rate');
   const a = run('pitch-yaw-wavenumber', { U: 100 }), b = run('pitch-yaw-wavenumber', { U: 300 });
   assert.ok(Math.abs(a.L - b.L) < 1e-9 * a.L && Math.abs(b.f / a.f - 3) < 1e-9, 'speed scales f only');
 });

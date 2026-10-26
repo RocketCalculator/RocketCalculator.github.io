@@ -244,7 +244,7 @@ export default {
     const band = (f0, f1, op, field) => {
       const ha = depthFor(f0, { a: v.a, R }), hb = Math.min(depthFor(f1, { a: v.a, R }) ?? v.Lt, v.Lt);
       if (ha == null || ha >= v.Lt) return;
-      g.append(s('rect', { x: cx - w, width: 2 * w, y: Y(hb), height: Y(ha) - Y(hb), fill: 'var(--danger)', 'fill-opacity': op, 'data-field': field }));
+      g.append(s('path', { d: path([[cx - w, Y(hb)], [cx + w, Y(hb)], [cx + w, Y(ha)], [cx - w, Y(ha)]], true), fill: 'var(--danger)', 'fill-opacity': op, 'data-field': field }));
     };
     band(v.fp / v.sep, v.sep * v.fp, 0.07, 'sep'); band(v.fp / NEAR, NEAR * v.fp, 0.14, 'fp');
     // liquid with its first-mode surface, η ∝ J1(λ1 r/R)/J1(λ1), amplitude exaggerated
@@ -271,7 +271,7 @@ export default {
     if (yh >= 24) g.append(s('path', { d: `M${px - 9},${yh} L${px + 9},${yh} M${px - 6},${yh} L${px},${yh + 5} L${px + 6},${yh}`, stroke: col, 'stroke-width': 2, fill: 'none', 'data-field': 'M a' }));
     else g.append(text(px, 16, '↑', { anchor: 'middle', size: 12 }));
     // pendulum labels to its right, kept apart
-    const xl = px + 18, yHL = Math.max(28, Math.min(yh + 4, yb - 34)), yBL = Math.max(yHL + 30, Math.min(yBob + 4, yb + 4));
+    const xl = px + Math.max(18, rBob + 8), yHL = Math.max(28, Math.min(yh + 4, yb - 34)), yBL = Math.max(yHL + 30, Math.min(yBob + 4, yb + 4));
     g.append(text(xl, yHL, yh >= 24 ? `hinge, ${L(Math.abs(m1.hinge))} ${m1.hinge >= 0 ? 'below' : 'above'} surface` : `hinge ${L(-m1.hinge)} above surface`, { size: 10.5 }));
     g.append(text(xl, yBL - 7, `m_1 = ${Q(m1.m, MASS)} (${fmt(100 * m1.mFrac, { digits: 3 })} %)`, { size: 10.5 }));
     g.append(text(xl, yBL + 7, `L_1 = ${L(m1.pendulum)}`, { size: 10.5 }));
@@ -298,8 +298,9 @@ export default {
     // right: frequency strip (log scale) with the pitch frequency and the bands, then the first three surface shapes
     const x0 = 500, span = 220, f = o.modes.map((m) => m.f), lo = Math.min(v.fp / v.sep, f[0]) / 1.5, hi = Math.max(f[2], v.sep * v.fp) * 1.3;
     const F = (x) => x0 + (span * Math.log(x / lo)) / Math.log(hi / lo), yS = 66;
-    g.append(s('rect', { x: F(v.fp / v.sep), y: yS - 9, width: F(v.sep * v.fp) - F(v.fp / v.sep), height: 18, fill: 'var(--danger)', 'fill-opacity': 0.08, 'data-field': 'sep' }));
-    g.append(s('rect', { x: F(v.fp / NEAR), y: yS - 9, width: F(NEAR * v.fp) - F(v.fp / NEAR), height: 18, fill: 'var(--danger)', 'fill-opacity': 0.16, 'data-field': 'fp' }));
+    const strip = (f0, f1, op, field) => g.append(s('path', { d: path([[F(f0), yS - 9], [F(f1), yS - 9], [F(f1), yS + 9], [F(f0), yS + 9]], true), fill: 'var(--danger)', 'fill-opacity': op, 'data-field': field }));
+    strip(v.fp / v.sep, v.sep * v.fp, 0.08, 'sep');
+    strip(v.fp / NEAR, NEAR * v.fp, 0.16, 'fp');
     g.append(s('line', { x1: x0, x2: x0 + span, y1: yS, y2: yS, class: 'sc-thin' }));
     g.append(s('line', { x1: F(v.fp), x2: F(v.fp), y1: yS - 12, y2: yS + 12, stroke: 'var(--danger)', 'stroke-width': 2, 'data-field': 'fp' }));
     g.append(text(F(v.fp), yS + 25, `f_p ${Hz(v.fp)}`, { anchor: 'middle', size: 10.5, field: 'fp' }));

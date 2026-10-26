@@ -284,6 +284,7 @@ export default {
       return [cx + sgn * (x * c - y * sn), cy - sgn * (x * sn + y * c), cx + sgn * (tx * c - ty * sn), cy - sgn * (tx * sn + ty * c)];
     };
     // flight after release: straight on at the release speed (ft/s → px)
+    const rb = Math.max(3, Math.min(10, 2.5 + 1.6 * Math.cbrt((o.mWeights / 2) * 14593.9)));   // weight marker grows with its mass (cube root), not to scale
     const tPost = Math.min(0.4 * o.tRelease, (0.45 * R) / Math.max(o.releaseSpeed, 1e-9)), uPx = o.releaseSpeed * k;
     const post = (t, sgn) => [cx + sgn * R * k, cy - sgn * uPx * t];
     // release circle and dimension
@@ -296,7 +297,7 @@ export default {
       g.append(s('path', { d: path([post(0, sgn), post(tPost, sgn)]), class: 'sc-thin', fill: 'none', 'stroke-dasharray': '1.5 3', 'marker-end': fr.arrow() }));
       // the moment of release: wire along the radius, coloured by the wire verdict
       g.append(s('line', { x1: cx + sgn * ra, y1: cy, x2: cx + sgn * R * k, y2: cy, stroke: wireCol, 'stroke-width': 2, opacity: 0.55, 'data-field': 'l Tb' }));
-      g.append(s('circle', { cx: cx + sgn * R * k, cy, r: 6, fill: 'none', stroke: 'var(--text-2)', 'stroke-dasharray': '2 2' }));
+      g.append(s('circle', { cx: cx + sgn * R * k, cy, r: rb, fill: 'none', stroke: 'var(--text-2)', 'stroke-dasharray': '2 2' }));
     }
     // vehicle (drum) with a spin mark, rotating in the animation
     const body = s('g', { transform: `rotate(${(-thRel * 180) / Math.PI} ${cx} ${cy})` });
@@ -317,14 +318,14 @@ export default {
       for (const sgn of [1, -1]) {
         const pos = (t) => (t <= o.tRelease ? world(at(t), sgn) : [...post(t - o.tRelease, sgn), NaN, NaN]);
         const wire = s('path', { d: `M${cx},${cy}`, stroke: wireCol, fill: 'none', 'stroke-linecap': 'round' });
-        wire.append(s('animate', { attributeName: 'd', dur: `${dur}s`, repeatCount: 'indefinite', keyTimes: kt, calcMode: 'discrete',
-          values: vals((t) => { const q = pos(t); return t <= o.tRelease ? `M${q[2].toFixed(1)},${q[3].toFixed(1)}L${q[0].toFixed(1)},${q[1].toFixed(1)}` : `M${q[0].toFixed(1)},${q[1].toFixed(1)}`; }) }));
+        wire.append(s('animate', { attributeName: 'd', dur: `${dur}s`, repeatCount: 'indefinite', keyTimes: kt,
+          values: vals((t) => { const q = pos(t); return t <= o.tRelease ? `M${q[2].toFixed(1)},${q[3].toFixed(1)}L${q[0].toFixed(1)},${q[1].toFixed(1)}` : `M${q[0].toFixed(1)},${q[1].toFixed(1)}L${q[0].toFixed(1)},${q[1].toFixed(1)}`; }) }));
         wire.append(s('animate', { attributeName: 'stroke-width', dur: `${dur}s`, repeatCount: 'indefinite', keyTimes: kt, values: vals((t) => (t <= o.tRelease ? (1 + (4 * at(t).T) / out.Tmax).toFixed(2) : 0)) }));
-        const ball = s('circle', { cx: cx + sgn * R * k, cy, r: 5, class: 'sc-body-2' });
+        const ball = s('circle', { cx: cx + sgn * R * k, cy, r: rb, 'data-field': 'mwEach ff', class: 'sc-body-2' });
         for (const [attr, j] of [['cx', 0], ['cy', 1]]) ball.append(s('animate', { attributeName: attr, dur: `${dur}s`, repeatCount: 'indefinite', keyTimes: kt, values: vals((t) => pos(t)[j].toFixed(1)) }));
         g.append(wire, ball);
       }
-    } else for (const sgn of [1, -1]) g.append(s('circle', { cx: cx + sgn * R * k, cy, r: 5, class: 'sc-body-2' }));
+    } else for (const sgn of [1, -1]) g.append(s('circle', { cx: cx + sgn * R * k, cy, r: rb, class: 'sc-body-2' }));
     // dimensions and labels (outside the paths)
     const ul = ctx.U(WIRE), ud = ctx.U(DRUM), us = ctx.U(SPIN), uf = ctx.U(FORCE), um = ctx.U(MASS);
     // chained dimensions below the circle: a and l on one baseline, R under them
@@ -348,7 +349,8 @@ export default {
     // spin arrow (counter-clockwise seen from the nose)
     const ar = ra + 16;
     g.append(s('path', { d: `M${cx + ar * Math.cos(2.4)},${cy - ar * Math.sin(2.4)} A${ar},${ar} 0 0 0 ${cx + ar * Math.cos(1.4)},${cy - ar * Math.sin(1.4)}`, fill: 'none', class: 'sc-accent', 'marker-end': fr.arrow('acc') }));
-    g.append(text(16, H - 30, `To scale${ra > raTrue + 0.5 ? ' except the drum' : ''}; fixed frame seen from the nose. Dashed: unwinding · red: swing-out · dotted: after release.`, { size: 10, cls: 'sc-dim-text' }));
+    g.append(text(16, H - 46, `To scale${ra > raTrue + 0.5 ? ' except the drum (enlarged)' : ''}, seen from the nose in a fixed frame; weight markers sized by mass.`, { size: 10, cls: 'sc-dim-text' }));
+    g.append(text(16, H - 30, 'Dashed: unwinding · red: swing-out · dotted: after release.', { size: 10, cls: 'sc-dim-text' }));
     g.append(text(16, H - 14, motion ? `Animation shown ${slow}× slower; the wire thickens as it pulls harder.` : 'Animation off (reduced motion).', { size: 10, cls: 'sc-dim-text' }));
     // handles: the released weight (wire length) and the top of the drum (drum radius)
     ctx.handle('wire', cx + R * k, cy, { field: 'l', title: 'Drag left or right to change the wire length',

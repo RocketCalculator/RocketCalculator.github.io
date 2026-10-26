@@ -12,6 +12,7 @@ import { nosePressure, cpStar } from './nosepressure.js';
 import { coneFlow, maxCone, coneCpTable, machAngle, stagT } from './conical.js';
 import { cpt, cfTurb, rhoAOverMu } from './drag.js';
 import { interp } from './trajectory.js';
+import { prandtlMeyer, machFromNu } from './wedge.js';
 
 const D2R = Math.PI / 180;
 /** Half-angle of the cone through the tip and the profile at 2 % of the length: the "tip angle" a real (slightly rounded) tip presents. */
@@ -145,12 +146,28 @@ export function analyseNose(p) {
   // tip flow at incidence: tangent cone at the tip half-angle ± α (windward / leeward)
   if (M > 1 && !p.coarse) {
     const mcone = maxCone(M, g), cap = prof.cap, th = tipHalf;
-    const wind = coneFlow(M, th + al, g, mcone), lee = th - al > 0 ? coneFlow(M, th - al, g, mcone) : { attached: true, beta: mu, expansion: true };
+    const wind = coneFlow(M, th + al, g, mcone), lee = th - al > 0 ? coneFlow(M, th - al, g, mcone) : { attached: true, beta: mu, expansion: true, turn: al - th, M2: machFromNu(prandtlMeyer(M, g) + (al - th), g) };   // leeward turns away: Prandtl–Meyer fan
     tip = { half: th, blunt: !!cap, maxCone: mcone.cone, attached: !cap && th + al < mcone.cone, zero: coneFlow(M, th, g, mcone) };
     shocks = { wind, lee };
   }
+  // shock–expansion along the surface (zero incidence): the tip cone's surface flow expands by Prandtl–Meyer as the
+  // surface turns away (NACA 1135 eqs. 171–173), and turns through a corner fan at a shoulder with a slope break
+  let se = null;
+  if (M > 1 && !p.coarse && !prof.cap) {
+    const t0 = coneFlow(M, tipHalf, g, maxCone(M, g));
+    if (t0.attached) {
+      const k = (g - 1) / 2, nu0 = prandtlMeyer(t0.Mc, g), isen = (M1, M2) => ((1 + k * M1 * M1) / (1 + k * M2 * M2)) ** (g / (g - 1));
+      const pts2 = [], waves = [];
+      for (let i = 0; i < sl.length; i++) {
+        const th = Math.min(sl[i], tipHalf), Mi = machFromNu(nu0 + (tipHalf - th), g), pr = t0.pr * isen(t0.Mc, Mi);
+        pts2.push([(pts[i].x + pts[i + 1].x) / 2, (2 / (g * M * M)) * (pr - 1), Mi, th]);
+      }
+      const last = pts2[pts2.length - 1], thB = Math.max(0, last[3]), Mb = machFromNu(prandtlMeyer(last[2], g) + thB, g);
+      se = { cp: pts2.map((q) => [q[0], q[1]]), surf: pts2, Mc: t0.Mc, shoulder: { theta: thB, M1: last[2], M2: Mb } };
+    }
+  }
   const CD = CDp == null ? null : CDp + CDf;
-  return { prof, pts, L, R, Aref, ...m, xcp, CNa, q, load, ReL, CDf, CDp, CD, T0, cpMax, mu, regime, cp, cpS, sub, Mcr, tip, shocks, tipHalf, fineness: L / (2 * R) };
+  return { se, prof, pts, L, R, Aref, ...m, xcp, CNa, q, load, ReL, CDf, CDp, CD, T0, cpMax, mu, regime, cp, cpS, sub, Mcr, tip, shocks, tipHalf, fineness: L / (2 * R) };
 }
 
 /** Radius at station z by linear interpolation of the profile. */

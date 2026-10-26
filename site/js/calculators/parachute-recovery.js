@@ -6,7 +6,7 @@ import { s, fmt, InputError } from '../util.js';
 import { text, dim, path } from '../ui/svg.js';
 import { toDisplay, displayUnit, unitLabel } from '../units.js';
 import { fetchWinds, mapActions, METEO_CREDIT } from '../ui/meteo.js';
-import { windSketch } from '../ui/windSketch.js';
+import { windBarbs } from '../ui/windSketch.js';
 
 const MASS = { dim: 'mass', internal: 'lbm' };
 const DIST = { dim: 'distance', internal: 'ft' };
@@ -300,15 +300,15 @@ export default {
     },
   ],
   schematicTitle: 'Descent path and landing',
-  schematicHint: 'Left: the descent from parachute opening to landing, height and drift to the same scale, with dots every interval of time and the wind; the shaded ground is the recovery area. Right: the landing — the nose is down and the aft body slows over the tether. Drag the opening and disreef points up or down, the wind arrow sideways, or the flag at the edge of the area',
+  schematicHint: 'Left: the descent from parachute opening to landing, height and drift to the same scale, with dots every interval of time and the wind; the shaded ground is the recovery area. Right: the landing — the nose is down and the aft body slows over the tether. Winds aloft are drawn as standard wind barbs on the same height scale. Drag the opening and disreef points up or down, or the flag at the edge of the area',
   schematic(ctx, v, out) {
-    const W = layered(v) ? 870 : 760, H = 440, o = out.o, hist = out.hist, lv = out.verdict.level;
+    const W = 760, H = 460, o = out.o, hist = out.hist, lv = out.verdict.level;
     const fr = ctx.frame({ width: W, height: H, label: 'Descent path with drift and wind, recovery area, and the landing' });
     const g = fr.layer('main'); g.replaceChildren();
     const ua = ctx.U(ALT), ud = ctx.U(DIST), us = ctx.U(SPEED), A = (h) => `${fmt(ua.v(h), { digits: 3 })} ${ua.plain}`, Sp = (x) => `${fmt(us.v(x), { digits: 3 })} ${us.plain}`, Dd = (x) => `${fmt(ud.v(x), { digits: 3 })} ${ud.plain}`;
     const col = lv === 'unsafe' ? 'var(--danger)' : lv === 'marginal' ? 'var(--warn)' : 'var(--ok)';
     // ---- descent panel: height and drift to one scale ----
-    const bx0 = 92, bx1 = 470, yt = 58, yg = 362, span = Math.max(o.drift, v.Rf) * 1.08 || 1;
+    const bx0 = 112, bx1 = 470, yt = 58, yg = 362, span = Math.max(o.drift, v.Rf) * 1.08 || 1;
     const k = Math.min((bx1 - bx0) / span, (yg - yt) / v.hD), X = (x) => bx0 + x * k, Y = (h) => yg - h * k;
     // recovery area on the ground
     g.append(s('rect', { x: X(0), y: yg, width: X(v.Rf) - X(0), height: 10, fill: 'var(--ok)', 'fill-opacity': 0.18, 'data-field': 'Rf' }));
@@ -327,24 +327,8 @@ export default {
       g.append(s('circle', { cx: X(q.x), cy: Y(q.h), r: 2.6, fill: 'var(--text-2)' }));
       if (i % 2 === 0) g.append(text(X(q.x) + 6, Y(q.h) + 3, `${t >= 60 && step >= 60 ? `${fmt(t / 60, { digits: 3 })} min` : `${t} s`}`, { size: 9.5, cls: 'sc-dim-text' }));
     }
-    // wind arrows on the left, length ∝ wind speed
-    const pxPer = 1.4 * (us.plain === 'm/s' ? 3.2 : 1) * us.v(1);           // arrow px per ft/s
-    const wl = layered(v) ? 0 : Math.min(70, pxPer * v.wind);
-    if (layered(v) && v.winds?.length) {
-      // one arrow per layer inside the descent height: length ∝ speed; label speed and the direction it blows from
-      // the side view's horizontal axis runs along the ground track, so each arrow shows the wind component along it
-      const psi = ((out.track?.bearing ?? 90) * Math.PI) / 180;
-      let lastY = Infinity;
-      for (const r of [...v.winds].filter((q) => q.h <= v.hD && q.w >= 0).sort((a, b) => a.h - b.h)) {
-        const y = Y(r.h), a = (r.dir * Math.PI) / 180, along = -r.w * (Math.sin(a) * Math.sin(psi) + Math.cos(a) * Math.cos(psi));
-        const len = Math.max(-34, Math.min(70, pxPer * along)), x0w = along >= 0 ? 38 : 72;
-        if (Math.abs(len) > 2) g.append(s('path', { d: `M${x0w},${y}h${len}`, class: 'sc-accent', 'marker-end': fr.arrow('acc'), 'data-field': 'winds' }));
-        if (lastY - y >= 13) { g.append(text(38, y - 5, `${Sp(r.w)} from ${Math.round(r.dir)}°`, { size: 9.5, cls: 'sc-dim-text', field: 'winds' })); lastY = y; }
-      }
-    } else {
-      for (const f of [0.25, 0.55, 0.85]) { const y = Y(f * v.hD); if (wl > 2) g.append(s('path', { d: `M${38},${y}h${wl}`, class: 'sc-accent', 'marker-end': fr.arrow('acc'), 'data-field': 'wind' })); }
-      g.append(text(38, Y(0.85 * v.hD) - 8, `wind ${Sp(v.wind)}`, { size: 10.5, field: 'wind' }));
-    }
+    // winds aloft as wind barbs on the left (one average wind: drawn blowing along the drift, to the right)
+    windBarbs(g, layered(v) && v.winds?.length ? v.winds : [0.1, 0.4, 0.7, 1].map((f) => ({ h: f * v.hD, w: v.wind, dir: 270 })), Y, { x: 50, yTop: Math.max(26, Y(v.hD) - 2), yGround: yg }, v.hD, layered(v) ? 'winds' : 'wind', yg + 84);
     // parachute at opening (reefed mouth) and at disreef (open), sized by the diameter
     const cw = Math.max(9, Math.min(26, 5 + 3.2 * Math.sqrt(v.D0)));
     const top = hist[0];
@@ -372,8 +356,6 @@ export default {
     g.append(s('circle', { cx: lx - 22, cy: ya + 14, r: 4, fill: col }));
     g.append(text(lx - 30, ya + 18, `aft body lands ${Sp(o.vAft)}`, { anchor: 'end', size: 11, field: 'W2 vT' }));
     g.append(text(625, 22, 'landing (tether not to scale)', { anchor: 'middle', size: 10.5, cls: 'sc-dim-text' }));
-    // wind profile sketch on the right, on the descent panel's height scale
-    if (layered(v) && v.winds?.length) windSketch(g, v.winds, Y, { x: 770, w: 86, yTop: Math.max(20, Y(v.hD) - 6), yGround: yg }, v.hD);
     // ---- handles ----
     ctx.handle('open', X(top.x), Y(top.h), { field: 'hD', title: 'Drag up or down to change the opening height',
       onDrag: (px, py) => ctx.setValue('hD', Math.max(100, (yg - py) / k), { round: 50 }), onKey: (dx, dy) => ctx.setValue('hD', v.hD * (1 + 0.03 * dy)) });
@@ -382,8 +364,6 @@ export default {
         onDrag: (px, py) => ctx.setValue('hR', Math.max(0, Math.min(v.hD * 0.99, (yg - py) / k)), { round: 10 }), onKey: (dx, dy) => ctx.setValue('hR', Math.max(0, v.hR + 50 * dy)) }); }
     ctx.handle('field', X(v.Rf), yg - 26, { field: 'Rf', title: 'Drag sideways to change the recovery-area radius',
       onDrag: (px) => ctx.setValue('Rf', Math.max(10, (px - bx0) / k), { round: 10 }), onKey: (dx) => ctx.setValue('Rf', v.Rf * (1 + 0.05 * dx)) });
-    if (wl > 2) ctx.handle('wind', 38 + wl, Y(0.55 * v.hD), { field: 'wind', title: 'Drag sideways to change the wind speed',
-      onDrag: (px) => ctx.setValue('wind', Math.max(0, (px - 38) / (1.4 * (us.plain === 'm/s' ? 3.2 : 1)) / us.v(1)), { round: 0.5 }), onKey: (dx) => ctx.setValue('wind', Math.max(0, v.wind + dx)) });
   },
   symbols: {
     M: 'total mass under the parachute, $m_1+m_2$ (kg or slug)', m_1: 'nose mass (kg or slug)', m_2: 'aft body mass, with the parachute (kg or slug)', g: 'acceleration of gravity, 9.81 m/s² (32.2 ft/s²)',

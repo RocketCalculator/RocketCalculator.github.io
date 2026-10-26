@@ -133,6 +133,14 @@
         <p><b>At an angle of attack</b> the windward and leeward tip shocks are estimated from cones of half-angle <span class="tex">\theta_{tip}\pm\alpha</span>, measured from the oncoming flow. This is the tangent-cone idea applied at incidence: an estimate. When <span class="tex">\theta_{tip}-\alpha\le0</span> the leeward side sees an expansion. The tip half-angle is taken as the cone through the tip and the profile at 2 % of the length, which is what a real, slightly rounded tip presents. A rounded tip always carries a detached bow shock.</p>
       </section>
 
+      <section id="expansion">
+        <h2>Prandtl–Meyer expansion along the nose (shock–expansion)</h2>
+        <p>Behind the tip shock the surface of a curved nose turns away from the flow, so the flow expands and speeds up. The calculator follows it as in shock–expansion theory. The flow starts with the cone solution at the tip: surface Mach number <span class="tex">M_c</span> and pressure <span class="tex">p_c</span>. At each station of local slope <span class="tex">\theta</span> it then takes</p>
+        <div class="eq"><div class="tex-display">\nu(M)=\nu(M_c)+(\theta_{tip}-\theta),\qquad \frac{p}{p_c}=\left(\frac{1+\frac{\gamma-1}{2}M_c^2}{1+\frac{\gamma-1}{2}M^2}\right)^{\frac{\gamma}{\gamma-1}}</div></div>
+        <p>Here <span class="tex">\nu</span> is the Prandtl–Meyer angle (NACA 1135 eqs. 171–173). Where the nose meets the body at an angle (cone, bi-conic, secant ogive), the flow turns through a corner expansion fan of that angle. The drawing shows these waves at zero incidence: Mach waves leaving the curving surface and the fan at the shoulder. The plot compares the resulting pressure with the tangent-cone estimate.</p>
+        <p>This is the planar (two-dimensional) relation applied along a body of revolution. It ignores the extra relief of the axisymmetric flow, so it tends to over-expand near the shoulder of an ogive. For a cone the two methods agree exactly. Treat it as a second estimate, not a better one. The generalized shock–expansion method for bodies was not read here.</p>
+      </section>
+
       <section id="drag">
         <h2>Drag</h2>
         <p><b>Skin friction.</b> The turbulent flat-plate law of Hoult’s drag memo, with its compressibility factor, is applied at the Reynolds number on the nose length:</p>

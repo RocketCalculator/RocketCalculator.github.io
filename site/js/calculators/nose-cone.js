@@ -1,6 +1,6 @@
 // Nose Cone Design — UI definition. Merges the former Ogive Nose Profile, Optimum Nose Shape and Nose Pressure
 // Distribution calculators and adds supersonic tip flow, drag, lift, loads and heating (calc/noseCone.js).
-import { SHAPES, analyseNose, noseProfile, measure, tipAngle } from '../calc/noseCone.js';
+import { SHAPES, analyseNose, noseProfile, measure, tipAngle, radiusAt as radiusAtPts } from '../calc/noseCone.js';
 import { optimumExponent, noseCp, superellipse } from '../calc/optnose.js';
 import { coneTable, machAngle, stagT } from '../calc/conical.js';
 import { interp } from '../calc/trajectory.js';
@@ -32,6 +32,8 @@ function params(v, over = {}) {
   return { type: w.noseType, L: w.L, R: w.R, k: w.k, pow: w.pow, C: w.C, seN: w.seN, bL: w.bL, bR: w.bR, sRho: w.sRho, rn: w.blunt ? w.rn : 0, custom: w.profile,
     M: w.M, alpha: w.alpha, atm, bodyLen: w.L + w.bodyLen, CD: w.CD, CDb: w.CDb, eps: w.eps * D2R, g: G };
 }
+// Prandtl–Meyer expansion waves: the same light red as the Single Wedge's fan
+const FAN = 'var(--series-6, var(--text-2))';
 const levelColor = (lv) => (lv === 'unsafe' ? 'var(--danger)' : lv === 'marginal' ? 'var(--warn)' : 'var(--ok)');
 
 export default {
@@ -151,6 +153,8 @@ export default {
     { id: 'mu', label: 'Mach angle', sym: '\\mu', ...ANG, digits: 3, info: { text: ['The angle of the weakest possible pressure wave: sound waves pile up along this cone.'], tex: '\\mu=\\sin^{-1}(1/M)', doc: 'shocks' } },
     { id: 'p0', label: 'Stagnation pressure at the tip', sym: 'p_0', ...PRES, digits: 4, info: { text: ['Air pressure where the flow stops at the tip; above Mach 1 it is behind the normal shock (pitot pressure).'], doc: 'heating' } },
     { id: 'q', label: 'Dynamic pressure', sym: 'q', ...PRES, digits: 4, info: { tex: 'q=\\tfrac12\\gamma pM^2', doc: 'overview' } },
+    { id: 'Msh', label: 'Mach number at the shoulder (shock–expansion)', sym: 'M_{sh}', ...NONE, digits: 3, note: (x, out) => (out.o.se ? `after a ${fmt(out.o.se.shoulder.theta / D2R, { digits: 3 })}° corner expansion` : ''),
+      info: { text: ['The Mach number on the surface just behind the shoulder: the tip cone’s surface flow, expanded along the curving nose by Prandtl–Meyer turning (NACA 1135 eq. 171) and through the corner fan where the nose meets the body.', 'A shock–expansion estimate at zero incidence; “—” below Mach 1 or for a rounded or detached tip.'], doc: 'shocks' } },
     { id: 'nOpt', label: 'Optimum subsonic superellipse exponent', sym: 'n^*', ...NONE, digits: 3, note: (x, out) => `critical Mach ${fmt(out.McrOpt, { digits: 3 })}`, info: { text: ['The superellipse with the smallest suction peak at your fineness (Felkel; Hoult): the best subsonic nose in that family, with the highest critical Mach number.'], doc: 'optimum' } },
     { id: 'cpMin', label: 'Minimum pressure coefficient (subsonic)', sym: 'C_{p,min}', ...NONE, digits: 4, info: { doc: 'subsonic' } },
     { id: 'grad', label: 'Steepest adverse pressure gradient', sym: '\\frac{dC_p}{d(x/d)}', ...NONE, digits: 4, info: { text: ['How steeply the pressure rises again behind the shoulder, per body diameter. Steep rises help the boundary layer separate at angle of attack (nose vortices, roll lock-in).'], doc: 'subsonic' } },
@@ -204,7 +208,7 @@ export default {
     const N = o.q * (o.Aref / 144) * 2 * v.alpha * D2R;
     Object.assign(results, { CD: o.CD ?? '—', Mcr: o.Mcr, beta: v.M > 1 && o.shocks.wind.attached ? o.shocks.wind.beta / D2R : '—', T0: o.T0, xcp: o.xcp, CNa: o.CNa, N, Mbase: o.load[o.load.length - 1].Mb,
       CDp: o.CDp ?? '—', CDf: o.CDf, tipHalf: o.prof.cap ? 90 : o.tipHalf / D2R, maxCone: v.M > 1 ? o.tip.maxCone / D2R : '—', mu: v.M >= 1 ? o.mu / D2R : '—',
-      p0: p.atm.p * (v.M > 0 ? 1 + o.cpMax * 0.5 * G * v.M * v.M : 1), q: o.q, nOpt: nOpt ?? '—', cpMin: o.sub.cpMin, grad: o.sub.grad, Lfix: Lfix ?? '—', Mtemp, Leff: o.L, fineness: o.fineness, Vol: o.V, S: o.S,
+      p0: p.atm.p * (v.M > 0 ? 1 + o.cpMax * 0.5 * G * v.M * v.M : 1), Msh: o.se ? o.se.shoulder.M2 : '—', q: o.q, nOpt: nOpt ?? '—', cpMin: o.sub.cpMin, grad: o.sub.grad, Lfix: Lfix ?? '—', Mtemp, Leff: o.L, fineness: o.fineness, Vol: o.V, S: o.S,
       mass: v.t > 0 && v.rho > 0 ? o.S * v.t * v.rho : '—' });
     return { results, warnings, verdict, lv, o, v, p, McrOpt, nOpt };
   },
@@ -230,7 +234,7 @@ export default {
           x: { label: 'Station from the tip $x$', unit: ul.label }, xDomain: [0, Lx], vlines: [{ x: ul.v(o.xcp), label: 'centre of pressure', color: 'var(--text-3)' }],
           panels: [
             { y: { label: 'Nose', scaleNote: 'not to scale' }, yDomain: [-1.15 * ul.v(R), 1.15 * ul.v(R)], equalAspect: true, minHeight: 70, maxHeight: 160, draw },
-            { y: { label: 'Pressure $C_p$' }, color: 'var(--series-1)', includeZero: true, series: cpPts.length ? [{ name: '$C_p$', points: cpPts }] : [],
+            { y: { label: 'Pressure $C_p$' }, color: 'var(--series-1)', includeZero: true, series: [...(cpPts.length ? [{ name: o.regime === 'supersonic' ? 'tangent cone' : '$C_p$', points: cpPts }] : []), ...(o.regime === 'supersonic' && o.se ? [{ name: 'shock–expansion', dash: '7 4', points: o.se.cp.map(([x, c]) => [ul.v(x), c]) }] : [])],
               hlines: o.cpS != null ? [{ y: o.cpS, label: 'sonic ($C_p^*$)', color: 'var(--danger)' }] : [] },
             { y: { label: 'Lift per length', unit: `${uf.label}/${ul.label}` }, color: 'var(--series-4)', includeZero: true, series: [{ name: 'lift per length', dash: '7 4', points: dN }] },
             { y: { label: 'Shear force', unit: uf.label }, color: 'var(--series-2)', includeZero: true, series: [{ name: 'shear', points: lp.map((q) => [ul.v(q.x), uf.v(q.V)]) }] },
@@ -291,7 +295,7 @@ export default {
     },
   ],
   schematicTitle: 'Nose and flow',
-  schematicHint: 'The nose to scale with its dimensions and centre of pressure (▲), the oncoming air at your angle of attack, and above Mach 1 the tip shocks (windward and leeward) and the Mach lines. Drag the tip to change the length, the shoulder to change the diameter, or the air arrow to change the angle of attack',
+  schematicHint: 'The nose to scale with its dimensions and centre of pressure (▲), the oncoming air at your angle of attack, and above Mach 1 the tip shocks (windward and leeward), the Mach lines, and the Prandtl–Meyer expansion waves off the curving surface and the fan at a sharp shoulder (zero incidence). Drag the tip to change the length, the shoulder to change the diameter, or the air arrow to change the angle of attack',
   schematic(ctx, v, out) {
     const W = 760, H = 380, o = out.o, P = o.pts, ul = ctx.U(LEN), D = (x) => `${fmt(ul.v(x), { digits: 3 })} ${ul.plain}`;
     const fr = ctx.frame({ width: W, height: H, label: 'Nose cone to scale with the flow at the tip' });
@@ -314,9 +318,13 @@ export default {
       const sw = o.shocks.wind, sl = o.shocks.lee;
       if (sw.attached && !o.prof.cap) {
         ray(flowAng - sw.beta, len, { stroke: 'var(--danger)', 'stroke-width': 2, 'data-field': 'M alpha' });
-        ray(flowAng + sl.beta, len, { stroke: 'var(--danger)', 'stroke-width': sl.expansion ? 1 : 1.6, 'stroke-dasharray': sl.expansion ? '5 4' : null, 'data-field': 'M alpha' });
-        g.append(text(tx + 150 * Math.cos(flowAng - sw.beta), ty - 150 * Math.sin(flowAng - sw.beta) + 16, `shock ${fmt(sw.beta / D2R, { digits: 3 })}°`, { size: 10.5, field: 'M' }));
-        g.append(text(tx + 150 * Math.cos(flowAng + sl.beta), ty - 150 * Math.sin(flowAng + sl.beta) - 8, sl.expansion ? 'leeward: expansion' : `shock ${fmt(sl.beta / D2R, { digits: 3 })}°`, { size: 10.5, field: 'M' }));
+        if (sl.expansion) {
+          // leeward Prandtl–Meyer fan at the tip: from the free-stream Mach line to the Mach line of the turned flow
+          const a1 = flowAng + o.mu, a2 = o.tipHalf + Math.asin(1 / sl.M2);
+          for (let k = 0; k <= 6; k++) ray(a1 + ((a2 - a1) * k) / 6, 170, { stroke: FAN, 'stroke-width': 1.1, 'data-field': 'M alpha' });
+        } else ray(flowAng + sl.beta, len, { stroke: 'var(--danger)', 'stroke-width': 1.6, 'data-field': 'M alpha' });
+        { const lw = clip(flowAng - sw.beta, 400) - 4; g.append(text(tx + lw * Math.cos(flowAng - sw.beta) + 8, ty - lw * Math.sin(flowAng - sw.beta) - 4, `shock ${fmt(sw.beta / D2R, { digits: 3 })}°`, { size: 10.5, field: 'M' })); }
+        g.append(text(tx + 150 * Math.cos(flowAng + sl.beta), ty - 150 * Math.sin(flowAng + sl.beta) - 8, sl.expansion ? `expansion fan ${fmt(sl.turn / D2R, { digits: 3 })}° · M ${fmt(sl.M2, { digits: 3 })}` : `shock ${fmt(sl.beta / D2R, { digits: 3 })}°`, { size: 10.5, field: 'M' }));
       } else {
         // detached bow shock: drawn qualitatively ahead of the tip
         const so = Math.max(6, 0.25 * o.R * k), hgt = Math.min(150, 1.6 * o.R * k);
@@ -327,6 +335,20 @@ export default {
     } else {
       g.append(text(tx, 46, `subsonic: no shocks · the flow first turns sonic at Mach ${fmt(o.Mcr, { digits: 3 })} (critical Mach number)`, { size: 11, cls: 'sc-dim-text', field: 'M' }));
       const zm = o.sub.zMin; if (zm <= o.L + stub) { g.append(s('circle', { cx: X(zm), cy: Y(o.R) - 1, r: 4, fill: 'var(--danger)', 'data-field': 'M' })); g.append(text(X(zm), Y(o.R) - 10, `lowest pressure, Cp ${fmt(o.sub.cpMin, { digits: 3 })}`, { anchor: 'middle', size: 10.5, field: 'M' })); }
+    }
+    // Prandtl–Meyer expansion: Mach waves leaving the curving surface, and the fan at a shoulder with a slope break
+    if (v.M > 1 && o.se) {
+      const S = o.se.surf, n = S.length, picks = [0.15, 0.3, 0.45, 0.6, 0.75].map((f) => S[Math.min(n - 1, Math.round(f * n))]);
+      for (const [x, , Mi, th] of picks.filter((q) => q[3] < o.tipHalf - 0.5 * D2R)) for (const sg of [1, -1]) {
+        const r = radiusAtPts(P, x), ang = sg * (th + Math.asin(1 / Mi)), x1 = X(x), y1 = Y(sg * r), l = Math.min(sg > 0 ? 60 : 34, (yc - 40 - Math.abs(y1 - yc)) / Math.max(0.2, Math.abs(Math.sin(ang))));
+        g.append(s('line', { x1, y1, x2: x1 + l * Math.cos(ang), y2: y1 - l * Math.sin(ang), stroke: FAN, 'stroke-width': 1, 'data-field': 'M noseType' }));
+      }
+      const sh = o.se.shoulder;
+      if (sh.theta > 0.5 * D2R) for (const sg of [1, -1]) {
+        const a1 = sh.theta + Math.asin(1 / sh.M1), a2 = Math.asin(1 / sh.M2);
+        for (let k = 0; k <= 6; k++) { const a = sg * (a1 + ((a2 - a1) * k) / 6), x1 = X(o.L), y1 = Y(sg * o.R); g.append(s('line', { x1, y1, x2: x1 + 80 * Math.cos(a), y2: y1 - 80 * Math.sin(a), stroke: FAN, 'stroke-width': 1.1, 'data-field': 'M noseType' })); }
+      }
+      g.append(text(W - 14, H - 28, sh.theta > 0.5 * D2R ? `shoulder expansion fan · M ${fmt(sh.M1, { digits: 3 })} → ${fmt(sh.M2, { digits: 3 })}` : `Prandtl–Meyer expansion · M ${fmt(sh.M2, { digits: 3 })} at the shoulder`, { anchor: 'end', size: 10, cls: 'sc-dim-text', field: 'M' }));
     }
     // nose and body stub (to scale)
     const top = P.map((q) => [X(q.x), Y(q.r)]), bot = P.map((q) => [X(q.x), Y(-q.r)]).reverse();

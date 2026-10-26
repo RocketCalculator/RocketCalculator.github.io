@@ -271,7 +271,7 @@ export default {
     if (yh >= 24) g.append(s('path', { d: `M${px - 9},${yh} L${px + 9},${yh} M${px - 6},${yh} L${px},${yh + 5} L${px + 6},${yh}`, stroke: col, 'stroke-width': 2, fill: 'none', 'data-field': 'M a' }));
     else g.append(text(px, 16, '↑', { anchor: 'middle', size: 12 }));
     // pendulum labels to its right, kept apart
-    const xl = px + Math.max(18, rBob + 8), yHL = Math.max(28, Math.min(yh + 4, yb - 34)), yBL = Math.max(yHL + 30, Math.min(yBob + 4, yb + 4));
+    const xl = px + rBob + 24, yHL = Math.max(28, Math.min(yh + 4, yb - 34)), yBL = Math.max(yHL + 30, Math.min(yBob + 4, yb + 4));
     g.append(text(xl, yHL, yh >= 24 ? `hinge, ${L(Math.abs(m1.hinge))} ${m1.hinge >= 0 ? 'below' : 'above'} surface` : `hinge ${L(-m1.hinge)} above surface`, { size: 10.5 }));
     g.append(text(xl, yBL - 7, `m_1 = ${Q(m1.m, MASS)} (${fmt(100 * m1.mFrac, { digits: 3 })} %)`, { size: 10.5 }));
     g.append(text(xl, yBL + 7, `L_1 = ${L(m1.pendulum)}`, { size: 10.5 }));

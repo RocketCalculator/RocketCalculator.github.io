@@ -34,7 +34,7 @@ export async function fetchWinds(lat, lon, when = '') {
 }
 
 /** Action buttons that open the launch site (values lat, lon) on OpenStreetMap and Google Maps. */
-export const mapActions = (group) => [
-  { label: 'Open in OpenStreetMap', group, title: 'Show the launch site on OpenStreetMap', async run(v) { window.open(`https://www.openstreetmap.org/?mlat=${v.lat}&mlon=${v.lon}#map=12/${v.lat}/${v.lon}`, '_blank', 'noopener'); return {}; } },
-  { label: 'Open in Google Maps', group, title: 'Show the launch site on Google Maps', async run(v) { window.open(`https://www.google.com/maps/search/?api=1&query=${v.lat},${v.lon}`, '_blank', 'noopener'); return {}; } },
+export const mapActions = (group, when) => [
+  { label: 'Open in OpenStreetMap', group, when, title: 'Show the launch site on OpenStreetMap', async run(v) { window.open(`https://www.openstreetmap.org/?mlat=${v.lat}&mlon=${v.lon}#map=12/${v.lat}/${v.lon}`, '_blank', 'noopener'); return {}; } },
+  { label: 'Open in Google Maps', group, when, title: 'Show the launch site on Google Maps', async run(v) { window.open(`https://www.google.com/maps/search/?api=1&query=${v.lat},${v.lon}`, '_blank', 'noopener'); return {}; } },
 ];

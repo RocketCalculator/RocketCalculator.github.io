@@ -146,16 +146,12 @@ export default {
   },
   groups: [
     {
-      id: 'site', title: 'Launch site and date',
+      id: 'site', title: 'Launch site',
       fields: [
         { id: 'lat', label: 'Latitude', sym: '\\varphi', ...ANG, default: 34.5, min: -90, max: 90, slider: { min: -90, max: 90, step: 0.1 },
           info: { text: ['North–south position of the launch site in degrees (north positive), as shown by any map app.', 'Sets gravity and the shape of the atmosphere (the tropopause is higher near the equator), and is used to load the forecast winds and open the site on a map.'], doc: 'atmosphere' } },
-        { id: 'lon', label: 'Longitude', sym: '\\lambda_E', ...ANG, default: -117.8, min: -180, max: 180,
-          info: { text: ['East–west position of the launch site in degrees (east positive, west negative).', 'Only used to load the forecast winds and to open the site on a map.'], doc: 'wind' } },
         { id: 'ho', label: 'Site elevation (above sea level)', sym: 'h_0', ...ALT, default: 1898, min: -1000, max: 20000, slider: { min: 0, max: 10000, step: 10 },
           info: { text: ['How high the launch site is above sea level.', 'From a map app or GPS; “Load winds from Open-Meteo” fills it from the forecast’s terrain height.', 'Higher sites have thinner air, so less drag and a slightly higher apogee. All heights in the results are above the ground.'], range: 'Coastal sites 0–100 m; Black Rock 1190 m (3900 ft); Spaceport America 1400 m.', doc: 'atmosphere' } },
-        { id: 'when', label: 'Launch date and time (site local)', kind: 'datetime', default: '',
-          info: { text: ['The date and hour of your launch, in the launch site’s local time. Leave it empty for now.', 'Then press “Load winds from Open-Meteo” to fill the wind layers from the forecast for that hour. Forecasts reach about 16 days ahead; past dates up to about 3 months back give the model’s recent analysis.'], doc: 'wind' } },
       ],
     },
     {
@@ -163,7 +159,7 @@ export default {
       fields: [
         { id: 'To', label: 'Ground air temperature', sym: 'T_0', dim: 'temperature', internal: 'R', default: 559.67, min: 400, max: 600, slider: { min: 440, max: 580, step: 0.5 },
           info: { text: ['The air temperature about 2 m above the ground on launch day.', 'From a thermometer or the forecast (the Open-Meteo button fills it).', 'Hot air is thinner: on a hot day the rocket meets less drag and climbs a little higher.'], range: '−20 °C to +45 °C (−4 °F to 113 °F).', doc: 'atmosphere' } },
-        { id: 'windMode', label: 'Wind', kind: 'select', default: 'uniform', options: [{ value: 'uniform', label: 'Uniform wind (same at every height)' }, { value: 'layers', label: 'Wind layers (by height, with direction)' }],
+        { id: 'windMode', label: 'Wind', kind: 'select', default: 'uniform', options: [{ value: 'uniform', label: 'Uniform wind' }, { value: 'layers', label: 'Wind layers' }],
           info: { text: ['One wind, the same speed and direction at every height, or a list of wind layers — speed and direction at several heights, as weather forecasts give them.', 'Use “Load winds from Open-Meteo” to fill the layers from a forecast for the latitude and longitude above.'], doc: 'wind' } },
         { id: 'windU', label: 'Wind speed', sym: 'w', ...SPD, default: 15, min: 0, max: 300, slider: { min: 0, max: 80, step: 0.5 }, when: (v) => !layered(v),
           info: { text: ['A single wind, the same at every height: its speed.', 'Use the forecast ground wind for a low flight, or an average of the winds aloft for a high one. Set 0 for still air.', 'Along the launch direction it changes the range (the rocket turns into it while climbing); across it, it pushes the rocket sideways during the descent.'], range: 'Ground 2–8 m/s (7–26 ft/s); most ranges stop launches above about 9 m/s (20 mph).', doc: 'wind' } },
@@ -173,6 +169,10 @@ export default {
           columns: [{ id: 'h', label: 'Height above ground', ...ALT }, { id: 'w', label: 'Speed', ...SPD }, { id: 'dir', label: 'From (°)', ...ANG }],
           default: [{ h: 0, w: 10, dir: 270 }, { h: 3000, w: 25, dir: 260 }, { h: 10000, w: 45, dir: 250 }, { h: 20000, w: 70, dir: 245 }], validate: checkWind,
           info: { text: ['Each row is the wind at one height above the ground: its speed and the compass direction it blows FROM (270 = from the west, so it pushes the rocket east). Between rows it changes smoothly; above the top row and below the bottom row it stays as in that row.', 'Fill it from a forecast (the button below), a balloon sounding, or by hand.', 'Wind along the launch direction changes how far the rocket flies; wind across it pushes the rocket sideways while it descends.'], range: 'Ground 2–8 m/s; 3–10 km often 10–30 m/s (30–100 ft/s).', doc: 'wind' } },
+        { id: 'lon', when: layered, label: 'Longitude', sym: '\\lambda_E', ...ANG, default: -117.8, min: -180, max: 180,
+          info: { text: ['East–west position of the launch site in degrees (east positive, west negative).', 'Only used to load the forecast winds and to open the site on a map.'], doc: 'wind' } },
+        { id: 'when', when: layered, label: 'Launch date and time (site local)', kind: 'datetime', default: '',
+          info: { text: ['The date and hour of your launch, in the launch site’s local time. Leave it empty for now.', 'Then press “Load winds from Open-Meteo” to fill the wind layers from the forecast for that hour. Forecasts reach about 16 days ahead; past dates up to about 3 months back give the model’s recent analysis.'], doc: 'wind' } },
       ],
     },
     {
@@ -355,7 +355,7 @@ export default {
   },
   actions: [
     {
-      label: 'Load winds from Open-Meteo', group: 'site', title: 'Fetch the forecast winds at the launch site (Open-Meteo, free, no account) into the wind layers; also sets the site elevation and temperature',
+      label: 'Load winds from Open-Meteo', group: 'weather', when: layered, title: 'Fetch the forecast winds at the launch site (Open-Meteo, free, no account) into the wind layers; also sets the site elevation and temperature',
       async run(v) {
         const m = await fetchWinds(v.lat, v.lon, v.when);
         const values = { windMode: 'layers', winds: m.rows, ho: m.elevFt };
@@ -363,7 +363,7 @@ export default {
         return { values, message: `Loaded ${m.rows.length} wind layers for ${m.when} local time; site elevation ${Math.round(m.elevM)} m${m.tempR != null ? `, ${fmt(m.tempC, { digits: 3 })} °C` : ''}. ${METEO_CREDIT}` };
       },
     },
-    ...mapActions('site'),
+    ...mapActions('weather', layered),
   ],
   plots: [
     {

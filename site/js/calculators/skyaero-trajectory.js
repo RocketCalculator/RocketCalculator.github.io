@@ -145,6 +145,8 @@ export default {
           info: { text: ['North–south position of the launch site in degrees (north positive), as shown by any map app.', 'Sets gravity and the shape of the atmosphere (the tropopause is higher near the equator), and is used to load the forecast winds and open the site on a map.'], doc: 'atmosphere' } },
         { id: 'lon', label: 'Longitude', sym: '\\lambda_E', ...ANG, default: -117.8, min: -180, max: 180,
           info: { text: ['East–west position of the launch site in degrees (east positive, west negative).', 'Only used to load the forecast winds and to open the site on a map.'], doc: 'wind' } },
+        { id: 'when', label: 'Launch date and time (site local)', kind: 'datetime', default: '',
+          info: { text: ['The date and hour of your launch, in the launch site’s local time. Leave it empty for now.', 'Then press “Load winds from Open-Meteo” to fill the wind layers from the forecast for that hour. Forecasts reach about 16 days ahead; past dates up to about 3 months back give the model’s recent analysis.'], doc: 'wind' } },
       ],
     },
     {
@@ -171,8 +173,6 @@ export default {
           columns: [{ id: 'h', label: 'Height above ground', ...ALT }, { id: 'w', label: 'Speed', ...SPD }, { id: 'dir', label: 'From (°)', ...ANG }],
           default: [{ h: 0, w: 10, dir: 270 }, { h: 3000, w: 25, dir: 260 }, { h: 10000, w: 45, dir: 250 }, { h: 20000, w: 70, dir: 245 }], validate: checkWind,
           info: { text: ['Each row is the wind at one height above the ground: its speed and the compass direction it blows FROM (270 = from the west, so it pushes the rocket east). Between rows it changes smoothly; above the top row and below the bottom row it stays as in that row.', 'Fill it from a forecast (the button below), a balloon sounding, or by hand.', 'Wind along the launch direction changes how far the rocket flies; wind across it pushes the rocket sideways while it descends.'], range: 'Ground 2–8 m/s; 3–10 km often 10–30 m/s (30–100 ft/s).', doc: 'wind' } },
-        { id: 'hoursAhead', label: 'Forecast for … hours from now', sym: '\\Delta t_f', ...NONE, default: 0, min: 0, max: 160, step: 1, when: layered, slider: { min: 0, max: 160, step: 1 },
-          info: { text: ['Which forecast hour to load: 0 is now, 24 is this time tomorrow (up to about a week).', 'Pick the hour of your launch window, then press “Load winds from Open-Meteo”.'], doc: 'wind' } },
       ],
     },
     {
@@ -336,15 +336,15 @@ export default {
   },
   actions: [
     {
-      label: 'Load winds from Open-Meteo', title: 'Fetch the forecast winds at the launch site (Open-Meteo, free, no account) into the wind layers; also sets the site elevation and temperature',
+      label: 'Load winds from Open-Meteo', group: 'site', title: 'Fetch the forecast winds at the launch site (Open-Meteo, free, no account) into the wind layers; also sets the site elevation and temperature',
       async run(v) {
-        const m = await fetchWinds(v.lat, v.lon, v.hoursAhead);
+        const m = await fetchWinds(v.lat, v.lon, v.when);
         const values = { windMode: 'layers', winds: m.rows, ho: m.elevFt };
         if (m.tempR != null) values.To = Math.min(600, Math.max(400, m.tempR));
         return { values, message: `Loaded ${m.rows.length} wind layers for ${m.when} local time; site elevation ${Math.round(m.elevM)} m${m.tempR != null ? `, ${fmt(m.tempC, { digits: 3 })} °C` : ''}. ${METEO_CREDIT}` };
       },
     },
-    ...mapActions(),
+    ...mapActions('site'),
   ],
   plots: [
     {

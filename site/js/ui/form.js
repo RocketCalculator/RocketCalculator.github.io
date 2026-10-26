@@ -106,6 +106,15 @@ export function buildForm(def, state, { onChange, onHighlight, infoFor }) {
     return { el, sync: () => { input.checked = !!state.values[f.id]; }, validate: () => true, focus: () => input.focus() };
   }
 
+  // date and time as 'YYYY-MM-DDTHH:MM' (empty = now)
+  function dateField(f) {
+    const input = h('input', { type: 'datetime-local', id: `f-${f.id}`, step: 3600 });
+    const lab = h('label', { for: `f-${f.id}` }, L(f), SYM(f), infoButton(() => infoFor(f), { label: f.label }));
+    const el = h('div.field.date', { 'data-for': f.id }, lab, h('div.ctl', input));
+    input.addEventListener('change', () => { state.values[f.id] = input.value; onChange(f.id); });
+    return { el, sync: () => { input.value = state.values[f.id] || ''; }, validate: () => true, focus: () => input.focus() };
+  }
+
   function selectField(f) {
     // options with a `group` are gathered into <optgroup>s (in order of first appearance); others stay at the top level
     const opt = (o) => h('option', { value: String(o.value) }, o.label), groups = new Map(), items = [];
@@ -178,7 +187,7 @@ export function buildForm(def, state, { onChange, onHighlight, infoFor }) {
     const fs = h('fieldset.fgroup', { 'data-group': g.id }, h('legend', g.title, g.info ? infoButton(g.info, { label: g.title }) : null));
     for (const f of g.fields) {
       const kind = f.kind || 'number';
-      const fe = kind === 'bool' ? boolField(f) : kind === 'select' ? selectField(f) : kind === 'table' ? tableField(f) : numberField(f);
+      const fe = kind === 'bool' ? boolField(f) : kind === 'select' ? selectField(f) : kind === 'table' ? tableField(f) : kind === 'datetime' ? dateField(f) : numberField(f);
       fe.def = f;
       fieldEls.set(f.id, fe);
       fe.el.addEventListener('mouseenter', () => onHighlight?.(f.id));

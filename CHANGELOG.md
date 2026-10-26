@@ -3,6 +3,12 @@
 Newest first, in the spirit of [Keep a Changelog](https://keepachangelog.com/). From 2026-10-25 every entry names its
 branch, tag and commit range. Live site: https://rocketcalculator.github.io/.
 
+## 2026-10-26 — Launch date for forecast winds (`feat/launch-date-winds`)
+- Parachute Recovery and Trajectory Simulation: "hours from now" replaced by a launch date and time (site local; empty
+  = now). Open-Meteo is asked for that day; out-of-range dates show its reason (about 3 months back to 16 days ahead).
+- "Load winds from Open-Meteo" and the map buttons now sit right after latitude, longitude and date (actions take a
+  `group`); new `datetime` input kind.
+
 ## 2026-10-25 — Trajectory Simulation cycle 1 (`improve/trajectory-cycle-1`)
 - Verdict against your limits (rail exit speed off the physical rail, liftoff T/W, altitude ceiling, recovery area,
   landing speed; DECISIONS D26) with solved fixes: shortest rail, main diameter, ballast, main opening height.

@@ -8,19 +8,22 @@ const M2FT = 1 / 0.3048;
 export const METEO_CREDIT = 'Weather data by Open-Meteo.com (CC BY 4.0).';
 
 /**
- * Wind layers at the hour nearest to now + hoursAhead: rows [{ h (ft above ground), w (ft/s), dir (deg from) }] from
+ * Wind layers at the hour nearest to `when` ('YYYY-MM-DDTHH:MM' in the site's local time; empty = now): rows [{ h (ft above ground), w (ft/s), dir (deg from) }] from
  * the 10 m wind and the pressure levels above the ground, plus the site elevation (ft) and 2 m temperature (°R).
  */
-export async function fetchWinds(lat, lon, hoursAhead = 0) {
+export async function fetchWinds(lat, lon, when = '') {
   const vars = ['wind_speed_10m', 'wind_direction_10m', 'temperature_2m', ...LEVELS.flatMap((p) => [`wind_speed_${p}hPa`, `wind_direction_${p}hPa`, `geopotential_height_${p}hPa`])];
-  const url = `https://api.open-meteo.com/v1/forecast?latitude=${encodeURIComponent(lat)}&longitude=${encodeURIComponent(lon)}&hourly=${vars.join(',')}&wind_speed_unit=ms&forecast_days=7&timezone=auto`;
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${encodeURIComponent(lat)}&longitude=${encodeURIComponent(lon)}&hourly=${vars.join(',')}&wind_speed_unit=ms&timezone=auto${when ? `&start_date=${when.slice(0, 10)}&end_date=${when.slice(0, 10)}` : '&forecast_days=2'}`;
   const r = await fetch(url);
-  if (!r.ok) throw new Error(`Open-Meteo did not answer (${r.status}). Check the latitude and longitude, or try again later.`);
+  if (!r.ok) {
+    const reason = (await r.json().catch(() => null))?.reason;
+    throw new Error(reason ? `Open-Meteo: ${reason}. Forecasts reach about 16 days ahead and 3 months back.` : `Open-Meteo did not answer (${r.status}). Check the latitude and longitude, or try again later.`);
+  }
   const d = await r.json(), H = d.hourly, elev = d.elevation;
-  // times are local (timezone=auto); utc_offset_seconds turns them into instants
-  const target = Date.now() + (hoursAhead || 0) * 3600e3;
+  // times are the site's local time (timezone=auto): compare a chosen date as is; "now" through utc_offset_seconds
+  const at = (t) => Date.parse(t + 'Z') - (when ? 0 : d.utc_offset_seconds * 1000), target = when ? Date.parse(when + 'Z') : Date.now();
   let k = 0, best = Infinity;
-  H.time.forEach((t, i) => { const e = Math.abs(Date.parse(t + 'Z') - d.utc_offset_seconds * 1000 - target); if (e < best) { best = e; k = i; } });
+  H.time.forEach((t, i) => { const e = Math.abs(at(t) - target); if (e < best) { best = e; k = i; } });
   const rows = [{ h: 10 * M2FT, w: H.wind_speed_10m[k] * M2FT, dir: H.wind_direction_10m[k] }];
   for (const p of LEVELS) {
     const z = H[`geopotential_height_${p}hPa`]?.[k], w = H[`wind_speed_${p}hPa`]?.[k], dir = H[`wind_direction_${p}hPa`]?.[k];
@@ -31,7 +34,7 @@ export async function fetchWinds(lat, lon, hoursAhead = 0) {
 }
 
 /** Action buttons that open the launch site (values lat, lon) on OpenStreetMap and Google Maps. */
-export const mapActions = () => [
-  { label: 'Open in OpenStreetMap', title: 'Show the launch site on OpenStreetMap', async run(v) { window.open(`https://www.openstreetmap.org/?mlat=${v.lat}&mlon=${v.lon}#map=12/${v.lat}/${v.lon}`, '_blank', 'noopener'); return {}; } },
-  { label: 'Open in Google Maps', title: 'Show the launch site on Google Maps', async run(v) { window.open(`https://www.google.com/maps/search/?api=1&query=${v.lat},${v.lon}`, '_blank', 'noopener'); return {}; } },
+export const mapActions = (group) => [
+  { label: 'Open in OpenStreetMap', group, title: 'Show the launch site on OpenStreetMap', async run(v) { window.open(`https://www.openstreetmap.org/?mlat=${v.lat}&mlon=${v.lon}#map=12/${v.lat}/${v.lon}`, '_blank', 'noopener'); return {}; } },
+  { label: 'Open in Google Maps', group, title: 'Show the launch site on Google Maps', async run(v) { window.open(`https://www.google.com/maps/search/?api=1&query=${v.lat},${v.lon}`, '_blank', 'noopener'); return {}; } },
 ];

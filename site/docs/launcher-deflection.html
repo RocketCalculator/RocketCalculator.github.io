@@ -46,12 +46,27 @@
         <h2>Tower truss stiffness</h2>
         <p>A ham-radio tower is three steel tubes at the corners of an equilateral triangle of face width <span class="tex">d</span>, tied by welded zig-zag rods that add little bending stiffness. The neutral axis passes through the centroid, twice as far from the single tube as from the pair, so</p>
         <div class="eq"><div class="tex-display">I=\frac{Ad^2}{2},\qquad A=\pi Dt\quad\Rightarrow\quad I=\frac{\pi Dt\,d^2}{2}</div></div>
-        <p>for tubes of outside diameter <span class="tex">D</span> and wall <span class="tex">t</span>; the second moment about the perpendicular axis is the same, so pitch and yaw are equally stiff. The tip slope before the overshoot factor is then <span class="tex">FL^2/(\pi EDt\,d^2)</span>. For other supports, enter <span class="tex">I</span> directly.</p>
+        <p>for tubes of outside diameter <span class="tex">D</span> and wall <span class="tex">t</span> (the memo’s typical tower, 12.5 in face and 1.25 × 0.065 in tubes, gives about 20 in⁴); the second moment about the perpendicular axis is the same, so pitch and yaw are equally stiff. The tip slope before the overshoot factor is then <span class="tex">FL^2/(\pi EDt\,d^2)</span>. For other supports, enter <span class="tex">I</span> directly.</p>
+      </section>
+
+      <section id="along">
+        <h2>Where the rail bends</h2>
+        <p>Along the rail the bending moment falls from <span class="tex">FL</span> at the pivot to zero at the tip, so the curvature is largest at the base. Integrating once gives the slope at a distance <span class="tex">x</span> from the base, and again the deflection:</p>
+        <div class="eq"><div class="tex-display">\theta(x)=k_d\frac{F(2Lx-x^2)}{2EI},\qquad y(x)=k_d\frac{Fx^2(3L-x)}{6EI}</div></div>
+        <p>At mid-length the slope is already three quarters of its tip value: the lower half of the rail produces 75 % of the tip-off error. Joints, hinges and jacks near the base matter most; the model assumes they are rigid and the rail uniform.</p>
+      </section>
+
+      <section id="verdict">
+        <h2>Verdict, limit and fixes</h2>
+        <p>The verdict compares the pitch tip slope <span class="tex">\theta_{pitch}</span> with the allowed slope <span class="tex">\theta_{max}</span> you set: <b>safe</b> up to <span class="tex">\theta_{max}</span>, <b>marginal</b> up to 1.25 times it, <b>unsafe</b> beyond. The default 0.1° is the bound Hoult chose for his memo; the CSULB launcher was specified to 0.05° at QE 80°. Neither is a published standard: the bands are this site’s choice.</p>
+        <p>Because the slope is proportional to <span class="tex">L^2/(Dtd^2)</span> (or <span class="tex">L^2/I</span>), each fix is solved in closed form with the ratio <span class="tex">r=\theta_{pitch}/\theta_{max}</span>: the longest rail <span class="tex">L_{max}=L/\sqrt r</span>, the face width <span class="tex">d\sqrt r</span>, the tube wall <span class="tex">tr</span>, or the second moment of area <span class="tex">I_{req}=Ir</span>. Ham-radio towers come in 10 ft sections, so the rail-length fix also gives the number of whole sections.</p>
+        <p>For an existing launcher, the same equation solved for the weight gives the heaviest rocket the rail takes within the limit:</p>
+        <div class="eq"><div class="tex-display">W_{max}=\frac{2EI\theta_{max}/(k_dL^2)-n_\sigma T\sigma_\delta}{\cos QE}</div></div>
       </section>
 
       <section id="verification">
         <h2>Verification</h2>
-        <p>The tests check the memo’s Gold Rush II load comparison, the truss second moment against an exact parallel-axis sum in both planes, and the slope and deflection against numerical integration of the beam equation. They also reproduce the memo’s plot of tip angle against rail length (weight load only, with the factor 2): about 0.053° at 240 in and 0.21° at 480 in for QE 80°, and 0.027° at 240 in for QE 85°. This confirms the memo’s recommendation that a 20 ft rail keeps the tip-off error below about 0.1°.</p>
+        <p>The tests check the memo’s Gold Rush II load comparison, that every fix and <span class="tex">W_{max}</span> land exactly on the allowed slope, the truss second moment against an exact parallel-axis sum in both planes, and the slope and deflection against numerical integration of the beam equation. They also reproduce the memo’s plot of tip angle against rail length (weight load only, with the factor 2): about 0.053° at 240 in and 0.21° at 480 in for QE 80°, and 0.027° at 240 in for QE 85°. This confirms the memo’s recommendation that a 20 ft rail keeps the tip-off error below about 0.1°.</p>
       </section>
 
       <section id="references">

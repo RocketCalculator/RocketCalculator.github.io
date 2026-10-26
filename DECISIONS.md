@@ -211,3 +211,7 @@ Decisions taken while the owner was unavailable. Each entry: date, question, opt
 - The user sets the highest excitation frequency and the separation wanted (default 3×). SAFE f₁ ≥ r·f_exc,
   MARGINAL 1.25·f_exc ≤ f₁ < r·f_exc, UNSAFE below (at or near resonance). Project choices, not published limits.
 
+## D34 — 2026-10-26 — Launcher deflection verdict on the tip slope
+- The user sets the allowed tip slope (default 0.1°, Hoult's chosen bound; CSULB used 0.05°). SAFE ≤ allowed,
+  MARGINAL ≤ 1.25×, UNSAFE beyond. Not a published standard.
+

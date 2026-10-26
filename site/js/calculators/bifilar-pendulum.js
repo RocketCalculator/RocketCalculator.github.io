@@ -163,14 +163,15 @@ export default {
     const fixes = [];
     if (!r.sepOK) {
       // scaling both distances by f puts the ratio exactly on the limit (P_Y/P_G ∝ 1/f)
-      fixes.push(`Move the wires closer to the CG: <b>$x_1$ ≤ ${ud(r.f * v.x1)}</b> and <b>$x_2$ ≤ ${ud(r.f * v.x2)}</b> (now ${ud(v.x1)}, ${ud(v.x2)}), then re-time the yaw: expect $P_Y$ ≈ ${fmt(v.rmin * v.PG, { digits: 3 })} s.`);
+      const to = v.x1 === v.x2 ? `both wires to <b>≤ ${ud(r.f * v.x1)}</b> from the CG (now ${ud(v.x1)})` : `the wires to <b>$x_1$ ≤ ${ud(r.f * v.x1)}, $x_2$ ≤ ${ud(r.f * v.x2)}</b> (now ${ud(v.x1)}, ${ud(v.x2)})`;
+      fixes.push(`Move ${to} and re-time: $P_Y$ ≈ ${fmt(v.rmin * v.PG, { digits: 3 })} s.`);
     }
     if (!r.uOK) {
       if (r.Nreq) fixes.push(`Time at least <b>${r.Nreq} cycles</b> of each swing (now ${v.NY} yaw, ${v.NG} swing).`);
       if (r.dxReq) fixes.push(`Measure the wire distances to within <b>±${show(r.dxReq, SMALL, 2)}</b> (now ±${show(v.dx, SMALL, 2)}).`);
       if (!r.Nreq && !r.dxReq) fixes.push(`Weigh more accurately or measure closer: the scale and distance errors alone exceed ${fmt(v.uMax, { digits: 3 })} %.`);
     }
-    if (!r.crossOK) fixes.push(`Re-measure the wire length: your swing implies <b>$l$ = ${ud(r.lImplied)}</b> (entered ${ud(v.l)}); or re-time the swing (expect ${fmt(o.PG_theory, { digits: 3 })} s).`);
+    if (!r.crossOK) fixes.push(`Re-measure the wires: your swing implies <b>$l$ = ${ud(r.lImplied)}</b> (entered ${ud(v.l)}), or re-time the swing (expect ${fmt(o.PG_theory, { digits: 3 })} s).`);
     const title = r.lv === 'safe' ? 'A trustworthy measurement: the swings are well apart and the error is within your target'
       : r.lv === 'unsafe' ? 'The two swings are too close in period: you may have timed the wrong one'
         : !r.uOK ? 'Less precise than your target' : 'The two inertia estimates disagree: check the wire length or the swing timing';
@@ -206,7 +207,7 @@ export default {
         const P = (f) => pts.map((p) => [p.x, f(p)]);
         return {
           x: { label: 'Wire spacing $x_1+x_2$', unit: ud.label }, xDomain: [0, ud.v(top)],
-          vlines: [{ x: ud.v(sNow), label: 'your rig', color: 'var(--text-2)' }, { x: ud.v(sLo), label: `ratio ${fmt(v.rmin, { digits: 3 })}`, color: 'var(--danger)', row: 1 }, { x: ud.v(sHi), label: `ratio 1/${fmt(v.rmin, { digits: 3 })}`, color: 'var(--danger)', row: 1 },
+          vlines: [{ x: ud.v(sNow), label: 'your rig', color: 'var(--text-2)' }, { x: ud.v(sLo), label: `$P_Y/P_G$ = ${fmt(v.rmin, { digits: 3 })}`, color: 'var(--danger)', row: 1 }, { x: ud.v(sHi), label: `$P_Y/P_G$ = 1/${fmt(v.rmin, { digits: 3 })}`, color: 'var(--danger)', row: 1 },
             ...(v.Lrod < top ? [{ x: ud.v(v.Lrod), label: 'rocket length', color: 'var(--text-3)', row: 2 }] : [])],
           panels: [
             { y: { label: 'Period', unit: 's' }, color: 'var(--series-1)', yDomain: [0, Math.max(3 * v.PG, 1.3 * v.PY)], series: [{ name: 'yaw $P_Y$', points: P((p) => p.PY) }, { name: 'swing $P_G$', dash: '7 4', color: 'var(--series-2)', points: P(() => v.PG) }] },
@@ -227,9 +228,10 @@ export default {
         if (out.Nreq && out.Nreq <= nTop) mk.push({ x: out.Nreq, y: 100 * uncertainty({ ...v, NY: out.Nreq, NG: out.Nreq }).total, label: `${out.Nreq} cycles`, color: 'var(--text-2)' });
         return {
           x: { label: 'Cycles timed in each swing $N$' }, y: { label: 'Error', unit: '%' }, xDomain: [0, nTop], yDomain: [0, Math.max(2.5 * v.uMax, 1.5 * now)],
-          series: [{ name: 'total $u_I$', points: S((uu) => uu.total), width: 2.5 }, { name: 'swing timing', dash: '7 4', points: S((uu) => uu.swing), color: 'var(--series-2)' },
-            { name: 'yaw timing', dash: '2 3', points: S((uu) => uu.yaw), color: 'var(--series-3)' }, { name: 'wire distances', dash: '9 3 2 3', points: S((uu) => uu.dist), color: 'var(--series-5)' },
-            { name: 'mass', dash: '1 4', points: S((uu) => uu.mass), color: 'var(--series-6)' }],
+          // single charts draw solid or dashed only: pairs share a colour, told apart by the dash
+          series: [{ name: 'total $u_I$', points: S((uu) => uu.total), width: 2.5 }, { name: 'swing timing', points: S((uu) => uu.swing), color: 'var(--series-2)' },
+            { name: 'yaw timing', dashed: true, points: S((uu) => uu.yaw), color: 'var(--series-2)' }, { name: 'wire distances', points: S((uu) => uu.dist), color: 'var(--series-5)' },
+            { name: 'mass', dashed: true, points: S((uu) => uu.mass), color: 'var(--series-5)' }],
           hlines: [{ y: v.uMax, label: 'your target', color: 'var(--danger)' }], markers: mk,
         };
       },
@@ -244,7 +246,7 @@ export default {
     const L1 = (x) => `${fmt(ud.v(x), { digits: 3 })} ${ud.label}`;
     const sepCol = out.sepOK ? 'var(--ok)' : 'var(--danger)';
     // ---- front view, one scale both ways ----
-    const xa = Math.min(0, xcg - v.x1), xb = Math.max(L, xcg + v.x2), VB = 250;
+    const xa = Math.min(0, xcg - v.x1), xb = Math.max(L, xcg + v.x2), VB = 215;
     const kh = 400 / (xb - xa), kv = VB / (v.l + 2 * R), k = Math.min(kh, kv);
     const x0 = 255 - ((xb - xa) * k) / 2, X = (x) => x0 + (x - xa) * k;
     const ceilY = 48, attachY = ceilY + v.l * k, rp = Math.max(3, R * k), cy = attachY + rp, thin = R * k < 3;
@@ -264,19 +266,19 @@ export default {
       g.append(s('line', { x1: ax, x2: ax, y1: cy - rp - 4, y2: cy - rp - 4 - aL, class: 'sc-accent', 'stroke-width': 2, 'marker-end': fr.arrow('acc') }));
       g.append(text(ax + side * 4, cy - rp - 8 - aL, `T_${f[1]} ${fmt(uf.v(Tq), { digits: 3 })} ${uf.label}`, { anchor: side < 0 ? 'end' : 'start', size: 10.5, field: f }));
     }
-    // weight at the CG, plumb line to the bob
-    const bobY = cy + rp + span + 62;
+    // ---- dimensions below: x1 | x2 from the CG, then x_cg and L from the nose; plumb bob over the floor line ----
+    const d1 = cy + rp + span + 22, d2 = d1 + 24, d3 = d2 + 24, bobY = d3 + 26;
     g.append(s('line', { x1: cgX, x2: cgX, y1: cy, y2: bobY - 9, class: 'sc-thin', 'stroke-dasharray': '3 3' }));
     g.append(s('path', { d: `M${cgX - 5},${bobY - 9}L${cgX + 5},${bobY - 9}L${cgX},${bobY + 1}Z`, class: 'sc-key', 'data-field': 'xcg' }));
+    g.append(s('line', { x1: nose, x2: tail, y1: bobY + 5, y2: bobY + 5, class: 'sc-axis' }));
+    g.append(text(nose, bobY + 18, 'floor line under the rocket at rest', { size: 10, cls: 'sc-dim-text' }));
     g.append(pointMarker(cgX, cy, null, { kind: 'cg', field: 'xcg' }));
-    // ---- dimensions below: x1 | x2 from the CG, then x_cg and L from the nose ----
-    const d1 = cy + rp + span + 22, d2 = d1 + 24, d3 = d2 + 24;
     for (const wx of [w1, w2]) g.append(s('line', { x1: wx, x2: wx, y1: cy + rp + 4, y2: d1 + 5, class: 'sc-thin', opacity: 0.5 }));
     g.append(dim(fr, w1, d1, cgX, d1, `x_1 = ${L1(v.x1)}`, { labelPos: 'before', field: 'x1' }));
     g.append(dim(fr, cgX, d1, w2, d1, `x_2 = ${L1(v.x2)}`, { labelPos: 'after', field: 'x2' }));
     for (const xx of [nose, tail]) g.append(s('line', { x1: xx, x2: xx, y1: cy + 4, y2: d3 + 5, class: 'sc-thin', opacity: 0.4 }));
     g.append(dim(fr, nose, d2, cgX, d2, `x_{cg} = ${L1(xcg)}`, { labelPos: 'before', field: 'xcg' }));
-    g.append(text(cgX + 12, bobY + 2, 'plumb bob', { size: 10, cls: 'sc-dim-text' }));
+    g.append(text(cgX + 10, bobY - 1, 'plumb bob', { size: 10, cls: 'sc-dim-text' }));
     g.append(dim(fr, nose, d3, tail, d3, `L = ${L1(L)}`, { labelPos: 'after', field: 'Lrod' }));
     // wire length, right of everything
     const lx = Math.max(w2, tail) + 26;

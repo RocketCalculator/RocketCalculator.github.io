@@ -528,7 +528,7 @@ export default {
     // winds aloft as wind barbs on the left, on the drawing's height scale
     if (out.wp) {
       const top = zTop / 1.08, Lw = layered(v) ? out.wp.L : [0, 0.25, 0.5, 0.75, 1].map((f) => ({ h: f * top, w: v.windU, dir: v.windDir }));
-      windBarbs(g, Lw, Z, { x: 58, yTop: yt - 4, yGround: yg }, top);
+      windBarbs(g, Lw, Z, { x: 58, yTop: yt - 4, yGround: yg }, top, 'winds', null, v.az, 'downrange');
     }
     // handles
     ctx.handle('launcher', tx, ty, { field: 'QE', title: 'Drag to tilt the launcher',

@@ -23,29 +23,44 @@ export function barb(g, x, y, w, dir, field) {
   g.append(s('circle', { cx: x, cy: y, r: 2.4, fill: 'var(--red)', 'data-field': field }));
 }
 
-/** Wind arrow rooted at (x, y): length len px, pointing where the wind blows to (from-direction dir, deg; N up). */
-export function windArrow(g, x, y, len, dir, field) {
-  const to = ((dir + 180) * Math.PI) / 180, ux = Math.sin(to), uy = -Math.cos(to), nx = -uy, ny = ux, tx = x + len * ux, ty = y + len * uy, hd = Math.min(6, 0.45 * len);
+// side view, oblique projection: the drawing's +x axis is the direction `axisDeg` (compass) and the page's depth is
+// the direction 90° to its right, drawn slanting up-right (cavalier-style, 0.5 scale at 35°)
+const DEPTH = { k: 0.5, a: (35 * Math.PI) / 180 };
+
+/** Screen direction (unit) of a wind blowing towards compass `toDeg` in a side view whose +x points along `axisDeg`. */
+function sideDir(toDeg, axisDeg) {
+  const r = ((toDeg - axisDeg) * Math.PI) / 180, along = Math.cos(r), cross = Math.sin(r);
+  const x = along + DEPTH.k * cross * Math.cos(DEPTH.a), y = -DEPTH.k * cross * Math.sin(DEPTH.a), n = Math.hypot(x, y) || 1;
+  return [x / n, y / n];
+}
+
+/** Wind arrow rooted at (x, y): length len px, pointing along screen unit vector (ux, uy). */
+export function windArrow(g, x, y, len, ux, uy, field) {
+  const nx = -uy, ny = ux, tx = x + len * ux, ty = y + len * uy, hd = Math.min(6, 0.45 * len);
   g.append(s('path', { d: `M${x},${y}L${tx},${ty}M${tx - hd * ux + 0.6 * hd * nx},${ty - hd * uy + 0.6 * hd * ny}L${tx},${ty}L${tx - hd * ux - 0.6 * hd * nx},${ty - hd * uy - 0.6 * hd * ny}`,
     fill: 'none', stroke: 'var(--red)', 'stroke-width': 1.8, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'data-field': field }));
 }
 
 /**
- * Winds aloft on a height axis: one arrow per layer starting on the axis at its height, its length proportional to the
- * speed (the fastest layer drawn 44 px) and its angle the direction the wind blows, seen from above (north up).
- * layers: [{ h, w (ft/s), dir (from, deg) }]; box: { x, yTop, yGround }; hMax: top height drawn.
+ * Winds aloft in the drawing's side view: one arrow per layer starting on a height axis at its height. Wind along the
+ * drawing's horizontal axis points left or right; crosswind slants into (or out of) the page. Every arrow is visible:
+ * length 14 px plus up to 30 px growing with √(speed / fastest).
+ * layers: [{ h, w (ft/s), dir (from, deg) }]; box: { x, yTop, yGround }; hMax: top height; axisDeg: compass direction
+ * of the drawing's +x axis; axisName: what +x is ("downrange", "the drift").
  */
-export function windBarbs(g, layers, Y, box, hMax, field = 'winds', legendY = null) {
+export function windBarbs(g, layers, Y, box, hMax, field = 'winds', legendY = null, axisDeg = 90, axisName = 'downrange') {
   const L = layers.filter((r) => [r.h, r.w, r.dir].every(Number.isFinite) && r.h >= 0 && r.h <= hMax).sort((a, b) => a.h - b.h);
   g.append(s('line', { x1: box.x, x2: box.x, y1: box.yGround, y2: box.yTop, class: 'sc-thin', 'data-field': field }));
-  const ly = legendY ?? box.yTop - 8;   // legend baseline: above the axis, or where the caller has room
-  g.append(text(6, ly - 12, 'Winds aloft', { size: 10.5, field }));
-  g.append(text(6, ly, 'arrow: speed and direction, seen from above (N up)', { size: 9, cls: 'sc-dim-text', field }));
+  const ly = legendY ?? box.yTop - 8;
+  g.append(text(6, ly - 12, 'Winds aloft (side view)', { size: 10.5, field }));
+  g.append(text(6, ly, `→ ${axisName} · ↗ into the page · length grows with speed`, { size: 9, cls: 'sc-dim-text', field }));
   const wMax = Math.max(...L.map((r) => r.w), 1e-9);
   let last = Infinity;
   for (const r of L) {
     const y = Y(r.h); if (last - y < 12) continue; last = y;
     g.append(s('circle', { cx: box.x, cy: y, r: 2.2, fill: 'var(--text-2)', 'data-field': field }));
-    if (r.w > 0.02 * wMax) windArrow(g, box.x, y, 44 * (r.w / wMax), r.dir, field);
+    if (r.w <= 0) continue;
+    const [ux, uy] = sideDir(r.dir + 180, axisDeg);
+    windArrow(g, box.x, y, 14 + 30 * Math.sqrt(r.w / wMax), ux, uy, field);
   }
 }

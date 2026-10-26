@@ -3,6 +3,14 @@
 Newest first, in the spirit of [Keep a Changelog](https://keepachangelog.com/). From 2026-10-25 every entry names its
 branch, tag and commit range. Live site: https://rocketcalculator.github.io/.
 
+## 2026-10-26 — Body Bending Modes cycle (`improve/body-bending-2`)
+- Sections entered as tubes (length, diameter, wall, modulus, mass) or as stiffness and weight; verdict on the first
+  bending frequency against your excitation and separation (D33), with solved stiffening of the section that bends
+  most or of every section, its wall, and the highest excitation for your separation.
+- Drawing: a log frequency scale with the excitation, the body to scale with the exaggerated first mode, its nodes
+  (where to put an IMU) and the section that bends most; panels along the body: mode shapes, stiffness, mass and
+  bending energy; trade-off: first frequency against stiffening.
+
 ## 2026-10-26 — Modified Newtonian Drag cycle (`improve/newtonian-drag-2`)
 - Nose as one choice (rounded cone, flat-faced cone, none) with the tip radius, flat-face diameter and nose length;
   fins by count, thickness (the edge radius is half of it), span and sweep — what the builder measures.

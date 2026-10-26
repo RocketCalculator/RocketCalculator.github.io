@@ -59,3 +59,38 @@ export function bending(elems, g = 32.174) {
 
 /** Mode shape value at ξ = x/L for Ritz coefficients q. */
 export const shape = (q, xi) => q[0] * psi(0, xi) + q[1] * psi(1, xi) + q[2] * psi(2, xi);
+
+/** Slope dψ/dξ of uniform mode j. */
+const psi1 = (j, xi) => { const a = BETA[j] * xi; return BETA[j] * (B[j] * (Math.cosh(a) + Math.cos(a)) + Math.sinh(a) - Math.sin(a)); };
+/** Mode-shape slope (per unit ξ) and curvature (per unit ξ²) at ξ for Ritz coefficients q. */
+export const slope = (q, xi) => q[0] * psi1(0, xi) + q[1] * psi1(1, xi) + q[2] * psi1(2, xi);
+export const curvature = (q, xi) => q[0] * psi2(0, xi) + q[1] * psi2(1, xi) + q[2] * psi2(2, xi);
+
+/**
+ * Tube sections → the element form used by bending(). tubes: [{ len (in), D outer diameter (in), t wall (in),
+ * E Young's modulus (psi), m section mass incl. contents (lbm) }], nose first. Each section is uniform:
+ * EI = E·π(D⁴ − (D − 2t)⁴)/64, weight per length = m/len (lbm/in ≙ lbf/in at standard gravity).
+ */
+export function tubeElems(tubes) {
+  let x = 0;
+  return tubes.map((r) => {
+    x += r.len;
+    const di = Math.max(0, r.D - 2 * r.t), EI = (r.E * Math.PI * (r.D ** 4 - di ** 4)) / 64, w = r.m / r.len;
+    return { x, EIf: EI, EIa: EI, wf: w, wa: w };
+  });
+}
+
+/** Share of the bending strain energy ½∫EI y″² dx carried by each element for mode shape q (the shares sum to 1). */
+export function strainShare(elems, q) {
+  const L = elems.at(-1).x; let x0 = 0;
+  const u = elems.map((e) => {
+    const n = 200, h = (e.x - x0) / n; let s = 0;
+    for (let k = 0; k <= n; k++) {
+      const c = curvature(q, (x0 + k * h) / L), EI = e.EIf + ((e.EIa - e.EIf) * k) / n;
+      s += (k === 0 || k === n ? 1 : k % 2 ? 4 : 2) * EI * c * c;
+    }
+    x0 = e.x; return (s * h) / 3;
+  });
+  const tot = u.reduce((a, b) => a + b, 0) || 1;
+  return u.map((x) => x / tot);
+}

@@ -438,9 +438,12 @@ test('Payload venting: bigger or more vents lower the peak difference; a bigger 
 });
 
 test('Body bending: a stiffer body rings higher, a heavier one lower (f ∝ √(EI/m))', () => {
-  const e = (k, kw = 1) => bySlug['body-bending'].examples[0].values.elems.map((r) => ({ ...r, EIf: r.EIf * k, EIa: r.EIa * k, wf: r.wf * kw, wa: r.wa * kw }));
-  const f = (k, kw) => run('body-bending', { elems: e(k, kw) }).f1;
+  const e = (k, kw = 1) => bySlug['body-bending'].examples[2].values.elems.map((r) => ({ ...r, EIf: r.EIf * k, EIa: r.EIa * k, wf: r.wf * kw, wa: r.wa * kw }));
+  const f = (k, kw) => run('body-bending', { entry: 'ei', elems: e(k, kw) }).f1;
   assert.ok(Math.abs(f(4, 1) / f(1, 1) - 2) < 1e-9 && Math.abs(f(1, 4) / f(1, 1) - 0.5) < 1e-9);
+  // tubes: a thicker wall rings higher
+  const t = (mm) => run('body-bending', { tubes: bySlug['body-bending'].examples[0].values.tubes.map((r) => ({ ...r, t: mm / 25.4 })) }).f1;
+  increasing([1, 2, 4].map(t), 'f1 vs wall');
 });
 
 test('Ground handling: a harder lift pulls the button harder; a bigger load factor raises the joint moment', () => {

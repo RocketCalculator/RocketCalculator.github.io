@@ -24,7 +24,7 @@ const is = (...t) => (v) => t.includes(v.noseType);
 const ST = { safe: 'ok', marginal: 'warn', unsafe: 'err' };
 const FAIRED = [{ x: 0, r: 0 }, { x: 4, r: 1.2 }, { x: 8, r: 1.9 }, { x: 12, r: 2.4 }, { x: 16, r: 2.72 }, { x: 20, r: 2.9 }, { x: 24, r: 3 }, { x: 30, r: 3.06 }, { x: 36, r: 3.08 }];
 // shapes compared on the drag plot (same length and radius as yours)
-const COMPARE = [['cone', 'Conical'], ['ogive', 'Tangent ogive'], ['vonkarman', 'Von Kármán'], ['lvhaack', 'LV-Haack'], ['ellipse', 'Elliptical'], ['power', 'Power ½']];
+const COMPARE = [['cone', 'Conical'], ['ogive', 'Tangent ogive'], ['vonkarman', 'Von Kármán'], ['lvhaack', 'LV-Haack']];
 
 /** Calc input from the form values (lengths in inches). */
 function params(v, over = {}) {
@@ -240,12 +240,12 @@ export default {
       },
     },
     {
-      id: 'shapes', title: 'Which shape has the least drag? Nose drag coefficient against Mach number', wide: true, height: 440,
+      id: 'shapes', title: 'Shapes compared: nose drag against Mach number', explore: true, wide: true, height: 420,
       info: { text: ['The drag coefficient of common nose shapes with your length and base diameter, against Mach number, plus your nose (thick). Subsonic: Hoult’s pressure model plus skin friction; supersonic: tangent-cone pressure plus skin friction. The gap around Mach 1 is the transonic range, where these methods do not apply.', 'Blunt noses do well below Mach 0.8 and badly above Mach 1. Near Mach 1–1.5 these inviscid estimates are weakest; there Crowell’s wind-tunnel ranking (theory page) favours Von Kármán over cones and ogives, while the estimate favours slender cones.'], doc: 'drag' },
       build(v, out) {
         const MS = [0.5, 0.85, 1, 1.15, 1.3, 1.5, 1.75, 2, 2.5, 3, 3.5, 4, 5].filter((m) => m <= Math.max(3, 1.3 * v.M));
         const curve = (over) => MS.map((M) => { const o = analyseNose({ ...params(v, { ...over, M, alpha: 0 }), sub: M < 1.1, coarse: true }); return [M, o.CD ?? NaN]; });
-        const series = custom(v) ? [] : COMPARE.filter(([t]) => t !== v.noseType).map(([t, name], i) => ({ name, dash: ['7 4', '2 3', '9 3 2 3', '4 4', '1 3', '12 4'][i % 6], color: `var(--series-${(i % 5) + 2})`, points: curve({ noseType: t, pow: 0.5, k: 0.75, blunt: false }) }));
+        const series = custom(v) ? [] : COMPARE.filter(([t]) => t !== v.noseType).map(([t, name], i) => ({ name, dashed: true, color: ['var(--text)', 'var(--text-3)', 'var(--series-4)', 'var(--series-5)'][i % 4], points: curve({ noseType: t, blunt: false }) }));
         series.unshift({ name: 'your nose', color: 'var(--red)', points: curve({}) });
         return { x: { label: 'Mach number $M$' }, y: { label: 'Nose drag coefficient $C_{D,n}$' }, includeZero: true, series, vlines: [{ x: v.M, label: 'your Mach number', color: 'var(--text-3)' }] };
       },
@@ -296,7 +296,7 @@ export default {
     const W = 760, H = 380, o = out.o, P = o.pts, ul = ctx.U(LEN), D = (x) => `${fmt(ul.v(x), { digits: 3 })} ${ul.plain}`;
     const fr = ctx.frame({ width: W, height: H, label: 'Nose cone to scale with the flow at the tip' });
     const g = fr.layer('main'); g.replaceChildren();
-    const stub = 0.35 * o.L, x0 = 250, k = Math.min((W - x0 - 100) / (o.L + stub), 120 / o.R), yc = 190;
+    const stub = 0.35 * o.L, x0 = 250, k = Math.min((W - x0 - 140) / (o.L + stub), 110 / o.R), yc = 190;
     const X = (x) => x0 + x * k, Y = (r) => yc - r * k;
     // flow: freestream arrows at α (from lower left for a nose pitched up)
     const al = v.alpha * D2R, ux = Math.cos(al), uy = -Math.sin(al);
@@ -305,7 +305,8 @@ export default {
     g.append(s('path', { d: `M${ax},${ay}l${aLen * ux},${aLen * uy}`, class: 'sc-accent', 'stroke-width': 2, 'marker-end': fr.arrow('acc'), 'data-field': 'alpha' }));
     g.append(text(ax, ay + 20, `air M ${fmt(v.M, { digits: 3 })}, α ${fmt(v.alpha, { digits: 3 })}°`, { size: 11, field: 'M alpha' }));
     // shocks and Mach lines from the tip, measured from the flow direction
-    const tx = X(P[0].x), ty = yc, ray = (ang, len, attrs) => g.append(s('line', { x1: tx, y1: ty, x2: tx + len * Math.cos(ang), y2: ty - len * Math.sin(ang), ...attrs }));
+    const tx = X(P[0].x), ty = yc, clip = (ang, len) => Math.min(len, Math.abs(Math.sin(ang)) > 1e-6 ? (yc - 34) / Math.abs(Math.sin(ang)) : len),
+      ray = (ang, len, attrs) => { const l = clip(ang, len); g.append(s('line', { x1: tx, y1: ty, x2: tx + l * Math.cos(ang), y2: ty - l * Math.sin(ang), ...attrs })); };
     const flowAng = al;   // flow direction angle above +x in drawing coordinates (y up)
     if (v.M > 1) {
       const len = Math.min(W - tx - 10, 330) / Math.cos(Math.min(1.2, o.mu));
@@ -322,7 +323,7 @@ export default {
         g.append(s('path', { d: `M${tx - so + 30},${ty - hgt}Q${tx - so - 10},${ty} ${tx - so + 30},${ty + hgt}`, fill: 'none', stroke: 'var(--danger)', 'stroke-width': 2, 'data-field': 'M noseType' }));
         g.append(text(tx - so + 34, ty - hgt + 12, 'detached bow shock (sketch)', { size: 10.5, field: 'M' }));
       }
-      g.append(text(tx + len * 0.55 * Math.cos(flowAng + o.mu), ty - len * 0.55 * Math.sin(flowAng + o.mu) - 6, `Mach line μ ${fmt(o.mu / D2R, { digits: 3 })}°`, { size: 10, cls: 'sc-dim-text' }));
+      { const ang = flowAng + o.mu, l = clip(ang, len), ex = tx + l * Math.cos(ang), ey = ty - l * Math.sin(ang); g.append(text(ex + 6, ey + 4, `Mach line μ ${fmt(o.mu / D2R, { digits: 3 })}°`, { size: 10, cls: 'sc-dim-text' })); }
     } else {
       g.append(text(tx, 46, `subsonic: no shocks · the flow first turns sonic at Mach ${fmt(o.Mcr, { digits: 3 })} (critical Mach number)`, { size: 11, cls: 'sc-dim-text', field: 'M' }));
       const zm = o.sub.zMin; if (zm <= o.L + stub) { g.append(s('circle', { cx: X(zm), cy: Y(o.R) - 1, r: 4, fill: 'var(--danger)', 'data-field': 'M' })); g.append(text(X(zm), Y(o.R) - 10, `lowest pressure, Cp ${fmt(o.sub.cpMin, { digits: 3 })}`, { anchor: 'middle', size: 10.5, field: 'M' })); }
@@ -333,13 +334,16 @@ export default {
     g.append(s('line', { x1: X(o.L), x2: X(o.L), y1: Y(o.R), y2: Y(-o.R), class: 'sc-thin', 'stroke-dasharray': '3 3' }));
     g.append(s('line', { x1: tx - 20, x2: X(o.L + stub) + 10, y1: yc, y2: yc, class: 'sc-thin', 'stroke-dasharray': '8 3 2 3' }));
     // centre of pressure and dimensions
+    // centre of pressure: marker on the axis, its label below the nose with a leader
+    const cpy = Y(-o.R) + 16;
     g.append(s('path', { d: `M${X(o.xcp)},${yc + 4}l6,11h-12Z`, fill: 'var(--red)', 'data-field': 'noseType L' }));
-    g.append(text(X(o.xcp), yc + 30, `CP ${D(o.xcp)}`, { anchor: 'middle', size: 10.5, field: 'noseType' }));
-    g.append(dim(fr, X(0), Y(-o.R) + 34, X(o.L), Y(-o.R) + 34, `L = ${D(o.L)} (L/D ${fmt(o.fineness, { digits: 3 })})`, { field: 'L' }));
+    g.append(s('line', { x1: X(o.xcp), x2: X(o.xcp), y1: yc + 15, y2: cpy - 10, class: 'sc-thin', 'stroke-dasharray': '2 2' }));
+    g.append(text(X(o.xcp), cpy + 2, `CP ${D(o.xcp)} from the tip`, { anchor: 'middle', size: 10.5, field: 'noseType' }));
+    g.append(dim(fr, X(0), Y(-o.R) + 48, X(o.L), Y(-o.R) + 48, `L = ${D(o.L)} (L/D ${fmt(o.fineness, { digits: 3 })})`, { field: 'L' }));
     g.append(dim(fr, X(o.L + stub) + 24, Y(o.R), X(o.L + stub) + 24, Y(-o.R), `D = ${D(2 * o.R)}`, { field: 'R' }));
     if (o.prof.cap) g.append(text(tx + 6, Y(o.prof.cap.rn) - 8, `r_n ${D(o.prof.cap.rn)}`, { size: 10, field: 'rn' }));
-    else if (o.tipHalf > 0) { const r = 34, a = o.tipHalf; g.append(s('path', { d: `M${tx + r},${ty}A${r},${r} 0 0 0 ${tx + r * Math.cos(a)},${ty - r * Math.sin(a)}`, class: 'sc-thin', fill: 'none' })); g.append(text(tx + r + 4, ty - 6, `${fmt(a / D2R, { digits: 3 })}°`, { size: 10, cls: 'sc-dim-text' })); }
-    g.append(text(18, 20, `${SHAPES.find((q) => q.value === v.noseType)?.label || ''} · to scale (the body behind the nose is cut short)`, { size: 10.5, cls: 'sc-dim-text', field: 'noseType' }));
+    else if (o.tipHalf > 0) { const r = 34, a = o.tipHalf; g.append(s('path', { d: `M${tx + r},${ty}A${r},${r} 0 0 0 ${tx + r * Math.cos(a)},${ty - r * Math.sin(a)}`, class: 'sc-thin', fill: 'none' })); g.append(text(tx - 10, ty - 10, `tip ${fmt(a / D2R, { digits: 3 })}°`, { anchor: 'end', size: 10, cls: 'sc-dim-text', field: 'noseType' })); }
+    g.append(text(W - 18, H - 12, `${SHAPES.find((q) => q.value === v.noseType)?.label || ''} · to scale (the body behind the nose is cut short)`, { anchor: 'end', size: 10.5, cls: 'sc-dim-text', field: 'noseType' }));
     // handles
     if (notCustom(v)) {
       ctx.handle('tip', tx, ty, { field: 'L', title: 'Drag sideways to change the nose length', onDrag: (px) => ctx.setValue('L', Math.max(0.2, v.L + (tx - px) / k), { round: 0.1 }), onKey: (dx) => ctx.setValue('L', Math.max(0.2, v.L * (1 - 0.03 * dx))) });

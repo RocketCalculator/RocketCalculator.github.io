@@ -58,6 +58,9 @@ const STEP_ART = [
 export async function mountHome() {
   const main = initShell({ active: 'home' });
   const [reg, refs] = await Promise.all([loadRegistry(), loadReferences()]);
+  // a topic whose only calculator belongs to another topic (calculators merged into one) is not shown twice
+  const primary = new Set(reg.calculators.map((c) => c.topic));
+  reg.topics = reg.topics.filter((t) => t.status !== 'available' || primary.has(t.slug));
   const avail = reg.calculators.length;
   const soon = reg.topics.filter((t) => t.status === 'soon').length;
 

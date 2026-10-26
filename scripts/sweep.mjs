@@ -7,7 +7,7 @@ const b = await puppeteer.launch({ executablePath: process.env.CHROME, headless:
 const pg = await b.newPage(); await pg.setViewport({ width: 1280, height: 1000 });
 const errs = []; pg.on('pageerror', (e) => errs.push(e.message)); pg.on('console', async (m) => { if (m.type() === 'error') errs.push(m.text() + ' ' + (await Promise.all(m.args().map((a) => a.evaluate((x) => (x && x.stack) || String(x)).catch(() => '')))).join(' ').slice(0, 400)); });
 await pg.goto((process.env.BASE || 'http://127.0.0.1:8765/') + 'index.html'); await pg.evaluate(() => localStorage.clear());
-await pg.goto(`http://127.0.0.1:8765/calculators/${slug}.html`, { waitUntil: 'networkidle0' });
+await pg.goto(`${process.env.BASE || "http://127.0.0.1:8765/"}calculators/${slug}.html`, { waitUntil: 'networkidle0' });
 await new Promise((r) => setTimeout(r, 800));
 const sliders = await pg.$$eval('.calc-inputs input[type=range]', (els) => els.map((e, i) => ({ i, id: e.closest('.field')?.querySelector('input:not([type=range])')?.id || e.id || i, min: +e.min, max: +e.max })));
 const snap = () => pg.evaluate(() => ({

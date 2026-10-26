@@ -405,6 +405,13 @@ test('Upper-stage divergence: longer or softer stages diverge sooner; loads grow
   increasing([0.05, 0.1, 0.2].map((t) => run('upper-stage-divergence', { t }).qD), 'q_D vs thicker wall');
   increasing([0, 4000, 8000, 12000].map((q) => run('upper-stage-divergence', { q }).amp), 'amplification vs q');
   assert.equal(run('upper-stage-divergence', { q: 1e6 }).amp, 'diverges');
+  // the solved fixes land exactly on the margin you want
+  for (const [k, key] of [['t', 'tneed'], ['l', 'lok']]) {
+    const R0 = run('upper-stage-divergence', { q: 12000, rmin: 2.5 });
+    const R1 = run('upper-stage-divergence', { q: 12000, rmin: 2.5, [k]: R0[key] });
+    assert.ok(Math.abs(R1.margin - 2.5) < 1e-9 * 2.5, `upper-stage fix ${k}`);
+  }
+  assert.ok(Math.abs(run('upper-stage-divergence', { mode: 'joint', q: 9000, rmin: 3, C: run('upper-stage-divergence', { mode: 'joint', q: 9000, rmin: 3 }).Cneed }).margin - 3) < 1e-9);
 });
 
 test('Launcher deflection: longer rails and heavier rockets bend more; steeper rails less', () => {

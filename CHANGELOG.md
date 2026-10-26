@@ -3,6 +3,10 @@
 Newest first, in the spirit of [Keep a Changelog](https://keepachangelog.com/). From 2026-10-25 every entry names its
 branch, tag and commit range. Live site: https://rocketcalculator.github.io/.
 
+## 2026-10-26 — Payload Venting final; test tools take a server address (`chore/agent-prep`)
+- Final badge for Payload Bay Venting.
+- `uifuzz.mjs` and `smoke.mjs` read `BASE` from the environment; the slider sweep is now `scripts/sweep.mjs`.
+
 ## 2026-10-26 — Forecast inputs only with wind layers (`improve/hide-forecast-inputs`)
 - Trajectory and Parachute: longitude, launch date and the Open-Meteo / map buttons show only with wind layers
   (Parachute: latitude too — it only feeds the forecast). Trajectory keeps latitude, which sets gravity and the

@@ -238,7 +238,7 @@ def main():
             'references': ref_ids, 'sourceFiles': other,
         })
     # calculators the owner has reviewed and signed off: shown with a purple "Final" badge on the home page
-    FINAL = {'fin-flutter', 'reliability-growth', 'nozzle-thrust', 'geophysics', 'nose-cone', 'skyaero-trajectory', 'parachute-recovery', 'single-wedge'}
+    FINAL = {'fin-flutter', 'reliability-growth', 'nozzle-thrust', 'geophysics', 'nose-cone', 'skyaero-trajectory', 'parachute-recovery', 'single-wedge', 'payload-venting'}
     calcs = [{'slug': s, 'title': ti, 'topic': TOPICS[tid][0], 'description': d, **({'final': True} if s in FINAL else {})} for s, ti, tid, d, *_ in CALCULATORS]
     reg = {
         'source': 'http://www.rsandt.com/reports.html',

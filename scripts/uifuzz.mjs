@@ -3,7 +3,7 @@
 // drag handles and keyboard on handles, report tabs; checks page errors, NaN/undefined text, overflow; screenshots.
 import puppeteer from 'puppeteer-core';
 import { mkdirSync } from 'fs';
-const B = 'http://127.0.0.1:8765/calculators/';
+const B = (process.env.BASE || 'http://127.0.0.1:8765/') + 'calculators/';
 const slugs = process.argv.slice(2).length ? process.argv.slice(2) : ['nose-cone', 'geophysics', 'bifilar-pendulum', 'fin-flutter', 'fin-cant-angle', 'drag-coefficient', 'subsonic-cp'];
 mkdirSync('shots/ui', { recursive: true });
 const browser = await puppeteer.launch({ executablePath: process.env.CHROME || '/usr/bin/chromium-browser', headless: true, protocolTimeout: 20000, args: ['--no-sandbox'] });

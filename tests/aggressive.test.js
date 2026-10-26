@@ -130,7 +130,7 @@ const INVARIANTS = {
   'payload-venting': (v, R) => [Number.isFinite(R.dpMax), R.tau > 0, R.A > 0, R.p0 > 0, R.allow > 0, Number.isFinite(R.MTmax)],
   'body-bending': (v, R) => [R.f1 > 0 && R.f2 > R.f1 && R.f3 > R.f2, R.L > 0, R.W > 0],
   'ground-handling': (v, R) => [R.W > 0, R.xCG >= v.xL || R.lift0 > 0, Number.isFinite(R.FL) && Number.isFinite(R.MJ)],
-  'flight-path-dispersion': (v, R) => [R.gD >= 0 && R.gG >= 0, Math.abs(Math.hypot(R.gD, R.gG) - R.gam) <= 1e-9 * R.gam + 1e-300, R.g0 <= R.gam * (1 + 1e-12), R.LA >= 0, R.n > 0 && R.n < 1],
+  'flight-path-dispersion': (v, R) => R.g0 === '—' ? [R.gD === '—'] : [R.gD >= 0 && R.gG >= 0, Math.abs(Math.hypot(R.gD, R.gG) - R.gam) <= 1e-9 * R.gam + 1e-300, R.g0 <= R.gam * (1 + 1e-12), R.LA >= 0, R.n > 0 && R.n < 1],
   'roll-lock-in-design': (v, R) => [R.Pno >= 0 && R.Pno <= 100, R.sigma >= 0, R.D > 0, R.cR > 0, R.CMa < 0, R.CLp < 0, R.alphaStar === '—' || (R.alphaStar > 0 && R.alphaStar <= v.alphaMax * (1 + 1e-12))],
   'skyaero-trajectory': (v, R) => [R.apo >= 0, R.railV > 0, R.maxMach >= 0, R.tw > 0, Number.isFinite(R.range), R.maxQ >= 0, R.railL > 0, R.dist >= 0, Number.isFinite(R.vImp), R.Dneed > 0, R.bearing >= 0 && R.bearing < 360],
   'two-stage-weights': (v, R) => [R.M01 >= v.Mpl, R.m1 >= 0 && R.m2 >= 0, Math.abs(R.M01 - v.Mpl - R.m1 - R.m2) <= 1e-9 * R.M01, Math.abs(R.dv1 + R.dv2 - v.dv) <= 1e-6 * v.dv, R.payloadPct > 0 && R.payloadPct <= 100, R.lam > 0],
@@ -285,6 +285,10 @@ test('Dispersion: more misalignment, gust or slower boost raise the error; more 
   increasing([1, 3.3, 8].map((sG) => run('flight-path-dispersion', { sG }).gG), 'γ_G vs σ_G');
   increasing([0.04, 0.03, 0.022, 0.012].map((lP) => run('flight-path-dispersion', { lP }).LA), 'L_A vs falling λ_P');
   increasing([1000, 600, 300].map((T) => run('flight-path-dispersion', { T }).n), 'g/2a vs falling thrust');
+  // the best roll wavelength is no worse than the design one; lock-in is an answer, not a refusal
+  const D0 = run('flight-path-dispersion', {});
+  assert.ok(run('flight-path-dispersion', { rollWave: D0.bestRoll }).g0 <= D0.g0 * (1 + 1e-9), 'best roll wavelength');
+  assert.equal(run('flight-path-dispersion', { rollWave: 200 }).g0, '—');
 });
 
 test('Roll lock-in: more static margin raises α*; worse alignment lowers the chance of no lock-in', () => {

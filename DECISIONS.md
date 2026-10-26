@@ -259,3 +259,9 @@ the side the slosh is now (above → narrower tank / lower pitch frequency / mor
   strengths; defaults 400 lbf and 2000 lbf·in are placeholders to replace with tests). Each load: SAFE ≤ 80 % of the
   strength, MARGINAL ≤ 100 %, UNSAFE beyond; the worst sets the verdict. Stations out of order are clamped 1 in apart
   with a warning instead of refused. Not a published limit.
+
+## D42 — 2026-10-26 — Flight path dispersion verdict on the equivalent launcher error
+- The user sets the largest one-sigma launcher-equivalent error (default 1°; the memo gives none). SAFE γ₀ ≤ γ_max,
+  MARGINAL ≤ 1.25×, UNSAFE beyond. Roll wave number ≥ 95 % of the pitch wave number is reported as roll lock-in
+  (UNSAFE, no steady answer, fix to 70 %); thrust below 1.5× weight is outside the model (UNSAFE, no answer); burnout
+  below the launcher top is clamped. Rail fixes are shown only up to 3× the present rail. Not a published limit.

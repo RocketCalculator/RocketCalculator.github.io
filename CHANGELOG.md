@@ -3,6 +3,13 @@
 Newest first, in the spirit of [Keep a Changelog](https://keepachangelog.com/). From 2026-10-25 every entry names its
 branch, tag and commit range. Live site: https://rocketcalculator.github.io/.
 
+## 2026-10-26 — Flight Path Angle Dispersions cycle (`improve/flight-path-dispersion-2`)
+- Verdict on the equivalent launcher error against your limit (D42), with fixes solved on the model: the motor
+  alignment, the static margin, the rail length and the best roll wavelength (new key result). Roll lock-in and
+  too little thrust are now answers (UNSAFE with the fix) instead of refusals; a burnout below the rail is clamped.
+- Every input bounded with a slider and a three-paragraph info tab; your limit drawn on the plots and as a circle in
+  the top view; rail-length handle; hodograph and roll plots moved to Explore.
+
 ## 2026-10-26 — Ground Handling Loads cycle (`improve/ground-handling-2`)
 - Verdict on the aft-button pull and the joint moment against the strengths you enter (D41), with solved fixes: the
   largest lift factor the button takes (exact, eq. 6 is linear in K), the lift point, and the strengths needed.

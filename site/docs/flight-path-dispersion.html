@@ -61,6 +61,13 @@
         <p>Started from <span class="tex">\gamma(L)=\gamma_0</span>, a point-mass trajectory run gives one component of the impact displacement. Both components are normally distributed, unbiased and independent with the same standard deviation, because the misalignment phase is uniform in roll and the gust field has two independent components.</p>
       </section>
 
+      <section id="verdict">
+        <h2>Verdict and fixes</h2>
+        <p>The memo turns the dispersion into an equivalent launcher error <span class="tex">\gamma_0</span> but sets no acceptable value: that depends on how far the impact may move on your range. The calculator asks for your limit <span class="tex">\gamma_{max}</span> (default 1°, this site’s choice) and compares: <strong>safe</strong> up to it, <strong>marginal</strong> up to 1.25×, <strong>unsafe</strong> beyond. To choose the limit, run the Trajectory Simulation with launcher errors of a few trial sizes and see how far the impact moves.</p>
+        <p>The fixes are solved on the full model by bisection: the misalignment <span class="tex">\delta_T</span> (with the offset <span class="tex">\Omega</span> scaled with it) that meets the limit, the pitch wave number (static margin), and the launcher length (shown only up to three times the present rail). The best roll wavelength is found by scanning 0.3–3 roll cycles to burnout, staying clear of resonance; Hoult notes that about 1000 ft is close to optimum over a broad band of pitch wave numbers. When the gusts alone exceed the limit, no rocket change helps and the verdict says so.</p>
+        <p>The steady misalignment lift grows as <span class="tex">1/(\lambda_P^2-\lambda_R^2)</span>. At or past 95 % of the pitch wave number the rocket rolls through pitch resonance (roll lock-in) and the steady model has no answer: the verdict is unsafe, with the roll wavelength or static margin that brings the roll wave number down to 70 % of the pitch wave number.</p>
+      </section>
+
       <section id="verification">
         <h2>Verification</h2>
         <p>The tests reproduce the memo’s Figure 3 (<span class="tex">g/2a=0.1</span>, <span class="tex">L_A/mg=0.2</span>, <span class="tex">L=40</span> ft: peak 0.042 rad at 0.4 roll wavelengths, 0.029 near one cycle) and Figure 1, the field tool’s lift, <span class="tex">\gamma_T</span> and gust columns, and, with the tool’s two slips put back, its tabulated equivalent launcher angle against pitch wave number at 1850 ft burnout to 0.5%.</p>

@@ -299,14 +299,33 @@ test('Trajectory: lower elevation flies farther; more weight or drag lowers apog
   increasing([9, 7.5, 6.25].map((s1d) => run('skyaero-trajectory', { s1d }).apo), 'apogee vs slimmer rocket');
 });
 
-test('Subsonic CP: the worst-case margin is the minimum of the cases; the CG shift and fin span reach the target', () => {
-  const r = run('subsonic-cp', { xcg: 75, xcgB: 77, targetSM: 2 });
+test('Subsonic CP: the worst-case margin is the minimum of the cases; every solved fix reaches the target', () => {
+  const r = run('subsonic-cp', { xcg: 75, xcgB: 77, targetSM: 2, mass: 20 });
   assert.ok(r.margin <= r.marginNom + 1e-12 && r.margin <= r.marginNoCarry + 1e-12 && r.margin <= r.marginBurn + 1e-12);
-  assert.ok(r.dCG > 0 && typeof r.bNeed === 'number');
+  assert.ok(r.dCG > 0 && typeof r.bNeed === 'number' && r.ballast > 0);
   close2(run('subsonic-cp', { xcg: 75 - r.dCG, xcgB: 77 - r.dCG, targetSM: 2 }).margin, 2, 'CG shift reaches the target');
+  close2(run('subsonic-cp', { xcg: r.xcgMax, xcgB: r.xcgMax - 1, targetSM: 2 }).margin, 2, 'furthest-aft CG gives the target');
   close2(run('subsonic-cp', { xcg: 75, xcgB: 77, targetSM: 2, b: r.bNeed }).margin, 2, 'span reaches the target');
+  const d = defaults(bySlug['subsonic-cp']);
+  // ballast at x_b with the launch mass: the burnout CG moves by the same mass ratio (conservative), so the worst case meets the target
+  const xb = d.noseL / 2, mb = r.ballast, cg = (x) => (20 * x + mb * xb) / (20 + mb);
+  const rb = run('subsonic-cp', { xcg: cg(75), xcgB: cg(77), targetSM: 2 });
+  assert.ok(rb.margin >= 2 - 1e-9 && rb.margin < 2 + 1e-6, `ballast reaches the target: ${rb.margin}`);
+  // a safe design: the span for the target is smaller than the current span, and the verdict asks for nothing
+  const ok = run('subsonic-cp', { xcg: 60, xcgB: null });
+  assert.ok(ok.bNeed < d.b && ok.dCG === 0);
+  close2(run('subsonic-cp', { xcg: 60, xcgB: null, b: ok.bNeed }).margin, 1.5, 'smallest span for the target');
   increasing([77, 74, 71].map((xcgB) => run('subsonic-cp', { xcg: 70, xcgB }).margin), 'worst margin vs burnout CG moving forward');
   assert.equal(run('subsonic-cp', { xcg: null }).margin, null);
+});
+
+test('Subsonic CP: verdict bands follow the user limits; a nose longer than the rocket is clamped, not refused', () => {
+  const def = bySlug['subsonic-cp'], lvl = (p) => def.compute({ ...defaults(def), ...p }, {}).verdict.level;
+  const m = run('subsonic-cp', { xcg: 72, xcgB: null }).margin;
+  assert.equal(lvl({ xcg: 72, xcgB: null, minSM: m - 0.1, targetSM: m + 0.1 }), 'marginal');
+  assert.equal(lvl({ xcg: 72, xcgB: null, minSM: m + 0.1, targetSM: m + 0.2 }), 'unsafe');
+  assert.equal(lvl({ xcg: 72, xcgB: null, minSM: m - 0.2, targetSM: m - 0.1 }), 'safe');
+  assert.ok(Number.isFinite(run('subsonic-cp', { noseL: 120, bodyLen: 93.16 }).xcp));
 });
 
 test('Nozzle: thrust falls with ambient pressure, a wider cone loses thrust, the 1-D C_F peaks at p_e = p_a', () => {

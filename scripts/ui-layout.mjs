@@ -103,7 +103,7 @@ async function run({ slug, sys, w }) {
       for (let k = 0, prev = ''; k < 25; k++) { await settle(page, 200); const cur = JSON.stringify((await page.evaluate(probe, sel)).boxes); if (cur === prev) break; prev = cur; }
       const tag = `${slug} @${w}px ${sys}`;
       const sliders = await page.$$eval('.calc-inputs input[type=range]', (els) => els.map((e, i) => (e.offsetParent ? i : -1)).filter((i) => i >= 0));
-      const base = await page.evaluate(probe, sel);
+      let base = await page.evaluate(probe, sel);
       base.deep = await deep(page);
       for (const i of sliders) {
         const id = await page.$$eval('.calc-inputs input[type=range]', (els, i) => els[i].closest('.field')?.dataset.for, i);
@@ -111,6 +111,9 @@ async function run({ slug, sys, w }) {
           await page.$$eval('.calc-inputs input[type=range]', (els, i, f) => { const s = els[i]; s.value = String(+s.min + (+s.max - +s.min) * f); s.dispatchEvent(new Event('input', { bubbles: true })); }, i, f);
           await settle(page);
           const now = await page.evaluate(probe, sel);
+          // a slider that shows or hides another input (a boat-tail length shows its radius) changes the question, not
+          // the layout: note it and measure the rest against the new arrangement
+          if (now.shown !== base.shown) { notes.push(`${tag} slider ${id} at ${f * 100}% changes which inputs/results are shown`); base = now; base.deep = await deep(page); continue; }
           const moved = compare(base.boxes, now.boxes);
           if (moved.length) await debug(page, `${tag} ${id} ${f}`, base.deep);
           if (moved.length) failures.push(`${tag} slider ${id} at ${f * 100}%: ${moved.slice(0, 4).map(([k, d]) => `${k} ${d}px`).join(', ')}${moved.length > 4 ? ` (+${moved.length - 4})` : ''}`);

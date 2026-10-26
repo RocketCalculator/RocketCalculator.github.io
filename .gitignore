@@ -13,3 +13,7 @@ Thumbs.db
 test-results/
 playwright-report/
 shots/
+
+# agent worktrees and their node_modules links
+.claude/
+node_modules

@@ -2,7 +2,7 @@
 // Needs `npm i puppeteer-core` and Firefox; serve site/ on :8765 first. Usage: node scripts/smoke.mjs site
 import puppeteer from 'puppeteer-core';
 import { readdirSync } from 'node:fs';
-const BASE = 'http://127.0.0.1:8765/';
+const BASE = process.env.BASE || 'http://127.0.0.1:8765/';
 const site = process.argv[2];
 const pages = ['index.html', 'references/index.html',
   ...readdirSync(site + '/calculators').map((f) => 'calculators/' + f),

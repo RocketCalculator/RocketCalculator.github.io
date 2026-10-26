@@ -174,7 +174,8 @@
    "slug": "payload-venting",
    "title": "Payload Bay Venting",
    "topic": "venting",
-   "description": "Bay pressure history through vent holes during ascent and the largest pressure difference across the shell."
+   "description": "Bay pressure history through vent holes during ascent and the largest pressure difference across the shell.",
+   "final": true
   },
   {
    "slug": "body-bending",

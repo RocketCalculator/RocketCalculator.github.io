@@ -56,7 +56,10 @@ and by how much?* Every page answers all three within five seconds.
   map. They report what they did in a toast, with the data source's attribution. A button that uses particular inputs
   sits **right after them in their group** (`group` on the action): load winds and the map links follow latitude,
   longitude and the launch date.
-- **Dates are dates** (`kind: 'datetime'`, site local time, empty = now), not "hours from now".
+- **Dates are dates** (`kind: 'datetime'`, site local time, empty = now), not "hours from now": a calendar popover
+  with month and year jumps, hour and minute, Now / Today / Done, Esc to close.
+- **Group inputs in the order the user fills them**: where and when → weather → launcher → rocket (airframe, then
+  motor, per stage) → recovery → your limits → model settings (advanced) last.
 - Every input has an info tab (§7).
 
 ## 4. The drawing

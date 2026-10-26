@@ -3,6 +3,14 @@
 Newest first, in the spirit of [Keep a Changelog](https://keepachangelog.com/). From 2026-10-25 every entry names its
 branch, tag and commit range. Live site: https://rocketcalculator.github.io/.
 
+## 2026-10-26 — Date picker, uniform wind, trajectory input order, Buy me a coffee (`feat/datepicker-wind-grouping`)
+- Launch date and time: a calendar picker (month and year jumps, hour and minute, Now/Today/Done) replaces the
+  browser's date field.
+- Trajectory: "No wind" replaced by a uniform wind (speed and from-direction; 0 for still air). Inputs regrouped:
+  launch site and date (with the weather and map buttons) → weather → launcher → rocket → each stage's airframe and
+  motor → recovery → your limits → weathercocking model (advanced).
+- "Buy me a coffee" link in the footer and on the About page.
+
 ## 2026-10-26 — Launch date for forecast winds (`feat/launch-date-winds`)
 - Parachute Recovery and Trajectory Simulation: "hours from now" replaced by a launch date and time (site local; empty
   = now). Open-Meteo is asked for that day; out-of-range dates show its reason (about 3 months back to 16 days ahead).

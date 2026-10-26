@@ -36,7 +36,7 @@ function range(f, v0) {
 function sample(f, r, v0) {
   if (f.kind === 'select') return f.options[Math.floor(r() * f.options.length)].value;
   if (f.kind === 'bool') return r() < 0.5;
-  if (f.kind === 'table') return v0;
+  if (f.kind === 'table' || f.kind === 'datetime') return v0;
   const [lo, hi] = range(f, v0);
   const x = lo > 0 && hi / lo > 50 ? Math.exp(Math.log(lo) + r() * Math.log(hi / lo)) : lo + r() * (hi - lo);
   return /^(N|nLugs)$/.test(f.id) ? Math.max(Math.ceil(lo), Math.round(x)) : x;

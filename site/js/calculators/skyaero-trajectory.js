@@ -60,34 +60,44 @@ function checkWind(rows) {
 }
 
 const layered = (v) => v.windMode === 'layers';
-/** Wind layers split along the plane of fire (azimuth az): in-plane (+ downrange) and crosswind (+ to the right). */
+/** Wind (uniform, or layers) split along the plane of fire (azimuth az): in-plane (+ downrange) and crosswind (+ to the right). */
 function windParts(v) {
-  if (!layered(v) || !v.winds?.length) return null;
-  const a = v.az * D2R, L = [...v.winds].sort((p, q) => p.h - q.h);
+  const L = layered(v) ? [...(v.winds || [])].sort((p, q) => p.h - q.h) : [{ h: 0, w: v.windU, dir: v.windDir }];
+  if (!L.length) return null;
+  const a = v.az * D2R;
   const comp = (h) => { const w = windAt(L, h); return { inPlane: w.u * Math.sin(a) + w.v * Math.cos(a), cross: w.u * Math.cos(a) - w.v * Math.sin(a) }; };
   return { L, comp, table: L.map((r) => [r.h, comp(r.h).inPlane]) };   // components interpolate linearly, so the table is exact
 }
 
-const stageGroup = (k) => {
-  const d = STAGE_DEF[k - 1], on = (v) => +v.nStages >= k, id = (x) => `s${k}${x}`;
+const stageOn = (k) => (v) => +v.nStages >= k;
+const airframeGroup = (k) => {
+  const d = STAGE_DEF[k - 1], on = stageOn(k), id = (x) => `s${k}${x}`;
   return {
-    id: `stage${k}`, title: k === 1 ? 'Stage 1 (booster)' : `Stage ${k}`,
+    id: `stage${k}`, title: k === 1 ? 'Stage 1 airframe (booster)' : `Stage ${k} airframe`,
     fields: [
-      ...(k > 1 ? [{ id: id('delay'), label: `Coast before stage ${k} ignition`, sym: `t_{c${k}}`, ...TIME, default: d.delay, min: 0, max: 600, slider: { min: 0, max: 30, step: 0.1 }, when: on,
-        info: { text: [`The wait between the burnout of stage ${k - 1} (when it drops off) and the ignition of stage ${k}.`, 'Set by your staging timer or flight computer.', 'A longer coast lets drag slow the rocket before the next motor lights, but lets it climb in thinner air; too long and the rocket tips over or falls before ignition.'], range: 'Typically 0–5 s; longer coasts for high-altitude upper stages.', doc: 'phases' } }] : []),
-      { id: id('Wp'), label: 'Propellant weight', sym: `W_{p${k}}`, ...MASS, default: d.Wp, min: 1e-6, max: 5000, slider: { min: 0.1, max: 3 * d.Wp, step: 0.05 }, when: on,
-        info: { text: ['The weight of propellant this motor burns: the motor’s loaded weight minus its empty case.', 'From the motor data sheet or ThrustCurve.org.', 'It is burned in proportion to the impulse delivered, so the rocket gets lighter during the burn. More propellant with the same thrust curve means a higher specific impulse is assumed.'], tex: 'I_{sp}=\\frac{I_{vac}}{W_p}', range: 'H–K motors 0.1–1 kg; L–M 1–5 kg; N–O 5–20 kg.', doc: 'motor' } },
       { id: id('Wd'), label: k === 1 ? 'Dry weight (with everything not in later stages)' : 'Dry weight', sym: `W_{d${k}}`, ...MASS, default: d.Wd, min: 1e-6, max: 1e5, slider: { min: 0.5, max: 3 * d.Wd, step: 0.1 }, when: on,
         info: { text: [k === 1 ? 'Everything this stage carries apart from its propellant and the upper stages: airframe, fins, empty motor case, recovery gear and payload.' : 'Everything in this stage apart from its propellant: airframe, empty motor case, recovery gear and payload.', 'Weigh the rocket ready to fly without the propellant.', k === 1 ? 'It is dropped at burnout when an upper stage follows. A heavier rocket climbs lower but leaves the rail slower.' : 'The top stage keeps its dry weight all the way to landing. Heavier means lower apogee.'], range: 'Model rockets 0.1–1 kg; high-power 2–30 kg.', doc: 'phases' } },
       { id: id('d'), label: 'Reference diameter', sym: `d_${k}`, ...LEN, default: d.d, min: 1e-6, max: 120, slider: { min: 0.5, max: 2 * d.d, step: 0.05 }, when: on,
         info: { text: ['The body-tube outer diameter of the rocket flying on this stage.', 'It sets the reference area that the drag coefficients in the table are based on.', 'Drag grows with the square of the diameter: a 10 % fatter rocket has 21 % more drag.'], tex: 'S=\\frac{\\pi d^2}{4}', range: 'Model 1–3 in (25–75 mm); high-power 3–8 in (75–200 mm).', doc: 'forces' } },
-      { id: id('Ae'), label: 'Nozzle exit area', sym: `A_{e${k}}`, ...AREA, default: d.Ae, min: 0, max: 1e4, slider: { min: 0, max: 2 * d.Ae, step: 0.01 }, when: on,
-        info: { text: ['The area of the motor nozzle’s exit opening, πd²/4 of its exit diameter.', 'Measure the nozzle or take it from the motor drawing.', 'The air pressure pushing on the exit lowers the thrust at low altitude; higher up, where the air is thinner, the motor gives more thrust.'], tex: 'T=T_{vac}-pA_e', range: 'About 0.2–5 in² (1–30 cm²) for high-power motors.', doc: 'motor' } },
-      { id: id('thrust'), label: 'Thrust curve (from ignition)', kind: 'table', minRows: 2, when: on, columns: [{ id: 't', label: 'Time', ...TIME }, { id: 'T', label: 'Thrust', ...FORCE }], default: d.thrust, validate: checkThrust,
-        info: { text: ['The motor’s thrust against time from ignition; the last time is burnout.', 'Copy it from ThrustCurve.org or the maker’s data sheet (those are sea-level values; the calculator adds the exit pressure term to get the vacuum thrust).', 'The area under the curve is the total impulse; how it is spread decides how fast the rocket leaves the rail.'], doc: 'motor' } },
-      { id: id('vac'), label: 'Thrust curve is vacuum thrust', kind: 'bool', default: false, when: on, info: { text: ['Tick only if your thrust curve is already the vacuum thrust (rare: from a motor-design program). Untick for test-stand or ThrustCurve.org data.'], doc: 'motor' } },
       { id: id('cd'), label: 'Drag coefficient against Mach', kind: 'table', minRows: 1, when: on, columns: [{ id: 'M', label: 'Mach', ...NONE }, { id: 'off', label: 'C_D coasting', ...NONE }, { id: 'on', label: 'C_D powered', ...NONE }], default: d.cd, validate: checkCd,
         info: { text: ['How draggy the rocket is at each speed (as a Mach number, the speed divided by the speed of sound).', 'From OpenRocket, RASAero or this site’s Drag Coefficient calculator. “Coasting” includes the drag of the flat base; with the motor burning that is filled by the exhaust, so “powered” is usually lower.', 'Drag jumps near Mach 1. Beyond the last row the last value is used.'], tex: 'D=\\tfrac12\\rho V^2C_DS', range: 'Typical rockets 0.3–0.6 subsonic, up to 0.7–0.9 near Mach 1.', doc: 'forces' } },
+    ],
+  };
+};
+const motorGroup = (k) => {
+  const d = STAGE_DEF[k - 1], on = stageOn(k), id = (x) => `s${k}${x}`;
+  return {
+    id: `motor${k}`, title: `Stage ${k} motor`,
+    fields: [
+      ...(k > 1 ? [{ id: id('delay'), label: `Coast before stage ${k} ignition`, sym: `t_{c${k}}`, ...TIME, default: d.delay, min: 0, max: 600, slider: { min: 0, max: 30, step: 0.1 }, when: on,
+        info: { text: [`The wait between the burnout of stage ${k - 1} (when it drops off) and the ignition of stage ${k}.`, 'Set by your staging timer or flight computer.', 'A longer coast lets drag slow the rocket before the next motor lights, but lets it climb in thinner air; too long and the rocket tips over or falls before ignition.'], range: 'Typically 0–5 s; longer coasts for high-altitude upper stages.', doc: 'phases' } }] : []),
+      { id: id('thrust'), label: 'Thrust curve (from ignition)', kind: 'table', minRows: 2, when: on, columns: [{ id: 't', label: 'Time', ...TIME }, { id: 'T', label: 'Thrust', ...FORCE }], default: d.thrust, validate: checkThrust,
+        info: { text: ['The motor’s thrust against time from ignition; the last time is burnout.', 'Copy it from ThrustCurve.org or the maker’s data sheet (those are sea-level values; the calculator adds the exit pressure term to get the vacuum thrust).', 'The area under the curve is the total impulse; how it is spread decides how fast the rocket leaves the rail.'], doc: 'motor' } },
+      { id: id('Wp'), label: 'Propellant weight', sym: `W_{p${k}}`, ...MASS, default: d.Wp, min: 1e-6, max: 5000, slider: { min: 0.1, max: 3 * d.Wp, step: 0.05 }, when: on,
+        info: { text: ['The weight of propellant this motor burns: the motor’s loaded weight minus its empty case.', 'From the motor data sheet or ThrustCurve.org.', 'It is burned in proportion to the impulse delivered, so the rocket gets lighter during the burn. More propellant with the same thrust curve means a higher specific impulse is assumed.'], tex: 'I_{sp}=\\frac{I_{vac}}{W_p}', range: 'H–K motors 0.1–1 kg; L–M 1–5 kg; N–O 5–20 kg.', doc: 'motor' } },
+      { id: id('Ae'), label: 'Nozzle exit area', sym: `A_{e${k}}`, ...AREA, default: d.Ae, min: 0, max: 1e4, slider: { min: 0, max: 2 * d.Ae, step: 0.01 }, when: on,
+        info: { text: ['The area of the motor nozzle’s exit opening, πd²/4 of its exit diameter.', 'Measure the nozzle or take it from the motor drawing.', 'The air pressure pushing on the exit lowers the thrust at low altitude; higher up, where the air is thinner, the motor gives more thrust.'], tex: 'T=T_{vac}-pA_e', range: 'About 0.2–5 in² (1–30 cm²) for high-power motors.', doc: 'motor' } },
+      { id: id('vac'), label: 'Thrust curve is vacuum thrust', kind: 'bool', default: false, when: on, info: { text: ['Tick only if your thrust curve is already the vacuum thrust (rare: from a motor-design program). Untick for test-stand or ThrustCurve.org data.'], doc: 'motor' } },
     ],
   };
 };
@@ -135,18 +145,33 @@ export default {
   },
   groups: [
     {
-      id: 'site', title: 'Launch site',
+      id: 'site', title: 'Launch site and date',
       fields: [
-        { id: 'ho', label: 'Site elevation (above sea level)', sym: 'h_0', ...ALT, default: 1898, min: -1000, max: 20000, slider: { min: 0, max: 10000, step: 10 },
-          info: { text: ['How high the launch site is above sea level.', 'From a map app or GPS; “Load winds from Open-Meteo” fills it from the forecast’s terrain height.', 'Higher sites have thinner air, so less drag and a slightly higher apogee. All heights in the results are above the ground.'], range: 'Coastal sites 0–100 m; Black Rock 1190 m (3900 ft); Spaceport America 1400 m.', doc: 'atmosphere' } },
-        { id: 'To', label: 'Ground air temperature', sym: 'T_0', dim: 'temperature', internal: 'R', default: 559.67, min: 400, max: 600, slider: { min: 440, max: 580, step: 0.5 },
-          info: { text: ['The air temperature about 2 m above the ground on launch day.', 'From a thermometer or the forecast (the Open-Meteo button fills it).', 'Hot air is thinner: on a hot day the rocket meets less drag and climbs a little higher.'], range: '−20 °C to +45 °C (−4 °F to 113 °F).', doc: 'atmosphere' } },
         { id: 'lat', label: 'Latitude', sym: '\\varphi', ...ANG, default: 34.5, min: -90, max: 90, slider: { min: -90, max: 90, step: 0.1 },
           info: { text: ['North–south position of the launch site in degrees (north positive), as shown by any map app.', 'Sets gravity and the shape of the atmosphere (the tropopause is higher near the equator), and is used to load the forecast winds and open the site on a map.'], doc: 'atmosphere' } },
         { id: 'lon', label: 'Longitude', sym: '\\lambda_E', ...ANG, default: -117.8, min: -180, max: 180,
           info: { text: ['East–west position of the launch site in degrees (east positive, west negative).', 'Only used to load the forecast winds and to open the site on a map.'], doc: 'wind' } },
+        { id: 'ho', label: 'Site elevation (above sea level)', sym: 'h_0', ...ALT, default: 1898, min: -1000, max: 20000, slider: { min: 0, max: 10000, step: 10 },
+          info: { text: ['How high the launch site is above sea level.', 'From a map app or GPS; “Load winds from Open-Meteo” fills it from the forecast’s terrain height.', 'Higher sites have thinner air, so less drag and a slightly higher apogee. All heights in the results are above the ground.'], range: 'Coastal sites 0–100 m; Black Rock 1190 m (3900 ft); Spaceport America 1400 m.', doc: 'atmosphere' } },
         { id: 'when', label: 'Launch date and time (site local)', kind: 'datetime', default: '',
           info: { text: ['The date and hour of your launch, in the launch site’s local time. Leave it empty for now.', 'Then press “Load winds from Open-Meteo” to fill the wind layers from the forecast for that hour. Forecasts reach about 16 days ahead; past dates up to about 3 months back give the model’s recent analysis.'], doc: 'wind' } },
+      ],
+    },
+    {
+      id: 'weather', title: 'Weather on the day',
+      fields: [
+        { id: 'To', label: 'Ground air temperature', sym: 'T_0', dim: 'temperature', internal: 'R', default: 559.67, min: 400, max: 600, slider: { min: 440, max: 580, step: 0.5 },
+          info: { text: ['The air temperature about 2 m above the ground on launch day.', 'From a thermometer or the forecast (the Open-Meteo button fills it).', 'Hot air is thinner: on a hot day the rocket meets less drag and climbs a little higher.'], range: '−20 °C to +45 °C (−4 °F to 113 °F).', doc: 'atmosphere' } },
+        { id: 'windMode', label: 'Wind', kind: 'select', default: 'uniform', options: [{ value: 'uniform', label: 'Uniform wind (same at every height)' }, { value: 'layers', label: 'Wind layers (by height, with direction)' }],
+          info: { text: ['One wind, the same speed and direction at every height, or a list of wind layers — speed and direction at several heights, as weather forecasts give them.', 'Use “Load winds from Open-Meteo” to fill the layers from a forecast for the latitude and longitude above.'], doc: 'wind' } },
+        { id: 'windU', label: 'Wind speed', sym: 'w', ...SPD, default: 15, min: 0, max: 300, slider: { min: 0, max: 80, step: 0.5 }, when: (v) => !layered(v),
+          info: { text: ['A single wind, the same at every height: its speed.', 'Use the forecast ground wind for a low flight, or an average of the winds aloft for a high one. Set 0 for still air.', 'Along the launch direction it changes the range (the rocket turns into it while climbing); across it, it pushes the rocket sideways during the descent.'], range: 'Ground 2–8 m/s (7–26 ft/s); most ranges stop launches above about 9 m/s (20 mph).', doc: 'wind' } },
+        { id: 'windDir', label: 'Wind blows from', sym: '\\theta_w', ...ANG, default: 270, min: 0, max: 360, slider: { min: 0, max: 360, step: 5 }, when: (v) => !layered(v),
+          info: { text: ['The compass direction the wind comes FROM: 270° is a west wind, which pushes the rocket east.', 'Weather reports give it this way.', 'Launching into the wind (launch direction close to the wind-from direction) is usual.'], range: '0–360°.', doc: 'wind' } },
+        { id: 'winds', label: 'Wind layers', kind: 'table', minRows: 1, when: layered,
+          columns: [{ id: 'h', label: 'Height above ground', ...ALT }, { id: 'w', label: 'Speed', ...SPD }, { id: 'dir', label: 'From (°)', ...ANG }],
+          default: [{ h: 0, w: 10, dir: 270 }, { h: 3000, w: 25, dir: 260 }, { h: 10000, w: 45, dir: 250 }, { h: 20000, w: 70, dir: 245 }], validate: checkWind,
+          info: { text: ['Each row is the wind at one height above the ground: its speed and the compass direction it blows FROM (270 = from the west, so it pushes the rocket east). Between rows it changes smoothly; above the top row and below the bottom row it stays as in that row.', 'Fill it from a forecast (the button below), a balloon sounding, or by hand.', 'Wind along the launch direction changes how far the rocket flies; wind across it pushes the rocket sideways while it descends.'], range: 'Ground 2–8 m/s; 3–10 km often 10–30 m/s (30–100 ft/s).', doc: 'wind' } },
       ],
     },
     {
@@ -158,29 +183,14 @@ export default {
           info: { text: ['The compass direction the rail leans towards: 0° north, 90° east, 180° south, 270° west.', 'Usually into the wind, so the rocket lands nearer the pad after drifting back.', 'Only matters with wind layers: it decides how much of each wind blows along the flight (changing the range) and how much across it (drift to the side).'], range: '0–360°.', doc: 'wind' } },
         { id: 'L', label: 'Rail length', sym: 'L', ...DIST, default: 12, min: 0.01, max: 500, slider: { min: 1, max: 40, step: 0.25 },
           info: { text: ['How far the rocket slides along the rail or rod before it is free: the length of rail above the rocket’s lower rail button.', 'Measure it on the launcher.', 'A longer rail gives the motor more time to speed the rocket up before the fins have to steer it, so the rocket leaves faster.'], range: 'Rods 1–2 m (3–6 ft); rails 2–6 m (6–20 ft); research rails up to 10 m+.', doc: 'rail' } },
-        { id: 'waveP', label: 'Pitch/yaw wavelength', sym: '\\Lambda_P', ...DIST, default: 350, min: 1, max: 1e5, slider: { min: 50, max: 2000, step: 10 },
-          info: { text: ['How far the rocket flies during one wobble (pitch oscillation) as it weathercocks after leaving the rail.', 'The Pitch-Yaw Wavenumber calculator gives it from the rocket’s stability; long, stable rockets have short wavelengths.', 'It sets how strongly the point-mass model turns into the wind: short wavelength, quick turn.'], tex: '\\lambda_P=\\frac{2\\pi}{\\Lambda_P}', range: 'High-power rockets 100–1000 ft (30–300 m).', doc: 'rail' } },
-        { id: 'simRail', label: 'Use the simulated launcher length', kind: 'bool', default: true,
-          info: { text: ['A point has no rotational inertia, so it would turn into the wind the instant it left the rail. Hoult’s correction lengthens the rail in the model so the turn matches a real rocket’s.', 'Leave it on; untick only to compare with simulations that use the physical rail.'], tex: 'L_{sim}=\\frac{0.140365}{\\lambda_P}\\exp\\left(\\sqrt{2\\pi\\lambda_PL}-0.387621(\\lambda_PL)^{1.2}\\right)', doc: 'rail' } },
       ],
     },
     {
-      id: 'windg', title: 'Wind',
-      fields: [
-        { id: 'windMode', label: 'Wind', kind: 'select', default: 'none', options: [{ value: 'none', label: 'No wind' }, { value: 'layers', label: 'Wind layers (by height, with direction)' }],
-          info: { text: ['Fly in still air, or with a list of wind layers — speed and direction at several heights, as weather forecasts give them.', 'Use “Load winds from Open-Meteo” to fill the layers from a forecast for the latitude and longitude above.'], doc: 'wind' } },
-        { id: 'winds', label: 'Wind layers', kind: 'table', minRows: 1, when: layered,
-          columns: [{ id: 'h', label: 'Height above ground', ...ALT }, { id: 'w', label: 'Speed', ...SPD }, { id: 'dir', label: 'From (°)', ...ANG }],
-          default: [{ h: 0, w: 10, dir: 270 }, { h: 3000, w: 25, dir: 260 }, { h: 10000, w: 45, dir: 250 }, { h: 20000, w: 70, dir: 245 }], validate: checkWind,
-          info: { text: ['Each row is the wind at one height above the ground: its speed and the compass direction it blows FROM (270 = from the west, so it pushes the rocket east). Between rows it changes smoothly; above the top row and below the bottom row it stays as in that row.', 'Fill it from a forecast (the button below), a balloon sounding, or by hand.', 'Wind along the launch direction changes how far the rocket flies; wind across it pushes the rocket sideways while it descends.'], range: 'Ground 2–8 m/s; 3–10 km often 10–30 m/s (30–100 ft/s).', doc: 'wind' } },
-      ],
-    },
-    {
-      id: 'stagesg', title: 'Vehicle',
+      id: 'stagesg', title: 'Rocket',
       fields: [{ id: 'nStages', label: 'Number of stages', kind: 'select', default: '1', options: [{ value: '1', label: 'One stage' }, { value: '2', label: 'Two stages' }, { value: '3', label: 'Three stages' }],
         info: { text: ['How many motors fire one after another. Each lower stage drops off when its motor burns out; the next motor lights after its coast time.'], doc: 'phases' } }],
     },
-    stageGroup(1), stageGroup(2), stageGroup(3),
+    ...[1, 2, 3].flatMap((k) => [airframeGroup(k), motorGroup(k)]),
     {
       id: 'recovery', title: 'Recovery',
       fields: [
@@ -215,6 +225,14 @@ export default {
           info: { text: ['How far from the pad the rocket can land and still be safe and recoverable.', 'Measure on a map from the pad to the nearest road, fence, water or edge of open ground.', 'The verdict checks the landing point against it. Drag the flag in the drawing to change it.'], range: 'Club fields 500–1500 m; desert sites several km.', doc: 'verdict' } },
         { id: 'vLand', label: 'Landing speed you accept', sym: 'V_{T}', ...SPD, default: 25, min: 1, max: 300, slider: { min: 5, max: 60, step: 0.5 },
           info: { text: ['The fastest you are happy for the rocket to hit the ground under its parachute.', 'Your choice, from how robust the airframe is; 15–25 ft/s (4.5–7.5 m/s) is common for high-power rockets.', 'The verdict compares the landing descent speed with it, and the calculator gives the main parachute diameter that reaches it.'], range: '15–25 ft/s (4.5–7.5 m/s).', doc: 'verdict' } },
+      ],
+    },    {
+      id: 'model', title: 'Weathercocking model (advanced)',
+      fields: [
+        { id: 'waveP', label: 'Pitch/yaw wavelength', sym: '\\Lambda_P', ...DIST, default: 350, min: 1, max: 1e5, slider: { min: 50, max: 2000, step: 10 },
+          info: { text: ['How far the rocket flies during one wobble (pitch oscillation) as it weathercocks after leaving the rail.', 'The Pitch-Yaw Wavenumber calculator gives it from the rocket’s stability; long, stable rockets have short wavelengths.', 'It sets how strongly the point-mass model turns into the wind: short wavelength, quick turn.'], tex: '\\lambda_P=\\frac{2\\pi}{\\Lambda_P}', range: 'High-power rockets 100–1000 ft (30–300 m).', doc: 'rail' } },
+        { id: 'simRail', label: 'Use the simulated launcher length', kind: 'bool', default: true,
+          info: { text: ['A point has no rotational inertia, so it would turn into the wind the instant it left the rail. Hoult’s correction lengthens the rail in the model so the turn matches a real rocket’s.', 'Leave it on; untick only to compare with simulations that use the physical rail.'], tex: 'L_{sim}=\\frac{0.140365}{\\lambda_P}\\exp\\left(\\sqrt{2\\pi\\lambda_PL}-0.387621(\\lambda_PL)^{1.2}\\right)', doc: 'rail' } },
       ],
     },
   ],
@@ -328,7 +346,7 @@ export default {
     if (o.maxMach.mach > Math.max(...p.stages.map((st) => st.cd[st.cd.length - 1][0]))) warnings.push({ level: 'info', text: 'Peak Mach is beyond the end of a drag table; the last C_D is held constant.', fix: 'Extend the drag table to the peak Mach number.' });
     if (+v.nStages > 1 && b.length < +v.nStages) warnings.push({ level: 'warn', text: 'An upper stage did not burn before landing.', fix: 'Shorten the coast before ignition.' });
     if (v.useMain && v.useDrogue && v.hM >= o.hApo) warnings.push({ level: 'info', text: 'The main opening height is above apogee, so the main opens as soon as the rocket starts falling.', fix: `Set it below apogee (${Q(o.hApo, ALT, 3)}).` });
-    if (wp) warnings.push({ level: 'info', text: 'Wind directions are where the wind blows from. The sideways drift is an estimate: the flight is simulated in the launch plane and the crosswind is applied during the descent.' });
+    if (wp && (layered(v) || v.windU > 0)) warnings.push({ level: 'info', text: 'Wind directions are where the wind blows from. The sideways drift is an estimate: the flight is simulated in the launch plane and the crosswind is applied during the descent.' });
     const results = { apo: o.hApo, range: xI, maxMach: o.maxMach.mach, railV: VL, maxQ: o.maxQ.q, maxG: o.maxG.gs, tw: o.liftoffTW, railL: o.railL,
       dist, bearing, cross: yI, vImp, Lneed: Lneed ?? '—', Dneed, ballast: ballast ?? '—', hMneed: hMneed ?? '—' };
     for (let k = 1; k <= 3; k++) results[`vb${k}`] = b[k - 1]?.V ?? '—';
@@ -558,8 +576,8 @@ export default {
   },
   references: ['skyaeromanual-ver3-orig', 'launcher-length-for-sounding-rocket-point-mass-traj-sim-orig'],
   examples: [
-    { name: 'AeroTech M1939, 61 lb, dual deploy, still air', values: { nStages: '1', windMode: 'none', useDrogue: true, useMain: true } },
-    { name: 'SKYAERO example: AeroTech M1939, 61 lb, QE 85°, no parachutes', values: { nStages: '1', ho: 1898, To: 559.67, lat: 34, QE: 85, L: 12, waveP: 350, simRail: true, windMode: 'none', useDrogue: false, useMain: false } },
+    { name: 'AeroTech M1939, 61 lb, dual deploy, 15 ft/s west wind', values: { nStages: '1', windMode: 'uniform', windU: 15, windDir: 270, useDrogue: true, useMain: true } },
+    { name: 'SKYAERO example: AeroTech M1939, 61 lb, QE 85°, no parachutes', values: { nStages: '1', ho: 1898, To: 559.67, lat: 34, QE: 85, L: 12, waveP: 350, simRail: true, windMode: 'uniform', windU: 0, useDrogue: false, useMain: false } },
     { name: 'Same rocket, dual deploy, forecast-style winds', values: { nStages: '1', windMode: 'layers', az: 270, winds: [{ h: 0, w: 10, dir: 270 }, { h: 3000, w: 25, dir: 260 }, { h: 10000, w: 45, dir: 250 }, { h: 20000, w: 70, dir: 245 }], useDrogue: true, tD: 1, dD: 3, cdD: 0.87, useMain: true, hM: 1000, dM: 12, cdM: 0.89, tau: 2 } },
     { name: 'Short rod: leaves the rail too slowly', values: { nStages: '1', L: 4, s1Wd: 70, useDrogue: true, useMain: true } },
     { name: 'Two-stage: M1939 booster and a small sustainer (over a 20 000 ft ceiling)', values: { nStages: '2', s1Wd: 36, s2delay: 1.5, ceiling: 20000, useDrogue: true, useMain: true } },

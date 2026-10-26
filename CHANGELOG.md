@@ -3,6 +3,14 @@
 Newest first, in the spirit of [Keep a Changelog](https://keepachangelog.com/). From 2026-10-25 every entry names its
 branch, tag and commit range. Live site: https://rocketcalculator.github.io/.
 
+## 2026-10-26 — Pitch-Yaw Wave Number cycle (`improve/pitch-yaw-wavenumber-2`)
+- Verdict on the roll rate against the pitch frequency (30/40 %, D31) with the misalignment response factor; the
+  highest roll rate for 30 % and the stiffening needed as solved values; "Fill from the Trajectory Simulation".
+- Drawing: the wobble along the flight path at true distance (angle exaggerated) with the roll-turn length, and the
+  rocket with CP, CG, the normal force and the restoring moment. Plots: response factor against roll rate (30/40 %
+  and lock-in), pitch frequency against speed with your roll; Explore: wavelength against static margin and altitude.
+- Inputs grouped rocket → static stability → pitch inertia → flight condition → roll and launcher, all bounded.
+
 ## 2026-10-26 — Fin Cant Angle & Roll Rate cycle (`improve/fin-cant-angle-2`)
 - Verdict on the burnout roll rate as a share of the pitch frequency (SAFE ≤ 30 %, MARGINAL ≤ 40 %, the memo's guidance;
   D31), with the cant for your target, the largest cant for 30 % of pitch and the smallest for 2 turns as solved values.

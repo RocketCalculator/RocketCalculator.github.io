@@ -55,6 +55,24 @@
         <p>Bigger rockets have longer wavelengths, but the wavelength measured in body lengths, <span class="tex">L/\ell</span>, is the same for similar rockets of any size. For typical student sounding rockets the initial wavelength is of order 200 m, or about 40–60 body lengths.</p>
       </section>
 
+      <section id="roll">
+        <h2>Roll against the pitch frequency: the verdict</h2>
+        <p>A rolling rocket carries its misalignments around with it. Hoult’s “Strip Theory for Setting Fin Angles” (rev. 3, p. 6) shows that the angle of attack and the loads they cause grow by</p>
+        <div class="eq"><div class="tex-display">\frac{\lambda_P^2}{\lambda_P^2-\lambda_R^2}=\frac{1}{1-(f_R/f_N)^2},\qquad \lambda_R=\frac{2\pi f_R}{U}</div></div>
+        <p>This grows without limit when the roll reaches the pitch frequency (lock-in; see the Roll Lock-In calculator). The memo keeps the damage small with <span class="tex">\lambda_R</span> below 30–40 % of <span class="tex">\lambda_P</span>, and designs for 30 % at burnout (p. 4). The verdict uses the same bands as Fin Cant Angle (DECISIONS D31):</p>
+        <ul>
+          <li>SAFE up to 30 %;</li>
+          <li>MARGINAL up to 40 %;</li>
+          <li>UNSAFE beyond.</li>
+        </ul>
+        <p>Since <span class="tex">\lambda_P\propto\sqrt{-C_{M\alpha}/I}</span>, the fix is either the highest roll rate for 30 %, or the factor by which the restoring moment (static margin) must grow, or the inertia shrink.</p>
+      </section>
+
+      <section id="launcher">
+        <h2>The launcher and the trajectory simulation</h2>
+        <p>The wavelength is the distance the rocket flies during one wobble, so it sets how quickly the rocket turns into the wind after leaving the rail. The rail length in wavelengths, <span class="tex">L_r/L</span>, says how much of a wobble happens on the rail. A point-mass trajectory simulation has no rotational inertia: it needs a longer simulated rail to turn into the wind like the real rocket. That rail comes from Hoult’s “Launcher Length for Sounding-Rocket Point-Mass Trajectory Simulation” (1976), using <span class="tex">\lambda_P=2\pi/L</span>. The Trajectory Simulation takes this wavelength as its pitch/yaw wavelength input, and “Fill from the Trajectory Simulation” brings its burnout speed here.</p>
+      </section>
+
       <section id="verification">
         <h2>Verification</h2>
         <p>No spreadsheet exists for this topic. The tests check the memo’s relations between <span class="tex">\omega_N</span>, <span class="tex">P</span>, <span class="tex">L</span> and <span class="tex">\lambda_p</span>, integrate the pitch equation numerically over twenty periods and recover the period to one part in a million, and confirm the speed independence, the <span class="tex">\rho^{-1/2}</span> dependence and the <span class="tex">L\propto\ell</span> scaling law.</p>

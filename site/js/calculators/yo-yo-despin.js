@@ -17,7 +17,7 @@ const NONE = { dim: 'none' };
 const TAU = 2 * Math.PI;
 const ST = { safe: 'ok', marginal: 'warn', unsafe: 'err' };
 const RANK = { safe: 0, marginal: 1, unsafe: 2 };
-// verdict bands (D-yo-yo-despin, project choices, not published limits): the final spin is on target within the user's
+// verdict bands (D38, project choices, not published limits): the final spin is on target within the user's
 // tolerance, marginal up to twice it; the wire is safe at the user's safety factor, marginal between 1 and it
 const SPIN_MARGINAL = 2;
 const check = (v) => v.mode === 'check';

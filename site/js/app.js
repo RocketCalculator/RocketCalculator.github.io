@@ -16,6 +16,7 @@ function setTheme(t) {
 }
 
 export const REPO_URL = 'https://github.com/RocketCalculator/RocketCalculator.github.io';
+const COFFEE_URL = 'https://buymeacoffee.com/darasamii';
 
 export const ICONS = {
   github: () => s('svg', { viewBox: '0 0 16 16', fill: 'currentColor', 'aria-hidden': 'true' },
@@ -133,7 +134,8 @@ function footer() {
         h('a', { href: url('index.html#guide') }, 'How to use'),
         h('a', { href: url('about.html') }, 'About'),
         h('a', { href: `${REPO_URL}/issues`, rel: 'noopener' }, 'Report a problem'),
-        h('a', { href: REPO_URL, rel: 'noopener' }, 'GitHub'))));
+        h('a', { href: REPO_URL, rel: 'noopener' }, 'GitHub'),
+        h('a.coffee', { href: COFFEE_URL, rel: 'noopener', target: '_blank' }, '☕ Buy me a coffee'))));
 }
 
 /* ---------------- command palette ---------------- */

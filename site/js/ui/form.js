@@ -106,13 +106,56 @@ export function buildForm(def, state, { onChange, onHighlight, infoFor }) {
     return { el, sync: () => { input.checked = !!state.values[f.id]; }, validate: () => true, focus: () => input.focus() };
   }
 
-  // date and time as 'YYYY-MM-DDTHH:MM' (empty = now)
+  // date and time as 'YYYY-MM-DDTHH:MM' (empty = now): a calendar popover with month and year jumps and hour/minute
   function dateField(f) {
-    const input = h('input', { type: 'datetime-local', id: `f-${f.id}`, step: 3600 });
+    const MON = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    const DAY = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], pad = (n) => String(n).padStart(2, '0');
+    const parts = (v) => (v ? { y: +v.slice(0, 4), m: +v.slice(5, 7) - 1, d: +v.slice(8, 10), H: +v.slice(11, 13) || 0, M: +v.slice(14, 16) || 0 } : null);
+    const wd = (y, m, d) => (new Date(Date.UTC(y, m, d)).getUTCDay() + 6) % 7;   // Monday = 0
+    const nowP = () => { const n = new Date(); return { y: n.getFullYear(), m: n.getMonth(), d: n.getDate(), H: n.getHours(), M: 0 }; };
+    const btn = h('button.dt-btn', { type: 'button', id: `f-${f.id}`, 'aria-haspopup': 'dialog', 'aria-expanded': 'false' });
+    const pop = h('div.dt-pop', { role: 'dialog', 'aria-label': `${f.label}: choose a date and time`, hidden: true });
     const lab = h('label', { for: `f-${f.id}` }, L(f), SYM(f), infoButton(() => infoFor(f), { label: f.label }));
-    const el = h('div.field.date', { 'data-for': f.id }, lab, h('div.ctl', input));
-    input.addEventListener('change', () => { state.values[f.id] = input.value; onChange(f.id); });
-    return { el, sync: () => { input.value = state.values[f.id] || ''; }, validate: () => true, focus: () => input.focus() };
+    const el = h('div.field.date', { 'data-for': f.id }, lab, h('div.dt', btn, pop));
+    let view = nowP();
+    const set = (p) => { state.values[f.id] = p ? `${p.y}-${pad(p.m + 1)}-${pad(p.d)}T${pad(p.H)}:${pad(p.M)}` : ''; sync(); onChange(f.id); };
+    const sel = (opts, value, label, on) => { const x = h('select', { 'aria-label': label }, opts.map(([v, t]) => h('option', { value: v }, t))); x.value = String(value); x.addEventListener('change', () => on(+x.value)); return x; };
+    function render() {
+      const cur = parts(state.values[f.id]), today = nowP(), y0 = today.y;
+      const step = (k) => { view.m += k; if (view.m < 0) { view.m = 11; view.y--; } if (view.m > 11) { view.m = 0; view.y++; } render(); };
+      const prev = h('button.dt-nav', { type: 'button', 'aria-label': 'Previous month' }, '‹'), next = h('button.dt-nav', { type: 'button', 'aria-label': 'Next month' }, '›');
+      prev.addEventListener('click', () => step(-1)); next.addEventListener('click', () => step(1));
+      const years = []; for (let y = Math.min(view.y, y0 - 10); y <= Math.max(view.y, y0 + 10); y++) years.push([y, y]);
+      const head = h('div.dt-head', prev, sel(MON.map((n, i) => [i, n]), view.m, 'Month', (m) => { view.m = m; render(); }), sel(years, view.y, 'Year', (y) => { view.y = y; render(); }), next);
+      const grid = h('div.dt-grid', { role: 'grid' }, DAY.map((d) => h('span.dt-dow', d)));
+      const first = wd(view.y, view.m, 1), n = new Date(Date.UTC(view.y, view.m + 1, 0)).getUTCDate();
+      for (let i = 0; i < first; i++) grid.append(h('span'));
+      for (let d = 1; d <= n; d++) {
+        const isSel = cur && cur.y === view.y && cur.m === view.m && cur.d === d, isToday = today.y === view.y && today.m === view.m && today.d === d;
+        const b = h(`button.dt-day${isSel ? '.on' : ''}${isToday ? '.today' : ''}`, { type: 'button', 'aria-pressed': String(!!isSel), 'aria-label': `${d} ${MON[view.m]} ${view.y}` }, String(d));
+        b.addEventListener('click', () => { const t = cur || { H: 12, M: 0 }; set({ y: view.y, m: view.m, d, H: t.H, M: t.M }); render(); });
+        grid.append(b);
+      }
+      const t = cur || { H: 12, M: 0 }, setTime = (k, x) => { const p = parts(state.values[f.id]) || { ...nowP(), y: view.y, m: view.m, d: Math.min(today.d, n) }; p[k] = x; set(p); render(); };
+      const hours = []; for (let x = 0; x < 24; x++) hours.push([x, pad(x)]);
+      const mins = []; for (let x = 0; x < 60; x += 5) mins.push([x, pad(x)]);
+      const time = h('div.dt-time', h('span', 'Time'), sel(hours, t.H, 'Hour', (x) => setTime('H', x)), h('b', ':'), sel(mins, t.M - (t.M % 5), 'Minute', (x) => setTime('M', x)), h('span.muted', 'site local'));
+      const nowB = h('button.btn.small.ghost', { type: 'button', title: 'Use the current time' }, 'Now'), todayB = h('button.btn.small.ghost', { type: 'button' }, 'Today'), done = h('button.btn.small', { type: 'button' }, 'Done');
+      nowB.addEventListener('click', () => { set(null); view = nowP(); render(); });
+      todayB.addEventListener('click', () => { view = nowP(); render(); });
+      done.addEventListener('click', () => close(true));
+      pop.replaceChildren(head, grid, time, h('div.dt-foot', nowB, todayB, h('span.spacer'), done));
+    }
+    const open = () => { const c = parts(state.values[f.id]); view = c ? { y: c.y, m: c.m } : nowP(); render(); pop.hidden = false; btn.setAttribute('aria-expanded', 'true'); document.addEventListener('pointerdown', outside, true); document.addEventListener('keydown', esc, true); };
+    function close(focus) { pop.hidden = true; btn.setAttribute('aria-expanded', 'false'); document.removeEventListener('pointerdown', outside, true); document.removeEventListener('keydown', esc, true); if (focus) btn.focus(); }
+    const outside = (e) => { if (!el.querySelector('.dt').contains(e.target)) close(false); };
+    btn.addEventListener('click', () => (pop.hidden ? open() : close(false)));
+    const esc = (e) => { if (e.key === 'Escape') { e.stopPropagation(); close(true); } };
+    function sync() {
+      const p = parts(state.values[f.id]);
+      btn.replaceChildren(h('span.dt-ico', { 'aria-hidden': 'true' }, '📅'), p ? `${DAY[wd(p.y, p.m, p.d)]} ${p.d} ${MON[p.m].slice(0, 3)} ${p.y} · ${pad(p.H)}:${pad(p.M)}` : 'Now — choose a date…');
+    }
+    return { el, sync, validate: () => true, focus: () => btn.focus() };
   }
 
   function selectField(f) {

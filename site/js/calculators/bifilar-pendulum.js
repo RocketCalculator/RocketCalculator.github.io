@@ -14,7 +14,7 @@ const FORCE = { dim: 'force', internal: 'N' };
 const NONE = { dim: 'none' };
 const PCT = { dim: 'percent', internal: 'pct' };
 const IN = 0.0254;
-// verdict bands (D-bifilar-pendulum): modes closer than the user's ratio → REDO; error above the target or the
+// verdict bands (D37): modes closer than the user's ratio → REDO; error above the target or the
 // wire-length cross-check outside the tolerance → CHECK. Project choices, not published limits.
 const WORD = { safe: 'GOOD', marginal: 'CHECK', unsafe: 'REDO' };
 const ST = { safe: 'ok', marginal: 'warn', unsafe: 'err' };

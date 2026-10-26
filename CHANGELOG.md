@@ -3,6 +3,24 @@
 Newest first, in the spirit of [Keep a Changelog](https://keepachangelog.com/). From 2026-10-25 every entry names its
 branch, tag and commit range. Live site: https://rocketcalculator.github.io/.
 
+## 2026-10-26 — Bifilar Pendulum Inertia cycle (`improve/bifilar-pendulum-2`)
+- **Verdict** GOOD / CHECK / REDO (custom `verdict.word`, same colours as SAFE / MARGINAL / UNSAFE) against **your limits**:
+  least period ratio `r_min` (default 1.5), largest error `u_max` (5 %), cross-check tolerance (3 %). Solved fixes:
+  wire distances that put P_Y/P_G exactly on `r_min` (closed form) with the re-timed P_Y, the fewest cycles to time
+  (closed form), the largest distance error (closed form), the wire length the measured swing implies.
+- **Uncertainty of I**: first-order propagation of independent errors (stopwatch error per run, distance error, scale
+  error) through I = m x1 x2 P_Y²/P_G², with each measurement's share. Labelled as an addition, not from the memo.
+- **Inputs** in set-up order: rocket as hung (mass, length shared, body radius shared, CG from nose) → rig → what you
+  timed (periods + cycles timed) → how well you measure → your limits. All bounded with sliders.
+- **Drawing**: front view to one scale (wires, rocket, CG, plumb bob, floor line), wire pulls as arrows ∝ tension,
+  wires coloured by the separation verdict, dimensions x1, x2, x_cg, L, l; handles for x1, x2, l. Insets: yaw from
+  above and swing from the nose, animated at their true periods (slowed if a period is under 1.2 s), so close
+  periods are visibly in step.
+- **Plots**: "Where to put the wires" (panels on wire spacing: both periods, resonance crossing and the r_min limits;
+  error total/distances/timing against your target) and "Error budget: how many cycles to time" (each share vs N).
+  Removed the I(P_Y) parabola.
+- Verified: npm test, sweep, ui-layout 390/1280 SI/US, ui-diagrams, uifuzz, screenshots light/dark/phone.
+
 ## 2026-10-26 — Propellant Sloshing cycle (`improve/propellant-slosh-2`)
 - **Verdict** (new): the first slosh frequency against the rocket's pitch frequency, SAFE / MARGINAL / UNSAFE on the
   separation S = max(f1/fp, fp/f1) (bands D36, not a published limit). Up to three **solved** fixes on

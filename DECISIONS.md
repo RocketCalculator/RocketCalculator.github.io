@@ -224,3 +224,11 @@ Decisions taken while the owner was unavailable. Each entry: date, question, opt
 Separation S = max(f1/fp, fp/f1). SAFE S ≥ r (user, default 2, range 1.3–10); MARGINAL 1.25 ≤ S < r; UNSAFE S < 1.25.
 Same 1.25 inner band as D33. **Not a published limit**: the report gives no criterion. Fixes target r on
 the side the slosh is now (above → narrower tank / lower pitch frequency / more acceleration).
+
+## D37 — 2026-10-26 — measurement verdict bands (project choice, not published limits)
+- REDO when max(P_Y/P_G, P_G/P_Y) < r_min (user-set, default 1.5). The memo only says "not close to unity" and shows
+  1.155 as close; 1.5 leaves margin.
+- CHECK when the uncertainty exceeds u_max (default 5 %), or |I_l/I − 1| exceeds the tolerance (default 3 %).
+- GOOD otherwise. Words GOOD/CHECK/REDO instead of SAFE/MARGINAL/UNSAFE because the verdict judges a measurement,
+  not a flight hardware margin (the page renderer supports `verdict.word`).
+- Stopwatch default 0.2 s per run, tape 2 mm, scale 50 g: user judgements, stated as such in the info tabs.

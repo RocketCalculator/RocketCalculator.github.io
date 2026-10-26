@@ -63,6 +63,24 @@
         <p>The approximation is meant for small rockets whose apogee is well inside the troposphere.</p>
       </section>
 
+      <section id="coast">
+        <h2>Coast to apogee</h2>
+        <p>After burnout the fins keep driving the roll while the air damps it, but the rocket slows and climbs into thinner air. Hoult’s “Small Sounding Rocket Apogee Roll Rate” (2013) takes the coast as slowing at <span class="tex">dV/dt\approx-g</span> with the air density at apogee:</p>
+        <div class="eq"><div class="tex-display">\frac{dp}{dV}-GVp=-HV^2,\qquad G=-\frac{\rho_AS d^2C_{Lp}}{4gI_R}</div></div>
+        <p>The memo integrates this numerically. It has a closed form, which the calculator uses: the apogee roll rate relative to burnout is <span class="tex">p_A/p_B=\sqrt\pi\,\mathrm{erf}(\sqrt a)/(2\sqrt a)</span>, with <span class="tex">a=GV_B^2/2</span>. A large spin parameter <span class="tex">GV_B^2</span> (a light, fast rocket with big fins) means the roll dies away more before apogee. The coast is drag-free, so apogee height and time are upper estimates.</p>
+      </section>
+
+      <section id="limits">
+        <h2>Your limits and the verdict</h2>
+        <p>The memos give no roll-rate limit: it depends on what the rocket carries (a camera, an antenna, a parachute that must not wind up). So you set two limits: the highest roll rate in flight, and the highest at apogee, where recovery begins. The verdict (DECISIONS D32) takes the worse of the two ratios, roll rate over your limit:</p>
+        <ul>
+          <li>SAFE up to 1;</li>
+          <li>MARGINAL up to 1.25;</li>
+          <li>UNSAFE beyond.</li>
+        </ul>
+        <p>The roll equation is linear in the cant, with no spin at launcher exit, so every roll rate scales with the cant. The largest cant within your limits is therefore exact: your cant divided by the worse ratio.</p>
+      </section>
+
       <section id="verification">
         <h2>Verification</h2>
         <p>No spreadsheet exists for this topic. The tests compare the integrated burnout rate with an independent fine integration of the roll equation (to <span class="tex">10^{-8}</span>), confirm that the closed-form estimate agrees within 0.5 % when <span class="tex">|J|</span> is small, check the closed-form apogee ratio against direct quadrature of the memo’s integral and against its Figure 1, check the apogee rate against a numerical solution of the coast equation started from the lagged burnout rate, and test the error function against tabulated values.</p>

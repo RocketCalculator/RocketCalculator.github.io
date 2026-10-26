@@ -3,6 +3,14 @@
 Newest first, in the spirit of [Keep a Changelog](https://keepachangelog.com/). From 2026-10-25 every entry names its
 branch, tag and commit range. Live site: https://rocketcalculator.github.io/.
 
+## 2026-10-26 — Roll Rate History cycle (`improve/roll-rate-history-2`)
+- Verdict on the peak and apogee roll rates against your limits (D32) with the exact largest cant; "Fill from the
+  Trajectory Simulation"; fin size entered as the exposed span; a burnout below the launcher top is clamped with a
+  warning instead of refusing.
+- Drawing: the spin from launcher to apogee as a helix on a to-scale height column (one wave per turn) with the
+  events, an animated rear view and the fin-tip section; plots: speed, roll rate and turns on one time axis; Explore:
+  inertia lag against decay, roll wavenumber in the boost, apogee roll ratio against the spin parameter.
+
 ## 2026-10-26 — Pitch-Yaw Wave Number cycle (`improve/pitch-yaw-wavenumber-2`)
 - Verdict on the roll rate against the pitch frequency (30/40 %, D31) with the misalignment response factor; the
   highest roll rate for 30 % and the stiffening needed as solved values; "Fill from the Trajectory Simulation".

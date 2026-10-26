@@ -93,7 +93,7 @@ const REPAIR = {
   'newtonian-drag': (v, r) => { if (v.r2 <= v.r1) v.r2 = v.r1 * (1.05 + 3 * r()) + 1e-3; },
   'nozzle-thrust': (v, r) => { if (r() < 0.8) v.pa = Math.min(v.pa, 0.45 * r() * v.pc); if (v.din < 2.6 * v.dt) v.din = v.dt * (2.6 + 3 * r()); if (v.de <= 1.02 * v.dt) v.de = v.dt * (1.1 + 5 * r()); const eps = (v.de / v.dt) ** 2, rt = v.dt / 2; v.Lc = convergentLength(rt, v.din / 2, 15 + 40 * r()); v.Ld = v.type === 'cone' ? conicalLength(rt, eps, 8 + 20 * r(), 0.382 * rt) : (0.6 + 0.4 * r()) * conicalLength(rt, eps, 15, 0.382 * rt); },
   'wind-compensation': (v, r) => { for (const k of ['WI', 'WC', 'R']) if (Math.abs(v[k]) > 5500) v[k] = Math.sign(v[k]) * 5500 * r(); },
-  'roll-rate-history': (v, r) => { if (v.b <= v.R) v.b = v.R * (1.1 + r()); if (v.hB <= v.L) v.hB = v.L * (2 + 20 * r()); },
+  'roll-rate-history': (v, r) => { if (v.hB <= v.L) v.hB = v.L * (2 + 20 * r()); },
   'parachute-recovery': (v, r) => { if (v.hG + v.hD > 36000) { v.hG = 6000 * r(); v.hD = 1000 + 25000 * r(); } if (v.reef && v.hR >= v.hD) v.hR = v.hD * r(); },
   'launcher-deflection': (v, r) => { if (v.D <= 2 * v.t) v.t = v.D * 0.4 * r(); if (v.d <= v.D) v.d = v.D * (1.5 + 10 * r()); },
   'tethered-pibal': (v, r) => { if (v.D < 2) v.D = 2 + 4 * r(); if (v.We > 0.5) v.We = 0.5 * r(); if (v.L > 1500) v.L = 50 + 1400 * r(); if (v.dt > 0.05) v.dt = 0.005 + 0.03 * r(); if (v.rhoT > 3) v.rhoT = 0.5 + 2 * r(); if (v.pG > 110000 || v.pG < 50000) v.pG = 50000 + 60000 * r(); if (v.TG < 250) v.TG = 250 + 70 * r(); if (v.theta < 15) v.theta = 15 + 70 * r(); if (v.hG > 15000) v.hG = 15000 * r(); if (v.CD < 0.2) v.CD = 0.2 + 0.6 * r(); },
@@ -447,3 +447,10 @@ test('Ground handling: a harder lift pulls the button harder; a bigger load fact
   increasing([1.5, 2, 3].map((K) => run('ground-handling', { K }).FL), 'pull vs K');
   increasing([1, 2, 3].map((N) => Math.abs(run('ground-handling', { N }).MJ)), '|M_J| vs N');
 });
+
+test('Roll rate history: the largest cant within your limits brings the worse ratio exactly to 1', () => {
+  const r = run('roll-rate-history', { fMaxLim: 1, fApoLim: 0.3 });
+  const at = run('roll-rate-history', { fMaxLim: 1, fApoLim: 0.3, delta: r.deltaMax });
+  assert.ok(Math.abs(Math.max(at.fMax / 1, at.fA / 0.3) - 1) < 1e-9, `${at.fMax}, ${at.fA}`);
+});
+

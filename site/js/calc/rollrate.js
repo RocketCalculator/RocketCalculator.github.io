@@ -73,5 +73,37 @@ export function rollRate({ CLd, CLp, N, delta, R, I, rho, rhoA, L, hB, VB }) {
   // coast
   const G = (-rhoA * S * d * d * CLp) / (4 * G0 * I), X = G * VB * VB, ratio = apogeeRatio(X), e = Math.exp(-X / 2);
   const pA = pB * e + pB0 * (ratio - e);
-  return { d, S, lam0, k, JB, pB, pB0, pBapprox, phiB: phi, phiApprox: phiAt(hB), lamB: pB / VB, a, tB, t0, hist, lamAt, phiAt, G, X, ratio, pA, tCoast: VB / G0 };
+  const coast = coastHistory({ G, lam0, pB, phiB: phi, VB, tB, hB });
+  const all = [...hist, ...coast.slice(1)], peak = all.reduce((b, r) => (Math.abs(r.p) > Math.abs(b.p) ? r : b), all[0]);
+  return { d, S, lam0, k, JB, pB, pB0, pBapprox, phiB: phi, phiApprox: phiAt(hB), lamB: pB / VB, a, tB, t0, hist, lamAt, phiAt, G, X, ratio, pA, tCoast: VB / G0,
+    coast, phiA: coast.at(-1).phi, hA: coast.at(-1).h, tA: coast.at(-1).t, pMax: peak.p, tMax: peak.t, hMax: peak.h };
+}
+
+/**
+ * Coast from burnout to apogee in the apogee memo's model (dV/dt = −g, apogee density): dp/dV = GV(p − λ_R0 V), with
+ * φ̇ = p, so dφ/dV = −p/g; t = t_B + (V_B − V)/g and h = h_B + (V_B² − V²)/(2g). Rows {t, h, U, p, phi} from burnout to apogee.
+ * Its end value equals the closed-form p_A (tested). RK4 in V while the step resolves GVΔV; otherwise the same frozen-coefficient
+ * exponential step as the boost.
+ */
+export function coastHistory({ G, lam0, pB, phiB, VB, tB, hB }) {
+  const X = G * VB * VB, n = Math.min(20000, Math.max(400, Math.ceil(2 * X))), dV = -VB / n, every = Math.max(1, Math.floor(n / 300));
+  const F = (V, p) => G * V * (p - lam0 * V), stiff = X / n > 1;
+  const row = (V, p, phi) => ({ t: tB + (VB - V) / G0, h: hB + (VB * VB - V * V) / (2 * G0), U: V, p, phi });
+  const out = [row(VB, pB, phiB)];
+  let V = VB, p = pB, phi = phiB;
+  for (let i = 1; i <= n; i++) {
+    let p1;
+    if (!stiff) {
+      const k1 = F(V, p), k2 = F(V + dV / 2, p + (dV / 2) * k1), k3 = F(V + dV / 2, p + (dV / 2) * k2), k4 = F(V + dV, p + dV * k3);
+      p1 = p + (dV / 6) * (k1 + 2 * k2 + 2 * k3 + k4);
+      phi -= (dV / 6) * (p + 2 * (p + (dV / 2) * k1) + 2 * (p + (dV / 2) * k2) + (p + dV * k3)) / G0;
+    } else {
+      const Vm = V + dV / 2, ps = lam0 * Vm;
+      p1 = ps + (p - ps) * Math.exp(G * Vm * dV);
+      phi -= (dV * (p + p1)) / 2 / G0;
+    }
+    p = p1; V = i === n ? 0 : V + dV;
+    if (i % every === 0 || i === n) out.push(row(V, p, phi));
+  }
+  return out;
 }

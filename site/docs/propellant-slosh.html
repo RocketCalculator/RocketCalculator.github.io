@@ -48,10 +48,45 @@
 
       <section id="model">
         <h2>Equivalent mechanical model</h2>
-        <p>For vehicle dynamics each mode can be replaced by a pendulum (or a spring–mass) that produces the same side force at the same frequency. Following Abramson (NASA SP-106), mode <span class="tex">n</span> has slosh mass and pendulum length</p>
-        <div class="eq"><div class="tex-display">\frac{m_n}{M}=\frac{2\tanh(\lambda_nh/R)}{\lambda_n(\lambda_n^2-1)\,h/R},\qquad L_n=\frac{R}{\lambda_n\tanh(\lambda_nh/R)}</div></div>
-        <p>so that <span class="tex">\omega_n^2=a/L_n</span>. The rest of the liquid moves with the tank.</p>
+        <p>For vehicle dynamics each mode can be replaced by a pendulum that produces the same side force at the same frequency. The report’s side-force transfer function for a sideways velocity <span class="tex">\nu_z</span> of the tank (eq. 5-47) is</p>
+        <div class="eq"><div class="tex-display">\frac{F_z}{\nu_z}=-\pi\rho a^2s\left\{\frac{m}{\pi\rho a^2}+\sum_{n=1}^{\infty}\frac{2a\,s^2\tanh(\lambda_nm/\pi\rho a^3)}{\lambda_n(\lambda_n^2-1)\left[s^2+a_t\frac{\lambda_n}{a}\tanh(\lambda_nm/\pi\rho a^3)\right]}\right\}</div></div>
+        <p>in the report’s symbols (<span class="tex">a</span> the tank radius, <span class="tex">m</span> the liquid mass, <span class="tex">a_t</span> the thrust acceleration). Each term of the sum is a mass that answers at its own natural frequency. With <span class="tex">M=\pi\rho R^2h</span> its size is</p>
+        <div class="eq"><div class="tex-display">\frac{m_n}{M}=\frac{2\tanh(\lambda_nh/R)}{\lambda_n(\lambda_n^2-1)\,h/R},\qquad L_n=\frac{a}{\omega_n^2}=\frac{R}{\lambda_n\tanh(\lambda_nh/R)}</div></div>
+        <p>where <span class="tex">L_n</span> is the length of a pendulum that swings at <span class="tex">\omega_n</span> in the thrust “gravity”. The rest of the liquid moves with the tank.</p>
         <p>Because <span class="tex">\sum_n 2/(\lambda_n^2-1)=1</span>, almost all of a shallow fill sloshes, about 84 % of it in the first mode. In a deep tank only a small top layer does. The higher modes carry little mass, which is why the first mode dominates stability analyses.</p>
+      </section>
+
+      <section id="pendulum">
+        <h2>Where the pendulum hangs</h2>
+        <p>The moment transfer function for the same sideways motion (eq. 5-49) has the same poles. Dividing the residue of mode <span class="tex">n</span> in the moment by its residue in the force gives the lever arm of the mode’s force, measured from the report’s origin, a distance <span class="tex">h_0</span> above the free surface:</p>
+        <div class="eq"><div class="tex-display">\frac{R}{\lambda_n}\,\frac{(\lambda_nh_0/R)\tanh x-2\,\mathrm{sech}\,x+1}{\tanh x}=h_0+e_n,\qquad e_n=\frac{R}{\lambda_n}\,\frac{1-2\,\mathrm{sech}\,x}{\tanh x},\quad x=\frac{\lambda_nh}{R}</div></div>
+        <p>A pendulum passes its side force to the tank through its hinge, so <span class="tex">e_n</span> is the depth of the hinge below the still surface (negative: above it). The bob hangs <span class="tex">L_n</span> lower, at <span class="tex">e_n+L_n=(2R/\lambda_n)\tanh(\lambda_nh/2R)</span>, which is always inside the liquid.</p>
+        <ul>
+          <li>Deep fill: the hinge is <span class="tex">R/\lambda_1\approx0.54R</span> below the surface and the bob <span class="tex">1.09R</span> below it.</li>
+          <li>Shallow fill: the bob sits on the bottom and the hinge is far above the surface (a long pendulum): the liquid slides almost bodily.</li>
+        </ul>
+        <p>This location is derived on this page from the report’s two transfer functions; the report does not state it in this form. The rigid-liquid term of eq. (5-49), <span class="tex">a^2/4+(h+\tfrac12m/\pi\rho a^2)</span>, appears misprinted (it lacks the liquid depth as a factor) and is not used.</p>
+      </section>
+
+      <section id="verdict">
+        <h2>Verdict: separation from the pitch frequency</h2>
+        <p>Sloshing liquid pushes the tank sideways at the slosh frequency. If that frequency is close to the rocket’s pitch (weathercock) frequency, or to an autopilot’s bandwidth, the two motions can drive each other. The calculator compares the first slosh frequency with the pitch frequency you enter (the Pitch-Yaw Wave Number calculator gives it) through the separation</p>
+        <div class="eq"><div class="tex-display">S=\max\left(\frac{f_1}{f_p},\ \frac{f_p}{f_1}\right)</div></div>
+        <ul>
+          <li><b>SAFE</b>: <span class="tex">S\ge r</span>, the separation you want (default 2);</li>
+          <li><b>MARGINAL</b>: <span class="tex">1.25\le S&lt;r</span>;</li>
+          <li><b>UNSAFE</b>: <span class="tex">S&lt;1.25</span>.</li>
+        </ul>
+        <p>These bands are a project choice, <b>not a published limit</b>; the report gives no criterion.</p>
+        <p>The fixes are solved exactly, on the side of the pitch frequency where the slosh is now:</p>
+        <ul>
+          <li><b>Tank diameter</b>, same propellant mass: bisection on <span class="tex">R</span>, since <span class="tex">f_1</span> falls steadily as the tank widens (a wider tank both raises <span class="tex">R</span> and makes the pool shallower).</li>
+          <li><b>Pitch frequency</b>: <span class="tex">f_p\le f_1/r</span> or <span class="tex">f_p\ge r f_1</span>.</li>
+          <li><b>Thrust acceleration</b>: at a fixed depth <span class="tex">f_1\propto\sqrt a</span>, so <span class="tex">a_{req}=a\,(f_{target}/f_1)^2</span>.</li>
+        </ul>
+        <p>As the tank drains, every slosh frequency falls towards zero, so a slosh that starts above the pitch frequency crosses it at the depth</p>
+        <div class="eq"><div class="tex-display">h_\times=\frac{R}{\lambda_1}\,\mathrm{artanh}\frac{(2\pi f_p)^2R}{a\lambda_1}</div></div>
+        <p>(at the same acceleration and pitch frequency; none when the argument reaches 1). The drawing shades the liquid levels inside the bands, and the drain plot shows the whole history. Baffles are not modelled: the report notes that they add damping and change the frequencies only by changing the tank geometry, and gives no method for them.</p>
       </section>
 
       <section id="verification">
@@ -61,7 +96,9 @@
           <li>the ten Bessel roots against <span class="tex">J_1^\prime=0</span>, evaluated from Bessel’s integral;</li>
           <li>the frequency formula, including its deep and shallow limits;</li>
           <li>the pendulum analogue;</li>
-          <li>the slosh-mass sum rule.</li>
+          <li>the slosh-mass sum rule and the slosh mass as the residue of eq. (5-47);</li>
+          <li>the hinge and bob depths in their deep and shallow limits;</li>
+          <li>that the crossing depth, the diameter fix and the pitch-frequency fix each hit their target frequency.</li>
         </ul>
       </section>
 
@@ -69,7 +106,7 @@
         <h2>Notes on the method</h2>
         <ul class="diff-list">
           <li><strong>Fill depth.</strong> The frequencies use <span class="tex">\tanh(\lambda_nh/R)</span> with <span class="tex">h=M/(\rho\pi R^2)</span>, as in the report. The tabulated example puts the density where the propellant mass belongs, which removes the effect of fill depth.</li>
-          <li><strong>Equivalent mechanical model.</strong> The slosh masses and pendulum lengths are the standard model of NASA SP-106. The report expresses the same physics as transfer functions.</li>
+          <li><strong>Equivalent mechanical model.</strong> The slosh masses, pendulum lengths and hinge depths are read from the poles and residues of the report’s transfer functions (eqs. 5-47 and 5-49). Only their magnitudes are used.</li>
           <li><strong>Not modelled.</strong> Baffles, tank-bottom shape and damping. Baffles mainly add damping; they change the frequencies only by changing the tank geometry.</li>
         </ul>
       </section>
@@ -79,7 +116,6 @@
         <ol class="refs">
           <li>C. P. Hoult, “An Analysis of the Motion of Liquids in a Partially-Filled Enclosure.” <a href="../references/index.html#analysis-of-the-motion-of-liquids-in-a-partially-filled-enclosure-orig">View in library</a></li>
           <li>C. P. Hoult, “Errata for ‘An Analysis of the Motion of Liquids in a Partially-Filled Enclosure’,” RS&amp;T, 27 August 2013. <a href="../references/index.html#sloshing-errata">View in library</a></li>
-          <li>H. N. Abramson (ed.), “The Dynamic Behavior of Liquids in Moving Containers,” NASA SP-106, 1966.</li>
         </ol>
       </section>
     </article>

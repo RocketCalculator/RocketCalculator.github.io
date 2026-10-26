@@ -220,3 +220,7 @@ Decisions taken while the owner was unavailable. Each entry: date, question, opt
   SAFE θ_T ≤ θ_max, MARGINAL within it but extrapolated past the last zero-wind run, UNSAFE beyond. The reachable
   region is drawn as a circle of radius r(90° − θ_max) round the wind-only point (small-tilt, additive model).
 
+## D36 — 2026-10-26 — slosh / pitch separation bands
+Separation S = max(f1/fp, fp/f1). SAFE S ≥ r (user, default 2, range 1.3–10); MARGINAL 1.25 ≤ S < r; UNSAFE S < 1.25.
+Same 1.25 inner band as D33. **Not a published limit**: the report gives no criterion. Fixes target r on
+the side the slosh is now (above → narrower tank / lower pitch frequency / more acceleration).

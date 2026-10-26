@@ -65,6 +65,22 @@
         <p>The drawing is a map with north up and rings of equal range around the launcher. The grey path is where the wind alone takes a vertical launch: first the in-plane part along the azimuth, then the cross-plane part. The red arrow from there to the target is what the launcher tilt adds. The short red bar at the launcher shows the launcher azimuth; its length is not to scale. The inset is a side view of the launcher rail at the computed elevation.</p>
       </section>
 
+      <section id="limits">
+        <h2>Your tilt limit, and what you can reach</h2>
+        <p>Ranges limit how far from vertical a launcher may point. You enter your limit <span class="tex">\theta_{max}</span>; many safety codes use 20°, but check yours. The verdict (DECISIONS D35) is:</p>
+        <ul>
+          <li><b>SAFE</b> when the total tilt <span class="tex">\theta_T\le\theta_{max}</span>;</li>
+          <li><b>MARGINAL</b> when it is within the limit but read past the last zero-wind run (extrapolated);</li>
+          <li><b>UNSAFE</b> when it needs more.</li>
+        </ul>
+        <p>In this additive model the tilt moves the landing point away from where the wind alone takes it. A tilt <span class="tex">\theta</span> in any direction moves it by the zero-wind range at <span class="tex">QE=90^\circ-\theta</span>. So every landing point within reach lies inside a circle round the wind-only point, of radius <span class="tex">r(90^\circ-\theta_{max})</span>: the dashed circle in the drawing. This is an approximation for small tilts, as the method itself is. When the target is outside it, the calculator gives the nearest range along your azimuth that is inside. It finds this by bisection: the tilt is least where the wind alone carries the rocket to the range, and grows on either side. If even that point is out of reach, the crosswind alone needs too much tilt.</p>
+        <p><b>Fill from the Trajectory Simulation</b> runs your saved trajectory twice over:</p>
+        <ul>
+          <li>straight up in its winds, for the drift along and across your impact azimuth;</li>
+          <li>in still air at 90°, 88° … 80°, for the zero-wind table.</li>
+        </ul>
+      </section>
+
       <section id="verification">
         <h2>Verification</h2>
         <p>The tests reproduce the field example exactly: a drift of 3 200 ft in plane and 4 800 ft across the plane, a desired impact 5 000 ft away on azimuth 45°, and zero-wind runs from 90° to 80°. The interpolated elevations are 87.068° in plane and 81.556° across the plane. The total launcher QE is 81.061°, and the launcher azimuth is 70.85° off the impact azimuth. Further tests check extrapolation past the last run, a tilt back uprange, and the zero-wind limit.</p>

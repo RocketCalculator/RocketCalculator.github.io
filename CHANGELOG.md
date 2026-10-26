@@ -3,6 +3,13 @@
 Newest first, in the spirit of [Keep a Changelog](https://keepachangelog.com/). From 2026-10-25 every entry names its
 branch, tag and commit range. Live site: https://rocketcalculator.github.io/.
 
+## 2026-10-26 — Wind Compensation cycle (`improve/wind-compensation-2`)
+- Verdict on the launcher tilt against your range's limit (D35) with the nearest reachable range along your azimuth
+  as the solved fix; the plan view shows every landing point within reach (dashed circle round the wind-only point).
+- "Fill from the Trajectory Simulation": the vertical-launch drift in its winds and the zero-wind range table.
+- Inputs bounded with sliders and info tabs to the high-school standard; the tilt plot shows your limit; the range
+  table and azimuth plots moved to Explore.
+
 ## 2026-10-26 — Launcher Rail Deflection cycle (`improve/launcher-deflection-2`)
 - Verdict on the rail tip slope at tip-off against your allowed slope (default 0.1°, Hoult's chosen bound; D34), with
   the longest acceptable rail, the heaviest rocket and the stiffness needed; yaw from thrust misalignment shown too.

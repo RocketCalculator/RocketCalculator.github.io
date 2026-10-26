@@ -457,3 +457,10 @@ test('Roll rate history: the largest cant within your limits brings the worse ra
   assert.ok(Math.abs(Math.max(at.fMax / 1, at.fA / 0.3) - 1) < 1e-9, `${at.fMax}, ${at.fA}`);
 });
 
+test('Wind compensation: the nearest reachable range sits exactly on the tilt limit; a reachable target is kept', () => {
+  const far = run('wind-compensation', { R: 10000, tmax: 10 });   // the crosswind alone needs about 8°
+  assert.equal(typeof far.Rok, 'number');
+  assert.ok(far.Rok < 10000 && Math.abs(run('wind-compensation', { R: far.Rok, tmax: 10 }).tilt - 10) < 1e-6);
+  assert.equal(run('wind-compensation', { R: 5000, tmax: 20 }).Rok, 5000);
+});
+

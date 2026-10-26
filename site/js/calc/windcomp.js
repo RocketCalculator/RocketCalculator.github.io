@@ -43,3 +43,27 @@ export function windComp({ table, WI, WC, AZ, R }) {
     driftRange: Math.hypot(WI, WC), driftAz: bearing(AZ, WI, WC),
   };
 }
+
+/** Inverse of qeForRange: the zero-wind range of a launcher at elevation qe (bisection, ranges up to 2× the last run). */
+export function rangeForQE(table, qe) {
+  if (qe >= 90) return 0;
+  let lo = 0, hi = 2 * table.at(-1).r;
+  if (qeForRange(table, hi).qe > qe) return hi;
+  for (let k = 0; k < 60; k++) { const m = (lo + hi) / 2; if (qeForRange(table, m).qe > qe) lo = m; else hi = m; }
+  return (lo + hi) / 2;
+}
+
+/**
+ * Desired range nearest to p.R whose launcher tilt is at most tmax (deg), or null when no range along this azimuth is
+ * reachable within tmax (the cross-plane tilt alone exceeds it). The tilt is least where R = W_I (no in-plane tilt)
+ * and grows with |R − W_I| on either side, so it is bisected between p.R and max(0, W_I).
+ */
+export function rangeForTilt(p, tmax) {
+  const tiltAt = (R) => windComp({ ...p, R }).tilt;
+  if (tiltAt(p.R) <= tmax) return p.R;
+  const best = Math.max(0, p.WI);
+  if (tiltAt(best) > tmax) return null;
+  let ok = best, bad = p.R;
+  for (let k = 0; k < 60; k++) { const m = (ok + bad) / 2; if (tiltAt(m) <= tmax) ok = m; else bad = m; }
+  return ok;
+}

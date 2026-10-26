@@ -48,3 +48,30 @@ test('Memo plot (Gold Rush II, weight only, ×2): ≈ 0.053° at 240 in and 0.21
   assert.ok(launcher(base).pitchDeg < 0.06);
 });
 
+// The page: verdict bands and solved fixes (closed form) must land exactly on the allowed slope.
+const def = (await import('../site/js/calculators/launcher-deflection.js')).default;
+const page = (o = {}) => { const v = { ...def.examples[0].values, I: 20, ...o }; return { v, out: def.compute(v) }; };
+
+test('Verdict: safe within the limit, marginal to 1.25×, unsafe beyond; the heavy CSULB case fails 0.05°', () => {
+  assert.equal(page().out.lv, 'safe');
+  const { out } = page({ W: 150, T: 1200, allow: 0.05 });
+  assert.equal(out.lv, 'unsafe'); assert.equal(out.verdict.fixes.length, 3);
+  const th = page().out.o.pitchDeg;
+  assert.equal(page({ allow: th / 1.2 }).out.lv, 'marginal');
+  assert.equal(page({ allow: th / 1.3 }).out.lv, 'unsafe');
+  assert.equal(page({ section: 'custom', I: 30, E: 10e6 }).out.lv, 'unsafe');
+});
+
+test('Fixes: the rail length, face width, wall thickness and I each bring the slope to the allowance', () => {
+  const base = { W: 150, T: 1200, allow: 0.05 }, f = page(base).out.fix;
+  for (const [k, x] of [['L', f.L], ['d', f.d], ['t', f.t]]) close(page({ ...base, [k]: x }).out.o.pitchDeg, 0.05, 1e-12, k);
+  const c = page({ ...base, section: 'custom', I: 20 }).out;
+  close(page({ ...base, section: 'custom', I: c.fix.I }).out.o.pitchDeg, 0.05, 1e-12, 'I');
+  close(page({ ...base, section: 'custom', I: c.results.Ireq }).out.o.pitchDeg, 0.05, 1e-12, 'I_req');
+});
+
+test('Heaviest rocket: at W_max the tip slope equals the allowance', () => {
+  close(page({ W: page().out.results.Wmax }).out.o.pitchDeg, 0.1, 1e-12, 'W_max');
+  assert.equal(page({ QE: 90 }).out.results.Wmax, '—');
+});
+

@@ -3,6 +3,13 @@
 Newest first, in the spirit of [Keep a Changelog](https://keepachangelog.com/). From 2026-10-25 every entry names its
 branch, tag and commit range. Live site: https://rocketcalculator.github.io/.
 
+## 2026-10-26 — Launcher Rail Deflection cycle (`improve/launcher-deflection-2`)
+- Verdict on the rail tip slope at tip-off against your allowed slope (default 0.1°, Hoult's chosen bound; D34), with
+  the longest acceptable rail, the heaviest rocket and the stiffness needed; yaw from thrust misalignment shown too.
+- Drawing: the rail to scale with the bend exaggerated, the rocket, the side load, a magnified rail tip with the launch
+  direction against your limit, and the three-tube tower section. Plots: tip slope against rail length; moment,
+  slope and deflection along the rail; Explore: slope against elevation, longest rail against rocket weight.
+
 ## 2026-10-26 — Body Bending Modes cycle (`improve/body-bending-2`)
 - Sections entered as tubes (length, diameter, wall, modulus, mass) or as stiffness and weight; verdict on the first
   bending frequency against your excitation and separation (D33), with solved stiffening of the section that bends

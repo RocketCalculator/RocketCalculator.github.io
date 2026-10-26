@@ -44,6 +44,14 @@
         <p>will not be extracted. Absent better knowledge use <span class="tex">K=2</span>, design both buttons to the same load, and do not give this job to crew members who do not know their own strength.</p>
       </section>
 
+      <section id="verdict">
+        <h2>Verdict and fixes</h2>
+        <p>The memo gives the loads; what the hardware can take depends on how it is built, so the calculator asks for it: the pull-out strength of the aft button attachment and the bending strength of the joint (from a test or the fastener data). Each load is compared with its strength: <strong>safe</strong> up to 80 % of it, <strong>marginal</strong> up to 100 %, <strong>unsafe</strong> beyond. The 80 % is this site’s choice, on top of Hoult’s factors <span class="tex">K</span> and <span class="tex">N</span>; it is not a published limit.</p>
+        <p>The button pull (eq. 6) is linear in the lift factor, <span class="tex">F_L=aK-b</span> with <span class="tex">a=W(x_L-x_{CG})(x_A-x_F)/[(x_L-x_F)(x_A-x_L)]</span> and <span class="tex">b=W(x_A-x_{CG})/(x_A-x_L)</span>, so the largest lift factor the button takes is</p>
+        <div class="eq"><div class="tex-display">K_{max}=\frac{S_L+b}{a}</div></div>
+        <p>Brief the crew to stop well before it. The other fixes: the lift point that keeps the pull within 80 % of the strength (by bisection, when one exists), and the strengths needed, <span class="tex">F_L/0.8</span> and <span class="tex">|M_J|/0.8</span>. A third carrier at the joint takes its bending moment to zero. Hoult also asks that the aft button carry <span class="tex">KW</span> in shear when the rocket stands on the rail, and that both buttons be designed to the same load with countersunk screws.</p>
+      </section>
+
       <section id="verification">
         <h2>Verification</h2>
         <p>The tests reproduce the original field tool’s lift forces and button loads for <span class="tex">K=1</span> to 3 (241.8 lb at <span class="tex">K=2</span> for the 54 lb example, the memo’s “about 243 lb”), check the statics of the carried rocket, and confirm that the joint shear and moment are the same whether computed from the forward or the aft piece.</p>

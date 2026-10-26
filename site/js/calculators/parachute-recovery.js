@@ -96,7 +96,7 @@ export default {
     {
       id: 'windgrp', title: 'Wind and location',
       fields: [
-        { id: 'windMode', label: 'Wind', kind: 'select', default: 'mean', options: [{ value: 'mean', label: 'One average wind speed' }, { value: 'layers', label: 'Wind layers (by height, with direction)' }],
+        { id: 'windMode', label: 'Wind', kind: 'select', default: 'mean', options: [{ value: 'mean', label: 'Average wind' }, { value: 'layers', label: 'Wind layers' }],
           info: { text: ['Choose a single average wind, or a list of wind layers — speed and direction at several heights, as weather forecasts give them.', 'Real winds usually get stronger and turn with height. With layers the calculator follows the rocket through each layer and gives where it lands, not just how far.', 'Use “Load winds from Open-Meteo” to fill the layers from a forecast for your launch site.'], doc: 'drift' } },
         { id: 'wind', label: 'Average wind speed', sym: 'w', ...SPEED, default: 20, min: 0, max: 300, slider: { min: 0, max: 100, step: 1 }, when: (v) => !layered(v),
           info: { text: ['The average horizontal wind the parachute falls through, from opening to landing.', 'Use the forecast “winds aloft”, averaged over the heights of the descent; ground wind alone is usually too low.', 'The drift is directly proportional to it: double the wind, double the drift.'], tex: 'x_w=w\\,t', range: 'Ground 2–8 m/s; aloft often 10–20 m/s (30–60 ft/s) or more.', doc: 'drift' } },
@@ -104,11 +104,11 @@ export default {
           columns: [{ id: 'h', label: 'Height above ground', ...ALT }, { id: 'w', label: 'Speed', ...SPEED }, { id: 'dir', label: 'From (°)', ...DIR }],
           default: [{ h: 0, w: 10, dir: 270 }, { h: 3000, w: 25, dir: 260 }, { h: 10000, w: 45, dir: 250 }, { h: 20000, w: 70, dir: 245 }, { h: 30000, w: 90, dir: 240 }],
           info: { text: ['Each row is the wind at one height above the ground: its speed and the compass direction it blows FROM (270 = from the west, so it carries the rocket east). Between rows the wind changes smoothly; above the top row and below the bottom row it stays as in that row.', 'Fill it from a forecast (the button below), from a balloon sounding, or by hand.', 'The rocket drifts with the wind at whatever height it is, so slow winds near the ground matter little if the parachute falls fast high up.'], range: 'Ground 2–8 m/s; 3–10 km often 10–30 m/s (30–100 ft/s), jet stream up to 50 m/s+.', doc: 'drift' } },
-        { id: 'lat', label: 'Launch site latitude', sym: '\\varphi', dim: 'angle', internal: 'deg', default: 40.86, min: -90, max: 90,
+        { id: 'lat', when: layered, label: 'Launch site latitude', sym: '\\varphi', dim: 'angle', internal: 'deg', default: 40.86, min: -90, max: 90,
           info: { text: ['North–south position of the launch site in degrees (north positive), as shown by any map app.', 'Used to load the forecast winds and to open the site on a map.'], doc: 'drift' } },
-        { id: 'lon', label: 'Launch site longitude', sym: '\\lambda_E', dim: 'angle', internal: 'deg', default: -119.07, min: -180, max: 180,
+        { id: 'lon', when: layered, label: 'Launch site longitude', sym: '\\lambda_E', dim: 'angle', internal: 'deg', default: -119.07, min: -180, max: 180,
           info: { text: ['East–west position of the launch site in degrees (east positive, west negative).'], doc: 'drift' } },
-        { id: 'when', label: 'Launch date and time (site local)', kind: 'datetime', default: '',
+        { id: 'when', when: layered, label: 'Launch date and time (site local)', kind: 'datetime', default: '',
           info: { text: ['The date and hour of your launch, in the launch site’s local time. Leave it empty for now.', 'Then press “Load winds from Open-Meteo” to fill the wind layers from the forecast for that hour. Forecasts reach about 16 days ahead; past dates up to about 3 months back give the model’s recent analysis.'], doc: 'drift' } },
       ],
     },
@@ -200,13 +200,13 @@ export default {
   },
   actions: [
     {
-      label: 'Load winds from Open-Meteo', group: 'windgrp', title: 'Fetch the forecast winds at the launch site (Open-Meteo, free, no account) into the wind layers; also sets the ground elevation',
+      label: 'Load winds from Open-Meteo', group: 'windgrp', when: layered, title: 'Fetch the forecast winds at the launch site (Open-Meteo, free, no account) into the wind layers; also sets the ground elevation',
       async run(v) {
         const m = await fetchWinds(v.lat, v.lon, v.when);
         return { values: { windMode: 'layers', winds: m.rows, hG: m.elevFt }, message: `Loaded ${m.rows.length} wind layers for ${m.when} local time; ground elevation set to ${Math.round(m.elevM)} m. ${METEO_CREDIT}` };
       },
     },
-    ...mapActions('windgrp'),
+    ...mapActions('windgrp', layered),
   ],
   plots: [
     {

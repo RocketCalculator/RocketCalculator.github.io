@@ -3,6 +3,12 @@
 Newest first, in the spirit of [Keep a Changelog](https://keepachangelog.com/). From 2026-10-25 every entry names its
 branch, tag and commit range. Live site: https://rocketcalculator.github.io/.
 
+## 2026-10-26 — Forecast inputs only with wind layers (`improve/hide-forecast-inputs`)
+- Trajectory and Parachute: longitude, launch date and the Open-Meteo / map buttons show only with wind layers
+  (Parachute: latitude too — it only feeds the forecast). Trajectory keeps latitude, which sets gravity and the
+  atmosphere; its forecast inputs moved into the Weather group next to the wind. Actions take a `when`.
+- Shorter wind-mode labels ("Uniform wind" / "Average wind", "Wind layers") that fit the select.
+
 ## 2026-10-26 — Winds aloft in the side view; cache-safe deploys (`fix/wind-side-view-cache`)
 - Trajectory and Parachute: the winds-aloft arrows are drawn in the drawing's side view — wind along the flight (or
   the drift) left/right, crosswind slanting into the page — instead of seen from above; every arrow at least 14 px,

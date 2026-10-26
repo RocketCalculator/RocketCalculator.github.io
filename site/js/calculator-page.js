@@ -77,6 +77,7 @@ export async function mountCalculator(def) {
   const linkBtn = h('button.btn.small.ghost', { type: 'button', title: 'Copy a link that reproduces these inputs' }, ICONS.link(), 'Share');
   const form = buildForm(def, state, { onChange: (id, o) => { pendingShared.add(id); o?.fast ? requestRecompute() : recomputeSoon(); }, onHighlight: highlight, infoFor });
   const compatBox = null;
+  const actionEls = [];   // [{ a, b }]: buttons of actions with a `when` are shown only when it holds
   const inputsCard = h('aside.card.calc-inputs', { 'aria-label': 'Inputs' },
     h('div.card-head', h('h2', 'Inputs'), h('span.spacer'), h('div.form-actions', exampleSel, exampleBtn, resetBtn, linkBtn)),
     h('div.form-scroll', form.el, def.actions?.some((a) => !a.group) ? h('div.def-actions', def.actions.filter((a) => !a.group).map(actionButton)) : null));
@@ -90,6 +91,7 @@ export async function mountCalculator(def) {
   function actionButton(a) {
     // def.actions: [{ label, title, group?, run(values) → Promise<{ values, message }> }] e.g. fill inputs from another calculator
     const b = h('button.btn.small', { type: 'button', title: a.title || null }, a.label);
+    actionEls.push({ a, b });
     b.addEventListener('click', async () => {
       b.disabled = true;
       try { const r = await a.run(clone(state.values)); if (r?.values) { Object.assign(state.values, r.values); form.refresh(); recompute(); } if (r?.message) toast(r.message); }
@@ -384,6 +386,8 @@ export async function mountCalculator(def) {
   let lastKey = {};
   function recompute({ live = false } = {}) {
     form.refresh();
+    for (const { a, b } of actionEls) b.hidden = !!a.when && !a.when(state.values);
+    for (const row of document.querySelectorAll('.calc-inputs .def-actions')) row.hidden = [...row.children].every((c) => c.hidden);
     const ok = form.validateAll();
     warnBox.replaceChildren();
     if (ok && pendingShared.size) {

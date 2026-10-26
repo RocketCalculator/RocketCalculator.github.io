@@ -47,5 +47,5 @@ export function slosh({ a, R, M, rho, hMax = Infinity }) {
   const h = Math.min(fillDepth(M, rho, R), hMax);
   M = h * rho * Math.PI * R * R;
   const modes = [1, 2, 3].map((n) => mode(n, { a, R, h, M }));
-  return { h, hR: h / R, modes, fixedFrac: 1 - modes.reduce((s, q) => s + q.mFrac, 0) };
+  return { h, M, hR: h / R, modes, fixedFrac: 1 - modes.reduce((s, q) => s + q.mFrac, 0) };
 }

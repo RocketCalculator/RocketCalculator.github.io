@@ -112,11 +112,11 @@ export default {
       info: { text: ['How many times per second the liquid surface rocks in its main way: up on one side, down on the other, like tea in a jolted cup.', 'From the tank radius, the liquid depth and the thrust acceleration; the 1.841 is the first Bessel root, the number that fits the wave to a round wall.', 'Deeper liquid, a narrower tank or more acceleration raise it.'],
         tex: 'f_1=\\frac{1}{2\\pi}\\sqrt{\\frac{a}{R}\\lambda_1\\tanh\\frac{\\lambda_1h}{R}}', doc: 'modes' } },
     { id: 'ratio', label: 'First slosh frequency ÷ pitch frequency', sym: 'f_1/f_p', ...NONE, key: true, digits: 3, status: (x, out) => ST[out.level],
-      note: (x, out) => `want ≥ ${fmt(out.v.sep, { digits: 3 })} or ≤ ${fmt(1 / out.v.sep, { digits: 3 })} · unsafe ${fmt(1 / NEAR, { digits: 2 })}–${NEAR}`,
+      note: (x, out) => `want ≥ ${fmt(out.v.sep, { digits: 3 })} or ≤ ${fmt(1 / out.v.sep, { digits: 3 })}`,
       info: { text: ['How many times the first slosh frequency is above (more than 1) or below (less than 1) the rocket’s pitch frequency.', 'Near 1 the rocking liquid pushes the tank sideways in step with the pitch wobble, and each can feed the other.', 'Move it away from 1 with a narrower or wider tank; the drain plot shows how it changes as the tank empties.'], tex: '\\frac{f_1}{f_p}', doc: 'verdict' } },
-    { id: 'h', label: 'Liquid depth', sym: 'h', ...LEN, key: true, digits: 4, note: (x, out) => `${fmt(out.fill, { digits: 3 })} % of the tank · h/R = ${fmt(out.o.hR, { digits: 3 })}`,
+    { id: 'h', label: 'Liquid depth', sym: 'h', ...LEN, digits: 4, note: (x, out) => `${fmt(out.fill, { digits: 3 })} % of the tank · h/R = ${fmt(out.o.hR, { digits: 3 })}`,
       info: { text: ['How deep the propellant stands in the tank (flat bottom).', 'The propellant mass divided by its density and the tank’s floor area.', 'Above about one radius the frequencies hardly change with depth; below it they fall quickly.'], tex: 'h=\\frac{M}{\\rho\\pi R^2}', doc: 'modes' } },
-    { id: 'm1', label: 'First-mode slosh mass', sym: 'm_1', ...MASS, key: true, digits: 4, note: (x, out) => `${fmt(100 * out.o.modes[0].mFrac, { digits: 3 })} % of the liquid · pendulum ${Q(out.o.modes[0].pendulum, LEN)}`,
+    { id: 'm1', label: 'First-mode slosh mass', sym: 'm_1', ...MASS, key: true, digits: 4, note: (x, out) => `${fmt(100 * out.o.modes[0].mFrac, { digits: 3 })} % of the liquid, ${Q(out.o.h, LEN)} deep (${fmt(out.fill, { digits: 3 })} % full)`,
       info: { text: ['The part of the liquid that swings in the first mode, as the bob of the equivalent pendulum; the rest moves with the tank.', 'Read from Hoult’s side-force formula (eq. 5-47): each mode adds a mass that answers at its own frequency.', 'A shallow pool sloshes almost entirely (84 % in the first mode); a deep one only a top layer.'],
         tex: 'm_n=M\\,\\frac{2\\tanh(\\lambda_nh/R)}{\\lambda_n(\\lambda_n^2-1)\\,h/R}', doc: 'model' } },
     { id: 'f2', label: 'Second mode', sym: 'f_2', ...HZ, digits: 4, note: (x, out) => `${fmt(out.o.modes[1].w, { digits: 4 })} rad/s`, info: { text: ['The next way of rocking, with a ring that stays still between centre and wall; it carries little liquid.'], tex: 'f_2=\\frac{1}{2\\pi}\\sqrt{\\frac{a}{R}\\lambda_2\\tanh\\frac{\\lambda_2h}{R}}', doc: 'modes' } },
@@ -152,14 +152,14 @@ export default {
     const hFix = fillDepth(o.M, v.rho, Dfix / 2), fpOk = above ? f1 / v.sep : v.sep * f1, aFix = v.a * (target / f1) ** 2;
     const fixes = [];
     if (level !== 'safe') {
-      fixes.push(`${above ? 'Narrow' : 'Widen'} the tank to ${above ? 'at most' : 'at least'} <b>${Q(Dfix, LEN)}</b> inside (now ${Q(v.D, LEN)}; the same propellant then stands ${Q(hFix, LEN)} deep), or`);
-      fixes.push(`keep the pitch frequency ${above ? 'at or below' : 'at or above'} <b>${Hz(fpOk)}</b> (now ${Hz(v.fp)}), or`);
-      fixes.push(`a thrust acceleration ${above ? 'of at least' : 'of at most'} <b>${gs(aFix)}</b> at this moment (now ${gs(v.a)}).`);
+      fixes.push(`${above ? 'Narrow' : 'Widen'} the tank to ${above ? 'at most' : 'at least'} <b>${Q(Dfix, LEN)}</b> (now ${Q(v.D, LEN)}; liquid ${Q(hFix, LEN)} deep${hFix > v.Lt ? ', lengthen the tank' : ''}), or`);
+      fixes.push(`a pitch frequency ${above ? 'of at most' : 'of at least'} <b>${Hz(fpOk)}</b> (now ${Hz(v.fp)}), or`);
+      fixes.push(`a thrust acceleration ${above ? 'of at least' : 'of at most'} <b>${gs(aFix)}</b> (now ${gs(v.a)}).`);
     }
     const verdict = {
       level,
       title: level === 'safe' ? 'The slosh frequency is well clear of the pitch frequency' : level === 'marginal' ? 'Clear of the pitch frequency, but with less separation than you want' : 'The liquid sloshes at nearly the pitch frequency',
-      text: `First slosh frequency <b>${Hz(f1)}</b>, ${fmt(f1 / v.fp, { digits: 3 })} × the pitch frequency of ${Hz(v.fp)} (you want at least ${fmt(v.sep, { digits: 3 })} × ${above ? 'above' : 'below'}, i.e. ${above ? '≥' : '≤'} ${Hz(target)}).`,
+      text: `First slosh frequency <b>${Hz(f1)}</b> is ${fmt(f1 / v.fp, { digits: 3 })} × the pitch frequency of ${Hz(v.fp)}; you want ${above ? '≥' : '≤'} ${Hz(target)}.`,
       fixes,
     };
     const warnings = [];
@@ -171,25 +171,27 @@ export default {
       f1, ratio: f1 / v.fp, h: o.h, m1: m1.m, f2: m2.f, f3: m3.f, w1: m1.w, m1frac: 100 * m1.mFrac, L1: m1.pendulum, hinge1: m1.hinge, bob1: m1.bob,
       hCross: hCross ?? '—', fDeep: mode(1, { a: v.a, R, h: 1e3 * R, M: 1 }).f, Dfix, fpOk, m2: m2.m, m3: m3.m, fixedFrac: 100 * o.fixedFrac,
     };
-    return { results, warnings, verdict, level, o, v, R, fill, above, target, hCross, Dfix };
+    // plots stop where nothing changes any more: about 2 diameters deep (tanh ≈ 1), or past your depth
+    const hView = Math.min(v.Lt, Math.max(4 * R, 1.25 * o.h, 1.25 * (hCross ?? 0)));
+    return { results, warnings, verdict, level, o, v, R, fill, above, target, hCross, Dfix, hView };
   },
   plots: [
     {
       id: 'drain', title: 'Slosh frequencies and slosh mass as the tank drains', wide: true, height: 520,
-      info: { text: ['The first three slosh frequencies (top) and the share of the liquid in each mode (bottom) against the liquid depth, from empty (left) to the tank top (right), at your acceleration.', 'The red lines are the pitch frequency and your separation either side of it; the grey line is your depth now. Read the drain from right to left.', 'Look for where the solid $f_1$ curve crosses the red band: at that level the slosh rings with the pitch.'], doc: 'verdict' },
+      info: { text: ['The first three slosh frequencies (top) and the share of the liquid in each mode (bottom) against the liquid depth, from empty (left) up to about two diameters (beyond that nothing changes) or the tank top, at your acceleration.', 'The red lines are the pitch frequency and your separation either side of it; the grey line is your depth now. Read the drain from right to left.', 'Look for where the solid $f_1$ curve crosses the red band: at that level the slosh rings with the pitch.'], doc: 'verdict' },
       build(v, out, { U }) {
-        const ul = U(LEN), N = 160, R = out.R, hs = Array.from({ length: N }, (_, i) => (v.Lt * (i + 1)) / N);
+        const ul = U(LEN), N = 160, R = out.R, hTop = out.hView, hs = Array.from({ length: N }, (_, i) => (hTop * (i + 1)) / N);
         const md = (n, h) => mode(n, { a: v.a, R, h, M: 1 });
         const dash = [null, '7 4', '2 3'];
         const fs = [1, 2, 3].map((n) => ({ name: `$f_${n}$`, dash: dash[n - 1], color: `var(--series-${n === 1 ? 1 : n === 2 ? 2 : 3})`, points: hs.map((h) => [ul.v(h), md(n, h).f]) }));
         const ms = [1, 2, 3].map((n) => ({ name: `$m_${n}/M$`, dash: dash[n - 1], color: `var(--series-${n === 1 ? 1 : n === 2 ? 2 : 3})`, points: hs.map((h) => [ul.v(h), 100 * md(n, h).mFrac]) }));
         const fixed = { name: 'moves with tank', dash: '9 3 2 3', color: 'var(--series-5)', points: hs.map((h) => [ul.v(h), 100 * (1 - [1, 2, 3].reduce((a, n) => a + md(n, h).mFrac, 0))]) };
         // frame the frequency axis on f1 and the red band; f2 and f3 run off the top when they are far above
-        const top = 1.15 * Math.max(out.o.modes[0].f, md(1, v.Lt).f, v.sep * v.fp);
+        const top = 1.15 * Math.max(out.o.modes[0].f, md(1, hTop).f, v.sep * v.fp);
         const vlines = [{ x: ul.v(out.o.h), label: 'your depth', color: 'var(--text-3)' }];
         if (out.hCross != null) vlines.push({ x: ul.v(out.hCross), label: '$f_1=f_p$', color: 'var(--danger)', row: 1 });
         return {
-          x: { label: 'Liquid depth $h$', unit: ul.label }, xDomain: [0, ul.v(v.Lt)], vlines,
+          x: { label: 'Liquid depth $h$', unit: ul.label }, xDomain: [0, ul.v(out.hView)], vlines,
           panels: [
             { y: { label: 'Frequency', unit: 'Hz' }, yDomain: [0, top], series: fs,
               hlines: [{ y: v.fp, label: 'pitch frequency', color: 'var(--danger)' }, { y: v.sep * v.fp, label: 'your separation', color: 'var(--danger)' }, { y: v.fp / v.sep, color: 'var(--danger)' }] },
@@ -217,12 +219,12 @@ export default {
       id: 'accel', title: 'First slosh frequency over the drain at several accelerations', explore: true, wide: true,
       info: { text: ['The first slosh frequency against liquid depth for thrust accelerations from 1 g to 15 g (and yours, solid).', 'The red lines are the pitch frequency and your separation.', 'More acceleration lifts every curve by $\\sqrt a$; the depth at which a curve meets the red band is where the slosh rings with the pitch at that acceleration.'], doc: 'modes' },
       build(v, out, { U }) {
-        const ul = U(LEN), R = out.R, hs = Array.from({ length: 120 }, (_, i) => (v.Lt * (i + 1)) / 120);
+        const ul = U(LEN), R = out.R, hs = Array.from({ length: 120 }, (_, i) => (out.hView * (i + 1)) / 120);
         const gsList = [1, 3, 5, 10, 15], dash = ['2 3', '7 4', '9 3 2 3', '4 2', '1 2'];
         const series = [{ name: `yours, ${gs(v.a)}`, points: hs.map((h) => [ul.v(h), f1At(v, h)]) },
           ...gsList.map((g, i) => ({ name: `${g} g`, dash: dash[i], color: 'var(--text-3)', points: hs.map((h) => [ul.v(h), mode(1, { a: g * G0, R, h, M: 1 }).f]) }))];
         return {
-          x: { label: 'Liquid depth $h$', unit: ul.label }, y: { label: 'First slosh frequency $f_1$', unit: 'Hz' }, xDomain: [0, ul.v(v.Lt)], includeZero: true, series,
+          x: { label: 'Liquid depth $h$', unit: ul.label }, y: { label: 'First slosh frequency $f_1$', unit: 'Hz' }, xDomain: [0, ul.v(out.hView)], includeZero: true, series,
           hlines: [{ y: v.fp, label: 'pitch frequency', color: 'var(--danger)' }, { y: v.sep * v.fp, label: 'your separation', color: 'var(--danger)' }],
           vlines: [{ x: ul.v(out.o.h), label: 'your depth', color: 'var(--text-3)' }],
         };
@@ -232,65 +234,69 @@ export default {
   schematicTitle: 'Tank, rocking surface and equivalent pendulum',
   schematicHint: 'The tank to scale with the liquid rocking in its first mode and the pendulum that swings with it; red bands mark the liquid levels at which the slosh rings with the pitch. Drag the surface (propellant), the tank top (length) or the bottom corner (diameter)',
   schematic(ctx, v, out) {
-    const W = 760, H = 380, o = out.o, m1 = o.modes[0], col = COL[out.level], R = out.R;
+    const W = 760, H = 400, o = out.o, m1 = o.modes[0], col = COL[out.level], R = out.R;
     const fr = ctx.frame({ width: W, height: H, label: 'Tank section with the first slosh mode and the equivalent pendulum' });
     const g = fr.layer('main'); g.replaceChildren();
     const L = (x) => Q(x, LEN);
-    // tank to scale
-    const k = Math.min(270 / v.Lt, 250 / v.D), cx = 215, yb = 320, w = R * k, top = yb - v.Lt * k, ys = yb - o.h * k, Y = (h) => yb - h * k;
+    // tank to scale: left wall at x = 140, bottom at y = 335
+    const k = Math.min(285 / v.Lt, 150 / v.D), w = R * k, cx = 140 + w, yb = 335, top = yb - v.Lt * k, ys = yb - o.h * k, Y = (h) => yb - h * k;
     // levels where the slosh is too close to the pitch frequency (red) or closer than wanted (pale), behind the liquid
     const band = (f0, f1, op, field) => {
-      const ha = f0 <= 0 ? 0 : depthFor(f0, { a: v.a, R }), hb = depthFor(f1, { a: v.a, R }) ?? v.Lt;
+      const ha = depthFor(f0, { a: v.a, R }), hb = Math.min(depthFor(f1, { a: v.a, R }) ?? v.Lt, v.Lt);
       if (ha == null || ha >= v.Lt) return;
-      g.append(s('rect', { x: cx - w, width: 2 * w, y: Y(Math.min(hb, v.Lt)), height: Y(ha) - Y(Math.min(hb, v.Lt)), fill: 'var(--danger)', 'fill-opacity': op, 'data-field': field }));
+      g.append(s('rect', { x: cx - w, width: 2 * w, y: Y(hb), height: Y(ha) - Y(hb), fill: 'var(--danger)', 'fill-opacity': op, 'data-field': field }));
     };
     band(v.fp / v.sep, v.sep * v.fp, 0.07, 'sep'); band(v.fp / NEAR, NEAR * v.fp, 0.14, 'fp');
     // liquid with its first-mode surface, η ∝ J1(λ1 r/R)/J1(λ1), amplitude exaggerated
-    const amp = Math.min(0.16 * w, Math.max(5, 0.3 * o.h * k), 0.6 * (top < ys ? ys - top : 0) + 1), j1e = besselJ1(LAMBDA[0]).J1;
-    const surf = (sg, lam = LAMBDA[0], x0 = cx, ww = w, y0 = ys, A = amp, je = j1e) => Array.from({ length: 61 }, (_, i) => { const x = -1 + i / 30; return [x0 + x * ww, y0 - sg * A * (Math.sign(x) * besselJ1(lam * Math.abs(x)).J1) / je]; });
-    const liquid = (sg) => `M${cx - w},${yb} ` + surf(sg).map((p) => `L${p[0].toFixed(2)},${p[1].toFixed(2)}`).join(' ') + ` L${cx + w},${yb} Z`;
+    const amp = Math.max(2, Math.min(0.16 * w, Math.max(5, 0.3 * o.h * k), 0.6 * (ys - top))), j1e = besselJ1(LAMBDA[0]).J1;
+    const surf = (sg, lam, x0, ww, y0, A, je) => Array.from({ length: 61 }, (_, i) => { const x = -1 + i / 30; return [x0 + x * ww, y0 - sg * A * (Math.sign(x) * besselJ1(lam * Math.abs(x)).J1) / je]; });
+    const liquid = (sg) => `M${cx - w},${yb} ` + surf(sg, LAMBDA[0], cx, w, ys, amp, j1e).map((p) => `L${p[0].toFixed(2)},${p[1].toFixed(2)}`).join(' ') + ` L${cx + w},${yb} Z`;
     const liq = s('path', { d: liquid(1), fill: 'var(--series-1)', 'fill-opacity': 0.16, stroke: 'var(--series-1)', 'stroke-width': 1.6, 'data-field': 'M rho' });
     const f1 = m1.f, anim = !reducedMotion() && f1 > 0, slow = f1 > 0.5 ? Math.ceil(f1 / 0.5) : 1, dur = `${slow / f1}s`;
     const spline = { keyTimes: '0;0.25;0.5;0.75;1', calcMode: 'spline', keySplines: '0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1' };
     if (anim) liq.append(s('animate', { attributeName: 'd', dur, repeatCount: 'indefinite', values: [liquid(1), liquid(0), liquid(-1), liquid(0), liquid(1)].join(';'), ...spline }));
     g.append(liq);
-    g.append(s('line', { x1: cx - w - 8, x2: cx + w + 8, y1: ys, y2: ys, class: 'sc-thin', 'stroke-dasharray': '3 3' }));
-    // tank walls and flat ends
     g.append(s('rect', { x: cx - w, y: top, width: 2 * w, height: yb - top, class: 'sc-line', fill: 'none', 'stroke-width': 2.4, 'data-field': 'D Lt' }));
-    // equivalent pendulum on the axis: hinge e1 below the surface (clipped to the tank top when far above), bob at e1 + L1
-    const yh = ys + m1.hinge * k, yBob = ys + m1.bob * k, yhDraw = Math.max(yh, top + 4), th = 0.22;
+    // equivalent pendulum beside the tank, same vertical scale: hinge e1 below the still surface, bob L1 lower
+    const px = cx + w + 46, yh = ys + m1.hinge * k, yBob = ys + m1.bob * k, yhDraw = Math.max(yh, 24), rBob = 3 + 9 * Math.sqrt(m1.mFrac);
+    g.append(s('line', { x1: cx + w + 4, x2: px + 14, y1: ys, y2: ys, class: 'sc-thin', 'stroke-dasharray': '3 3' }));
     const pend = s('g', { 'data-field': 'M a' });
-    const rBob = 4 + 12 * Math.sqrt(m1.mFrac);
-    pend.append(s('line', { x1: cx, x2: cx, y1: yhDraw, y2: yBob, stroke: col, 'stroke-width': 1.8 }));
-    pend.append(s('circle', { cx, cy: yBob, r: rBob, fill: col, 'fill-opacity': 0.55, stroke: col, 'stroke-width': 1.5 }));
-    // swing about the true hinge, in step with the surface (the bob moves to the side that rises)
-    const deg = ((yBob - yh) > 1 ? Math.min(14, (0.5 * amp * 180) / Math.PI / Math.max(1, (yBob - yh) / 40)) : 0).toFixed(2);
-    if (anim && +deg) pend.append(s('animateTransform', { attributeName: 'transform', type: 'rotate', dur, repeatCount: 'indefinite', values: [`-${deg} ${cx} ${yh}`, `0 ${cx} ${yh}`, `${deg} ${cx} ${yh}`, `0 ${cx} ${yh}`, `-${deg} ${cx} ${yh}`].join(';'), ...spline }));
-    else pend.setAttribute('transform', `rotate(-${deg} ${cx} ${yh})`);
+    pend.append(s('line', { x1: px, x2: px, y1: yhDraw, y2: yBob, stroke: col, 'stroke-width': 1.8 }));
+    pend.append(s('circle', { cx: px, cy: yBob, r: rBob, fill: col, 'fill-opacity': 0.55, stroke: col, 'stroke-width': 1.5 }));
+    // swing about the true hinge in step with the surface (the bob moves towards the side that rises)
+    const deg = Math.min(12, Math.max(1.5, (100 * amp) / Math.max(20, yBob - yh))).toFixed(2), rot = (a) => `${a} ${px} ${yh}`;
+    if (anim) pend.append(s('animateTransform', { attributeName: 'transform', type: 'rotate', dur, repeatCount: 'indefinite', values: [rot(-deg), rot(0), rot(deg), rot(0), rot(-deg)].join(';'), ...spline }));
+    else pend.setAttribute('transform', `rotate(${rot(-deg)})`);
     g.append(pend);
-    if (yh >= top) g.append(s('path', { d: `M${cx - 9},${yh} L${cx + 9},${yh} M${cx - 6},${yh} L${cx},${yh + 5} L${cx + 6},${yh}`, stroke: col, 'stroke-width': 2, fill: 'none' }));
-    // pendulum labels to the right of the tank, with leaders
-    const xl = cx + w + 74;
-    const lab = (y, str, yTo) => { g.append(s('line', { x1: cx + 10, x2: xl - 4, y1: yTo, y2: y - 4, class: 'sc-thin', opacity: 0.6 })); g.append(text(xl, y, str, { size: 11 })); };
-    const yHingeLab = Math.max(top + 12, Math.min(yh, yb - 40)), yBobLab = Math.max(yHingeLab + 30, Math.min(yBob + 4, yb + 2));
-    lab(yHingeLab, yh >= top ? `hinge ${L(Math.abs(m1.hinge))} ${m1.hinge >= 0 ? 'below' : 'above'} surface` : `hinge ${L(-m1.hinge)} above the surface ↑`, Math.max(yh, top + 4));
-    lab(yBobLab, `m_1 = ${Q(m1.m, MASS)} (${fmt(100 * m1.mFrac, { digits: 3 })} %), L_1 = ${L(m1.pendulum)}`, yBob);
-    // crossing level
+    if (yh >= 24) g.append(s('path', { d: `M${px - 9},${yh} L${px + 9},${yh} M${px - 6},${yh} L${px},${yh + 5} L${px + 6},${yh}`, stroke: col, 'stroke-width': 2, fill: 'none', 'data-field': 'M a' }));
+    else g.append(text(px, 16, '↑', { anchor: 'middle', size: 12 }));
+    // pendulum labels to its right, kept apart
+    const xl = px + 18, yHL = Math.max(28, Math.min(yh + 4, yb - 34)), yBL = Math.max(yHL + 30, Math.min(yBob + 4, yb + 4));
+    g.append(text(xl, yHL, yh >= 24 ? `hinge, ${L(Math.abs(m1.hinge))} ${m1.hinge >= 0 ? 'below' : 'above'} surface` : `hinge ${L(-m1.hinge)} above surface`, { size: 10.5 }));
+    g.append(text(xl, yBL - 7, `m_1 = ${Q(m1.m, MASS)} (${fmt(100 * m1.mFrac, { digits: 3 })} %)`, { size: 10.5 }));
+    g.append(text(xl, yBL + 7, `L_1 = ${L(m1.pendulum)}`, { size: 10.5 }));
+    // crossing level, labelled at the far left
     if (out.hCross != null) {
       const yc = Y(out.hCross);
-      g.append(s('line', { x1: cx - w, x2: cx + w, y1: yc, y2: yc, stroke: 'var(--danger)', 'stroke-width': 1.6, 'stroke-dasharray': '6 3', 'data-field': 'fp' }));
-      g.append(text(cx - w - 8, yc + 4, 'f_1 = f_p', { anchor: 'end', size: 10.5, field: 'fp' }));
+      g.append(s('line', { x1: 14, x2: cx + w, y1: yc, y2: yc, stroke: 'var(--danger)', 'stroke-width': 1.4, 'stroke-dasharray': '6 3', 'data-field': 'fp' }));
+      g.append(text(14, yc < 110 ? yc + 13 : yc - 4, 'f_1 = f_p', { size: 10.5, field: 'fp' }));
     }
-    // dimensions: diameter under the tank, length on the left, depth on the right
-    g.append(dim(fr, cx - w, yb, cx + w, yb, `D = ${L(v.D)}`, { off: -18, field: 'D', textOff: 14 }));
-    g.append(dim(fr, cx - w, yb, cx - w, top, `L_t = ${L(v.Lt)}`, { off: 22, field: 'Lt', textSide: -8 }));
-    g.append(dim(fr, cx + w, yb, cx + w, ys, `h = ${L(o.h)}`, { off: -24, field: 'M rho' }));
-    // thrust "gravity"
-    const ax = Math.max(18, cx - w - 92);
-    g.append(s('path', { d: `M${ax},${top + 6} L${ax},${top + 70}`, class: 'sc-accent', 'marker-end': fr.arrow('acc'), 'data-field': 'a' }));
-    g.append(text(ax + 6, top + 30, `a = ${gs(v.a)}`, { size: 11, field: 'a' }));
+    // dimensions: diameter under the tank; liquid depth and tank length on the left, labels along the lines
+    g.append(dim(fr, cx - w, yb, cx + w, yb, `D = ${L(v.D)}`, { off: 16, field: 'D', textOff: 15 }));
+    const vdim = (x, y0, y1, label, field) => {
+      g.append(dim(fr, x + 0.001, y0, x, y1, null, { field }));
+      const t = text(x - 5, Math.min((y0 + y1) / 2, y0 - 45), label, { anchor: 'middle', size: 11, field, cls: 'sc-dim-text' });
+      t.setAttribute('transform', `rotate(-90 ${x - 5} ${Math.min((y0 + y1) / 2, y0 - 45)})`);
+      g.append(t);
+    };
+    g.append(s('line', { x1: cx - w - 54, x2: cx - w - 2, y1: top, y2: top, class: 'sc-thin', opacity: 0.7 }), s('line', { x1: cx - w - 24, x2: cx - w - 2, y1: ys, y2: ys, class: 'sc-thin', opacity: 0.7 }), s('line', { x1: cx - w - 54, x2: cx - w - 2, y1: yb, y2: yb, class: 'sc-thin', opacity: 0.7 }));
+    vdim(cx - w - 20, yb, ys, `h = ${L(o.h)}`, 'M rho');
+    vdim(cx - w - 50, yb, top, `L_t = ${L(v.Lt)}`, 'Lt');
+    // thrust "gravity", top left
+    g.append(s('path', { d: 'M24,30 L24,92', class: 'sc-accent', 'marker-end': fr.arrow('acc'), 'data-field': 'a' }));
+    g.append(text(32, 58, `a = ${gs(v.a)}`, { size: 11, field: 'a' }));
     // right: frequency strip (log scale) with the pitch frequency and the bands, then the first three surface shapes
-    const x0 = 470, span = 270, f = o.modes.map((m) => m.f), lo = Math.min(v.fp / v.sep, f[0]) / 1.6, hi = Math.max(f[2], v.sep * v.fp) * 1.4;
+    const x0 = 500, span = 220, f = o.modes.map((m) => m.f), lo = Math.min(v.fp / v.sep, f[0]) / 1.5, hi = Math.max(f[2], v.sep * v.fp) * 1.3;
     const F = (x) => x0 + (span * Math.log(x / lo)) / Math.log(hi / lo), yS = 66;
     g.append(s('rect', { x: F(v.fp / v.sep), y: yS - 9, width: F(v.sep * v.fp) - F(v.fp / v.sep), height: 18, fill: 'var(--danger)', 'fill-opacity': 0.08, 'data-field': 'sep' }));
     g.append(s('rect', { x: F(v.fp / NEAR), y: yS - 9, width: F(NEAR * v.fp) - F(v.fp / NEAR), height: 18, fill: 'var(--danger)', 'fill-opacity': 0.16, 'data-field': 'fp' }));
@@ -300,37 +306,38 @@ export default {
     let lastX = -1e9;
     f.forEach((fi, i) => {
       g.append(s('circle', { cx: F(fi), cy: yS, r: 4.5, fill: i ? 'var(--surface)' : col, stroke: i ? 'var(--text-2)' : col, 'stroke-width': 2 }));
-      const x = Math.max(F(fi), lastX + 62); lastX = x;
+      const x = Math.max(F(fi), lastX + (i === 1 ? 44 : 20)); lastX = x;
       g.append(text(x, yS - 15, i ? `f_${i + 1}` : `f_1 ${Hz(fi)}`, { anchor: 'middle', size: 10.5 }));
     });
-    g.append(text(x0 - 4, 22, 'frequency (log): shaded = closer to f_p than you want', { size: 10, cls: 'sc-dim-text' }));
-    // the three surface shapes (mode n has n−1 still rings), with the share of liquid in each
+    g.append(text(x0 - 6, 20, 'frequency (log): shaded = closer to f_p than you want', { size: 10, cls: 'sc-dim-text' }));
+    // the three surface shapes (mode n has n−1 still rings), with the share of the liquid in each
+    g.append(text(x0 - 6, 150, 'first three surface shapes, % sloshing', { size: 10, cls: 'sc-dim-text' }));
     o.modes.forEach((m, i) => {
-      const bx = x0 + 10 + i * 92, bw = 34, by = 220, je = Math.max(...Array.from({ length: 41 }, (_, j) => Math.abs(besselJ1(m.lambda * j / 40).J1)));
-      const shape = (sg) => surf(sg, m.lambda, bx + bw, bw, by, 14, je);
-      const d = (sg) => `M${bx},${by + 40} ` + shape(sg).map((p) => `L${p[0].toFixed(2)},${p[1].toFixed(2)}`).join(' ') + ` L${bx + 2 * bw},${by + 40} Z`;
+      const bw = 30, bx = x0 + i * 80, by = 200, je = Math.max(...Array.from({ length: 41 }, (_, j) => Math.abs(besselJ1((m.lambda * j) / 40).J1)));
+      const d = (sg) => `M${bx},${by + 34} ` + surf(sg, m.lambda, bx + bw, bw, by, 12, je).map((p) => `L${p[0].toFixed(2)},${p[1].toFixed(2)}`).join(' ') + ` L${bx + 2 * bw},${by + 34} Z`;
       const p = s('path', { d: d(1), fill: 'var(--series-1)', 'fill-opacity': 0.16, stroke: i ? 'var(--text-2)' : col, 'stroke-width': 1.4 });
       if (anim) p.append(s('animate', { attributeName: 'd', dur: `${(slow / f1) * (f1 / m.f)}s`, repeatCount: 'indefinite', values: [d(1), d(0), d(-1), d(0), d(1)].join(';'), ...spline }));
-      g.append(p, s('path', { d: `M${bx},${by - 26} L${bx},${by + 40} L${bx + 2 * bw},${by + 40} L${bx + 2 * bw},${by - 26}`, class: 'sc-line', fill: 'none' }));
-      g.append(text(bx + bw, by + 58, `mode ${i + 1}`, { anchor: 'middle', size: 10.5 }));
-      g.append(text(bx + bw, by + 73, `${fmt(100 * m.mFrac, { digits: 2 })} % sloshes`, { anchor: 'middle', size: 10, cls: 'sc-dim-text' }));
+      g.append(p, s('path', { d: `M${bx},${by - 22} L${bx},${by + 34} L${bx + 2 * bw},${by + 34} L${bx + 2 * bw},${by - 22}`, class: 'sc-line', fill: 'none' }));
+      g.append(text(bx + bw, by + 52, `mode ${i + 1}`, { anchor: 'middle', size: 10.5 }));
+      g.append(text(bx + bw, by + 67, `${fmt(100 * m.mFrac, { digits: 2 })} %`, { anchor: 'middle', size: 10, cls: 'sc-dim-text' }));
     });
-    g.append(text(x0 - 4, 170, 'surface shapes of the first three modes', { size: 10, cls: 'sc-dim-text' }));
-    g.append(text(14, H - 8, `tank to scale; surface tilt and swing exaggerated${anim ? `; shown ${slow > 1 ? `${slow}× slower` : 'at true speed'}` : ''}`, { size: 10, cls: 'sc-dim-text' }));
+    g.append(s('rect', { x: x0 - 6, y: 300, width: 14, height: 10, fill: 'var(--danger)', 'fill-opacity': 0.14 }), text(x0 + 14, 309, 'liquid levels where f_1 is within 25 % of f_p', { size: 10 }));
+    g.append(s('rect', { x: x0 - 6, y: 318, width: 14, height: 10, fill: 'var(--danger)', 'fill-opacity': 0.07 }), text(x0 + 14, 327, 'levels closer to f_p than you want', { size: 10 }));
+    g.append(text(W - 8, H - 8, `tank and pendulum to scale; surface tilt and swing exaggerated${anim ? `; shown ${slow > 1 ? `${slow}× slower` : 'at true speed'}` : ''}`, { anchor: 'end', size: 10, cls: 'sc-dim-text' }));
     // handles: liquid surface (propellant mass), tank top (length), bottom corner (diameter)
     ctx.handle('surface', cx + w - 12, ys, {
       field: 'M', title: 'Drag up or down to change the propellant in the tank',
       onDrag: (sx, sy) => ctx.setValue('M', Math.max(1e-6, Math.min(v.Lt, (yb - sy) / k)) * v.rho * Math.PI * R * R),
       onKey: (dx, dy) => ctx.setValue('M', o.M * (1 + 0.03 * dy)),
     });
-    ctx.handle('top', cx - w / 2, top, {
+    ctx.handle('top', cx, top, {
       field: 'Lt', title: 'Drag up or down to change the tank length',
       onDrag: (sx, sy) => ctx.setValue('Lt', Math.max(0.01, (yb - sy) / k)),
       onKey: (dx, dy) => ctx.setValue('Lt', v.Lt * (1 + 0.03 * dy)),
     });
     ctx.handle('wall', cx + w, yb, {
       field: 'D', title: 'Drag sideways to change the tank diameter',
-      onDrag: (sx) => ctx.setValue('D', Math.max(0.01, (2 * (sx - cx)) / k)),
+      onDrag: (sx) => ctx.setValue('D', Math.max(0.01, (sx - (cx - w)) / k)),
       onKey: (dx) => ctx.setValue('D', v.D * (1 + 0.03 * dx)),
     });
   },

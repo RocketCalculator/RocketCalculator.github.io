@@ -227,6 +227,14 @@ scripts/generate_pages.mjs`; write `site/docs/<slug>.html`; add REPAIR/INVARIANT
   rail fix hits its target to 1e-6.
 - Open-Meteo also fills site elevation and 2 m temperature (shared `ui/meteo.js` with Parachute Recovery).
 
+### Payload Bay Venting (`payload-venting`) — cycle 1 (2026-10-26)
+- **Read:** Espinoza, Vite, Rios & Hoult, *Sounding Rocket Allowable Differential Pressure* (eq. 1 from the page image:
+  A_door Δp ≥ L σ; 11.88 × 4.25 in door failed at ≈ 0.2 psi → σ ≈ 0.3 lbf/in; 0.2 lbf/in recommended); Hoult,
+  *Pressure Strength of Taped-On Doors* (2011; long narrow or crenellated doors hold more). Default case: the CSULB
+  IREC rocket is MARGINAL (0.144 psi vs 0.128 psi allowable) and needs a 3.3 mm vent instead of 3.19 mm.
+- **Quality Gate:** drawing REDESIGN (door, tape load, cut-axis pressure columns, timeline scrubber); climb panels KEEP
+  (merged pressures + Δp, added Mach and vent Mach); vent-size trade-off KEEP (allowable line, framed on the answer).
+
 ### Single Wedge (`single-wedge`) — shock–expansion (2026-10-26)
 - **Read:** NACA 1135 p. 622–626 (eqs. 142–149 oblique shock, 171–173 Prandtl–Meyer, the p. 624 statement on wedges at
   incidence) from page images. Checks: ν_max 130.454° (eq. 172: 130.45°), ν(2) 26.38°, Ackeret limit, and the slope

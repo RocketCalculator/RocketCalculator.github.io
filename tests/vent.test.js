@@ -40,3 +40,15 @@ test('Choking, orifice coefficient and vent Cp', () => {
   // a larger vent tracks the outside more closely
   assert.ok(Math.abs(run({ A: 4 * W('I9') }).worst.dp) < Math.abs(run().worst.dp) / 3);
 });
+
+test('Taped-door allowable (Espinoza et al.: 0.2 psi on a 50.47 in², 32.25 in door at 0.3 lbf/in) and the solved vent diameter', async () => {
+  const def = (await import('../site/js/calculators/payload-venting.js')).default;
+  const v0 = {}; for (const g of def.groups) for (const f of g.fields) v0[f.id] = structuredClone(f.default);
+  Object.assign(v0, def.examples[0].values);
+  const exp = def.compute({ ...v0, doorL: 11.88, doorW: 4.25, peel: 0.3 });
+  close(exp.allow / 144, 0.3 * 32.26 / 50.49, 1e-3, 'allowable from the peel model');
+  assert.ok(Math.abs(exp.allow / 144 - 0.2) < 0.01, 'about 0.2 psi as measured');
+  const r = def.compute(v0);
+  assert.equal(r.verdict.level, 'marginal');
+  close(Math.abs(def.compute({ ...v0, d: r.results.dNeed }).results.dpMax), r.allow, 2e-3, 'the solved diameter just holds');
+});

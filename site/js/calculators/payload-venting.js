@@ -1,8 +1,9 @@
 // Payload Bay Venting — UI definition.
 import { vent } from '../calc/vent.js';
+import { criticalMach } from '../calc/nosepressure.js';
 import { atmosphere } from '../calc/geophysics.js';
 import { s, fmt, InputError } from '../util.js';
-import { text } from '../ui/svg.js';
+import { text, path, dim } from '../ui/svg.js';
 import { toDisplay, displayUnit, unitLabel } from '../units.js';
 
 const LEN = { dim: 'length', internal: 'in' };
@@ -11,6 +12,11 @@ const SPEED = { dim: 'speed', internal: 'fts' };
 const VOL = { dim: 'volume', internal: 'ft3' };
 const PRES = { dim: 'pressure', internal: 'psf', units: { si: 'kPa', us: 'psi' } };
 const NONE = { dim: 'none' };
+const PEEL = { dim: 'lineLoad', internal: 'lbfpin' };
+const FORCE = { dim: 'force', internal: 'lbf' };
+// verdict bands (DECISIONS D29): |Δp| against the allowable; up to 1.25× is marginal
+const MARGIN = 1.25;
+const ST = { safe: 'ok', marginal: 'warn', unsafe: 'err' };
 // trajectory of the field tool's example (10 000 ft IREC rocket), every 0.5 s: time, height above the site, speed
 const TRAJ = [[0, 0, 0], [0.5, 16.7, 83.9], [1, 87.3, 199.9], [1.5, 217.7, 322.6], [2, 410.4, 448.2], [2.5, 666, 573.8], [3, 983.3, 694.3], [3.5, 1357.8, 800.7], [4, 1780.9, 888.8], [4.5, 2242.9, 955.4],
   [5, 2733.1, 1002.5], [5.5, 3241.4, 1026.1], [6, 3753.9, 1018.1], [6.5, 4255.5, 985.3], [7, 4737.1, 939.3], [7.5, 5196.3, 898.5], [8, 5635.9, 860.3], [8.5, 6056.9, 824.1], [9, 6460.3, 789.6],
@@ -24,152 +30,268 @@ function checkRows(rows, keys, label) {
   return '';
 }
 
-/** Model run for page values v (optionally overriding the vent diameter). */
-function run(v, d = v.d) {
-  const A = (v.N * Math.PI * (d / 12) ** 2) / 4, a0 = Math.sqrt(1.4 * 1716.4827 * v.T0);
+/** Model run for page values v (optionally overriding the vent diameter and count). */
+function run(v, d = v.d, N = v.N) {
+  const A = (N * Math.PI * (d / 12) ** 2) / 4, a0 = Math.sqrt(1.4 * 1716.4827 * v.T0);
   const atm = (h) => { const a = atmosphere({ h, ho: v.ho, To: v.T0, phi: v.lat }); return { p: a.p, T: a.T }; };
   const tau = v.Vol / (A * v.Csonic * a0), dt = Math.min(0.01, Math.max(2e-4, tau / 20));   // resolve the venting time constant
-  return { A, tau, ...vent({ traj: v.traj.map((r) => [r.t, v.ho + r.h, r.V]), atm, Vol: v.Vol, A, Cinc: v.Cinc, Csonic: v.Csonic, Cp0: v.Cp0, Mcr: v.Mcr, cpTable: v.super.map((r) => [r.M, r.cp]), dt }) };
+  const quasi = tau < 20 * 2e-4;   // a step that cannot resolve τ would be unstable; the bay then tracks the outside pressure
+  return { A, tau, ...vent({ traj: v.traj.map((r) => [r.t, v.ho + r.h, r.V]), atm, Vol: v.Vol, A, Cinc: v.Cinc, Csonic: v.Csonic, Cp0: v.Cp0, Mcr: v.Mcr, cpTable: v.super.map((r) => [r.M, r.cp]), dt, quasi }) };
 }
+
+/** Allowable pressure difference (lbf/ft²): taped door peeling (Hoult; Espinoza et al.) or the user's own value. */
+const allowable = (v) => (v.limitMode === 'door' ? ((v.peel * 2 * (v.doorL + v.doorW)) / (v.doorL * v.doorW)) * 144 : v.dpAllow);
+const door = (v) => v.limitMode === 'door';
+/** History row at time t (nearest). */
+const at = (hist, t) => hist.reduce((b, r) => (Math.abs(r.t - t) < Math.abs(b.t - t) ? r : b), hist[0]);
 
 export default {
   slug: 'payload-venting',
   topic: 'venting',
   title: 'Payload Bay Venting',
-  subtitle: 'How far the <b>pressure inside a vented payload bay</b> lags the air outside during ascent — the load on the shell and the error of an inside pressure sensor.',
+  subtitle: 'How far the <b>pressure inside a vented payload bay</b> lags the air outside during the climb, whether the <b>doors and shell</b> can take it, and the vent size that fixes it.',
+  verdict: true,
+  tiers: true,
   intro: {
-    what: 'Follows the pressure of the air trapped in a payload bay as the rocket climbs, venting through small holes to the pressure outside them, and gives the largest pressure difference across the shell.',
-    why: 'The bay air cannot escape instantly, so the bay is pressurised against the thinning (and, near the nose, sucked-down) outside air. Too few or too small vents load the shell — the first Astrobee 1500 lost part of its payload shroud this way — and spoil inside pressure measurements.',
-    when: 'Sizing vent holes, checking a payload shell or door for the pressure load, or deciding where to put a pressure sensor.',
+    what: 'Follows the air trapped in a payload bay as the rocket climbs. The air outside thins (and near the nose is sucked down further), the bay air leaks out through small vent holes, and the difference in between pushes on the doors and the shell.',
+    why: 'If the vents are too small the bay is pressurised from inside. Taped-on doors peel off — that is how a CSULB rocket lost its camera window and much of its apogee at the 2011 IREC — and inside pressure sensors read wrong.',
+    when: 'Sizing vent holes, checking a door or hatch against the pressure, or deciding where to put a pressure sensor.',
   },
   info: {
     text: [
-      'The trapped air expands isentropically while it flows out through the vents. The flow depends on the pressure ratio across the vents: subsonic for small ratios, choked (sonic) above about 1.9.',
-      'Outside the vents the pressure is the atmospheric pressure plus the local aerodynamic suction, $p_X=p_a+qC_{pX}$; vents just behind the nose see a negative $C_{pX}$, which raises the difference.',
-      'Matching the bay’s mass loss to the vent flow gives one differential equation for the bay pressure, integrated along the trajectory.',
+      'At lift-off the bay holds air at ground pressure. As the rocket climbs the outside pressure falls fast, so the bay air pushes outwards and leaks out through the vents — the smaller the vents, the slower it leaks and the bigger the difference.',
+      'The air outside the vents is also at the local surface pressure: just behind the nose it is a little below the atmosphere (suction), which adds to the difference.',
+      'The difference pushes each door outwards; tape around its edge holds it in. The door stays on while the push (difference × door area) is less than the tape’s peel strength × the door’s edge length.',
     ],
     tex: '\\frac{dp_C}{dt}=-\\gamma\\sqrt{\\gamma RT_0}\\,\\frac{A}{V}\\,C_NM_T\\left[1+\\tfrac{\\gamma-1}{2}M_T^2\\right]^{-\\frac{\\gamma+1}{2(\\gamma-1)}}p_0^{-\\frac{\\gamma-1}{2\\gamma}}p_C^{\\frac{3\\gamma-1}{2\\gamma}}',
-    steps: ['Enter the bay volume and the vents.', 'Enter the pressure coefficient where the vents exit.', 'Enter the launch site and the trajectory from a simulation.', 'Read the largest pressure difference and when it happens.'],
+    steps: ['Enter the bay volume and the vents.', 'Enter the door (or your own allowable pressure difference).', 'Enter the pressure where the vents exit, and the launch site and trajectory (or fill it from the Trajectory Simulation).', 'Read the verdict and the vent size that keeps the door on; scrub through the flight on the drawing.'],
     doc: 'overview',
   },
   groups: [
     {
       id: 'bay', title: 'Bay and vents',
       fields: [
-        { id: 'Vol', label: 'Bay air volume', sym: 'V', ...VOL, default: 0.227, min: 0, minExclusive: true, info: { text: 'Free air volume of the payload cavity (its inside volume less the payload).', doc: 'model' } },
+        { id: 'Vol', label: 'Bay air volume', sym: 'V', ...VOL, default: 0.227, min: 1e-5, max: 100, slider: { min: 0.02, max: 2, step: 0.005 },
+          info: { text: ['The volume of air trapped in the bay: its inside volume minus whatever the payload fills.', 'Work it out from the inside diameter and length (πd²L/4) and subtract the payload.', 'More air takes longer to leak out, so a bigger bay needs bigger vents for the same pressure difference.'], tex: 'V=\\frac{\\pi d^2L}{4}-V_{payload}', range: '0.5–20 L (0.02–0.7 ft³) for high-power bays.', doc: 'model' } },
         { id: 'N', label: 'Number of vent holes', sym: 'N', ...NONE, default: 1, min: 1, max: 24, slider: { min: 1, max: 12, step: 1 },
-          info: { text: 'Identical holes, all exiting at the same pressure. Use at least three, equally spaced round the body, so angle of attack does not bias the bay pressure.', doc: 'model' } },
-        { id: 'd', label: 'Vent hole diameter', sym: 'd_v', ...LEN, default: 0.1256, min: 0, minExclusive: true, info: { text: 'Diameter of each cylindrical vent hole.', doc: 'model' } },
-        { id: 'Cinc', label: 'Orifice coefficient, incompressible', sym: 'C_{INC}', ...NONE, default: 0.65, min: 0.3, max: 1, slider: { min: 0.4, max: 0.9, step: 0.01 },
-          info: { text: 'Discharge coefficient of a vent at low pressure ratio.', range: 'About 0.5 for a sharp-edged hole, up to 0.8 with a radiused inner edge.', doc: 'orifice' } },
-        { id: 'Csonic', label: 'Orifice coefficient, choked', sym: 'C_{SON}', ...NONE, default: 0.95, min: 0.5, max: 1, slider: { min: 0.8, max: 1, step: 0.01 },
-          info: { text: 'Discharge coefficient when the vent flow is sonic.', range: '0.96–0.98 typically.', doc: 'orifice' } },
+          info: { text: ['How many identical vent holes the bay has.', 'Use at least three, equally spaced round the body, so the angle of attack does not bias the bay pressure.', 'Doubling the holes doubles the vent area: the bay follows the outside pressure about twice as fast.'], range: '3–4 equally spaced holes is common.', doc: 'model' } },
+        { id: 'd', label: 'Vent hole diameter', sym: 'd_v', ...LEN, default: 0.1256, min: 0.001, max: 4, slider: { min: 0.03, max: 0.75, step: 0.005 },
+          info: { text: ['Diameter of each vent hole (a plain drilled hole).', 'The vent area grows with the square of the diameter: a hole 40 % larger has twice the area.', 'The verdict gives the smallest diameter that keeps the door on. Drag the vent in the drawing to change it.'], tex: 'A=N\\frac{\\pi d_v^2}{4}', range: '1/16–1/4 in (1.5–6 mm) is common.', doc: 'model' } },
+        { id: 'Cinc', label: 'Orifice coefficient, slow flow', sym: 'C_{INC}', ...NONE, default: 0.65, min: 0.3, max: 1, slider: { min: 0.4, max: 0.9, step: 0.01 },
+          info: { text: ['How much of the hole’s area the flow really uses when the pressure difference is small (the jet contracts after a sharp edge).', 'From hole tests; about 0.6 for a sharp-edged drilled hole.'], range: 'About 0.6 for a sharp edge, up to 0.8 with a rounded inner edge.', doc: 'orifice' } },
+        { id: 'Csonic', label: 'Orifice coefficient, choked flow', sym: 'C_{SON}', ...NONE, default: 0.95, min: 0.5, max: 1, slider: { min: 0.8, max: 1, step: 0.01 },
+          info: { text: ['The same when the flow through the hole reaches the speed of sound (choked), which happens when the bay pressure is about 1.9 times the outside.'], range: '0.95–0.98.', doc: 'orifice' } },
+      ],
+    },
+    {
+      id: 'limit', title: 'What must hold the pressure',
+      fields: [
+        { id: 'limitMode', label: 'Limit', kind: 'select', default: 'door', options: [{ value: 'door', label: 'A taped-on door or hatch' }, { value: 'custom', label: 'My own allowable pressure difference' }],
+          info: { text: ['The weakest thing the pressure pushes on. For a door held by tape round its edge the allowable difference follows from its size and the tape’s peel strength (Hoult; Espinoza et al.). For a bonded shell, a sensor or anything else, enter your own value.'], doc: 'door' } },
+        { id: 'doorL', label: 'Door length', sym: 'l', ...LEN, default: 11.88, min: 0.1, max: 200, slider: { min: 1, max: 30, step: 0.05 }, when: door,
+          info: { text: ['Length of the door along the rocket.', 'Smaller doors hold more pressure: the push grows with the area, the tape’s hold only with the edge length.'], doc: 'door' } },
+        { id: 'doorW', label: 'Door width', sym: 'w', ...LEN, default: 4.25, min: 0.1, max: 200, slider: { min: 0.5, max: 12, step: 0.05 }, when: door,
+          info: { text: ['Width of the door round the body (its chord).', 'Long, narrow doors hold better than square or round ones of the same area (Hoult).'], doc: 'door' } },
+        { id: 'peel', label: 'Tape peel strength (design value)', sym: '\\sigma', ...PEEL, default: 0.2, min: 0.01, max: 20, slider: { min: 0.05, max: 1, step: 0.01 }, when: door,
+          info: { text: ['The force per length of edge at which the tape peels off the tube.', 'Espinoza et al. measured about 0.3 lbf/in (53 N/m) for three layers of aluminium tape on a cardboard tube and recommend 0.2 lbf/in (35 N/m) for design. Other tapes and surfaces differ: test yours.'], tex: '\\Delta p_{allow}=\\frac{\\sigma L}{A_{door}}=\\frac{2\\sigma(l+w)}{lw}', range: '0.2 lbf/in (35 N/m) design value for taped doors (Espinoza et al.).', doc: 'door' } },
+        { id: 'dpAllow', label: 'Allowable pressure difference', sym: '\\Delta p_{allow}', ...PRES, default: 0.5 * 144, min: 0.01, max: 1e5, slider: { min: 1, max: 288, step: 0.5 }, when: (v) => !door(v),
+          info: { text: ['The largest pressure difference your bay may see, from your structure, seals or sensor.'], doc: 'door' } },
       ],
     },
     {
       id: 'aero', title: 'Pressure at the vents',
       fields: [
-        { id: 'Cp0', label: 'Vent pressure coefficient, incompressible', sym: 'C_{pX0}', ...NONE, default: -0.0343, min: -1, max: 1,
-          info: { text: 'Pressure coefficient of the body surface at the vent exit at low speed. The Nose Pressure Distribution calculator gives it; just behind the nose shoulder it is about −0.03 to −0.08.', doc: 'external' } },
-        { id: 'Mcr', label: 'Critical Mach number at the vents', sym: 'M_{cr}', ...NONE, default: 0.9487, min: 0.3, max: 1, info: { text: 'Above this the Kármán–Tsien correction stops and the supersonic table takes over.', doc: 'external' } },
+        { id: 'Cp0', label: 'Vent pressure coefficient, slow flight', sym: 'C_{pX0}', ...NONE, default: -0.0343, min: -0.5, max: 1, slider: { min: -0.2, max: 0.1, step: 0.001 },
+          info: { text: ['How far the surface pressure where the vents exit is below (negative) or above the atmosphere, as a fraction of the dynamic pressure, at low speed.', 'Read it off the Nose Cone Design calculator’s pressure plot at the vent position. Just behind a nose shoulder it is about −0.03 to −0.08.', 'More suction outside the vents raises the pressure difference.'], tex: 'p_X=p_a+qC_{pX}', doc: 'external' } },
+        { id: 'Mcr', label: 'Critical Mach number at the vents', sym: 'M_{cr}', ...NONE, default: 0.9487, min: 0.3, max: 1, slider: { min: 0.6, max: 1, step: 0.005 },
+          info: { text: ['Up to this flight Mach number the suction is scaled for compressibility (Kármán–Tsien); above it the table below is used. The Nose Cone Design calculator gives it.'], doc: 'external' } },
         { id: 'super', label: 'Vent pressure coefficient above the critical Mach number', kind: 'table', minRows: 2,
           columns: [{ id: 'M', label: 'Mach', ...NONE }, { id: 'cp', label: 'Cp', ...NONE }], default: SUPER,
           validate: (rows) => checkRows(rows, ['M', 'cp'], 'Mach numbers'),
-          info: { text: 'Surface pressure coefficient at the vent exit for transonic and supersonic Mach numbers (from a shock-expansion or other aerodynamic method). Linear between rows.', doc: 'external' } },
+          info: { text: ['Surface pressure coefficient at the vents for transonic and supersonic flight, from a shock–expansion or other method. Linear between rows.'], doc: 'external' } },
       ],
     },
     {
-      id: 'flight', title: 'Launch site and trajectory',
+      id: 'flight', title: 'Launch site and climb',
       fields: [
-        { id: 'ho', label: 'Launch site elevation', sym: 'h_o', ...ALT, default: 1898, min: 0, max: 15000, info: { doc: 'model' } },
-        { id: 'T0', label: 'Ground temperature', sym: 'T_0', dim: 'temperature', internal: 'R', default: 550, min: 400, max: 600, info: { text: 'Air temperature at the launch site; the bay air starts at it.', doc: 'model' } },
-        { id: 'lat', label: 'Latitude', sym: '\\phi', dim: 'angle', default: 34, min: -90, max: 90, info: { doc: 'model' } },
-        { id: 'traj', label: 'Trajectory (from a simulation)', kind: 'table', minRows: 2,
+        { id: 'ho', label: 'Launch site elevation', sym: 'h_o', ...ALT, default: 1898, min: 0, max: 15000, slider: { min: 0, max: 10000, step: 10 }, info: { text: ['Height of the site above sea level: the bay starts at the air pressure there.'], doc: 'model' } },
+        { id: 'T0', label: 'Ground temperature', sym: 'T_0', dim: 'temperature', internal: 'R', default: 550, min: 400, max: 600, slider: { min: 440, max: 580, step: 0.5 }, info: { text: ['Air temperature at the site; the bay air starts at it.'], doc: 'model' } },
+        { id: 'lat', label: 'Latitude', sym: '\\phi', dim: 'angle', default: 34, min: -90, max: 90, info: { text: ['Sets gravity and the atmosphere (Hoult’s model).'], doc: 'model' } },
+        { id: 'traj', label: 'Climb (time, height above site, speed)', kind: 'table', minRows: 2,
           columns: [{ id: 't', label: 'Time', dim: 'time' }, { id: 'h', label: 'Height above site', ...ALT }, { id: 'V', label: 'Speed', ...SPEED }], default: TRAJ,
           validate: (rows) => checkRows(rows, ['t', 'h', 'V'], 'Times') || (rows.some((r) => r.V < 0) ? 'Speeds cannot be negative.' : ''),
-          info: { text: 'Height above the launch site and speed against time after lift-off, from a trajectory simulation. Rows every 0.5 s or finer; linear between rows.', doc: 'model' } },
+          info: { text: ['Height above the launch site and speed against time from lift-off, from a trajectory simulation. Rows every 0.5 s or finer; straight lines between rows.', 'Press “Fill from the Trajectory Simulation” to take the climb from that calculator.'], doc: 'model' } },
+        { id: 'tView', label: 'Moment shown in the drawing (0 = the worst)', sym: 't_{view}', dim: 'time', default: 0, min: 0, max: 1000, slider: { min: 0, max: 15, step: 0.05 },
+          info: { text: ['Which moment of the climb the drawing shows. 0 shows the moment of the largest pressure difference. Drag the marker on the drawing’s timeline to scrub through the flight.'], doc: 'model' } },
       ],
     },
   ],
+  actions: [{
+    label: 'Fill from the Trajectory Simulation', title: 'Run the Trajectory Simulation with its saved inputs and use its climb (to apogee) here',
+    async run() {
+      const def = (await import('./skyaero-trajectory.js')).default;
+      let saved = null;
+      try { saved = JSON.parse(localStorage.getItem('rc-calc-skyaero-trajectory')); } catch { /* none */ }
+      const v = {}; for (const g of def.groups) for (const f of g.fields) v[f.id] = structuredClone(f.default);
+      Object.assign(v, structuredClone(def.examples?.[0]?.values || {}), saved || {});
+      const out = def.compute(v), H = out.o.hist.filter((r) => r.t <= out.o.tApo), step = Math.max(1, Math.ceil(H.length / 80));
+      const traj = H.filter((r, i) => i % step === 0 || i === H.length - 1).map((r) => ({ t: r.t, h: Math.max(0, r.z), V: r.V }));
+      return { values: { traj, ho: v.ho, T0: v.To, lat: v.lat, tView: 0 },
+        message: saved ? `Climb filled from your Trajectory Simulation (${traj.length} points, to apogee)` : `Climb filled from the Trajectory Simulation example (${traj.length} points) — open that calculator to simulate your own rocket` };
+    },
+  }],
   results: [
-    { id: 'dpMax', label: 'Largest pressure difference across the shell', sym: '\\Delta p_{max}', ...PRES, key: true, digits: 4,
-      note: (x, out) => `${x >= 0 ? 'bay above' : 'bay below'} outside · at ${fmt(out.o.worst.t, { digits: 3 })} s`,
-      info: { text: 'Largest difference between the bay pressure and the pressure outside the vents during the trajectory.', tex: '\\Delta p=p_C-p_X', doc: 'model' } },
-    { id: 'tMax', label: 'Time of the largest difference', sym: 't_{max}', dim: 'time', key: true, digits: 3, note: (x, out) => `Mach ${fmt(out.o.worst.M, { digits: 3 })}`, info: { doc: 'model' } },
+    { id: 'dpMax', label: 'Largest pressure difference', sym: '\\Delta p_{max}', ...PRES, key: true, digits: 3, status: (x, out) => ST[out.lv],
+      note: (x, out) => `${fmt(Math.abs(x) / out.allow, { digits: 3 })} × the allowable, at ${fmt(out.o.worst.t, { digits: 3 })} s`,
+      info: { text: ['The largest difference between the bay pressure and the pressure outside the vents during the climb (positive: the bay pushes outwards).', 'It usually peaks near burnout, where the rocket is fastest and the outside pressure falls fastest.'], tex: '\\Delta p=p_C-p_X', doc: 'model' } },
+    { id: 'allow', label: 'Allowable pressure difference', sym: '\\Delta p_{allow}', ...PRES, key: true, digits: 3, note: (x, out) => (door(out.v) ? `door ${fmt(toDisplay(out.v.doorL, LEN), { digits: 3 })} × ${fmt(toDisplay(out.v.doorW, LEN), { digits: 3 })} ${unitLabel(displayUnit(LEN))}, tape peel` : 'your value'),
+      info: { text: ['What the door (or your structure) can take. For a taped door: the tape’s peel strength times the edge length, divided by the door area.'], tex: '\\Delta p_{allow}=\\frac{2\\sigma(l+w)}{lw}', doc: 'door' } },
+    { id: 'dNeed', label: 'Smallest vent diameter for the allowable', sym: 'd_{v,req}', ...LEN, key: true, digits: 3, note: (x, out) => (x === '—' ? '' : `with ${out.v.N} hole${out.v.N > 1 ? 's' : ''}`),
+      info: { text: ['The vent hole diameter (same number of holes) at which the largest pressure difference just equals the allowable. Any larger hole is safer.'], doc: 'door' } },
     { id: 'tau', label: 'Venting time constant', sym: '\\tau', dim: 'time', key: true, digits: 3,
-      info: { text: 'Rough time for the vents to bring the bay towards the outside pressure. Much shorter than the climb time means a well-vented bay.', tex: '\\tau\\approx\\frac{V}{AC_{SON}a_0}', doc: 'model' } },
-    { id: 'A', label: 'Total vent area', sym: 'A', dim: 'area', internal: 'in2', key: true, digits: 4, info: { tex: 'A=N\\frac{\\pi d_v^2}{4}', doc: 'model' } },
+      info: { text: ['Roughly how long the bay takes to follow a change in outside pressure: the bay air volume divided by the vent flow capacity. Small compared with the climb time means the bay keeps up.'], tex: '\\tau=\\frac{V}{AC_{SON}a_0}', doc: 'model' } },
+    { id: 'Nneed', label: 'Fewest vent holes (same diameter) for the allowable', sym: 'N_{req}', ...NONE, digits: 2, info: { text: ['How many holes of your diameter keep the difference within the allowable; “—” beyond 24.'], doc: 'door' } },
+    { id: 'Fdoor', label: 'Push on the door at the worst moment', sym: 'F', ...FORCE, digits: 3, when: door, info: { text: ['The pressure difference times the door area: the force trying to peel the door off.'], tex: 'F=\\Delta p\\,lw', doc: 'door' } },
+    { id: 'Fhold', label: 'What the tape can hold', sym: 'F_{hold}', ...FORCE, digits: 3, when: door, info: { tex: 'F_{hold}=2\\sigma(l+w)', doc: 'door' } },
+    { id: 'MTmax', label: 'Highest vent throat Mach number', sym: 'M_{T,max}', ...NONE, digits: 3, note: (x) => (x >= 1 ? 'choked' : 'never choked'), info: { text: ['The speed of the vent flow as a Mach number; 1 means the holes are choked (the flow cannot get any faster).'], doc: 'orifice' } },
+    { id: 'A', label: 'Total vent area', sym: 'A', dim: 'area', internal: 'in2', digits: 4, info: { tex: 'A=N\\frac{\\pi d_v^2}{4}', doc: 'model' } },
     { id: 'p0', label: 'Bay pressure at lift-off', sym: 'p_0', ...PRES, digits: 4, info: { doc: 'model' } },
   ],
   compute(v) {
     for (const [rows, keys, label] of [[v.traj, ['t', 'h', 'V'], 'Times'], [v.super, ['M', 'cp'], 'Mach numbers']]) { const m = checkRows(rows, keys, label); if (m) throw new InputError(m); }
     if (v.traj.length < 2) throw new InputError('Enter at least two trajectory rows.');
-    const o = run(v);
+    const o = run(v), allow = allowable(v), dp = Math.abs(o.worst.dp), r = dp / allow;
+    const lv = r <= 1 ? 'safe' : r <= MARGIN ? 'marginal' : 'unsafe';
+    // fixes: the vent diameter (bisection: |Δp| falls as the holes grow) and the number of holes
+    const ok = (d, N = v.N) => Math.abs(run(v, d, N).worst.dp) <= allow;
+    let dNeed = null;
+    if (ok(4)) { let lo = 1e-3, hi = 4; if (ok(lo)) hi = lo; else for (let k = 0; k < 30; k++) { const m = Math.sqrt(lo * hi); if (ok(m)) hi = m; else lo = m; } dNeed = hi; }
+    let Nneed = null; for (let N = 1; N <= 24; N++) if (ok(v.d, N)) { Nneed = N; break; }
+    const fixes = [];
+    if (lv !== 'safe') {
+      if (dNeed) fixes.push(`Drill ${v.N > 1 ? `the ${v.N} vent holes` : 'the vent hole'} to at least <b>${fmt(toDisplay(dNeed, LEN), { digits: 3 })} ${unitLabel(displayUnit(LEN))}</b> (now ${fmt(toDisplay(v.d, LEN), { digits: 3 })}), or`);
+      if (Nneed) fixes.push(`use <b>${Nneed}</b> holes of this size, or`);
+      fixes.push(door(v) ? 'make the door smaller or longer and narrower, or add tape layers (test the peel strength).' : 'raise what the structure can take.');
+    }
+    const verdict = {
+      level: lv,
+      title: lv === 'safe' ? (door(v) ? 'The door stays on: the bay vents fast enough' : 'The pressure difference stays within your limit') : lv === 'marginal' ? 'Little or no margin: the bay vents too slowly' : door(v) ? 'The door is likely to peel off during the climb' : 'The pressure difference exceeds your limit',
+      text: `The bay reaches <b>${P(o.worst.dp)}</b> above the air outside the vents at ${fmt(o.worst.t, { digits: 3 })} s (Mach ${fmt(o.worst.M, { digits: 3 })}); ${door(v) ? 'the taped door holds' : 'your limit is'} <b>${P(allow)}</b>.`,
+      fixes: fixes.slice(0, 3),
+    };
     const warnings = [];
-    if (v.N < 3) warnings.push({ level: 'info', text: 'With fewer than three vents equally spaced round the body, angle of attack biases the bay pressure. Use three or more.' });
-    if (o.tau > v.traj.at(-1).t - v.traj[0].t) warnings.push({ level: 'warn', text: `The vents are small for this bay (time constant ${fmt(o.tau, { digits: 3 })} s): the bay barely vents during the climb. Enlarge or add vents.` });
-    // near equilibrium the vent flow goes as √Δp, so explicit integration chatters at a level of about 1 lbf/ft²
+    if (v.N < 3) warnings.push({ level: 'info', text: 'With fewer than three vents equally spaced round the body, angle of attack biases the bay pressure.', fix: 'Use three or more equally spaced holes.' });
+    if (o.tau > v.traj.at(-1).t - v.traj[0].t) warnings.push({ level: 'warn', text: `The vents are small for this bay (time constant ${fmt(o.tau, { digits: 3 })} s): the bay barely vents during the climb.`, fix: 'Enlarge or add vents.' });
     if (Math.abs(o.worst.dp) < 1.5) warnings.push({ level: 'info', text: 'The vents are large enough that the bay follows the outside pressure: the remaining difference (well under 0.01 psi, 0.07 kPa) is at the noise level of the integration.' });
-    return { results: { dpMax: o.worst.dp, tMax: o.worst.t, tau: o.tau, A: o.A * 144, p0: o.p0 }, warnings, o };
+    const MTmax = Math.max(...o.hist.map((q) => q.MT));
+    const mcrCp = criticalMach(v.Cp0);
+    if (v.Cp0 < 0 && v.Mcr > mcrCp + 0.02) warnings.push({ level: 'info', text: `The critical Mach number you entered (${fmt(v.Mcr, { digits: 3 })}) is above the one this vent pressure coefficient implies (${fmt(mcrCp, { digits: 3 })}).`, fix: `Use about ${fmt(mcrCp, { digits: 3 })}, or take both from the Nose Cone Design calculator.` });
+    const results = { dpMax: o.worst.dp, allow, dNeed: dNeed ?? '—', tau: o.tau, Nneed: Nneed ?? '—', Fdoor: (dp / 144) * v.doorL * v.doorW, Fhold: 2 * v.peel * (v.doorL + v.doorW), MTmax, A: o.A * 144, p0: o.p0 };
+    return { results, warnings, verdict, lv, allow, o, v };
   },
   plots: [
     {
-      id: 'pressures', title: 'Pressures during the climb',
-      info: { text: 'Atmospheric pressure, the pressure outside the vents (lower because of the local suction) and the bay pressure, which lags behind.', doc: 'model' },
+      id: 'climb', title: 'The climb, second by second', wide: true, height: 600,
+      info: { text: ['Four views of the climb on one time axis: the flight Mach number; the pressures — atmosphere, outside the vents (lower, because of the suction) and in the bay (lagging behind); the difference with your allowable as a red line; and how fast the air leaves through the vents (1 = choked).', 'The difference peaks when the outside pressure falls fastest — usually near burnout. Hover to read every quantity at one moment.'], doc: 'model' },
       build(v, out, { U }) {
-        const up = U(PRES), h = out.o.hist, every = Math.max(1, Math.round(h.length / 300)), pick = (f) => h.filter((_, i) => i % every === 0).map((r) => [r.t, up.v(f(r))]);
-        return { x: { label: 'Time after lift-off $t$', unit: '\\mathrm{s}' }, y: { label: 'Pressure', unit: up.label },
-          series: [{ name: 'bay $p_C$', points: pick((r) => r.pC) }, { name: 'outside the vents $p_X$', points: pick((r) => r.pX), dashed: true }, { name: 'atmosphere $p_a$', points: pick((r) => r.pa), dashed: true, color: 'var(--text-3)' }] };
+        const up = U(PRES), h = out.o.hist, every = Math.max(1, Math.round(h.length / 400)), H = h.filter((_, i) => i % every === 0), pk = (f) => H.map((r) => [r.t, f(r)]);
+        const al = up.v(out.allow);
+        return {
+          x: { label: 'Time after lift-off', unit: 's' }, xDomain: [h[0].t, h[h.length - 1].t], vlines: [{ x: out.o.worst.t, label: 'largest difference', color: 'var(--text-3)' }],
+          panels: [
+            { y: { label: 'Flight Mach number' }, color: 'var(--series-2)', includeZero: true, series: [{ name: '$M$', points: pk((r) => r.M) }] },
+            { y: { label: 'Pressure', unit: up.label }, color: 'var(--series-1)', series: [{ name: 'bay $p_C$', points: pk((r) => up.v(r.pC)) }, { name: 'outside the vents $p_X$', dash: '7 4', points: pk((r) => up.v(r.pX)) }, { name: 'atmosphere $p_a$', dash: '2 3', points: pk((r) => up.v(r.pa)) }] },
+            { y: { label: 'Difference $\\Delta p$', unit: up.label }, color: 'var(--series-4)', includeZero: true, series: [{ name: '$\\Delta p$', points: pk((r) => up.v(r.dp)) }],
+              hlines: [{ y: al, label: 'allowable', color: 'var(--danger)' }, ...(Math.min(...H.map((r) => r.dp)) < 0 ? [{ y: -al, color: 'var(--danger)' }] : [])] },
+            { y: { label: 'Vent throat Mach' }, color: 'var(--series-6)', yDomain: [0, 1.1], series: [{ name: '$M_T$', dash: '9 3 2 3', points: pk((r) => r.MT) }], hlines: [{ y: 1, label: 'choked', color: 'var(--text-3)' }] },
+          ],
+        };
       },
     },
     {
-      id: 'dp', title: 'Pressure difference across the shell',
-      info: { text: 'Bay pressure minus the pressure outside the vents. It peaks near burnout, where speed and suction are greatest.', doc: 'model' },
+      id: 'size', title: 'Choosing the vents: largest difference against hole size', wide: true,
+      info: { text: ['The largest pressure difference for other vent hole diameters, with your number of holes (solid) and with twice as many (dashed). Where a curve crosses the red line is the smallest hole that keeps within the allowable.'], doc: 'door' },
       build(v, out, { U }) {
-        const up = U(PRES), h = out.o.hist, every = Math.max(1, Math.round(h.length / 300));
-        return { x: { label: 'Time after lift-off $t$', unit: '\\mathrm{s}' }, y: { label: '$\\Delta p$', unit: up.label }, includeZero: true,
-          series: [{ name: '\\Delta p', points: h.filter((_, i) => i % every === 0).map((r) => [r.t, up.v(r.dp)]) }], markers: [{ x: out.o.worst.t, y: up.v(out.o.worst.dp), label: 'max' }] };
-      },
-    },
-    {
-      id: 'size', title: 'Largest difference against vent size',
-      info: { text: 'Largest pressure difference for other vent hole diameters with the same number of holes; read off the hole size for an allowable difference.', doc: 'model' },
-      build(v, out, { U }) {
-        const up = U(PRES), ul = U(LEN), pts = [];
-        for (let i = 1; i <= 16; i++) { const d = (v.d * i) / 6; pts.push([ul.v(d), up.v(Math.abs(run(v, d).worst.dp))]); }
-        return { x: { label: 'Vent hole diameter $d_v$', unit: ul.label }, y: { label: '$|\\Delta p|_{max}$', unit: up.label }, includeZero: true, series: [{ name: '|\\Delta p|_{max}', points: pts, smooth: true, dots: true }],
-          markers: [{ x: ul.v(v.d), y: up.v(Math.abs(out.o.worst.dp)), label: 'design' }] };
+        const up = U(PRES), ul = U(LEN), A = [], B = [], dn = out.results.dNeed === '—' ? v.d : out.results.dNeed, lo = 0.4 * Math.min(v.d, dn), top = 2.5 * Math.max(v.d, dn);
+        for (let i = 0; i <= 24; i++) { const d = lo + ((top - lo) * i) / 24; A.push([ul.v(d), up.v(Math.abs(run(v, d).worst.dp))]); B.push([ul.v(d), up.v(Math.abs(run(v, d, 2 * v.N).worst.dp))]); }
+        const mk = [{ x: ul.v(v.d), y: up.v(Math.abs(out.o.worst.dp)), label: 'your vents' }];
+        if (out.results.dNeed !== '—') mk.push({ x: ul.v(out.results.dNeed), y: up.v(out.allow), label: 'smallest that holds' });
+        const yTop = 3 * Math.max(up.v(out.allow), up.v(Math.abs(out.o.worst.dp)));
+        return { x: { label: 'Vent hole diameter $d_v$', unit: ul.label }, y: { label: 'Largest $|\\Delta p|$', unit: up.label }, yDomain: [0, yTop], includeZero: true,
+          series: [{ name: `${v.N} hole${v.N > 1 ? 's' : ''}`, points: A, smooth: true }, { name: `${2 * v.N} holes`, points: B, smooth: true, dashed: true, color: 'var(--text-3)' }],
+          hlines: [{ y: up.v(out.allow), label: 'allowable', color: 'var(--danger)' }], markers: mk };
       },
     },
   ],
-  schematicTitle: 'Bay at the moment of the largest difference',
-  schematicHint: 'The payload bay with its vents, at the time of the largest pressure difference: bay pressure inside, vent-exit pressure outside, air leaving through the vents',
+  schematicTitle: 'The bay during the climb',
+  schematicHint: 'The nose and payload bay with its vents and taped door, at the moment chosen on the timeline (the worst by default): air leaving through the vents (arrow size ∝ vent flow), the push on the door against what the tape holds, and the three pressures as columns. Drag the marker on the timeline to scrub through the climb, or the vent to change its diameter',
   schematic(ctx, v, out) {
-    const W = 760, H = 260, o = out.o, w = o.worst;
-    const fr = ctx.frame({ width: W, height: H, label: 'Payload bay with vents and pressures at the peak difference' });
+    const W = 800, H = 380, o = out.o, h = o.hist, tEnd = h[h.length - 1].t;
+    const r = v.tView > 0 ? at(h, Math.min(v.tView, tEnd)) : at(h, o.worst.t);
+    const fr = ctx.frame({ width: W, height: H, label: 'Payload bay with vents and door, pressures at a chosen moment, and a timeline of the climb' });
     const g = fr.layer('main'); g.replaceChildren();
-    const cy = 130, x0 = 90, x1 = 600, rb = 60;
-    g.append(s('path', { d: `M${x0},${cy - rb}Q${x0 - 60},${cy - rb} ${x0 - 80},${cy}Q${x0 - 60},${cy + rb} ${x0},${cy + rb}`, class: 'sc-body-2' }));
+    const up = ctx.U(PRES), Pp = (x) => `${fmt(up.v(x), { digits: 3 })} ${up.plain}`;
+    const cy = 150, rb = 58, xn = 70, x0 = 170, x1 = 520, ratio = Math.abs(r.dp) / out.allow;
+    const col = ratio <= 1 ? 'var(--ok)' : ratio <= MARGIN ? 'var(--warn)' : 'var(--danger)';
+    // free stream and the suction over the shoulder
+    for (const dy of [-110, -84]) g.append(s('path', { d: `M20,${cy + dy}C${xn + 40},${cy + dy} ${x0 - 30},${cy - rb - 22} ${x1 + 40},${cy - rb - 22 - (dy + 110) / 4}`, fill: 'none', class: 'sc-thin', 'stroke-opacity': 0.6 }));
+    g.append(text(24, cy - 118, `air Mach ${fmt(r.M, { digits: 3 })} · ${fmt(r.t, { digits: 3 })} s`, { size: 11, field: 'traj' }));
+    // nose and bay
+    g.append(s('path', { d: `M${x0},${cy - rb}C${x0 - 50},${cy - rb} ${xn + 10},${cy - 20} ${xn},${cy}C${xn + 10},${cy + 20} ${x0 - 50},${cy + rb} ${x0},${cy + rb}Z`, class: 'sc-body-2' }));
     g.append(s('rect', { x: x0, y: cy - rb, width: x1 - x0, height: 2 * rb, class: 'sc-body', 'data-field': 'Vol' }));
-    g.append(s('rect', { x: x0 + 8, y: cy - rb + 8, width: x1 - x0 - 16, height: 2 * rb - 16, fill: 'var(--red)', 'fill-opacity': Math.min(0.35, 0.08 + 0.6 * Math.abs(w.dp) / Math.max(1, w.pX)) }));
-    // vents just behind the shoulder: arrows out (or in)
-    const nv = Math.min(4, v.N), out1 = w.dp >= 0;
-    for (let i = 0; i < nv; i++) {
-      const x = x0 + 50 + i * 26;
-      g.append(s('rect', { x: x - 4, y: cy - rb - 2, width: 8, height: 12, fill: 'var(--surface)', 'data-field': 'N d' }));
-      g.append(s('line', { x1: x, y1: out1 ? cy - rb + 4 : cy - rb - 30, x2: x, y2: out1 ? cy - rb - 30 : cy - rb + 4, class: 'sc-accent', 'stroke-width': 2, 'marker-end': fr.arrow('acc') }));
+    g.append(s('rect', { x: x0 + 6, y: cy - rb + 6, width: x1 - x0 - 12, height: 2 * rb - 12, fill: col, 'fill-opacity': Math.min(0.3, 0.05 + 0.2 * ratio), 'data-field': 'Vol' }));
+    g.append(s('path', { d: `M${x1},${cy - rb}h40v${2 * rb}h-40`, fill: 'none', class: 'sc-thin', 'stroke-dasharray': '4 3' }));
+    g.append(text((x0 + x1) / 2, cy + 6, `bay ${Pp(r.pC)}`, { anchor: 'middle', size: 13, field: 'Vol' }));
+    g.append(text((x0 + x1) / 2, cy + 24, `Δp ${Pp(r.dp)} · ${fmt(ratio, { digits: 3 })} × allowable`, { anchor: 'middle', size: 11, cls: 'sc-dim-text' }));
+    // door with tape edges, bulging by the push
+    if (door(v)) {
+      const dx0 = x0 + 150, dl = Math.min(170, 14 * v.doorL), bulge = Math.min(14, 6 * ratio);
+      g.append(s('path', { d: `M${dx0},${cy + rb}Q${dx0 + dl / 2},${cy + rb + 2 * bulge} ${dx0 + dl},${cy + rb}`, fill: 'none', stroke: col, 'stroke-width': 3, 'data-field': 'doorL doorW' }));
+      g.append(s('line', { x1: dx0 - 8, x2: dx0 + 6, y1: cy + rb, y2: cy + rb, stroke: 'var(--text-2)', 'stroke-width': 5, 'stroke-opacity': 0.5, 'data-field': 'peel' }));
+      g.append(s('line', { x1: dx0 + dl - 6, x2: dx0 + dl + 8, y1: cy + rb, y2: cy + rb, stroke: 'var(--text-2)', 'stroke-width': 5, 'stroke-opacity': 0.5, 'data-field': 'peel' }));
+      for (let k = 1; k <= 3; k++) g.append(s('line', { x1: dx0 + (dl * k) / 4, x2: dx0 + (dl * k) / 4, y1: cy + rb - 30, y2: cy + rb - 6, class: 'sc-thin', 'marker-end': fr.arrow() }));
+      const F = (Math.abs(r.dp) / 144) * v.doorL * v.doorW, Fh = 2 * v.peel * (v.doorL + v.doorW), uf = ctx.U(FORCE), Ff = (x) => `${fmt(uf.v(x), { digits: 3 })} ${uf.plain}`;
+      g.append(text(dx0 + dl / 2, cy + rb + 2 * bulge + 18, `door: push ${Ff(F)} · tape holds ${Ff(Fh)}`, { anchor: 'middle', size: 11, field: 'doorL doorW peel' }));
     }
-    g.append(text(x0 + 50, cy - rb - 40, `${v.N} vent${v.N > 1 ? 's' : ''} · outside p_X = ${P(w.pX)}`, { size: 11, field: 'Cp0' }));
-    g.append(text((x0 + x1) / 2, cy - 6, `bay p_C = ${P(w.pC)}`, { anchor: 'middle', size: 13 }));
-    g.append(text((x0 + x1) / 2, cy + 14, `Δp = ${P(w.dp)} at ${fmt(w.t, { digits: 3 })} s, Mach ${fmt(w.M, { digits: 3 })}`, { anchor: 'middle', size: 11, cls: 'sc-dim-text' }));
-    g.append(text(x1 + 12, cy + 4, `atmosphere p_a = ${P(w.pa)}`, { size: 10.5, cls: 'sc-dim-text' }));
-    g.append(text(20, H - 8, 'not to scale; red tint grows with the pressure difference', { size: 10, cls: 'sc-dim-text' }));
+    // vents near the shoulder, arrows ∝ throat Mach (out of or into the bay)
+    const nv = Math.min(4, v.N), outFlow = r.dp >= 0, aL = 10 + 26 * Math.min(1, r.MT);
+    for (let i = 0; i < nv; i++) {
+      const x = x0 + 30 + i * 24;
+      g.append(s('rect', { x: x - 4, y: cy - rb - 2, width: 8, height: 12, fill: 'var(--surface)', stroke: 'var(--text-2)', 'data-field': 'N d' }));
+      g.append(s('line', { x1: x, y1: outFlow ? cy - rb + 2 : cy - rb - 6 - aL, x2: x, y2: outFlow ? cy - rb - 6 - aL : cy - rb + 2, class: 'sc-accent', 'stroke-width': 2, 'marker-end': fr.arrow('acc'), 'data-field': 'N d' }));
+    }
+    g.append(text(x0 + 30, cy - rb - 46, `${v.N} vent${v.N > 1 ? 's' : ''}, ${r.MT >= 1 ? 'choked' : `throat Mach ${fmt(r.MT, { digits: 2 })}`} · outside ${Pp(r.pX)}`, { size: 11, field: 'N d Cp0' }));
+    // pressure columns, to one scale
+    // the three pressures differ by a few per cent: the columns start from a cut axis so the differences show
+    const cx = 610, cb = cy + rb + 30, chh = 170, ps = [r.pC, r.pX, r.pa], pmax = Math.max(...ps), pmin = Math.min(...ps), base = pmin - 0.6 * Math.max(pmax - pmin, 0.002 * pmax), bar = (i, p, lab, c) => {
+      const hh = 12 + ((chh - 12) * (p - base)) / (pmax - base), x = cx + i * 58;
+      g.append(s('rect', { x, y: cb - hh, width: 36, height: hh, fill: c, 'fill-opacity': 0.8 }));
+      g.append(text(x + 18, cb + 14, lab, { anchor: 'middle', size: 10 }));
+      g.append(text(x + 18, cb - hh - 6, fmt(up.v(p), { digits: 3 }), { anchor: 'middle', size: 9.5, cls: 'sc-dim-text' }));
+    };
+    bar(0, r.pa, 'atmos.', 'var(--text-3)'); bar(1, r.pX, 'outside', 'var(--series-5, var(--text-2))'); bar(2, r.pC, 'bay', 'var(--red)');
+    g.append(text(cx + 82, cb - chh - 18, `pressures (${up.plain})`, { anchor: 'middle', size: 10.5, cls: 'sc-dim-text' }));
+    g.append(text(cx + 82, cb + 30, `axis cut at ${fmt(up.v(base), { digits: 3 })}`, { anchor: 'middle', size: 9.5, cls: 'sc-dim-text' }));
+    g.append(s('path', { d: `M${cx - 6},${cb - 4}l6,-4l6,4l6,-4M${cx - 6},${cb + 1}l6,-4l6,4l6,-4`, fill: 'none', class: 'sc-thin' }));
+    // timeline: Δp through the climb, the allowable band, and the marker
+    const tx0 = 60, tx1 = 520, ty = 330, th = 34, dmax = Math.max(out.allow * 1.1, ...h.map((q) => Math.abs(q.dp))), TX = (t) => tx0 + ((t - h[0].t) / (tEnd - h[0].t || 1)) * (tx1 - tx0), TY = (d) => ty - (Math.abs(d) / dmax) * th;
+    g.append(s('rect', { x: tx0, y: TY(out.allow), width: tx1 - tx0, height: ty - TY(out.allow), fill: 'var(--ok)', 'fill-opacity': 0.12 }));
+    g.append(s('line', { x1: tx0, x2: tx1, y1: TY(out.allow), y2: TY(out.allow), stroke: 'var(--danger)', 'stroke-dasharray': '5 3' }));
+    g.append(s('path', { d: path(h.filter((_, i) => i % Math.max(1, Math.round(h.length / 200)) === 0).map((q) => [TX(q.t), TY(q.dp)])), fill: 'none', stroke: 'var(--text)', 'stroke-width': 1.4 }));
+    g.append(s('line', { x1: tx0, x2: tx1, y1: ty, y2: ty, class: 'sc-thin' }));
+    g.append(text(tx0, ty + 16, `0 s`, { size: 9.5, cls: 'sc-dim-text' })); g.append(text(tx1, ty + 16, `${fmt(tEnd, { digits: 3 })} s`, { anchor: 'end', size: 9.5, cls: 'sc-dim-text' }));
+    g.append(text(tx0, ty - th - 8, 'timeline: |Δp| through the climb (red: allowable) — drag the marker', { size: 10, cls: 'sc-dim-text', field: 'tView' }));
+    g.append(s('line', { x1: TX(r.t), x2: TX(r.t), y1: ty - th - 2, y2: ty + 2, stroke: 'var(--red)', 'stroke-width': 2 }));
+    ctx.handle('time', TX(r.t), ty, { field: 'tView', title: 'Drag along the timeline to see another moment of the climb',
+      onDrag: (px) => ctx.setValue('tView', Math.max(0.01, h[0].t + ((Math.max(tx0, Math.min(tx1, px)) - tx0) / (tx1 - tx0)) * (tEnd - h[0].t)), { round: 0.05 }), onKey: (dx) => ctx.setValue('tView', Math.max(0.01, (v.tView || r.t) + 0.1 * dx)) });
+    ctx.handle('vent', x0 + 30, cy - rb, { field: 'd', title: 'Drag up or down to change the vent diameter',
+      onDrag: (px, py) => ctx.setValue('d', Math.max(0.005, Math.min(4, v.d * Math.exp((cy - rb - py) / 60))), { round: 0.001 }), onKey: (dx, dy) => ctx.setValue('d', Math.max(0.005, v.d * (1 + 0.05 * dy))) });
   },
   symbols: {
     p_C: 'bay pressure', p_X: 'pressure outside the vents', p_a: 'atmospheric pressure', p_0: 'bay pressure at lift-off', T_0: 'bay air temperature at lift-off', R: 'gas constant of air',
     '\\gamma': 'ratio of specific heats', A: 'total vent area', V: 'bay air volume', C_N: 'vent orifice coefficient', M_T: 'vent throat Mach number', 'C_{pX}': 'pressure coefficient at the vent exit',
     'C_{pX0}': 'incompressible pressure coefficient at the vent exit', q: 'dynamic pressure', '\\Delta p': 'bay pressure minus outside pressure', N: 'number of vent holes', d_v: 'vent hole diameter',
-    'C_{INC}': 'incompressible orifice coefficient', 'C_{SON}': 'choked orifice coefficient', a_0: 'speed of sound at lift-off', '\\tau': 'venting time constant', 'M_\\infty': 'flight Mach number', '\\beta': 'compressibility factor',
+    'C_{INC}': 'incompressible orifice coefficient', '\\Delta p_{allow}': 'allowable pressure difference', '\\sigma': 'tape peel strength (force per edge length)', l: 'door length', w: 'door width', L: 'door edge length, 2(l+w)', 'A_{door}': 'door area, lw', F: 'push on the door', 'F_{hold}': 'what the tape holds', 'C_{SON}': 'choked orifice coefficient', a_0: 'speed of sound at lift-off', '\\tau': 'venting time constant', 'M_\\infty': 'flight Mach number', '\\beta': 'compressibility factor',
   },
   constants: [{ sym: '\\gamma', desc: 'ratio of specific heats of air', si: [1.4, ''], us: [1.4, ''] }, { sym: 'R', desc: 'gas constant of air', si: [287.05, '\\mathrm{J\\,kg^{-1}\\,K^{-1}}'], us: [1716.48, '\\mathrm{ft^{2}\\,s^{-2}\\,{}^{\\circ}R^{-1}}'] }],
   report(v, out, R) {
@@ -190,8 +312,8 @@ export default {
   },
   references: ['payload-venting2', 'allowablediffpressure', 'door-failure'],
   examples: [
-    { name: 'IREC rocket to 10 000 ft, one 1/8 in vent', values: { Vol: 0.227, N: 1, d: 0.1256, Cinc: 0.65, Csonic: 0.95, Cp0: -0.0343, Mcr: 0.9487, super: SUPER, ho: 1898, T0: 550, lat: 34, traj: TRAJ } },
-    { name: 'Same, three 1/8 in vents', values: { Vol: 0.227, N: 3, d: 0.125, Cinc: 0.65, Csonic: 0.95, Cp0: -0.0343, Mcr: 0.9487, super: SUPER, ho: 1898, T0: 550, lat: 34, traj: TRAJ } },
-    { name: 'Vent just behind a cone shoulder (Cp −0.08)', values: { Vol: 0.227, N: 3, d: 0.125, Cinc: 0.65, Csonic: 0.95, Cp0: -0.08, Mcr: 0.89, super: SUPER, ho: 1898, T0: 550, lat: 34, traj: TRAJ } },
+    { name: 'CSULB IREC rocket, one 1/8 in vent, taped 11.9 × 4.3 in door', values: { limitMode: 'door', doorL: 11.88, doorW: 4.25, peel: 0.2, tView: 0, Vol: 0.227, N: 1, d: 0.1256, Cinc: 0.65, Csonic: 0.95, Cp0: -0.0343, Mcr: 0.9487, super: SUPER, ho: 1898, T0: 550, lat: 34, traj: TRAJ } },
+    { name: 'Same, three 1/8 in vents', values: { limitMode: 'door', doorL: 11.88, doorW: 4.25, peel: 0.2, tView: 0, Vol: 0.227, N: 3, d: 0.125, Cinc: 0.65, Csonic: 0.95, Cp0: -0.0343, Mcr: 0.9487, super: SUPER, ho: 1898, T0: 550, lat: 34, traj: TRAJ } },
+    { name: 'Vent just behind a cone shoulder (Cp −0.08), shell limit 0.5 psi', values: { limitMode: 'custom', dpAllow: 72, tView: 0, Vol: 0.227, N: 3, d: 0.125, Cinc: 0.65, Csonic: 0.95, Cp0: -0.08, Mcr: 0.89, super: SUPER, ho: 1898, T0: 550, lat: 34, traj: TRAJ } },
   ],
 };

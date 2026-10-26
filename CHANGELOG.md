@@ -3,6 +3,14 @@
 Newest first, in the spirit of [Keep a Changelog](https://keepachangelog.com/). From 2026-10-25 every entry names its
 branch, tag and commit range. Live site: https://rocketcalculator.github.io/.
 
+## 2026-10-26 — Winds aloft in the side view; cache-safe deploys (`fix/wind-side-view-cache`)
+- Trajectory and Parachute: the winds-aloft arrows are drawn in the drawing's side view — wind along the flight (or
+  the drift) left/right, crosswind slanting into the page — instead of seen from above; every arrow at least 14 px,
+  growing with √speed, so light winds stay visible.
+- Deploy: `scripts/stamp_versions.mjs` (run by the Pages workflow) adds an import map stamping every module, and the
+  stylesheet link, with a content hash. After a deploy a browser could load a new calculator with an old cached
+  shared module (Pages caches 10 minutes) — Payload Venting showed nothing for that reason.
+
 ## 2026-10-26 — Payload Bay Venting cycle 1 (`improve/payload-venting`)
 - Verdict against what must hold the pressure: a taped door (Δp_allow = σL/A, Hoult; Espinoza et al., 0.2 lbf/in
   design peel) or your own allowable (D29); solved fixes: smallest vent diameter and fewest holes.

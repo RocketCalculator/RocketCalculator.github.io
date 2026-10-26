@@ -328,7 +328,7 @@ export default {
       if (i % 2 === 0) g.append(text(X(q.x) + 6, Y(q.h) + 3, `${t >= 60 && step >= 60 ? `${fmt(t / 60, { digits: 3 })} min` : `${t} s`}`, { size: 9.5, cls: 'sc-dim-text' }));
     }
     // winds aloft as wind barbs on the left (one average wind: drawn blowing along the drift, to the right)
-    windBarbs(g, layered(v) && v.winds?.length ? v.winds : [0.1, 0.4, 0.7, 1].map((f) => ({ h: f * v.hD, w: v.wind, dir: 270 })), Y, { x: 50, yTop: Math.max(26, Y(v.hD) - 2), yGround: yg }, v.hD, layered(v) ? 'winds' : 'wind', yg + 84);
+    windBarbs(g, layered(v) && v.winds?.length ? v.winds : [0.1, 0.4, 0.7, 1].map((f) => ({ h: f * v.hD, w: v.wind, dir: 270 })), Y, { x: 50, yTop: Math.max(26, Y(v.hD) - 2), yGround: yg }, v.hD, layered(v) ? 'winds' : 'wind', yg + 84, layered(v) ? (out.track?.bearing ?? 90) : 90, 'along the drift');
     // parachute at opening (reefed mouth) and at disreef (open), sized by the diameter
     const cw = Math.max(9, Math.min(26, 5 + 3.2 * Math.sqrt(v.D0)));
     const top = hist[0];

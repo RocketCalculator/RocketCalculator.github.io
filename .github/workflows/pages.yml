@@ -2,7 +2,7 @@ name: Deploy site to GitHub Pages
 on:
   push:
     branches: [main]
-    paths: ['site/**', '.github/workflows/pages.yml']
+    paths: ['site/**', 'scripts/stamp_versions.mjs', '.github/workflows/pages.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -20,7 +20,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          sparse-checkout: site
+          sparse-checkout: |
+            site
+            scripts
+      # stamp every module and the stylesheet with a content hash so browsers never mix old and new files
+      - run: node scripts/stamp_versions.mjs site
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

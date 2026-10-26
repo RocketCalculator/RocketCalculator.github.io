@@ -5,7 +5,7 @@
 //  3. the view is kept when an input changes; Reset and double-click return to the fitted view;
 //  4. the plain mouse wheel over an inactive drawing scrolls the page and does not zoom;
 //  5. touch: the drawing lets one finger scroll the page (touch-action pan-y), handles keep one-finger drag (none).
-// Usage: npm run test:ui-diagrams [-- --only ogive-nose,fin-flutter --jobs 4]   (CHROME=/path/to/chromium)
+// Usage: npm run test:ui-diagrams [-- --only nose-cone,fin-flutter --jobs 4]   (CHROME=/path/to/chromium)
 import puppeteer from 'puppeteer-core';
 import { createServer } from 'node:http';
 import { readFileSync, existsSync, statSync } from 'node:fs';

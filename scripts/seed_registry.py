@@ -145,7 +145,7 @@ CALCULATORS = [
     ('subsonic-cp', 'Subsonic Centre of Pressure', 'BarrEqua', 'Barrowman/NACA 1307 normal-force slope and centre of pressure below the critical Mach number.'),
     ('drag-coefficient', 'Zero-Lift Drag Coefficient', 'DragCoef', 'Skin friction, base, nose and lug drag for a single-stage rocket.'),
     ('geophysics', 'Atmosphere & Gravity', 'Geop', 'Temperature, pressure, density, sound speed and gravity at any altitude and latitude.'),
-    ('ogive-nose', 'Ogive Nose Profile', 'OgivNose', 'Tangent-ogive profile, wetted area and area centroid.'),
+    ('nose-cone', 'Nose Cone Design', 'OgivNose', 'Twelve nose shapes from subsonic to Mach 5: drag, tip shock waves, Mach angle, lift, centre of pressure, shear and bending along the nose, surface pressure, critical Mach number and tip temperature.', ['NosePresCoef', 'OptiNoseShap']),
     ('fin-flutter', 'Fin Flutter', 'FinAero', 'Flutter speed of a fin panel through the flight (Martin, corrected by Bennett), safety factor, and the thickness, span or material that fixes it.'),
     ('bifilar-pendulum', 'Bifilar Pendulum Inertia', 'BifiPend', 'Pitch/yaw moment of inertia from measured pendulum periods.'),
     ('fin-cant-angle', 'Fin Cant Angle & Roll Rate', 'FinSett', 'Strip-theory roll derivatives and the cant angle for a target roll rate.'),
@@ -162,8 +162,6 @@ CALCULATORS = [
     ('upper-stage-divergence', 'Upper-Stage Divergence', 'BodyAero', 'Divergence dynamic pressure and load amplification of a flexible upper stage or payload joint, with the longest safe stage.'),
     ('launcher-deflection', 'Launcher Rail Deflection', 'NewLaun', 'Rail tip slope at tip-off from weight and thrust misalignment, and the longest acceptable rail on a tower truss.'),
     ('tethered-pibal', 'Tethered Balloon Wind Sensor', 'WindMeas', 'Wind speed and direction from the elevation angle of a tethered pilot balloon, corrected for tether sag and drag.'),
-    ('nose-pressure', 'Nose Pressure Distribution', 'NosePresCoef', 'Subsonic surface pressure along a nose and body by line sources, critical Mach number and adverse pressure gradient.'),
-    ('optimum-nose', 'Optimum Nose Shape', 'OptiNoseShap', 'Subsonic nose shape with the smallest suction peak: cone, ogive, Von Kármán and the optimum superellipse compared.'),
     ('payload-venting', 'Payload Bay Venting', 'Vent', 'Bay pressure history through vent holes during ascent and the largest pressure difference across the shell.'),
     ('body-bending', 'Body Bending Modes', 'BodyBend', 'Free-free bending frequencies, mode shapes and nodes of a rocket body with uneven stiffness and mass (Rayleigh–Ritz).'),
     ('ground-handling', 'Ground Handling Loads', 'StruLoad', 'Carrying forces and joint bending moment of a hand-carried rocket, and the aft rail-button pull when the nose is lifted.'),
@@ -172,6 +170,10 @@ CALCULATORS = [
     ('skyaero-trajectory', 'Trajectory Simulation (SKYAERO)', 'TrajSimu', 'Point-mass flight of a one- to three-stage rocket from the rail to impact: apogee, impact range, peak Mach and dynamic pressure, with wind and parachutes.'),
     ('two-stage-weights', 'Two-Stage Weight Allocation', 'OptiWeigAllo', 'Lightest split of mass between two stages for a payload and a required ideal velocity (Vertregt).'),
 ]
+
+
+# calculators merged into another: old slug -> new slug (their pages and theory pages become redirects)
+MOVED = {'ogive-nose': 'nose-cone', 'nose-pressure': 'nose-cone', 'optimum-nose': 'nose-cone'}
 
 
 def clean_abstract(t, title):
@@ -210,8 +212,9 @@ def main():
             by_source[src] = e
     # --- topics ------------------------------------------------------------------------------
     calc_by_topic = {}
-    for slug, title, tid, desc in CALCULATORS:
-        calc_by_topic.setdefault(tid, []).append(slug)
+    for slug, title, tid, desc, *extra in CALCULATORS:
+        for t_id in [tid, *(extra[0] if extra else [])]:
+            calc_by_topic.setdefault(t_id, []).append(slug)
     topics, downloads = [], []
     for t in cat['topics']:
         if t['id'] in SKIP_TOPICS: continue
@@ -236,11 +239,11 @@ def main():
         })
     # calculators the owner has reviewed and signed off: shown with a purple "Final" badge on the home page
     FINAL = {'fin-flutter', 'reliability-growth', 'nozzle-thrust', 'geophysics'}
-    calcs = [{'slug': s, 'title': ti, 'topic': TOPICS[tid][0], 'description': d, **({'final': True} if s in FINAL else {})} for s, ti, tid, d in CALCULATORS]
+    calcs = [{'slug': s, 'title': ti, 'topic': TOPICS[tid][0], 'description': d, **({'final': True} if s in FINAL else {})} for s, ti, tid, d, *_ in CALCULATORS]
     reg = {
         'source': 'http://www.rsandt.com/reports.html',
         'areas': [{'id': a, 'title': ti, 'description': d} for a, ti, d in AREAS],
-        'calculators': calcs, 'topics': topics, 'removed': sorted(SKIP_TOPICS.values()),
+        'calculators': calcs, 'topics': topics, 'removed': sorted(SKIP_TOPICS.values()), 'moved': MOVED,
     }
     json.dump(reg, open(f'{ROOT}/site/js/registry.json', 'w'), indent=1, ensure_ascii=False)
     json.dump(refs, open(f'{ROOT}/site/references/references.json', 'w'), indent=1, ensure_ascii=False)

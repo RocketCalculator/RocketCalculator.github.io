@@ -2,66 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Optimum Nose Shape — Theory & documentation — Rocket Calculator</title>
-<meta name="description" content="Choosing a subsonic nose shape with the smallest suction peak: cone, ogive, Von Kármán and optimum superellipse noses compared by minimum pressure and critical Mach number.">
-<meta name="color-scheme" content="light dark">
+<title>Nose Cone Design — Rocket Calculator</title>
+<meta http-equiv="refresh" content="0; url=nose-cone.html">
+<link rel="canonical" href="nose-cone.html">
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../css/site.css">
-<script>try{var d=document.documentElement,t=JSON.parse(localStorage.getItem('rc-theme')),a=JSON.parse(localStorage.getItem('rc-accent'));if(t==='light'||t==='dark')d.dataset.theme=t;if(a&&a!=='red')d.dataset.accent=a}catch(e){}</script>
 </head>
-<body>
-<main id="main">
-<div class="wrap">
-  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Home</a><span class="sep">/</span><a href="../index.html#area-aero">Aerodynamics</a><span class="sep">/</span><a href="../calculators/optimum-nose.html">Optimum Nose Shape</a><span class="sep">/</span><span>Documentation</span></nav>
-  <div class="calc-title"><h1>Optimum Nose Shape — theory</h1></div>
-  <p class="calc-sub">The nose with the least speed-up behind its shoulder. Based on R. J. Felkel, <em>Effect of Different Nose Profiles on Subsonic Pressure Coefficients</em>, AIAA Region VI Student Conference, 2011, and C. P. Hoult, <em>Compressibility Effects on a Minimum Pressure Gradient Nose</em>, 2010.</p>
-  <div class="calc-badges"><a class="btn small primary" href="../calculators/optimum-nose.html">Open the calculator</a><a class="btn small" href="../references/index.html#aiaafelkel3">Felkel paper (PDF)</a></div>
-  <div class="doc-layout">
-    <nav class="doc-toc" aria-label="Contents"></nav>
-    <article class="doc">
-
-      <section id="overview">
-        <h2>What makes a nose “optimum”</h2>
-        <p>Air must speed up to get round a nose, so the pressure behind the shoulder dips below ambient and then rises again along the cylinder. That rise is an adverse pressure gradient: at angle of attack it helps the boundary layer separate into a vortex pair, and the vortices can induce roll torques on the fins and lock the roll rate in. The deeper the dip, the steeper the rise — and the lower the critical Mach number, above which a shock forms behind the shoulder and makes separation worse.</p>
-        <p>The nose shape does not change the cross-flow pressure, but it does set the longitudinal pressure. Following Felkel, the single figure of merit is the minimum incompressible pressure coefficient behind the shoulder: the closer it is to zero, the better. The calculator places each nose on a long cylinder and computes its zero-angle-of-attack pressure by Munk’s line-source method, exactly as the <a href="nose-pressure.html">Nose Pressure Distribution</a> calculator does.</p>
-      </section>
-
-      <section id="superellipse">
-        <h2>The superellipse family</h2>
-        <p>Felkel found his optimum noses by cut and try. A simpler family matches them: the superellipse nose, an ellipse with its exponent 2 replaced by <span class="tex">n</span>:</p>
-        <div class="eq"><div class="tex-display">\left(\frac{r}{R}\right)^n+\left(1-\frac{z}{L_n}\right)^n=1</div></div>
-        <p><span class="tex">n=1</span> is a cone and <span class="tex">n=2</span> an ellipse. Small exponents give a sharp shoulder, which speeds the flow up there; large ones a blunt tip region, which speeds it up near the tip. In between, the two suction peaks are equal, and that exponent is the optimum. Because the minimum pressure jumps from one peak to the other there, the curve of <span class="tex">C_{p0,min}</span> against <span class="tex">n</span> has a kink at the optimum; the calculator scans <span class="tex">1&lt;n\le4</span> and refines the kink by golden-section search.</p>
-        <p>The optimum exponent depends on the fineness ratio: about 1.75 at <span class="tex">L_n/D=3</span>, 1.85 at <span class="tex">L_n/D=6</span>, rising slowly for longer noses. The value 1.6 suggested in the original notes is a little blunt-shouldered for this method.</p>
-      </section>
-
-      <section id="compress">
-        <h2>Critical Mach number</h2>
-        <p>The Kármán–Tsien rule scales the minimum pressure to Mach number <span class="tex">M_\infty</span>, <span class="tex">C_p=C_{p0}/(\beta+\tfrac12C_{p0}(1-\beta))</span> with <span class="tex">\beta=\sqrt{1-M_\infty^2}</span>. The critical Mach number is where that minimum equals the sonic pressure coefficient</p>
-        <div class="eq"><div class="tex-display">C_p^*=\frac{2}{\gamma M^2}\left[\left(\frac{2+(\gamma-1)M^2}{\gamma+1}\right)^{\frac{\gamma}{\gamma-1}}-1\right]</div></div>
-        <p>For student rockets that burn out near Mach 0.8–0.85, a few hundredths in critical Mach number decide whether a shock sits behind the shoulder at burnout.</p>
-      </section>
-
-      <section id="verification">
-        <h2>Verification</h2>
-        <p>The tests check that the superellipse reduces to the cone and the ellipse, and reproduce Felkel’s Table 1 for 36 in noses of fineness 3, 4 and 6: minimum pressure coefficients of the cone within 5 % and the ogive within 3 %, and their critical Mach numbers within 0.006. At fineness 6 the optimum superellipse reaches Felkel’s cut-and-try optimum (−0.0267 against −0.0266). At fineness 3 and 4 it beats the ogive but falls 10–15 % short of his hand-made shape, which is not a superellipse. The tests also confirm that the exponent found is a local optimum.</p>
-      </section>
-
-      <section id="references">
-        <h2>References</h2>
-        <ol class="refs">
-          <li>R. J. Felkel, “Effect of Different Nose Profiles on Subsonic Pressure Coefficients,” AIAA Region VI Student Research Conference, San Diego, 2011. <a href="../references/index.html#aiaafelkel3">View in library</a></li>
-          <li>C. P. Hoult, “Compressibility Effects on a Minimum Pressure Gradient Nose,” RS&amp;T, 20 October 2010. <a href="../references/index.html#local-sonic-flow">View in library</a></li>
-          <li>C. P. Hoult, “Nose Pressure Distribution (rev. 4),” RS&amp;T, 2012. <a href="../references/index.html#nose-pressure-distro4">View in library</a></li>
-        </ol>
-      </section>
-    </article>
-  </div>
-</div>
-</main>
-<script type="module">
-import { mountDocs } from '../js/docs.js';
-mountDocs();
-</script>
-</body>
+<body><p>This calculator is now part of <a href="nose-cone.html">Nose Cone Design</a>.</p></body>
 </html>

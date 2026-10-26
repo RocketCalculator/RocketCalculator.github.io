@@ -3,6 +3,16 @@
 Newest first, in the spirit of [Keep a Changelog](https://keepachangelog.com/). From 2026-10-25 every entry names its
 branch, tag and commit range. Live site: https://rocketcalculator.github.io/.
 
+## 2026-10-26 — Nose Cone Design (`feat/nose-cone`)
+- Ogive Nose Profile, Nose Pressure Distribution and Optimum Nose Shape merged into one **Nose Cone Design**
+  calculator (old URLs redirect). Twelve shapes (Crowell): cone, bi-conic, tangent and secant ogive, elliptical,
+  power and parabolic series, Von Kármán, LV-Haack, Haack (any C), superellipse, custom; optional rounded tip.
+- New physics: Mach angle and tip shocks at angle of attack (cone flow, checked against NACA 1135), supersonic
+  pressure drag (tangent-cone estimate), skin friction, nose drag coefficient, slender-body lift, centre of pressure,
+  shear and bending along the nose, stagnation temperature and pressure; verdict against your material limit.
+- Plots: along-the-nose panels (shape, Cp, lift per length, shear, bending), drag of common shapes against Mach;
+  Explore: tip shock vs Mach, T₀ vs Mach, subsonic optimum, profile coordinates.
+
 ## 2026-10-26 — Date picker, uniform wind, trajectory input order, Buy me a coffee (`feat/datepicker-wind-grouping`)
 - Launch date and time: a calendar picker (month and year jumps, hour and minute, Now/Today/Done) replaces the
   browser's date field.

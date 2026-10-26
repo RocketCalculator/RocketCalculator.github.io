@@ -41,9 +41,9 @@ test('Push from one calculator, pull into all others', () => {
   pullShared(bySlug['fin-cant-angle'], cant, shared);
   assert.equal(cant.R, 3.1); assert.ok(Math.abs(cant.b - 8.3) < 1e-12, 'tip radius = R + exposed span');
 
-  const ogive = defaults(bySlug['ogive-nose']);
-  assert.deepEqual(pullShared(bySlug['ogive-nose'], ogive, shared).sort(), ['L', 'R']);
-  assert.deepEqual(pullShared(bySlug['ogive-nose'], ogive, shared), [], 'second pull changes nothing');
+  const nose = defaults(bySlug['nose-cone']);
+  assert.deepEqual(pullShared(bySlug['nose-cone'], nose, shared).sort(), ['L', 'R']);
+  assert.deepEqual(pullShared(bySlug['nose-cone'], nose, shared), [], 'second pull changes nothing');
 
   // every calculator still computes with the shared rocket
   for (const def of defs) { const v = defaults(def); pullShared(def, v, shared); assert.doesNotThrow(() => def.compute(v, {}), def.slug); }

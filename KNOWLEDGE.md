@@ -227,6 +227,20 @@ scripts/generate_pages.mjs`; write `site/docs/<slug>.html`; add REPAIR/INVARIANT
   rail fix hits its target to 1e-6.
 - Open-Meteo also fills site elevation and 2 m temperature (shared `ui/meteo.js` with Parachute Recovery).
 
+### Nose Cone Design (`nose-cone`) — merge of ogive-nose, nose-pressure and optimum-nose (2026-10-26)
+- **Sources read this session:** G. A. Crowell, *The Descriptive Geometry of Nose Cones* (1996; all shape equations,
+  C_Nα = 2, X_n = V/A, bluffness, the qualitative drag ranking); NACA Report 1135 (oblique-shock and attachment text
+  p. 624, figure 4, charts 5, 6 and 8, read from page images); Hoult's Barrowman Equations memo (slender-body loading).
+  The Taylor–Maccoll equation is used in its standard form (not read in a primary source); the tangent-cone method
+  could not be read (APL TG-752 on DTIC refused the download) — hence labelled an estimate.
+- **Checks:** detachment 9.7° (M 1.05), 19.5° (1.2), 30.5° (1.5), 57.3° (M→∞) against fig. 4 (≈10, 20, 30.5, 57.5);
+  cone Cp at 32°: 0.722 (M 2), 0.643 (M 3), 0.867 (M 1.6) against chart 6 (0.73, 0.65, ≈0.875); Hoult's ogive S
+  379.25 in²; Crowell CP fractions. 5:1 Von Kármán at M 2: tangent-cone wave drag 0.047 vs ≈0.04 slender-body.
+- **Crowell misprints:** LV-Haack "X_n = 0.437 L" is from the tip (0.5625 L from the base); elliptical "3L/2" should
+  be 2L/3. Found by integrating V/A.
+- **Speed:** cone tables by sweeping the shock angle (no inner bisection), cached per Mach number: ~5 ms each.
+
+
 ### Parachute Recovery (`parachute-recovery`) — cycle 1, branch `improve/recovery-cycle-1`
 - **Sources (repo library, read this session):** Hoult, *Dual Purpose Parachute Recovery System rev2* (2013) and
   *Parachute Reefing* (2013, after Knacke AD-A036 497). They give the descent and drift model, the aft-body slowing
@@ -292,6 +306,14 @@ scripts/generate_pages.mjs`; write `site/docs/<slug>.html`; add REPAIR/INVARIANT
 | Rail exit speed vs rail length (Explore) | How long must the rail be? | Yes — diminishing return and the crossing | Picks a rail | Target line, your rail | Axes | KEEP (new) |
 | Wind along/across the flight, flight path angle (Explore) | Secondary | Yes | — | — | Axes | KEEP |
 | *Removed:* altitude vs downrange plot | duplicated by the to-scale drawing | | | | | REMOVE |
+
+**Nose Cone Design**
+| Diagram | 1 Question | 2 Better than a number? | 3 What the user does | 4 Shows the problem | 5 Scale | Verdict |
+|---|---|---|---|---|---|---|
+| Nose and flow (drawing) | What does the air do at the tip? | Yes — shocks, Mach lines, incidence, CP on the shape | Drags tip, shoulder, air arrow | Shocks in danger red; detached bow shock sketched | Nose to scale; body cut short (labelled) | KEEP (new) |
+| Along the nose (main, panels) | Where is the pressure, lift and bending? | Yes — the load builds to the shoulder | Takes M_b to the joint design | CP line through all panels; sonic Cp line | Shape panel to scale | KEEP (new) |
+| Which shape has the least drag (main) | Which shape for my Mach range? | Yes — the trade-off across Mach | Picks a shape | Transonic gap, your Mach line | Axes | KEEP (new) |
+| Tip shock vs Mach, T₀ vs Mach, subsonic optimum, profile coordinates (Explore) | Secondary | Yes | Material, export | Limit lines | Axes | KEEP |
 
 **Parachute Recovery**
 | Diagram | 1 Question | 2 Better than a number? | 3 What the user does | 4 Shows the problem | 5 Scale | Verdict |

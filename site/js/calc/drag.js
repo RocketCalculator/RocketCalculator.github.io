@@ -16,7 +16,7 @@ export function cpt(gamma, M) {
 export const rhoAOverMu = (p, T) => 8816603 * p * T ** -1.26;
 
 /** Turbulent flat-plate skin friction (memo eq. 3b) with the compressibility factor of eq. (9). */
-const cfTurb = (Re, M) => (0.427 * (1 + 0.15 * M * M) ** -0.58) / (LOG10(Re) - 0.407) ** 2.64;
+export const cfTurb = (Re, M) => (0.427 * (1 + 0.15 * M * M) ** -0.58) / (LOG10(Re) - 0.407) ** 2.64;
 
 /** Wetted area of a tangent ogive (or cone) nose of length Ln, base radius Rn — workbook J22. */
 export function noseWettedArea(Ln, Rn, ogive) {

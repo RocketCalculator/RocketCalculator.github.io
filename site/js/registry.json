@@ -63,10 +63,10 @@
    "final": true
   },
   {
-   "slug": "ogive-nose",
-   "title": "Ogive Nose Profile",
+   "slug": "nose-cone",
+   "title": "Nose Cone Design",
    "topic": "ogive-nose",
-   "description": "Tangent-ogive profile, wetted area and area centroid."
+   "description": "Twelve nose shapes from subsonic to Mach 5: drag, tip shock waves, Mach angle, lift, centre of pressure, shear and bending along the nose, surface pressure, critical Mach number and tip temperature."
   },
   {
    "slug": "fin-flutter",
@@ -166,18 +166,6 @@
    "title": "Tethered Balloon Wind Sensor",
    "topic": "wind-measurement",
    "description": "Wind speed and direction from the elevation angle of a tethered pilot balloon, corrected for tether sag and drag."
-  },
-  {
-   "slug": "nose-pressure",
-   "title": "Nose Pressure Distribution",
-   "topic": "nose-pressure-coefficient",
-   "description": "Subsonic surface pressure along a nose and body by line sources, critical Mach number and adverse pressure gradient."
-  },
-  {
-   "slug": "optimum-nose",
-   "title": "Optimum Nose Shape",
-   "topic": "optimum-nose-shape",
-   "description": "Subsonic nose shape with the smallest suction peak: cone, ogive, Von Kármán and the optimum superellipse compared."
   },
   {
    "slug": "payload-venting",
@@ -532,7 +520,7 @@
    "abstract": "These files support the design of an arbitrary slender “smooth” body of revolution in incompressible flow. “Smooth” means the radial profile has no steps, although the body radial profile may have slope discontinuities. This process can be used to design a nose shape that will inhibit separation of vortices from the forward parts of the body, and thus delay the onset of roll lock-in. Nose Pressure Distro4.doc describes the theory – superposition of sources – used to compute the incompressible surface pressure. MUNKSHIP2.xls implements this theory. Finally, AIAAFelkel3.doc and the corresponding presentation charts filed as AIAAFelkel2.pptx covers much of the same material and provides the background to estimation of the critical Mach number in CRITICAL MACH NUMBER.xls .",
    "status": "available",
    "calculators": [
-    "nose-pressure"
+    "nose-cone"
    ],
    "wasSoon": true,
    "references": [
@@ -587,7 +575,7 @@
    "abstract": "This topic provides the simple geometric properties of ogive noses. The math is captured in Ogive Nose.doc . The math, in turn, is implemented in Ogive Profile.xls .",
    "status": "available",
    "calculators": [
-    "ogive-nose"
+    "nose-cone"
    ],
    "wasSoon": false,
    "references": [
@@ -610,7 +598,7 @@
    "abstract": "These files support the design of a “smooth” body of revolution in subsonic flow. “Smooth” means the radial profile has no step changes, although the body radial profile may have slope discontinuities. This process can used to design a nose shape that will inhibit separation of vortices from the forward parts of the body, and thus delay the onset of roll-lockin. This model will generate the subsonic zero angle of attack pressure distribution over any body of revolution lacking significant separated flow regions. The theory used – superposition of sources – used to compute the incompressible surface pressure distribution, and the Karman-Tsien correction for subsonic Mach numbers are described in “ Effect of Different Nose Profiles on Subsonic Pressure Coefficients ” by R. J. Felkel, Region VI AIAA Student Research Conference, San Diego, 2011. This paper may be found in AIAAFelkel3.doc . The associated briefing charts are in AIAAFelkel2.pptx . An EXCEL spreadsheet implementing the incompressible source superposition theory is MUNKSHIP2.xls . Although it was discovered too late for inclusion in the Felkel paper, it turns out that a superellipse with an exponent of 1.6 provides an excellent match to the optimum nose shape. A superellipse is an ordinary ellipse with the exponent 2 replaced with one having a different value. Felkel's work showed that a tangent ogive nose profile performs almost as well as the optimum, and is therefore a good practical shape. Also, Felkel calculated the critical Mach numbers for a variety of nose shapes. See Local Sonic Flow.doc .",
    "status": "available",
    "calculators": [
-    "optimum-nose"
+    "nose-cone"
    ],
    "wasSoon": true,
    "references": [
@@ -1107,5 +1095,10 @@
   "igniters",
   "safety",
   "wiring-requirements"
- ]
+ ],
+ "moved": {
+  "ogive-nose": "nose-cone",
+  "nose-pressure": "nose-cone",
+  "optimum-nose": "nose-cone"
+ }
 }

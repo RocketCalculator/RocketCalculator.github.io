@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nose Cone Design — Theory & documentation — Rocket Calculator</title>
+<meta name="description" content="Nose cone shapes (Crowell), subsonic surface pressure and critical Mach number (Hoult, Munk), the optimum subsonic superellipse (Felkel), supersonic cone shocks (NACA 1135), pressure and friction drag, slender-body lift and bending, and stagnation temperature.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../css/site.css">
+<script>try{var d=document.documentElement,t=JSON.parse(localStorage.getItem('rc-theme')),a=JSON.parse(localStorage.getItem('rc-accent'));if(t==='light'||t==='dark')d.dataset.theme=t;if(a&&a!=='red')d.dataset.accent=a}catch(e){}</script>
+</head>
+<body>
+<main id="main">
+<div class="wrap">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Home</a><span class="sep">/</span><a href="../index.html#area-aero">Aerodynamics</a><span class="sep">/</span><a href="../calculators/nose-cone.html">Nose Cone Design</a><span class="sep">/</span><span>Documentation</span></nav>
+  <div class="calc-title"><h1>Nose Cone Design — theory</h1></div>
+  <p class="calc-sub">How the calculator shapes a nose and what the air does to it, from subsonic speed to Mach 5. It brings together the former Ogive Nose Profile, Nose Pressure Distribution and Optimum Nose Shape calculators (C. P. Hoult’s memos and R. J. Felkel’s paper) with nose shapes from G. A. Crowell and supersonic cone flow from NACA Report 1135.</p>
+  <div class="calc-badges"><a class="btn small primary" href="../calculators/nose-cone.html">Open the calculator</a></div>
+  <div class="doc-layout">
+    <nav class="doc-toc" aria-label="Contents"></nav>
+    <article class="doc">
+
+      <section id="overview">
+        <h2>Overview</h2>
+        <p>The nose is drawn from its shape family, length <span class="tex">L</span> and base radius <span class="tex">R</span>. At the flight condition (Mach number <span class="tex">M</span>, angle of attack <span class="tex">\alpha</span>, altitude) the calculator works out, along the nose and in total:</p>
+        <ul>
+          <li>the surface pressure: subsonic by Hoult’s line-source model, supersonic by cone flow;</li>
+          <li>the drag coefficient: pressure plus turbulent skin friction, on the base area <span class="tex">A=\pi R^2</span>;</li>
+          <li>the tip shock waves and the Mach angle;</li>
+          <li>the lift (normal force), its centre of pressure, and the shear and bending it builds up towards the shoulder;</li>
+          <li>the stagnation temperature and pressure at the tip.</li>
+        </ul>
+        <p>The dynamic pressure is <span class="tex">q=\tfrac12\rho V^2=\tfrac12\gamma pM^2</span>, with the air at the chosen altitude from Hoult’s atmosphere (standard sea-level temperature, latitude 45°). Lengths are in inches internally; any unit can be displayed.</p>
+        <p>The flight is split into three ranges. Below the critical Mach number <span class="tex">M_{cr}</span> the subsonic model applies. From Mach 1.1 the supersonic model applies. In between, the transonic range, no simple method is reliable, and the calculator shows “—”.</p>
+      </section>
+
+      <section id="shapes">
+        <h2>Nose shapes</h2>
+        <p>The profile <span class="tex">r(x)</span> runs from the tip (<span class="tex">x=0</span>) to the shoulder (<span class="tex">x=L</span>). The definitions are those collected by Crowell:</p>
+        <ul>
+          <li><b>Conical:</b> <span class="tex">r=Rx/L</span>.</li>
+          <li><b>Bi-conic:</b> a cone of length <span class="tex">L_1</span> to radius <span class="tex">R_1</span>, then a frustum to <span class="tex">R</span> at <span class="tex">L</span>.</li>
+          <li><b>Tangent ogive:</b> a circular arc of radius <span class="tex">\rho_t=(R^2+L^2)/2R</span> that meets the body without a kink: <span class="tex">r=\sqrt{\rho_t^2-(L-x)^2}+R-\rho_t</span>.</li>
+          <li><b>Secant ogive:</b> an arc of a chosen radius <span class="tex">\rho</span> with <span class="tex">L/2&lt;\rho</span>; it does not meet the body tangentially. Set <span class="tex">\alpha=\tan^{-1}(R/L)-\cos^{-1}\!\big(\sqrt{L^2+R^2}/2\rho\big)</span>; then <span class="tex">r=\sqrt{\rho^2-(x-\rho\cos\alpha)^2}+\rho\sin\alpha</span>. For <span class="tex">\rho&gt;\rho_t</span> it is a tangent ogive with its base cut off; for <span class="tex">\rho&lt;\rho_t</span> it bulges (the Honest John nose).</li>
+          <li><b>Elliptical:</b> <span class="tex">r=R\sqrt{1-(1-x/L)^2}</span>, a half prolate spheroid.</li>
+          <li><b>Power series:</b> <span class="tex">r=R(x/L)^n</span>, <span class="tex">0&lt;n\le1</span>. Here <span class="tex">n=1</span> is a cone and <span class="tex">n=\tfrac12</span> the blunt “parabolic” model-rocket nose.</li>
+          <li><b>Parabolic series:</b> <span class="tex">r=R\,\dfrac{2(x/L)-K'(x/L)^2}{2-K'}</span>. Here <span class="tex">K'=0</span> is a cone and <span class="tex">K'=1</span> the full parabola, tangent to the body.</li>
+          <li><b>Haack series:</b> <span class="tex">r=\dfrac{R}{\sqrt\pi}\sqrt{\theta-\tfrac12\sin2\theta+C\sin^3\theta}</span>, with <span class="tex">\theta=\cos^{-1}(1-2x/L)</span>. <span class="tex">C=0</span> is the Von Kármán (least drag for a given length and diameter); <span class="tex">C=\tfrac13</span> is the LV-Haack (least drag for a given length and volume).</li>
+          <li><b>Superellipse:</b> <span class="tex">(r/R)^n+(1-x/L)^n=1</span>, the family of the subsonic optimum (below).</li>
+        </ul>
+        <p><b>Rounded tip.</b> A sphere of radius <span class="tex">r_n</span> centred on the axis is fitted tangent to the profile where <span class="tex">r\sqrt{1+r'^2}=r_n</span>. The profile ahead of that point is replaced by the spherical cap, so the nose gets slightly shorter. Crowell reports that bluffness <span class="tex">2r_n/2R</span> up to about 0.2 costs almost no drag.</p>
+        <p><b>Measures.</b> Volume, wetted area and their running totals come from frustum sums along a 240-station profile (denser near the tip). The shell mass is <span class="tex">m\approx S\,t\,\rho_m</span>. The “Profile coordinates” plot exports the radius at every chosen step for templates and CAD.</p>
+<h3>Tangent ogive in closed form: Geometry and the defining circle</h3>
+        <p>Place the origin at the centre of the defining circle, with <span class="tex">x</span> along the rocket axis measured forward from the base plane and <span class="tex">y</span> perpendicular. The circle of radius <span class="tex">a</span> is</p>
+        <div class="eq"><div class="tex-display">x^2+y^2=a^2 .</div></div>
+        <p>The centre lies in the base plane, a distance <span class="tex">a-R</span> below the axis, so the arc is horizontal (tangent to the tube) at <span class="tex">x=0</span>. The tip lies on the axis, <span class="tex">y=a-R</span>, at <span class="tex">x=L</span>. Substituting gives the defining radius:</p>
+        <div class="eq"><div class="tex-display">L^2+(a-R)^2=a^2\quad\Longrightarrow\quad a=\frac{L^2+R^2}{2R}.</div></div>
+        <p>Two further quantities follow directly. The fineness ratio is <span class="tex">L/2R</span>. The surface makes an angle with the axis at the tip of</p>
+        <div class="eq"><div class="tex-display">\theta_{tip}=\sin^{-1}\!\frac{L}{a},</div></div>
+        <p>since the tangent at the tip is perpendicular to the radius drawn to it.</p>
+        <table class="sym-table">
+          <thead><tr><th>Symbol</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td><span class="tex">R</span></td><td>Base radius</td></tr>
+            <tr><td><span class="tex">L</span></td><td>Nose length, tip to base</td></tr>
+            <tr><td><span class="tex">a</span></td><td>Defining-circle radius</td></tr>
+            <tr><td><span class="tex">\Delta x</span></td><td>Profile increment</td></tr>
+            <tr><td><span class="tex">x</span></td><td>Axial coordinate forward of the base</td></tr>
+            <tr><td><span class="tex">r(x)</span></td><td>Local body radius</td></tr>
+            <tr><td><span class="tex">S</span></td><td>Wetted (lateral) area</td></tr>
+            <tr><td><span class="tex">M</span></td><td>First moment of wetted area about the base</td></tr>
+            <tr><td><span class="tex">\bar x</span></td><td>Area centroid, body station aft of the tip</td></tr>
+          </tbody>
+        </table>
+      
+      </section>
+
+      <section id="subsonic">
+        <h2>Subsonic pressure (Hoult’s line-source model)</h2>
+<h3>Why the nose pressure matters</h3>
+        <p>A rolling rocket sees its body-fixed misalignments as torques at the roll frequency. When the roll rate nears the pitch frequency, the angle of attack grows. Above a modest angle of attack the boundary layer separates and sheds a pair of vortices along the body; when they reach the fins they induce a roll torque that can overpower the fin cant and lock the roll rate in. A smooth, continuously falling pressure along the body helps keep the boundary layer attached; an <em>adverse</em> gradient — pressure rising aft — encourages separation.</p>
+        <p>The circumferential pressure from cross flow, <span class="tex">C_p=\sin^2\alpha(1-4\sin^2\theta)</span>, does not depend on the body shape. The longitudinal pressure does, and the nose designer controls it.</p>
+        <h3>Munk airship theory</h3>
+        <p>The flow round a body of revolution at zero angle of attack is represented by sources and sinks along its axis. A source of strength <span class="tex">\sigma\,d\zeta</span> at station <span class="tex">\zeta</span> induces at the point <span class="tex">(z,r)</span> the velocities</p>
+        <div class="eq"><div class="tex-display">q_r=\frac{1}{4\pi}\int\frac{r\,\sigma\,d\zeta}{[(z-\zeta)^2+r^2]^{3/2}},\qquad q_z=\frac{1}{4\pi}\int\frac{(z-\zeta)\,\sigma\,d\zeta}{[(z-\zeta)^2+r^2]^{3/2}}</div></div>
+        <p>For a slender body the flow from nearby sources is nearly radial, so flow tangency at the surface <span class="tex">r_B(z)</span> gives <span class="tex">\sigma=2\pi U_\infty r_B\,dr_B/dz</span>. Linearising Bernoulli’s equation, <span class="tex">C_p\simeq-2q_z/U_\infty</span>:</p>
+        <div class="eq"><div class="tex-display">C_{p0}(z)=-\int\frac{(z-\zeta)\,r_B\,\frac{dr_B}{d\zeta}}{\left[(z-\zeta)^2+r_B^2\right]^{3/2}}\,d\zeta</div></div>
+        <p>Numerically the body radius is sampled at equal stations <span class="tex">\Delta z</span> apart and <span class="tex">r\,dr/dz=r_2(r_3-r_1)/(z_3-z_1)</span> from a parabola through three neighbouring stations. The sum runs over every station of body and wake. The method is poor near a blunt tip and close to a blunt base; elsewhere it gives a good picture of the pressure.</p>
+      <h3>Closing the body: the wake</h3>
+        <p>A source distribution must close, or the body would grow without end. Behind the base the flow forms a wake that narrows to a cylinder. Its diameter follows from two relations: the drag impulse equals the momentum lost by the air entering the cylindrical wake, and Bernoulli’s equation holds from the base (at the base pressure) to the wake, where the pressure has recovered. Solving them,</p>
+        <div class="eq"><div class="tex-display">D_w=D\sqrt{\frac{C_D}{2\left(1-\sqrt{C_{Db}}\right)}}</div></div>
+        <p>where <span class="tex">C_D</span> is the forebody drag coefficient including the base and <span class="tex">C_{Db}</span> the base drag coefficient, both on the body cross-section. The wake converges as a cone of half angle <span class="tex">\varepsilon</span>; lacking better data, <span class="tex">\varepsilon\approx0.1</span> rad.</p>
+      <h3>Compressibility and the critical Mach number</h3>
+        <p>The Kármán–Tsien rule scales the incompressible pressure to a subcritical Mach number:</p>
+        <div class="eq"><div class="tex-display">C_p=\frac{C_{p0}}{\beta+\frac{C_{p0}}{2}(1-\beta)},\qquad\beta=\sqrt{1-M_\infty^2}</div></div>
+        <p>The critical Mach number is the lowest free-stream Mach number at which the surface flow somewhere reaches sonic speed. There the corrected minimum pressure equals the sonic pressure coefficient</p>
+        <div class="eq"><div class="tex-display">C_p^*=\frac{2}{\gamma M^2}\left[\left(\frac{2+(\gamma-1)M^2}{\gamma+1}\right)^{\frac{\gamma}{\gamma-1}}-1\right]</div></div>
+        <p>and the calculator solves for that Mach number. Above it a supersonic pocket forms and the correction no longer applies. For the incompressible minimum of the memo’s example, <span class="tex">C_{p0}=-0.0566</span>, the critical Mach number is about 0.92.</p>
+      <h3>Adverse pressure gradient</h3>
+        <p>For most nose shapes the pressure coefficient bottoms out near −0.06 just behind the shoulder, where the air speeds up to round the corner, and then rises along the cylinder. The calculator reports the steepest rise per body diameter behind the minimum. Reshaping the nose — a gentler shoulder, a longer nose — cannot remove the dip, but the memo shows it can roughly halve the adverse gradient. Use the custom profile to explore faired shapes, and compare the standard shapes in the plot.</p>
+      <h3>Axial force on the nose</h3>
+        <p>The pressure on a slice of nose surface gives the axial force <span class="tex">dF=2\pi r_Bp\,dr_B</span>. With <span class="tex">p=p_\infty+qC_p</span> the hydrostatic part integrates to <span class="tex">p_\infty</span> times the base area (it cancels over a whole body but matters for internal loads) and the hydrodynamic part is</p>
+        <div class="eq"><div class="tex-display">F=2\pi q\int_0^{L_n}C_p\,r_B\frac{dr_B}{dz}\,dz,\qquad C_A=\frac{F}{q\pi R^2}</div></div>
+        <p>The first element at a pointed tip contributes <span class="tex">\pi qC_{p1}r_1^2</span>. In subsonic flow the nose axial force can be negative — the suction on the shoulder pulls the nose forward.</p>
+      
+      </section>
+
+      <section id="optimum">
+        <h2>The optimum subsonic nose</h2>
+<h3>What makes a nose “optimum”</h3>
+        <p>Air must speed up to get round a nose, so the pressure behind the shoulder dips below ambient and then rises again along the cylinder. That rise is an adverse pressure gradient: at angle of attack it helps the boundary layer separate into a vortex pair, and the vortices can induce roll torques on the fins and lock the roll rate in. The deeper the dip, the steeper the rise — and the lower the critical Mach number, above which a shock forms behind the shoulder and makes separation worse.</p>
+        <p>The nose shape does not change the cross-flow pressure, but it does set the longitudinal pressure. Following Felkel, the single figure of merit is the minimum incompressible pressure coefficient behind the shoulder: the closer it is to zero, the better. The calculator places each nose on a long cylinder and computes its zero-angle-of-attack pressure by Munk’s line-source method, exactly as the <a href="nose-pressure.html">Nose Pressure Distribution</a> calculator does.</p>
+      <h3>The superellipse family</h3>
+        <p>Felkel found his optimum noses by cut and try. A simpler family matches them: the superellipse nose, an ellipse with its exponent 2 replaced by <span class="tex">n</span>:</p>
+        <div class="eq"><div class="tex-display">\left(\frac{r}{R}\right)^n+\left(1-\frac{z}{L_n}\right)^n=1</div></div>
+        <p><span class="tex">n=1</span> is a cone and <span class="tex">n=2</span> an ellipse. Small exponents give a sharp shoulder, which speeds the flow up there; large ones a blunt tip region, which speeds it up near the tip. In between, the two suction peaks are equal, and that exponent is the optimum. Because the minimum pressure jumps from one peak to the other there, the curve of <span class="tex">C_{p0,min}</span> against <span class="tex">n</span> has a kink at the optimum; the calculator scans <span class="tex">1&lt;n\le4</span> and refines the kink by golden-section search.</p>
+        <p>The optimum exponent depends on the fineness ratio: about 1.75 at <span class="tex">L_n/D=3</span>, 1.85 at <span class="tex">L_n/D=6</span>, rising slowly for longer noses. The value 1.6 suggested in the original notes is a little blunt-shouldered for this method.</p>
+      
+        <p>The calculator reports the optimum exponent for your length and diameter. The button “Use the subsonic optimum shape” switches the nose to it.</p>
+      </section>
+
+      <section id="shocks">
+        <h2>Supersonic tip: Mach angle and shock waves</h2>
+        <p>Above Mach 1 a pressure disturbance cannot travel upstream. The weakest disturbance, a sound wave, lies on the Mach cone <span class="tex">\mu=\sin^{-1}(1/M)</span>. A pointed tip turns the flow, which takes a shock wave. Just at the tip the flow is the same as for the initially tangent cone (NACA 1135). So the calculator solves the flow past a cone with the tip’s half-angle.</p>
+        <p>Behind a conical shock of angle <span class="tex">\beta</span> the oblique-shock relations of NACA 1135 give the flow deflection and state. Between the shock and the cone the flow is conical, a function of the polar angle only, and obeys the Taylor–Maccoll equation:</p>
+        <div class="eq"><div class="tex-display">\tfrac{\gamma-1}{2}\left(1-V_r^2-V_\theta^2\right)\left(2V_r+V_\theta\cot\theta+V_r''\right)-V_\theta\left(V_rV_\theta+V_\theta V_r''\right)=0,\qquad V_\theta=V_r'</div></div>
+        <p>Velocities are scaled by the limiting speed. The equation is integrated inward from the shock (RK4) until <span class="tex">V_\theta=0</span>, which is the cone surface. A bisection on <span class="tex">\beta</span> then finds the shock for a given cone. The largest cone angle reached on the weak branch is the attachment limit: blunter tips carry a detached bow shock, drawn only as a sketch. The equation is the standard form, derived from the Euler equations for conical flow; it was not read in a primary source here. The solution is checked against NACA 1135:</p>
+        <ul>
+          <li>Figure 4, the attachment limit: 9.7° at Mach 1.05, 19.5° at Mach 1.2 and 30.5° at Mach 1.5 (chart: about 10°, 20° and 30.5°); 57.3° as <span class="tex">M\to\infty</span> (report: 57.5°, γ = 1.405).</li>
+          <li>Charts 5 and 6, shock angle and surface pressure: at a 32° cone, <span class="tex">C_p</span> = 0.72 at Mach 2 and 0.64 at Mach 3 (chart: 0.73 and 0.65).</li>
+        </ul>
+        <p><b>At an angle of attack</b> the windward and leeward tip shocks are estimated from cones of half-angle <span class="tex">\theta_{tip}\pm\alpha</span>, measured from the oncoming flow. This is the tangent-cone idea applied at incidence: an estimate. When <span class="tex">\theta_{tip}-\alpha\le0</span> the leeward side sees an expansion. The tip half-angle is taken as the cone through the tip and the profile at 2 % of the length, which is what a real, slightly rounded tip presents. A rounded tip always carries a detached bow shock.</p>
+      </section>
+
+      <section id="drag">
+        <h2>Drag</h2>
+        <p><b>Skin friction.</b> The turbulent flat-plate law of Hoult’s drag memo, with its compressibility factor, is applied at the Reynolds number on the nose length:</p>
+        <div class="eq"><div class="tex-display">C_f=\frac{0.427\,(1+0.15M^2)^{-0.58}}{(\log_{10}Re-0.407)^{2.64}},\qquad C_{D,f}=C_f\frac{S}{A}</div></div>
+        <p><b>Subsonic pressure drag</b> is the axial force of Hoult’s model (above). It is nearly zero and often slightly negative, because the shoulder suction pulls the nose forward. Crowell’s summary agrees: below Mach 0.8 the nose pressure drag is essentially zero and friction dominates.</p>
+        <p><b>Supersonic pressure (wave) drag</b> uses the tangent-cone estimate. Each surface element takes the pressure of a cone with its local slope, from the same cone-flow solution. Where the slope is too steep for an attached shock, Lees’ modified Newtonian pressure is used instead, <span class="tex">C_p=C_{p,max}\sin^2\theta</span>, with <span class="tex">C_{p,max}</span> the stagnation (pitot) value of Hoult’s drag memo. Then</p>
+        <div class="eq"><div class="tex-display">C_{D,p}=\frac{1}{A}\sum C_{p,i}\,\pi\left(r_{i+1}^2-r_i^2\right)</div></div>
+        <p>This is exact for a cone. For curved noses it is an engineering estimate that was not checked against a source here, so treat it as about ±20 %. As one cross-check, it gives 0.047 for a 5:1 Von Kármán nose at Mach 2, against about 0.04 from slender-body theory. The transonic range is left blank.</p>
+        <p><b>Comparing shapes.</b> The drag plot puts the common shapes, at your length and diameter, side by side. It does not reproduce every point of Crowell’s qualitative ranking: near Mach 1–1.5, where the estimates are weakest, the inviscid tangent-cone estimate favours slender cones. Crowell’s ranking from wind-tunnel data for Mach 0.8–2 runs as follows: Von Kármán and the ½-power series are best through the transonic range; blunt shapes are fine subsonic; ogives and cones are the weakest near Mach 1; cones improve at high Mach.</p>
+      </section>
+
+      <section id="lift">
+        <h2>Lift, centre of pressure and bending</h2>
+        <p>By slender-body theory (Munk; Hoult’s “Barrowman Equations”) a station of the nose carries a normal force per unit length proportional to the growth of its cross-section:</p>
+        <div class="eq"><div class="tex-display">\frac{dN}{dx}=2q\alpha\frac{dA}{dx}\quad\Rightarrow\quad C_{N\alpha}=2,\qquad x_{cp}=L-\frac{V}{A}</div></div>
+        <p>The slope is per radian, on the base area, and the same for every pointed nose (Crowell; Barrowman). NACA 1135 chart 8 shows cones up to about 15° within roughly 10 % of 2 at supersonic speed. Integrating towards the shoulder gives the shear <span class="tex">V(x)=2q\alpha A(x)</span> and the bending moment <span class="tex">M_b(x)=2q\alpha\,V_{ol}(x)</span>. Here <span class="tex">V_{ol}(x)</span> is the nose volume ahead of station <span class="tex">x</span>. These are aerodynamic loads only, before the nose’s inertia is taken off. They are linear in <span class="tex">\alpha</span>, so above about 10° the non-linear cross-flow lift is missing and the loads are underestimated.</p>
+        <p><b>Crowell’s centre-of-pressure fractions</b> follow from <span class="tex">V/A</span>, measured from the base: cone <span class="tex">L/3</span>, tangent ogive about <span class="tex">0.534L</span>, Von Kármán <span class="tex">0.500L</span>. The tests reproduce them. Two printed values need correcting. Crowell’s LV-Haack “0.437L” is measured from the tip; from the base it is 0.563L. His elliptical “3L/2” should read <span class="tex">2L/3</span> from the base.</p>
+      </section>
+
+      <section id="heating">
+        <h2>Stagnation temperature and pressure</h2>
+        <p>Where the air is brought to rest at the tip its temperature rises to the stagnation value (NACA 1135, energy equation):</p>
+        <div class="eq"><div class="tex-display">T_0=T\left(1+\tfrac{\gamma-1}{2}M^2\right)</div></div>
+        <p>This is the upper limit of the skin temperature. The boundary layer recovers a little less, and a short boost heats the skin far less because the wall needs time to warm up. The calculator does not model heating over time. So the verdict only flags as <b>marginal</b> a stagnation temperature above your material’s limit (DECISIONS D27). It also gives the Mach number at which <span class="tex">T_0</span> reaches the limit. The stagnation pressure is <span class="tex">p_0=p+C_{p,max}\,q</span>, using the isentropic value below Mach 1 and the pitot (normal-shock) value above.</p>
+        <p><b>Verdict.</b> The verdict is <b>marginal</b> when any of these holds:</p>
+        <ul>
+          <li>the stagnation temperature is above your material limit;</li>
+          <li>the windward tip shock is detached (higher drag and heating at the tip);</li>
+          <li>the flight is in the transonic range, where shock waves form on the nose.</li>
+        </ul>
+        <p>Otherwise it is safe. The fixes are solved:</p>
+        <ul>
+          <li>the Mach number for your material;</li>
+          <li>the shortest nose of this shape whose windward tip shock stays attached (bisection);</li>
+          <li>the subsonic optimum superellipse with its critical Mach number.</li>
+        </ul>
+      </section>
+
+      <section id="verification">
+        <h2>Verification</h2>
+        <ul>
+          <li>Shapes: every profile meets <span class="tex">r(0)=0</span>, <span class="tex">r(L)=R</span>. Volume, wetted area and centroid reproduce Hoult’s ogive memo example (<span class="tex">R=3</span> in, <span class="tex">L=30</span> in: <span class="tex">S</span> = 379.25 in²). The centre-of-pressure fractions above match Crowell.</li>
+          <li>Cone flow: the NACA 1135 checks above.</li>
+          <li>Subsonic: Hoult’s field tool and Felkel’s Table 1, unchanged from the former calculators.</li>
+        </ul>
+      </section>
+<section id="notes">
+        <h2>Notes on the method</h2>
+        <ul>
+          <li><strong>Axial force.</strong> The field tool’s drag-area column omits the factor <span class="tex">2\pi</span> on the body elements and sums only the first 15 in of the nose; the calculator integrates the memo’s formula over the whole nose.</li>
+          <li><strong>Field point.</strong> As in the field tool, the distance from each source uses the body radius at the source station; this is the usual slender-body simplification.</li>
+          <li><strong>Plume.</strong> The wake model is for a coasting (non-thrusting) rocket; a motor plume changes the flow behind the base.</li>
+        </ul>
+      </section>
+      <section id="references">
+        <h2>References</h2>
+        <ol>
+          <li>G. A. Crowell Sr., “The Descriptive Geometry of Nose Cones,” 1996.</li>
+          <li>Ames Research Staff, “Equations, Tables, and Charts for Compressible Flow,” NACA Report 1135, 1953.</li>
+          <li>C. P. Hoult, “Ogive Nose,” RS&amp;T memo, 6 May 2011. <a href="../references/index.html#ogive-nose">View in library</a></li>
+          <li>C. P. Hoult, “Nose Pressure Distribution (rev. 4),” RS&amp;T, 2012. <a href="../references/index.html#nose-pressure-distro4">View in library</a></li>
+          <li>R. J. Felkel, “Effect of Different Nose Profiles on Subsonic Pressure Coefficients,” AIAA student paper, 2011. <a href="../references/index.html#aiaafelkel3">View in library</a></li>
+          <li>C. P. Hoult, “Compressibility Effects on a Minimum Pressure Gradient Nose,” RS&amp;T, 2010. <a href="../references/index.html#local-sonic-flow">View in library</a></li>
+          <li>C. P. Hoult, “Barrowman Equations,” RS&amp;T, 2010. <a href="../references/index.html#barrowman-equations">View in library</a></li>
+          <li>C. P. Hoult, “Drag Coefficient (rev. 3.4),” RS&amp;T, 2016. <a href="../references/index.html#drag-coefficient3-4">View in library</a></li>
+          <li>C. P. Hoult, “Modified Newtonian Aerodynamics,” RS&amp;T. <a href="../references/index.html#modified-newtonian-aero4">View in library</a></li>
+          <li>M. M. Munk, NACA TN-192, 1924 (through Hoult).</li>
+        </ol>
+      </section>
+    </article>
+  </div>
+</div>
+</main>
+<script type="module">
+import { mountDocs } from '../js/docs.js';
+mountDocs();
+</script>
+</body>
+</html>

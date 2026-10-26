@@ -70,6 +70,24 @@ for (const t of reg.topics.filter((x) => x.status === 'available' && x.calculato
 </html>
 `); n++;
 }
+// calculators merged into another: the old calculator and theory pages redirect to the new ones
+for (const [from, to] of Object.entries(reg.moved || {})) {
+  const page = (dir, title) => `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>${esc(title)} — Rocket Calculator</title>
+<meta http-equiv="refresh" content="0; url=${to}.html">
+<link rel="canonical" href="${to}.html">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+</head>
+<body><p>This calculator is now part of <a href="${to}.html">${esc(title)}</a>.</p></body>
+</html>
+`;
+  const t = reg.calculators.find((c) => c.slug === to)?.title || to;
+  writeFileSync(new URL(`calculators/${from}.html`, SITE), page('calculators', t)); n++;
+  writeFileSync(new URL(`docs/${from}.html`, SITE), page('docs', t)); n++;
+}
 // guidelines-only topics that were removed: the old page URL redirects to the home page
 for (const slug of reg.removed || []) {
   writeFileSync(new URL(`calculators/${slug}.html`, SITE), `<!doctype html>

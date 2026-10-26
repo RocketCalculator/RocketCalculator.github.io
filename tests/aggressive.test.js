@@ -97,8 +97,7 @@ const REPAIR = {
   'parachute-recovery': (v, r) => { if (v.hG + v.hD > 36000) { v.hG = 6000 * r(); v.hD = 1000 + 25000 * r(); } if (v.reef && v.hR >= v.hD) v.hR = v.hD * r(); },
   'launcher-deflection': (v, r) => { if (v.D <= 2 * v.t) v.t = v.D * 0.4 * r(); if (v.d <= v.D) v.d = v.D * (1.5 + 10 * r()); },
   'tethered-pibal': (v, r) => { if (v.D < 2) v.D = 2 + 4 * r(); if (v.We > 0.5) v.We = 0.5 * r(); if (v.L > 1500) v.L = 50 + 1400 * r(); if (v.dt > 0.05) v.dt = 0.005 + 0.03 * r(); if (v.rhoT > 3) v.rhoT = 0.5 + 2 * r(); if (v.pG > 110000 || v.pG < 50000) v.pG = 50000 + 60000 * r(); if (v.TG < 250) v.TG = 250 + 70 * r(); if (v.theta < 15) v.theta = 15 + 70 * r(); if (v.hG > 15000) v.hG = 15000 * r(); if (v.CD < 0.2) v.CD = 0.2 + 0.6 * r(); },
-  'nose-pressure': (v, r) => { if (v.bodyLen <= v.noseL) v.bodyLen = v.noseL * (1.2 + 4 * r()); if (v.noseL > 30 * v.R) v.noseL = v.R * (1 + 20 * r()); if (v.bodyLen > 80 * v.R) v.bodyLen = v.noseL + v.R * (2 + 40 * r()); },
-  'optimum-nose': (v, r) => { if (v.noseL < 2 * v.R || v.noseL > 24 * v.R) v.noseL = v.R * (2 + 20 * r()); },
+  'nose-cone': (v, r) => { if (v.L < 1.5 * v.R || v.L > 30 * v.R) v.L = v.R * (1.5 + 20 * r()); if (v.bodyLen > 80 * v.R) v.bodyLen = v.R * 40 * r(); if (v.rn > 0.5 * v.R) v.rn = 0.4 * v.R * r(); },
   'ground-handling': (v, r) => { if (!(v.xAt > v.xFt)) v.xAt = v.xFt + 10 + 100 * r(); const s = [v.xF, v.xL, v.xN].sort((a, b) => a - b); [v.xF, v.xL, v.xN] = [s[0], s[1] + 1e-3, s[2] + 2e-3]; },
   'flight-path-dispersion': (v, r) => { if (v.hb <= v.L) v.hb = v.L * (2 + 50 * r()); if (v.T < 2 * 32.174 * v.m) v.T = 32.174 * v.m * (2 + 15 * r()); if (2 * Math.PI / v.rollWave >= v.lP) v.rollWave = 2 * Math.PI / (v.lP * (0.1 + 0.8 * r())); },
   'roll-lock-in-design': (v, r) => { if (!(v.xF > v.xS)) v.xF = v.xS * (1.1 + r()) + 0.1; const lo = Math.max(0, v.xN - v.xCG); if (!(v.xF - v.xCG > lo + 1e-3)) v.xF = v.xCG + lo + 0.2 + r(); if (!(v.SM > lo && v.SM < v.xF - v.xCG)) v.SM = lo + (v.xF - v.xCG - lo) * (0.1 + 0.8 * r()); },
@@ -127,8 +126,7 @@ const INVARIANTS = {
   'upper-stage-divergence': (v, R) => [R.qD > 0, typeof R.amp !== 'number' || R.amp >= 1, typeof R.margin !== 'number' || Math.abs(R.margin - R.qD / v.q) <= 1e-9 * R.margin, v.mode !== 'tube' || Math.abs(R.lmax - v.l * Math.sqrt(R.qD / v.q)) <= 1e-9 * R.lmax],
   'launcher-deflection': (v, R) => [R.pitchDeg >= R.yawDeg - 1e-12, R.yawDeg >= 0, R.Fp >= R.Ft - 1e-12, R.I > 0, R.Lmax === 'no limit' || Math.abs(v.factor * R.Fp * R.Lmax ** 2 / (2 * R.EI) * 180 / Math.PI - v.allow) <= 1e-9 * v.allow],
   'tethered-pibal': (v, R) => [R.Vc > 0 && R.Vc <= R.V * (1 + 1e-12), R.corr > 0 && R.corr <= 1, R.lift > 0, Math.abs(Math.hypot(R.north, R.east) - R.Vc) <= 1e-9 * R.Vc, R.b >= 0 && R.c >= 0],
-  'nose-pressure': (v, R) => [R.cp0Min >= 0 || R.cpMin <= R.cp0Min + 1e-12, R.Mcr > 0 && R.Mcr <= 1, R.grad >= 0, R.Dw > 0],
-  'optimum-nose': (v, R) => [R.nOpt > 1 && R.nOpt <= 4, R.cpOpt >= R.cp_se - 1e-9, R.cpOpt >= R.cp_cone - 1e-9, R.McrOpt >= R.mcr_cone - 1e-9, R.cpM <= R.cpOpt + 1e-12],
+  'nose-cone': (v, R) => [R.T0 > 0, R.xcp > 0 && R.xcp < R.Leff, R.CNa === 2, R.S > 0, R.Vol > 0, R.Mcr > 0 && R.Mcr <= 1, R.CD === '—' || Number.isFinite(R.CD), R.beta === '—' || (R.beta > 0 && R.beta <= 90)],
   'payload-venting': (v, R) => [Number.isFinite(R.dpMax), R.tau > 0, R.A > 0, R.p0 > 0],
   'body-bending': (v, R) => [R.f1 > 0 && R.f2 > R.f1 && R.f3 > R.f2, R.L > 0, R.W > 0],
   'ground-handling': (v, R) => [R.W > 0, R.xCG >= v.xL || R.lift0 > 0, Number.isFinite(R.FL) && Number.isFinite(R.MJ)],
@@ -136,7 +134,6 @@ const INVARIANTS = {
   'roll-lock-in-design': (v, R) => [R.Pno >= 0 && R.Pno <= 100, R.sigma >= 0, R.D > 0, R.cR > 0, R.CMa < 0, R.CLp < 0, R.alphaStar === '—' || (R.alphaStar > 0 && R.alphaStar <= v.alphaMax * (1 + 1e-12))],
   'skyaero-trajectory': (v, R) => [R.apo >= 0, R.railV > 0, R.maxMach >= 0, R.tw > 0, Number.isFinite(R.range), R.maxQ >= 0, R.railL > 0, R.dist >= 0, Number.isFinite(R.vImp), R.Dneed > 0, R.bearing >= 0 && R.bearing < 360],
   'two-stage-weights': (v, R) => [R.M01 >= v.Mpl, R.m1 >= 0 && R.m2 >= 0, Math.abs(R.M01 - v.Mpl - R.m1 - R.m2) <= 1e-9 * R.M01, Math.abs(R.dv1 + R.dv2 - v.dv) <= 1e-6 * v.dv, R.payloadPct > 0 && R.payloadPct <= 100, R.lam > 0],
-  'ogive-nose': (v, R) => [R.S > 0, R.xbar > 0 && R.xbar < v.L, R.fineness > 0, R.tipHalfAngle > 0 && R.tipHalfAngle <= 90],
   'subsonic-cp': (v, R, warned) => [R.CNa > 0 || warned, R.CNaFins >= 0, Number.isFinite(R.xcp), R.d > 0],
 };
 
@@ -234,27 +231,14 @@ test('Fin flutter: thicker, stiffer, shorter fins and higher, cooler flight are 
   assert.equal(run('fin-flutter', { tipToTip: true }).Gused, 2 * r.Gused);
 });
 
-test('Ogive nose: stable for extreme fineness (slender limit S → 4πRL/3, centroid at 5L/8 from the tip)', () => {
-  for (const f of [1e3, 1e5, 1e7]) {
-    const R = 1, L = 2 * R * f, o = run('ogive-nose', { R, L, dx: L / 10 });
-    assert.ok(Math.abs(o.S / ((4 / 3) * Math.PI * R * L) - 1) < 1e-6, `fineness ${f}: S ratio ${o.S / ((4 / 3) * Math.PI * R * L)}`);
-    assert.ok(Math.abs(o.xbar / L - 5 / 8) < 1e-6, `fineness ${f}: xbar/L ${o.xbar / L}`);
-  }
-});
-
-test('Ogive nose: a huge length with a tiny increment stays bounded (no runaway profile)', () => {
-  const t0 = Date.now(), o = bySlug['ogive-nose'].compute({ ...defaults(bySlug['ogive-nose']), L: 1e12, dx: 1e-3 }, {});
-  assert.ok(o.o.profile.length <= 2002, `${o.o.profile.length} points`);
-  assert.ok(Date.now() - t0 < 1000);
-  assert.ok(o.warnings.some((w) => /increment/.test(w.text)));
-});
-
-test('Ogive nose: area scales with R·L, centroid with L, fineness = L/2R', () => {
-  const a = run('ogive-nose', { R: 3, L: 30 }), b = run('ogive-nose', { R: 6, L: 60 });
-  assert.ok(Math.abs(b.S / a.S - 4) < 1e-9, 'similar shapes: area × 4');
-  assert.ok(Math.abs(b.xbar / a.xbar - 2) < 1e-9, 'centroid × 2');
-  assert.ok(Math.abs(a.fineness - 5) < 1e-12);
-  assert.ok(a.xbar > 0 && a.xbar < 30);
+test('Nose cone: Hoult ogive example and Crowell centre-of-pressure fractions; similar noses scale', () => {
+  const a = run('nose-cone', { noseType: 'ogive', R: 3, L: 30, blunt: false });
+  assert.ok(Math.abs(a.S / 379.2477 - 1) < 2e-4, `ogive wetted area ${a.S}`);
+  const frac = (noseType) => 1 - run('nose-cone', { noseType, R: 3, L: 30, blunt: false }).xcp / 30;   // from the base
+  assert.ok(Math.abs(frac('cone') - 1 / 3) < 1e-3 && Math.abs(frac('ogive') - 0.534) < 3e-3 && Math.abs(frac('vonkarman') - 0.5) < 2e-3, 'Crowell X_n/L');
+  assert.ok(Math.abs(frac('lvhaack') - 0.5625) < 2e-3 && Math.abs(frac('ellipse') - 2 / 3) < 2e-3, 'LV-Haack and ellipse (Crowell misprints corrected)');
+  const b = run('nose-cone', { noseType: 'ogive', R: 6, L: 60, blunt: false });
+  assert.ok(Math.abs(b.S / a.S - 4) < 1e-6 && Math.abs(b.xcp / a.xcp - 2) < 1e-6 && Math.abs(a.fineness - 5) < 1e-12, 'similarity');
 });
 
 test('Atmosphere: pressure, density and gravity fall with altitude', () => {
@@ -407,17 +391,15 @@ test('Tethered pibal: a lower angle means more wind; a longer tether needs more 
   increasing([2, 3, 4].map((D) => run('tethered-pibal', { D }).lift), 'lift vs bigger balloon');
 });
 
-test('Nose pressure: a sharp shoulder dips deeper and recovers more steeply; faster flow deepens the dip; longer noses have a higher critical Mach', () => {
-  const cone = run('nose-pressure', { noseType: 'cone', M: 0 }), ogive = run('nose-pressure', { noseType: 'ogive', M: 0 });
-  assert.ok(cone.cp0Min < ogive.cp0Min && cone.grad > ogive.grad, 'cone vs ogive');
-  increasing([0, 0.4, 0.7].map((M) => -run('nose-pressure', { M }).cpMin), 'suction vs Mach');
-  increasing([10, 20, 40].map((noseL) => run('nose-pressure', { noseL }).Mcr), 'M_cr vs longer nose');
-});
-
-test('Optimum nose: the optimum beats cone and ogive, and longer noses raise every critical Mach number', () => {
-  const a = run('optimum-nose', {});
-  assert.ok(a.cpOpt > a.cp_ogive && a.cp_ogive > a.cp_cone && a.McrOpt > a.mcr_ogive, 'ranking');
-  increasing([18, 36, 54].map((noseL) => run('optimum-nose', { noseL }).McrOpt), 'M_cr vs longer nose');
+test('Nose cone: subsonic trends (cone vs ogive, Mach, length), the optimum beats cone and ogive, supersonic drag falls with fineness', () => {
+  const sub = (o) => run('nose-cone', { M: 0, alpha: 0, blunt: false, ...o });
+  assert.ok(sub({ noseType: 'cone' }).cpMin < sub({ noseType: 'ogive' }).cpMin && sub({ noseType: 'cone' }).grad > sub({ noseType: 'ogive' }).grad, 'cone vs ogive');
+  increasing([0, 0.4, 0.7].map((M) => -run('nose-cone', { M, blunt: false }).cpMin), 'suction vs Mach');
+  increasing([10, 20, 40].map((L) => sub({ L }).Mcr), 'M_cr vs longer nose');
+  const n = sub({}).nOpt, opt = sub({ noseType: 'superellipse', seN: n });
+  assert.ok(opt.Mcr > sub({ noseType: 'ogive' }).Mcr && opt.Mcr > sub({ noseType: 'cone' }).Mcr, 'optimum superellipse has the highest M_cr');
+  increasing([40, 30, 20].map((L) => run('nose-cone', { L, M: 2, blunt: false }).CDp), 'wave drag vs shorter nose');
+  increasing([1.5, 2.5, 4].map((M) => run('nose-cone', { M, blunt: false }).T0), 'stagnation temperature vs Mach');
 });
 
 test('Payload venting: bigger or more vents lower the peak difference; a bigger bay raises it', () => {

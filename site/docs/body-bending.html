@@ -41,6 +41,30 @@
         <p>Each eigenvector gives a mode shape <span class="tex">\sum q_j\psi_j</span>, shown scaled to 1 at the nose tip. The fundamental mode has two nodes where the body does not move; an inertial sensor there sees the least bending.</p>
       </section>
 
+      <section id="tubes">
+        <h2>Describing the body as tubes</h2>
+        <p>Instead of entering each section’s bending stiffness and weight, you can describe it as the builder sees it: length, outer diameter, wall thickness, the tube material’s Young’s modulus, and the section’s mass with its contents. Each section is then a uniform tube:</p>
+        <div class="eq"><div class="tex-display">EI=E\,\frac{\pi\left(D^4-(D-2t)^4\right)}{64},\qquad w=\frac{m}{\ell}</div></div>
+        <p>A thin wall gives <span class="tex">EI\approx E\pi D^3t/8</span>, so the stiffness grows with the cube of the diameter but only in proportion to the wall. To stiffen a body, a larger diameter or a stiffer material helps much more than a thicker wall. The section that matters most is the one carrying the largest share of the bending energy <span class="tex">\tfrac12\int EI\,y''^2dx</span> in the first mode; the drawing shades it and the result names it.</p>
+      </section>
+
+      <section id="verdict">
+        <h2>Verdict: keep the first bending frequency clear of the excitation</h2>
+        <p>A flexible body is shaken by anything that repeats: the roll rate, the pitch frequency, a motor’s combustion, a control loop. If the first bending frequency <span class="tex">f_1</span> is close to such an excitation <span class="tex">f_{exc}</span>, the bending grows and sensors on the body read the wobble. You give the highest excitation and the separation you want (default 3 times). The verdict (DECISIONS D33) is:</p>
+        <ul>
+          <li><b>SAFE</b> when <span class="tex">f_1\ge r\,f_{exc}</span>;</li>
+          <li><b>MARGINAL</b> between <span class="tex">1.25f_{exc}</span> and that;</li>
+          <li><b>UNSAFE</b> below <span class="tex">1.25f_{exc}</span>, at or near resonance.</li>
+        </ul>
+        <p>These are project choices, not published limits. The fixes are solved by bisection on the full Rayleigh–Ritz model:</p>
+        <ul>
+          <li>the stiffness factor on the section that bends most, or on every section;</li>
+          <li>for tubes, the wall of that section;</li>
+          <li>the highest excitation that keeps your separation.</li>
+        </ul>
+        <p>The nodes of the first mode, where the body does not move, are the places for accelerometers and IMUs.</p>
+      </section>
+
       <section id="verification">
         <h2>Verification</h2>
         <p>For the original field tool’s Aries example (five sections, 365 in), the tests reproduce its three frequencies — 257.6, 585.5 and 1523.7 rad/s — and its stiffness and mass integrals within 0.1–0.2 %. They also check that the mode shapes are exact eigenvectors, and that a uniform body returns the exact uniform-beam frequencies.</p>

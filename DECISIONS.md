@@ -207,3 +207,7 @@ Decisions taken while the owner was unavailable. Each entry: date, question, opt
 - The memos give no roll limit; the user sets the highest roll in flight and at apogee. SAFE ≤ limit, MARGINAL ≤ 1.25×,
   UNSAFE beyond, on the worse of the two. The largest cant within the limits is exact (rates are linear in the cant).
 
+## D33 — 2026-10-26 — Body bending verdict on the separation of the first bending frequency
+- The user sets the highest excitation frequency and the separation wanted (default 3×). SAFE f₁ ≥ r·f_exc,
+  MARGINAL 1.25·f_exc ≤ f₁ < r·f_exc, UNSAFE below (at or near resonance). Project choices, not published limits.
+

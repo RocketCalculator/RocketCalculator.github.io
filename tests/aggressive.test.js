@@ -462,6 +462,10 @@ test('Body bending: a stiffer body rings higher, a heavier one lower (f ∝ √(
 test('Ground handling: a harder lift pulls the button harder; a bigger load factor raises the joint moment', () => {
   increasing([1.5, 2, 3].map((K) => run('ground-handling', { K }).FL), 'pull vs K');
   increasing([1, 2, 3].map((N) => Math.abs(run('ground-handling', { N }).MJ)), '|M_J| vs N');
+  // the largest lift factor puts the pull exactly on the button strength; reversed stations are clamped, not refused
+  const G0 = run('ground-handling', { Sb: 300 });
+  assert.ok(Math.abs(run('ground-handling', { Sb: 300, K: G0.Kmax }).FL - 300) < 1e-9, 'K_max lands on the strength');
+  assert.ok(Number.isFinite(run('ground-handling', { xL: 120, xN: 110 }).FL), 'stations clamped');
 });
 
 test('Roll rate history: the largest cant within your limits brings the worse ratio exactly to 1', () => {

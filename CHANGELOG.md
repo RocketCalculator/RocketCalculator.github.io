@@ -3,6 +3,13 @@
 Newest first, in the spirit of [Keep a Changelog](https://keepachangelog.com/). From 2026-10-25 every entry names its
 branch, tag and commit range. Live site: https://rocketcalculator.github.io/.
 
+## 2026-10-26 — Ground Handling Loads cycle (`improve/ground-handling-2`)
+- Verdict on the aft-button pull and the joint moment against the strengths you enter (D41), with solved fixes: the
+  largest lift factor the button takes (exact, eq. 6 is linear in K), the lift point, and the strengths needed.
+- Stations out of order are clamped with a warning instead of refused. New results: K_max and the aft-button shear KW
+  when erect (memo). Inputs bounded with sliders and info tabs; drawing coloured by the verdict with a handle on every
+  station; plots show your strengths.
+
 ## 2026-10-26 — Tethered Balloon Wind Sensor cycle (`improve/tethered-pibal-2`)
 - Verdict on the reading (D40): unusable below 15° elevation (CSULB), marginal when the angle error, the tether
   correction or the drag crisis exceed your limits. Solved fixes: the balloon diameter for a good angle, the longest

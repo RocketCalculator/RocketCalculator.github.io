@@ -253,3 +253,9 @@ the side the slosh is now (above → narrower tank / lower pitch frequency / mor
   angle reading (δΘ/sin 2Θ) exceeds your limit (default 10 % at ±1°), when the tether correction exceeds your limit
   (default 10 %). SAFE otherwise. The balloon Reynolds number (viscosity at 15 °C, estimate) is only a note past 3×10⁵:
   CSULB's measured curve stays usable to ~30 ft/s for a 3 ft balloon, beyond the smooth-sphere crisis. The 10 % defaults are this site's choices, not published limits.
+
+## D41 — 2026-10-26 — Ground handling verdict against your strengths
+- The user enters the aft-button pull-out strength and the joint bending strength (the memo gives loads, not
+  strengths; defaults 400 lbf and 2000 lbf·in are placeholders to replace with tests). Each load: SAFE ≤ 80 % of the
+  strength, MARGINAL ≤ 100 %, UNSAFE beyond; the worst sets the verdict. Stations out of order are clamped 1 in apart
+  with a warning instead of refused. Not a published limit.

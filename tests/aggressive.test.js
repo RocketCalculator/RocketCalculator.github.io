@@ -107,7 +107,7 @@ const REPAIR = {
 
 /** Must hold for every accepted input set (warnings may be present). */
 const INVARIANTS = {
-  'bifilar-pendulum': (v, R) => [R.I_periods > 0, R.I_length > 0, R.PG_theory > 0, R.k > 0],
+  'bifilar-pendulum': (v, R) => [R.I_periods > 0, R.I_length > 0, R.PG_theory > 0, R.k > 0, R.unc >= 0, R.sMax > 0],
   'drag-coefficient': (v, R) => [R.CDf > 0, R.CDbOff >= 0, R.CDoff > 0, R.CDon > 0, R.lamFrac >= 0 && R.lamFrac <= 100 + 1e-9, R.CDoffPar >= R.CDoff - 1e-12],
   'fin-cant-angle': (v, R, warned) => [Math.abs(R.deltaT) < 90 || warned, R.CLp < 0, R.Ycp >= v.R - 1e-9 && R.Ycp <= v.b + 1e-9, R.fBO >= 0, R.ratio >= 0, R.J <= 0, R.delta30 > 0, R.delta2 > 0],
   'fin-flutter': (v, R) => [R.Vf > 0, R.SF > 0, R.tNeed > 0, R.A > 0, R.eps >= 0.25, R.Valt > 0, R.Vhoult > 0, R.SFhot <= R.SF * (1 + 1e-12)],

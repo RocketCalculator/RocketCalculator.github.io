@@ -3,6 +3,31 @@
 Newest first, in the spirit of [Keep a Changelog](https://keepachangelog.com/). From 2026-10-25 every entry names its
 branch, tag and commit range. Live site: https://rocketcalculator.github.io/.
 
+## 2026-10-26 — Propellant Sloshing cycle (`improve/propellant-slosh-2`)
+- **Verdict** (new): the first slosh frequency against the rocket's pitch frequency, SAFE / MARGINAL / UNSAFE on the
+  separation S = max(f1/fp, fp/f1) (bands D36, not a published limit). Up to three **solved** fixes on
+  the side the slosh is now: tank inside diameter at the same propellant mass (bisection), the pitch frequency
+  (closed form), the thrust acceleration (closed form, f ∝ √a at fixed depth). Tests check each fix hits its target.
+- **Inputs** re-grouped in fill order: tank (inside **diameter**, inside length, density, propellant now) → flight
+  (thrust acceleration) → rocket pitch motion (pitch frequency + "Fill from the Pitch-Yaw Wave Number") → your
+  limits (separation). Every input bounded with a slider and a three-paragraph info tab. The radius input became the
+  measured inside diameter. More propellant than the tank holds is no longer possible silently: shown full with a
+  warning and the fix.
+- **Equivalent pendulum** now has its **hinge depth** (and bob depth), derived from the poles/residues of the report's
+  own transfer functions (eq. 5-49 ÷ eq. 5-47); the slosh mass is now attributed to the residue of eq. 5-47 (identical
+  to the formula used before). The NASA SP-106 citation was removed (not read for this page).
+- **Drawing**: tank and pendulum to scale; the first-mode surface rocks (animated, Bessel shape) with the pendulum
+  swinging beside it in step about its true hinge; red bands inside the tank mark the liquid levels where the slosh is
+  within 25 % of / closer than wanted to the pitch frequency; the crossing level f1 = fp; log frequency strip with
+  f1–f3 against fp; the surface shapes of modes 1–3 with the share of liquid in each; handles for surface (mass), tank
+  top (length) and bottom corner (diameter); D, h, L_t dimensioned.
+- **Plots**: "Slosh frequencies and slosh mass as the tank drains" (stacked panels on depth, framed to ~2 diameters),
+  "First slosh frequency against tank diameter (same propellant)" (trade-off with your tank and the fix);
+  Explore: "First slosh frequency over the drain at several accelerations".
+- Key cards 3 (f1, f1/fp, m1) with status; new results: separation ratio, hinge, bob depth, crossing depth, deep-fill
+  frequency, diameter and pitch-frequency for the separation.
+- Theory page: new sections `pendulum` and `verdict`; `model` now quotes eq. 5-47.
+
 ## 2026-10-26 — Wind Compensation cycle (`improve/wind-compensation-2`)
 - Verdict on the launcher tilt against your range's limit (D35) with the nearest reachable range along your azimuth
   as the solved fix; the plan view shows every landing point within reach (dashed circle round the wind-only point).

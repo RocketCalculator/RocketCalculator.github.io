@@ -11,7 +11,7 @@ const DENS = { dim: 'density', internal: 'slugft3', units: { si: 'kgm3', us: 'lb
 const HZ = { dim: 'frequency', internal: 'hz' };
 const NONE = { dim: 'none' };
 const G0 = 32.174;
-// verdict bands (D-propellant-slosh): separation S = max(f1/fp, fp/f1) of the first slosh frequency from the rocket's
+// verdict bands (D36): separation S = max(f1/fp, fp/f1) of the first slosh frequency from the rocket's
 // pitch frequency. SAFE S ≥ r (the user's separation); MARGINAL 1.25 ≤ S < r; UNSAFE S < 1.25. Not a published limit.
 const NEAR = 1.25;
 const ST = { safe: 'ok', marginal: 'warn', unsafe: 'err' };

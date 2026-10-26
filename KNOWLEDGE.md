@@ -270,6 +270,38 @@ scripts/generate_pages.mjs`; write `site/docs/<slug>.html`; add REPAIR/INVARIANT
   given) — 10 m wind + 14 pressure levels with geopotential height; **direction convention not stated by Open-Meteo**,
   taken as meteorological "from" (unverified). Uniform layers reproduce the mean-wind drift exactly (test).
 
+### Propellant Sloshing (`propellant-slosh`) — cycle 2 (2026-10-26)
+#### Sources read
+- C. P. Hoult, *An Analysis of the Motion of Liquids in a Partially-Filled Enclosure* (MIT IL R-222),
+  `site/references/original/…Partially-Filled Enclosure.pdf`, read from page images: Fig. 1 p. 20 (geometry: origin
+  h above the free surface, depth m/(πρa²)); eqs. 5-30…5-38 pp. 25–27 (potential, constants, poles
+  s² cosh + a_t (λ/a) sinh); eqs. 5-42, 5-43 pp. 29–30 (side force); eqs. 5-44…5-46 pp. 30–32 (moment);
+  eqs. 5-47…5-50 pp. 32–33 (the four transfer functions). Assumptions pp. 10–11 (baffles: damping + altered geometry,
+  "a good discussion … in reference (1)" — not quantified).
+- Errata, 27 Aug 2013 (`from-word/Sloshing Errata.pdf`, page image): modern λ1–3; corrections to (5-34), (5-37), (5-41).
+- Not read: NASA SP-106 (Abramson). Removed from the theory page's references.
+
+#### Derivations (checked in tests/slosh.test.js)
+- Slosh mass: eq. 5-47 mode term πρa²·2a tanh(λm/πρa³)/(λ(λ²−1)) → m_n/M = 2 tanh(λh/R)/(λ(λ²−1)h/R).
+- Hinge: (residue in 5-49)/(residue in 5-47) = h0 + (R/λ)(1 − 2 sech x)/tanh x, x = λh/R. A pendulum transmits its
+  side force through the hinge, so e_n = (R/λ)(1 − 2 sech x)/tanh x is the hinge depth below the still surface;
+  bob at e_n + L_n = (2R/λ) tanh(x/2). Limits: deep e = R/λ, bob 2R/λ; shallow: bob on the bottom, hinge far above.
+- Crossing depth h× = (R/λ1) artanh((2πfp)²R/(aλ1)); none when the argument ≥ 1.
+
+#### Worked example / errata
+- SLOSHIT worksheet example still reproduced (existing test), including its ρ-for-M slip in the tanh argument.
+- New erratum found: eq. (5-49) rigid term "a²/4 + (h + ½ m/πρa²)" lacks the liquid depth as a factor (dimensionally
+  inconsistent with the modal sum). Not used. Eq. (5-47) has "+" before the modal sum, which at high frequency gives
+  M + Σm_n rather than M − Σm_n; only magnitudes are used.
+
+#### Quality Gate
+| Item | Verdict | Why |
+|---|---|---|
+| Drawing (tank, rocking surface, pendulum, bands, strip, mode shapes) | REDESIGN | Now shows the verdict on the design: which liquid levels ring with the pitch, and the pendulum with its hinge to scale |
+| Slosh frequencies vs depth (old) + slosh mass vs depth (old) | REDESIGN → merged | One stacked chart on depth with the pitch band and crossing: the drain history, which a number cannot show |
+| f1 vs tank diameter | NEW, KEEP | Trade-off behind the diameter fix, with your tank and the fix marked |
+| f1 over the drain at 1–15 g | NEW, Explore | Shows at which depth each acceleration meets the band |
+
 ### Diagram Quality Gate log
 
 **Fin Flutter**

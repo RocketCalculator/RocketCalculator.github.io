@@ -12,7 +12,7 @@ const MASS = { dim: 'mass', internal: 'lbm' };
 const HZ = { dim: 'frequency', internal: 'hz' };
 const NONE = { dim: 'none' };
 const TAU = 2 * Math.PI;
-// verdict bands (D-body-bending): f1 against the user's excitation frequency f_exc and wanted separation r.
+// verdict bands (D33): f1 against the user's excitation frequency f_exc and wanted separation r.
 // SAFE f1 ≥ r·f_exc; MARGINAL 1.25·f_exc ≤ f1 < r·f_exc; UNSAFE below (at or near resonance, or swept through it).
 const NEAR = 1.25;
 const ST = { safe: 'ok', marginal: 'warn', unsafe: 'err' };

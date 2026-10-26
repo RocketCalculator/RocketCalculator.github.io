@@ -1,6 +1,7 @@
 import { test, after } from 'node:test';
 import { workbook, close, stats } from './_workbook.js';
-import { planform, derivatives, cantForRate, cantForCycles, cantWithLag } from '../site/js/calc/cantAngle.js';
+import assert from 'node:assert/strict';
+import { planform, derivatives, cantForRate, cantForCycles, cantWithLag, rollFromCant, misalignmentGain } from '../site/js/calc/cantAngle.js';
 
 const W = workbook('CANT ANGLE3');
 const geo = { R: W('C5'), b: W('D5'), cR: W('E5'), cT: W('F5'), cNa: W('O5'), N: W('P5') };
@@ -60,3 +61,24 @@ test('Inertia-lag form reduces to the steady state when J → 0', () => {
 });
 
 after(() => console.log(`cant angle: ${stats.compared} values compared, max rel err ${stats.maxRel.toExponential(2)}`));
+
+test('Boost Phase Roll Rate memo: roll from a cant inverts the cant-for-rate and cant-for-cycles formulas', () => {
+  const d = derivatives(geo), b = { Ixx: 0.22, rho: 0.0023, h: 2000, L: 18, R: geo.R, N: geo.N };
+  const lag = cantWithLag({ f: 1.24, V: 1037.2, ...b }, d, geo);
+  const r = rollFromCant(lag.delta, d, b), bo = r.at(b.h);
+  close((bo.lam * 1037.2) / (2 * Math.PI), 1.24, 1e-12, 'f at burnout');
+  close(r.lam0, (cantForRate({ f: 1, V: 1037.2 }, d).pV * 12 * lag.delta) / cantForRate({ f: 1, V: 1037.2 }, d).delta, 1e-12, 'λ_R0 = −δ L_δ/M (eq. 2b)');
+  const cyc = cantForCycles({ ...b, Mc: 4 }, d, geo);
+  close(rollFromCant(cyc.delta, d, b).at(b.h).turns, 4, 1e-12, 'turns to burnout (eq. 5d)');
+  close(rollFromCant(cyc.delta, d, b).k, cyc.k, 1e-12, 'k (eq. 5e)');
+  assert.equal(r.at(b.L).turns, 0); assert.equal(r.at(b.L).lam, 0);
+  close(misalignmentGain(0.3), 1 / 0.91, 1e-12, 'λP²/(λP²−λR²) at 30 %');
+  assert.equal(misalignmentGain(1), null);
+});
+
+test('Roll inertia: the turns integral is the integral of the roll wavenumber along the climb', () => {
+  const d = derivatives(geo), b = { Ixx: 0.22, rho: 0.0023, L: 18, R: geo.R, N: geo.N }, r = rollFromCant(0.004, d, b);
+  let phi = 0; const n = 200000, h = 2000;
+  for (let i = 0; i < n; i++) { const x = b.L + ((i + 0.5) * (h - b.L)) / n; phi += (r.at(x).lam * (h - b.L)) / n; }
+  close(phi / (2 * Math.PI), r.at(h).turns, 1e-6, '∫λ_R dh / 2π');
+});

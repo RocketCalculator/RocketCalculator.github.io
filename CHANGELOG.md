@@ -3,6 +3,15 @@
 Newest first, in the spirit of [Keep a Changelog](https://keepachangelog.com/). From 2026-10-25 every entry names its
 branch, tag and commit range. Live site: https://rocketcalculator.github.io/.
 
+## 2026-10-26 — Fin Cant Angle & Roll Rate cycle (`improve/fin-cant-angle-2`)
+- Verdict on the burnout roll rate as a share of the pitch frequency (SAFE ≤ 30 %, MARGINAL ≤ 40 %, the memo's guidance;
+  D31), with the cant for your target, the largest cant for 30 % of pitch and the smallest for 2 turns as solved values.
+- Roll through the boost with the inertia lag (Hoult, Boost Phase Roll Rate 2013): animated rear view (spin shown
+  slower), fin-tip section with the cant and the relative wind; plots: roll rate and turns against speed, roll and
+  turns against cant with the 30/40 % lines; Explore: strip angle of attack along the span.
+- Inputs grouped fin set → setting → rocket at burnout → roll target → model settings, all bounded; the fin size is
+  entered as the exposed span (as built and as shared with the other calculators), so it can no longer block the page.
+
 ## 2026-10-26 — Zero-Lift Drag Coefficient cycle (`improve/drag-coefficient-2`)
 - Inputs grouped body → fins → nozzle and lugs → surface finish → flight condition → model settings (advanced), all
   bounded with sliders; key cards: coasting and motor-burning C_D, drag force, largest single source.

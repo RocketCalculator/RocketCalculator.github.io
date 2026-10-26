@@ -199,3 +199,7 @@ Decisions taken while the owner was unavailable. Each entry: date, question, opt
   weathercocking. Defaults are common amateur practice, not source limits. No root-chord fix (grown forward it moves
   fin area forward and hardly changes the margin).
 
+## D31 — 2026-10-26 — Fin cant verdict on roll ÷ pitch frequency at burnout
+- SAFE ≤ 30 %, MARGINAL ≤ 40 %, UNSAFE above: the Fin Setting Theory memo's "below 30–40 % of λ_P" read as bands. Turns
+  (memo: at least 2–3) are shown as a warning on their card, not in the verdict.
+

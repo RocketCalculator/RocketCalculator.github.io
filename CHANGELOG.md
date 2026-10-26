@@ -3,6 +3,16 @@
 Newest first, in the spirit of [Keep a Changelog](https://keepachangelog.com/). From 2026-10-25 every entry names its
 branch, tag and commit range. Live site: https://rocketcalculator.github.io/.
 
+## 2026-10-26 — Zero-Lift Drag Coefficient cycle (`improve/drag-coefficient-2`)
+- Inputs grouped body → fins → nozzle and lugs → surface finish → flight condition → model settings (advanced), all
+  bounded with sliders; key cards: coasting and motor-burning C_D, drag force, largest single source.
+- Drawing "Where the drag comes from": each source numbered where it acts on the to-scale rocket, rear view, and the
+  coasting / motor-burning build-up bars with shares; handles for nose, length, root chord, span, flat face.
+- Main plot: the build-up across Mach (stacked sources, total C_D, share of each); Explore: friction against Reynolds
+  number (laminar/turbulent, your body and fins), wetted area and transition.
+- No verdict: drag is not safe or unsafe and the memo gives no judgement. A nose as long as the rocket is shortened to
+  90 % with a warning instead of refusing; a Reynolds number too low for the friction law is refused with a reason.
+
 ## 2026-10-26 — Subsonic Centre of Pressure cycle (`improve/subsonic-cp`)
 - Verdict on the worst-case static margin (launch/burnout CG × Mach 0/top Mach × with/without body carry-over)
   against your accepted minimum and target (defaults 1 and 1.5 calibres), with solved fixes: CG shift, nose ballast,

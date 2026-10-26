@@ -30,7 +30,7 @@ function run(v) {
   const sepOK = sep(o.ratio) >= v.rmin, uOK = 100 * u.total <= v.uMax, crossOK = Math.abs(cross) <= v.crossTol;
   const lv = !sepOK ? 'unsafe' : !uOK || !crossOK ? 'marginal' : 'safe';
   const f = spacingScale(o.k, v.x1, v.x2, v.rmin);
-  const Nreq = cyclesFor(v, v.uMax / 100);
+  const N0 = cyclesFor(v, v.uMax / 100), Nreq = N0 && N0 <= 1000 ? N0 : null;   // over 1000 cycles is not a practical fix
   const dxReq = distErrorFor(v, v.uMax / 100);
   const lImplied = (v.g * v.PG * v.PG) / (4 * Math.PI ** 2);
   return { o, u, cross, sepOK, uOK, crossOK, lv, f, Nreq, dxReq, lImplied, xcg, L };
@@ -137,7 +137,7 @@ export default {
     { id: 'unc', label: 'Uncertainty of the inertia', sym: 'u_I', ...PCT, key: true, digits: 2, status: (x, out) => (out.uOK ? 'ok' : 'warn'),
       note: (x, out) => `largest share: ${out.biggest}`,
       info: { text: ['How far the inertia may be off, from your stopwatch, tape and scale errors (first order, independent, root-sum-square: standard error propagation, not from the memo).', 'Periods count twice because they are squared.', 'The budget plot shows which measurement to improve.'], tex: 'u_I^2=\\left(\\frac{\\delta m}{m}\\right)^2+\\left(\\frac{\\delta x}{x_1}\\right)^2+\\left(\\frac{\\delta x}{x_2}\\right)^2+\\left(\\frac{2\\delta t}{N_YP_Y}\\right)^2+\\left(\\frac{2\\delta t}{N_GP_G}\\right)^2', doc: 'quality' } },
-    { id: 'k', label: 'Radius of gyration', sym: 'k', ...D, key: true, digits: 3,
+    { id: 'k', label: 'Radius of gyration', sym: 'k', ...D, digits: 3,
       note: (v, out) => `${fmt((100 * out.o.k) / out.L, { digits: 3 })} % of length (uniform rod 28.9 %)`,
       info: { text: ['The distance from the CG at which all the mass, put in one ring, would give the same inertia.', 'A uniform rod has 28.9 % of its length; heavy ends raise it, a heavy middle lowers it.', 'It sets how close the wires must be: $\\sqrt{x_1x_2}$ well under $k$.'], tex: 'k=\\sqrt{I/m}', doc: 'design' } },
     { id: 'I_length', label: 'Inertia from the wire length (cross-check)', sym: 'I_l', ...INERTIA, digits: 4,
@@ -221,7 +221,7 @@ export default {
       id: 'budget', title: 'Error budget: how many cycles to time', wide: true,
       info: { text: ['The uncertainty of the inertia against the number of cycles timed in each swing, split by measurement. Timing errors fall as you time more cycles; the distance and mass errors do not, and set the floor.', 'Where the total crosses the red line is the fewest cycles that meet your target. If the floor is above the line, measure the distances more closely instead.'], doc: 'quality' },
       build(v, out) {
-        const nTop = Math.max(40, 2 * Math.max(v.NY, v.NG, out.Nreq || 0)), pts = [];
+        const nTop = Math.min(2000, Math.max(40, Math.ceil(2 * Math.max(v.NY, v.NG, out.Nreq || 0)))), pts = [];
         for (let n = 1; n <= nTop; n += n < 10 ? 0.25 : 1) pts.push([n, uncertainty({ ...v, NY: n, NG: n })]);
         const S = (f) => pts.map(([n, uu]) => [n, 100 * f(uu)]);
         const now = 100 * out.u.total, mk = [{ x: Math.sqrt(v.NY * v.NG), y: now, label: `your measurement ${fmt(now, { digits: 2 })} %` }];
@@ -260,10 +260,10 @@ export default {
     // wires, clamps and their pulls (arrow length ∝ share of the weight)
     const w1 = X(xcg - v.x1), w2 = X(xcg + v.x2), cgX = X(xcg);
     for (const [wx, f, Tq, side] of [[w1, 'x1', o.T1, -1], [w2, 'x2', o.T2, 1]]) {
-      g.append(s('line', { x1: wx, x2: wx, y1: ceilY, y2: cy - rp, stroke: sepCol, 'stroke-width': 1.8, 'data-field': `${f} l` }));
+      g.append(s('path', { d: `M${wx},${ceilY}V${cy - rp}`, stroke: sepCol, 'stroke-width': 1.8, 'data-field': `${f} l` }));
       g.append(s('rect', { x: wx - 3, y: cy - rp - 2, width: 6, height: 2 * rp + 4, fill: 'var(--text)', 'data-field': f }));
       const aL = 14 + 46 * (Tq / (v.m * v.g)), ax = wx + side * 8;
-      g.append(s('line', { x1: ax, x2: ax, y1: cy - rp - 4, y2: cy - rp - 4 - aL, class: 'sc-accent', 'stroke-width': 2, 'marker-end': fr.arrow('acc') }));
+      g.append(s('path', { d: `M${ax},${cy - rp - 4}V${cy - rp - 4 - aL}`, class: 'sc-accent', 'stroke-width': 2, 'marker-end': fr.arrow('acc') }));
       g.append(text(ax + side * 4, cy - rp - 8 - aL, `T_${f[1]} ${fmt(uf.v(Tq), { digits: 3 })} ${uf.label}`, { anchor: side < 0 ? 'end' : 'start', size: 10.5, field: f }));
     }
     // ---- dimensions below: x1 | x2 from the CG, then x_cg and L from the nose; plumb bob over the floor line ----

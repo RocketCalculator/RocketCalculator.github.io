@@ -56,7 +56,7 @@ test('Page verdict: GOOD, REDO near resonance (wire fix exact), CHECK with too f
   const a = page(0).out;
   assert.equal(a.verdict.level, 'safe'); assert.equal(a.verdict.word, 'GOOD'); assert.equal(a.verdict.fixes.length, 0);
   const b = page(1);
-  assert.equal(b.out.verdict.level, 'unsafe'); assert.match(b.out.verdict.fixes[0], /closer to the CG/);
+  assert.equal(b.out.verdict.level, 'unsafe'); assert.match(b.out.verdict.fixes[0], /both wires to <b>≤ 0.429 m<\/b> from the CG/);
   close(periodRatio(b.out.o.k, b.out.f * b.v.x1, b.out.f * b.v.x2), b.v.rmin, 1e-12, 'moved wires give r_min');
   const c = page(2).out;
   assert.equal(c.verdict.level, 'marginal'); assert.match(c.verdict.fixes[0], new RegExp(`${c.Nreq} cycles`));

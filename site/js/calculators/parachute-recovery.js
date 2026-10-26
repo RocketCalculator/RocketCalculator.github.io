@@ -6,6 +6,7 @@ import { s, fmt, InputError } from '../util.js';
 import { text, dim, path } from '../ui/svg.js';
 import { toDisplay, displayUnit, unitLabel } from '../units.js';
 import { fetchWinds, mapActions, METEO_CREDIT } from '../ui/meteo.js';
+import { windSketch } from '../ui/windSketch.js';
 
 const MASS = { dim: 'mass', internal: 'lbm' };
 const DIST = { dim: 'distance', internal: 'ft' };
@@ -301,7 +302,7 @@ export default {
   schematicTitle: 'Descent path and landing',
   schematicHint: 'Left: the descent from parachute opening to landing, height and drift to the same scale, with dots every interval of time and the wind; the shaded ground is the recovery area. Right: the landing — the nose is down and the aft body slows over the tether. Drag the opening and disreef points up or down, the wind arrow sideways, or the flag at the edge of the area',
   schematic(ctx, v, out) {
-    const W = 760, H = 440, o = out.o, hist = out.hist, lv = out.verdict.level;
+    const W = layered(v) ? 870 : 760, H = 440, o = out.o, hist = out.hist, lv = out.verdict.level;
     const fr = ctx.frame({ width: W, height: H, label: 'Descent path with drift and wind, recovery area, and the landing' });
     const g = fr.layer('main'); g.replaceChildren();
     const ua = ctx.U(ALT), ud = ctx.U(DIST), us = ctx.U(SPEED), A = (h) => `${fmt(ua.v(h), { digits: 3 })} ${ua.plain}`, Sp = (x) => `${fmt(us.v(x), { digits: 3 })} ${us.plain}`, Dd = (x) => `${fmt(ud.v(x), { digits: 3 })} ${ud.plain}`;
@@ -371,6 +372,8 @@ export default {
     g.append(s('circle', { cx: lx - 22, cy: ya + 14, r: 4, fill: col }));
     g.append(text(lx - 30, ya + 18, `aft body lands ${Sp(o.vAft)}`, { anchor: 'end', size: 11, field: 'W2 vT' }));
     g.append(text(625, 22, 'landing (tether not to scale)', { anchor: 'middle', size: 10.5, cls: 'sc-dim-text' }));
+    // wind profile sketch on the right, on the descent panel's height scale
+    if (layered(v) && v.winds?.length) windSketch(g, v.winds, Y, { x: 770, w: 86, yTop: Math.max(20, Y(v.hD) - 6), yGround: yg }, v.hD);
     // ---- handles ----
     ctx.handle('open', X(top.x), Y(top.h), { field: 'hD', title: 'Drag up or down to change the opening height',
       onDrag: (px, py) => ctx.setValue('hD', Math.max(100, (yg - py) / k), { round: 50 }), onKey: (dx, dy) => ctx.setValue('hD', v.hD * (1 + 0.03 * dy)) });

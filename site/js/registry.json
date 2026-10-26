@@ -66,7 +66,8 @@
    "slug": "nose-cone",
    "title": "Nose Cone Design",
    "topic": "ogive-nose",
-   "description": "Twelve nose shapes from subsonic to Mach 5: drag, tip shock waves, Mach angle, lift, centre of pressure, shear and bending along the nose, surface pressure, critical Mach number and tip temperature."
+   "description": "Twelve nose shapes from subsonic to Mach 5: drag, tip shock waves, Mach angle, lift, centre of pressure, shear and bending along the nose, surface pressure, critical Mach number and tip temperature.",
+   "final": true
   },
   {
    "slug": "fin-flutter",
@@ -91,7 +92,8 @@
    "slug": "single-wedge",
    "title": "Single Wedge Airfoil",
    "topic": "single-wedge-airfoil",
-   "description": "Supersonic normal-force multiplier and wave drag of single-wedge fins, with the shock-detachment limit."
+   "description": "Supersonic normal-force multiplier and wave drag of single-wedge fins, with the shock-detachment limit.",
+   "final": true
   },
   {
    "slug": "yo-yo-despin",
@@ -147,7 +149,8 @@
    "slug": "parachute-recovery",
    "title": "Parachute Recovery",
    "topic": "recovery",
-   "description": "Descent time, wind drift and landing speeds of a two-piece rocket under one parachute, with optional reefing."
+   "description": "Descent time, wind drift and landing speeds of a two-piece rocket under one parachute, with optional reefing.",
+   "final": true
   },
   {
    "slug": "upper-stage-divergence",
@@ -201,7 +204,8 @@
    "slug": "skyaero-trajectory",
    "title": "Trajectory Simulation (SKYAERO)",
    "topic": "trajectory-simulation",
-   "description": "Point-mass flight of a one- to three-stage rocket from the rail to impact: apogee, impact range, peak Mach and dynamic pressure, with wind and parachutes."
+   "description": "Point-mass flight of a one- to three-stage rocket from the rail to impact: apogee, impact range, peak Mach and dynamic pressure, with wind and parachutes.",
+   "final": true
   },
   {
    "slug": "two-stage-weights",
@@ -571,7 +575,7 @@
    "slug": "ogive-nose",
    "title": "Ogive Nose",
    "area": "aero",
-   "summary": "Profile, wetted area and area centroid of a tangent-ogive nose.",
+   "summary": "Shape a nose cone and see its drag, tip shocks, lift, bending, surface pressure and tip temperature.",
    "abstract": "This topic provides the simple geometric properties of ogive noses. The math is captured in Ogive Nose.doc . The math, in turn, is implemented in Ogive Profile.xls .",
    "status": "available",
    "calculators": [

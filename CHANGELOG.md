@@ -3,6 +3,16 @@
 Newest first, in the spirit of [Keep a Changelog](https://keepachangelog.com/). From 2026-10-25 every entry names its
 branch, tag and commit range. Live site: https://rocketcalculator.github.io/.
 
+## 2026-10-26 — Final: Nose Cone, Trajectory, Parachute, Single Wedge (`improve/final-polish`)
+- Final (purple) badge for Nose Cone Design, Trajectory Simulation, Parachute Recovery and Single Wedge.
+- Wind-profile sketch (height, speed and direction seen from above, no numbers) on the right of the Trajectory and
+  Parachute drawings, on the drawing's own height scale.
+- Trajectory: four key results (peak Mach moved to the results table).
+- Nose Cone: the shapes-compared drag plot moved to Explore with four reference shapes; drawing labels moved off the
+  nose (CP below with a leader, tip angle ahead of the tip, caption at the bottom, shocks kept inside the frame).
+- Home page: a topic merged into another calculator is no longer shown as its own card (Nose Cone appeared three times).
+- Single Wedge: the fin count is labelled as scaling only the whole-rocket wave-drag increment.
+
 ## 2026-10-26 — Single Wedge: shock–expansion theory (`improve/single-wedge`)
 - Angle of attack added; each face solved exactly (oblique shock or Prandtl–Meyer expansion, NACA 1135): section
   lift, drag, L/D, face pressures and Mach numbers, shock angles, total-pressure loss, Mach and Prandtl–Meyer angles,

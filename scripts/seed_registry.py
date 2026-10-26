@@ -114,7 +114,7 @@ TOPICS = {
     'NewLaun': ('new-launcher', 'traj', 'Design of a university sounding-rocket launcher and rail deflection.'),
     'NosePresCoef': ('nose-pressure-coefficient', 'aero', 'Incompressible surface pressure on a slender nose by source superposition.'),
     'Nozzles': ('nozzles', 'prop', 'De Laval nozzle thrust coefficient with the Malina 3-D correction.'),
-    'OgivNose': ('ogive-nose', 'aero', 'Profile, wetted area and area centroid of a tangent-ogive nose.'),
+    'OgivNose': ('ogive-nose', 'aero', 'Shape a nose cone and see its drag, tip shocks, lift, bending, surface pressure and tip temperature.'),
     'OptiNoseShap': ('optimum-nose-shape', 'aero', 'Subsonic nose shaping to delay vortex separation and roll lock-in.'),
     'OptiWeigAllo': ('optimum-weight-allocation', 'prop', 'Best split of weight between two stages for maximum burnout velocity.'),
     'PitcWave': ('pitch-yaw-wavenumber', 'dyn', 'The single most important parameter of rocket short-period motion.'),
@@ -238,7 +238,7 @@ def main():
             'references': ref_ids, 'sourceFiles': other,
         })
     # calculators the owner has reviewed and signed off: shown with a purple "Final" badge on the home page
-    FINAL = {'fin-flutter', 'reliability-growth', 'nozzle-thrust', 'geophysics'}
+    FINAL = {'fin-flutter', 'reliability-growth', 'nozzle-thrust', 'geophysics', 'nose-cone', 'skyaero-trajectory', 'parachute-recovery', 'single-wedge'}
     calcs = [{'slug': s, 'title': ti, 'topic': TOPICS[tid][0], 'description': d, **({'final': True} if s in FINAL else {})} for s, ti, tid, d, *_ in CALCULATORS]
     reg = {
         'source': 'http://www.rsandt.com/reports.html',

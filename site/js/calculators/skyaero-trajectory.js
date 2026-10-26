@@ -8,6 +8,7 @@ import { s, fmt, InputError } from '../util.js';
 import { text, path } from '../ui/svg.js';
 import { toDisplay, displayUnit, unitLabel } from '../units.js';
 import { fetchWinds, mapActions, METEO_CREDIT } from '../ui/meteo.js';
+import { windSketch } from '../ui/windSketch.js';
 
 const ALT = { dim: 'altitude', internal: 'ft' };
 const DIST = { dim: 'distance', internal: 'ft' };
@@ -245,7 +246,7 @@ export default {
       info: { text: ['The straight-line distance from the pad to the landing point, along and across the launch direction together.', 'It must stay inside your recovery area.'], tex: 'r_I=\\sqrt{x_I^2+y_I^2}', doc: 'wind' } },
     { id: 'vImp', label: 'Landing descent speed', sym: 'V_I', ...SPD, key: true, digits: 3, status: (x, out) => ST[out.lv.land], note: (x, out) => (out.v.useMain || out.v.useDrogue ? `you accept ${Q(out.v.vLand, SPD, 3)}` : 'no parachute: ballistic'),
       info: { text: ['How fast the rocket falls when it reaches the ground (the vertical part; the wind adds a sideways part).', 'Under a fully open main it is the steady descent speed at ground level.'], tex: 'V=\\sqrt{\\frac{2W}{C_DS\\rho}}', doc: 'recovery' } },
-    { id: 'maxMach', label: 'Peak Mach number', sym: 'M_{max}', ...NONE, key: true, digits: 3, note: (x, out) => `at ${fmt(out.o.maxMach.t, { digits: 3 })} s, ${Q(out.o.maxMach.z, ALT, 4)}`,
+    { id: 'maxMach', label: 'Peak Mach number', sym: 'M_{max}', ...NONE, digits: 3, note: (x, out) => `at ${fmt(out.o.maxMach.t, { digits: 3 })} s, ${Q(out.o.maxMach.z, ALT, 4)}`,
       info: { text: ['The fastest the rocket flies, as a multiple of the speed of sound.', 'Near and above Mach 1 drag jumps, the nose and fins heat and flutter becomes likelier: use it in the Fin Flutter calculator.'], doc: 'forces' } },
     { id: 'tw', label: 'Liftoff thrust-to-weight', sym: 'T/W', ...NONE, digits: 3, status: (x, out) => ST[out.lv.tw], note: (x, out) => `you need ${fmt(out.v.twMin, { digits: 3 })}`,
       info: { text: ['Peak thrust divided by the weight at liftoff (vacuum thrust, as SKYAERO reports it).'], tex: 'T/W=\\frac{T_{max}}{W_0}', doc: 'rail' } },
@@ -452,7 +453,7 @@ export default {
   schematicTitle: 'Flight profile',
   schematicHint: 'Height against distance along the launch direction, both to the same scale (the launcher is enlarged): powered flight thick, coasting solid, under the drogue dashed, under the main dotted, with dots at equal time steps and the wind along the flight on the left. Drag the launcher to tilt it, the red ceiling line up or down, or the flag at the edge of the recovery area',
   schematic(ctx, v, out) {
-    const W = 760, Hh = 420, o = out.o, hist = o.hist, lv = out.lv;
+    const W = 880, Hh = 420, o = out.o, hist = o.hist, lv = out.lv;
     const fr = ctx.frame({ width: W, height: Hh, label: 'Flight profile: height against distance along the launch direction, to scale' });
     const g = fr.layer('main'); g.replaceChildren();
     const ua = ctx.U(ALT), ud = ctx.U(DIST), us = ctx.U(SPD), A = (h) => `${fmt(ua.v(h), { digits: 3 })} ${ua.plain}`, Dd = (x) => `${fmt(ud.v(x), { digits: 3 })} ${ud.plain}`, Sp = (x) => `${fmt(us.v(x), { digits: 3 })} ${us.plain}`;
@@ -534,6 +535,11 @@ export default {
       }
     }
     g.append(text(18, 20, `to scale · ${o.burnouts.length > 0 ? 'thick: motor burning · ' : ''}dots every ${step >= 60 ? `${step / 60} min` : `${step} s`} · site ${A(v.ho)} above sea level`, { size: 10.5, cls: 'sc-dim-text', field: 'ho' }));
+    // wind profile sketch on the right, on the drawing's height scale
+    if (out.wp) {
+      const top = zTop / 1.08, Lw = layered(v) ? out.wp.L : [0, 0.33, 0.66, 1].map((f) => ({ h: f * top, w: v.windU, dir: v.windDir }));
+      if (Lw.some((r) => r.w > 0)) windSketch(g, Lw, Z, { x: 780, w: 86, yTop: yt - 6, yGround: yg }, top);
+    }
     // handles
     ctx.handle('launcher', tx, ty, { field: 'QE', title: 'Drag to tilt the launcher',
       onDrag: (mx, my) => ctx.setValue('QE', Math.max(1, Math.min(90, Math.atan2(yg - my, Math.max(1e-6, mx - px)) / D2R)), { round: 0.5 }), onKey: (dx, dy) => ctx.setValue('QE', Math.max(1, Math.min(90, v.QE + 0.5 * (dy || -dx)))) });

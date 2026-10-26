@@ -317,7 +317,7 @@ scripts/generate_pages.mjs`; write `site/docs/<slug>.html`; add REPAIR/INVARIANT
 |---|---|---|---|---|---|---|
 | Nose and flow (drawing) | What does the air do at the tip? | Yes — shocks, Mach lines, incidence, CP on the shape | Drags tip, shoulder, air arrow | Shocks in danger red; detached bow shock sketched | Nose to scale; body cut short (labelled) | KEEP (new) |
 | Along the nose (main, panels) | Where is the pressure, lift and bending? | Yes — the load builds to the shoulder | Takes M_b to the joint design | CP line through all panels; sonic Cp line | Shape panel to scale | KEEP (new) |
-| Which shape has the least drag (main) | Which shape for my Mach range? | Yes — the trade-off across Mach | Picks a shape | Transonic gap, your Mach line | Axes | KEEP (new) |
+| Shapes compared (Explore) | Which shape for my Mach range? | Partly — owner found it hard to read with seven lines | Picks a shape | Transonic gap, your Mach line | Axes | MOVED to Explore, four reference shapes (2026-10-26) |
 | Tip shock vs Mach, T₀ vs Mach, subsonic optimum, profile coordinates (Explore) | Secondary | Yes | Material, export | Limit lines | Axes | KEEP |
 
 **Parachute Recovery**

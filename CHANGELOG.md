@@ -3,6 +3,18 @@
 Newest first, in the spirit of [Keep a Changelog](https://keepachangelog.com/). From 2026-10-25 every entry names its
 branch, tag and commit range. Live site: https://rocketcalculator.github.io/.
 
+## 2026-10-25 — Trajectory Simulation cycle 1 (`improve/trajectory-cycle-1`)
+- Verdict against your limits (rail exit speed off the physical rail, liftoff T/W, altitude ceiling, recovery area,
+  landing speed; DECISIONS D26) with solved fixes: shortest rail, main diameter, ballast, main opening height.
+- Wind layers (height, speed, from-direction) and launch azimuth; sideways drift estimate and landing point on the map;
+  "Load winds from Open-Meteo" (also site elevation and temperature) and map links.
+- Plots: whole flight (height, speed with Mach, distance) and boost (thrust/drag, g, Mach, q) as shared-axis panels;
+  ground track from above; Explore: rail exit vs rail length, wind components, flight path angle.
+- Drawing redrawn to scale with ceiling, recovery area, events, time dots, wind by layer; handles for launcher
+  elevation, ceiling and area edge. Info tabs for every input and result.
+- Rail exit time/speed interpolated to the rail end. Panel charts stack vertical-line labels by `row`.
+- Verified: npm test (300), slider sweep, ui-layout 390/1280 SI/US, ui-diagrams, uifuzz, screenshots light/dark/phone.
+
 ## 2026-10-25 — Parachute Recovery: wind layers and forecast winds (`feat/recovery-wind-layers`)
 - Wind as one average speed or as layers (height, speed, direction it blows from); the drift is integrated through the
   descent and gives the landing point and its bearing. Ground-track plot seen from above with the recovery-area

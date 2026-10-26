@@ -57,3 +57,30 @@ test('Atmosphere: drag lowers apogee, main parachute lands at terminal speed; RK
   // +wind blows away from the launcher: Lewis weathercocking into it shortens the range
   assert.ok(simulate({ ...p, wind: [[0, 20], [5000, 20]] }).impact.x < o.impact.x);
 });
+
+test('Trajectory calculator: solved fixes hit their targets; wind layers split along and across the flight', async () => {
+  const calc = (await import('../site/js/calculators/skyaero-trajectory.js')).default;
+  const v0 = {};
+  for (const g of calc.groups) for (const f of g.fields) v0[f.id] = f.default;
+  // shortest rail for the exit speed: the physical rail of that length gives exactly the target speed
+  const short = calc.compute({ ...v0, L: 4, s1Wd: 70 });
+  assert.equal(short.verdict.level, 'unsafe');
+  assert.ok(short.results.railV < 44);
+  close(calc.compute({ ...v0, L: short.results.Lneed, s1Wd: 70 }).results.railV, 44, 1e-6, 'rail exit at the suggested rail');
+  // main diameter for the landing speed: flying that main lands at the accepted speed
+  const r = calc.compute({ ...v0, vLand: 18 });
+  close(calc.compute({ ...v0, vLand: 18, dM: r.results.Dneed }).results.vImp, 18, 0.01, 'landing speed under the suggested main');
+  // ballast for the ceiling: apogee comes down to it
+  const two = calc.compute({ ...v0, nStages: '2', s1Wd: 36, ceiling: 20000 });
+  close(calc.compute({ ...v0, nStages: '2', s1Wd: 36, ceiling: 20000, s2Wd: 9 + two.results.ballast }).results.apo, 20000, 1e-3, 'apogee with the ballast');
+  // a tailwind straight along the launch direction is all in-plane: same as the 2-D wind table, no sideways drift
+  const tail = calc.compute({ ...v0, windMode: 'layers', az: 90, winds: [{ h: 0, w: 20, dir: 270 }, { h: 5000, w: 20, dir: 270 }] });
+  close(tail.results.cross, 0, 1e-9, 'no crosswind', 1);
+  tail.p.wind.forEach(([, w]) => close(w, 20, 1e-12, 'in-plane tailwind'));
+  // a wind from the south when firing west pushes the rocket north: to the right of the plane of fire
+  const crossN = calc.compute({ ...v0, windMode: 'layers', az: 270, winds: [{ h: 0, w: 20, dir: 180 }] });
+  assert.ok(crossN.results.cross > 0 && crossN.ground.N > 0, 'drifts north');
+  crossN.p.wind.forEach(([, w]) => close(w, 0, 1e-9, 'no in-plane part', 1));
+  // no parachute is a ballistic landing
+  assert.equal(calc.compute({ ...v0, useDrogue: false, useMain: false }).lv.land, 'unsafe');
+});

@@ -260,7 +260,7 @@ export function createChart(host, opts = {}) {
       for (const l of spec.vlines || []) {
         if (!Number.isFinite(l.x)) continue;
         plot.append(s('line', { class: 'hline', y1: top, y2: bot, x1: X(l.x), x2: X(l.x), stroke: l.color || 'var(--text-3)' }));
-        if (l.label && i === spec.panels.findIndex((q) => !q.draw)) plot.append(svgRich(s('text', { x: X(l.x) + 5, y: top + 11, fill: l.color || 'var(--text-3)', 'font-size': 10.5 }), l.label, 10.5));
+        if (l.label && i === spec.panels.findIndex((q) => !q.draw)) plot.append(svgRich(s('text', { x: X(l.x) + 5, y: top + 11 + 13 * (l.row || 0), fill: l.color || 'var(--text-3)', 'font-size': 10.5 }), l.label, 10.5));
       }
       for (const se of series) {
         let d = '', run = [];

@@ -58,7 +58,24 @@
         <h2>Wind</h2>
         <p>Lewis’ method assumes the rocket instantly heads into the relative wind. A real rocket has inertia, so in powered flight only part of the wind turns it; Hoult’s finite-inertia correction gives the fraction <span class="tex">k</span> as a function of altitude in pitch wavelengths, rising from 0 at the rail to nearly 1 after about 5 radians of <span class="tex">\lambda_Ph</span>:</p>
         <div class="eq"><div class="tex-display">w_{sim}=k(\lambda_Ph)\,w(h)\ \text{(powered)},\qquad w_{sim}=w(h)\ \text{(coasting and on parachutes)}</div></div>
-        <p>The wind is the in-plane component, positive blowing away from the launcher. A rocket weathercocks into the wind, so a downrange wind shortens the range. For the launcher settings that compensate wind, use the Wind Compensation calculator with impact points from runs in each wind component.</p>
+        <p>The wind is entered as layers: height above the ground, speed, and the compass direction it blows <em>from</em> (the meteorological convention weather services use; Open-Meteo does not state it, so it is assumed). Between layers the east and north components are interpolated linearly; outside the table the end layer holds. With the launch azimuth <span class="tex">\psi</span> (clockwise from north), each layer splits into a component along the plane of fire and one across it:</p>
+        <div class="eq"><div class="tex-display">w_\parallel=u\sin\psi+v\cos\psi,\qquad w_\perp=u\cos\psi-v\sin\psi</div></div>
+        <p>where <span class="tex">u, v</span> are the east and north components of the air motion. Since both are linear in <span class="tex">u, v</span>, sampling <span class="tex">w_\parallel</span> at the layer heights gives the integrator exactly the interpolated profile. Positive <span class="tex">w_\parallel</span> blows away from the launcher; a rocket weathercocks into the wind, so it shortens the range.</p>
+        <p><strong>Sideways drift (an estimate, this site’s addition).</strong> The simulation is two-dimensional. The crosswind is taken to carry the rocket fully after apogee, <span class="tex">y_I=\int_{t_{apo}}^{t_I}w_\perp(h)\,dt</span>, and not at all while it climbs (when it weathercocks into the wind instead). The landing point is then <span class="tex">r_I=\sqrt{x_I^2+y_I^2}</span> from the pad. For the launcher settings that compensate the wind, use the Wind Compensation calculator.</p>
+        <p>“Load winds from Open-Meteo” fetches, on your click only, the forecast 10 m wind and the pressure-level winds from 1000 to 200 hPa with their geopotential heights at the latitude and longitude, plus the terrain elevation and 2 m temperature, which set the site elevation and ground temperature. Weather data by <a href="https://open-meteo.com/" rel="noopener">Open-Meteo.com</a> (CC BY 4.0).</p>
+      </section>
+
+      <section id="verdict">
+        <h2>Verdict and fixes</h2>
+        <p>SKYAERO gives no pass/fail limits, so <strong>you set them</strong>; the bands below are this project’s margins, not published limits (DECISIONS D26).</p>
+        <ul>
+          <li><strong>Rail exit speed</strong> off the <em>physical</em> rail (the simulated rail only models weathercocking): SAFE at or above your value (rule of thumb 44 ft/s, 13.4 m/s), MARGINAL down to 0.8 of it, UNSAFE below.</li>
+          <li><strong>Liftoff thrust-to-weight</strong> (peak vacuum thrust over liftoff weight): the same 1 / 0.8 bands (rule of thumb 5).</li>
+          <li><strong>Apogee</strong>: SAFE up to 0.9 of your ceiling, MARGINAL up to it, UNSAFE above.</li>
+          <li><strong>Landing speed</strong> (vertical speed at the ground): SAFE at or below yours, MARGINAL up to 1.25 times it, UNSAFE above; no parachute is UNSAFE (ballistic).</li>
+          <li><strong>Landing distance</strong> from the pad: SAFE within 0.8 of the recovery-area radius, MARGINAL up to it, UNSAFE beyond.</li>
+        </ul>
+        <p>The fixes are solved, not guessed: the shortest rail for your exit speed (bisection on the physical rail length, run to rail exit only); the main diameter for your landing speed, from the steady descent at ground density, <span class="tex">D_M=\sqrt{8W/(\pi C_{DM}\rho_GV_T^2)}</span>; the ballast in the top stage that brings apogee to the ceiling (bisection); and the main opening height that brings the landing point inside the area (bisection). The tests check that each suggested value meets its target when flown.</p>
       </section>
 
       <section id="phases">
@@ -83,7 +100,7 @@
           <li><strong>Wind in the integrator.</strong> SKYAERO’s Runge–Kutta loop feeds half the simulated wind into its mid-step evaluations and adds the wind to itself when updating the relative velocity. The calculator evaluates <span class="tex">w_{sim}</span> afresh at every stage of every step.</li>
           <li><strong>Upper-stage thrust time.</strong> SKYAERO looks up the second and third stage thrust tables with the time since liftoff, not since ignition; the calculator uses the time since ignition.</li>
           <li><strong>Upper atmosphere.</strong> SKYAERO adds a warming layer from 65 617 to 104 987 ft and returns no temperature above it; the calculator keeps the isothermal stratosphere of the geophysics memo, which changes drag negligibly at those heights.</li>
-          <li><strong>Not included.</strong> Air-dropped and balloon launches with a stabilization chute (SKYAERO phases 1–2), a target impact altitude different from the launch site, and cross-plane wind are left out; run the cross-plane case by entering that component as the in-plane wind.</li>
+          <li><strong>Not included.</strong> Air-dropped and balloon launches with a stabilization chute (SKYAERO phases 1–2), and a target impact altitude different from the launch site are left out. Cross-plane wind is only the descent drift estimate above, not a 3-D flight.</li>
         </ul>
       </section>
 

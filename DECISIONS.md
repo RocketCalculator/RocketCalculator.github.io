@@ -180,3 +180,10 @@ Decisions taken while the owner was unavailable. Each entry: date, question, opt
 - The tip half-angle is the cone through the tip and the profile at 2 % of the length (Haack and power noses have an
   infinite slope exactly at the tip).
 
+
+## D28 — 2026-10-26 — Single wedge: exact section by shock–expansion theory; verdict on shock attachment
+- Angle of attack added; each face solved exactly (oblique shock or Prandtl–Meyer expansion, NACA 1135 p. 624),
+  Busemann and Ackeret shown for comparison. Base pressure is a user input (default 0, base drag excluded): no source
+  for a fin-base pressure was read.
+- Verdict: the windward face must keep an attached shock. SAFE with ≥ 2° to spare (δ + α ≤ θ_max − 2°), MARGINAL
+  within 2° or with a subsonic leading edge, UNSAFE when detached. The 2° margin is this project's choice.

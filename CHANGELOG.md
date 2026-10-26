@@ -3,6 +3,15 @@
 Newest first, in the spirit of [Keep a Changelog](https://keepachangelog.com/). From 2026-10-25 every entry names its
 branch, tag and commit range. Live site: https://rocketcalculator.github.io/.
 
+## 2026-10-26 — Single Wedge: shock–expansion theory (`improve/single-wedge`)
+- Angle of attack added; each face solved exactly (oblique shock or Prandtl–Meyer expansion, NACA 1135): section
+  lift, drag, L/D, face pressures and Mach numbers, shock angles, total-pressure loss, Mach and Prandtl–Meyer angles,
+  compared with Busemann and linear theory. Optional base pressure.
+- Verdict on shock attachment (D28) with the largest half-angle and the attachment Mach number as fixes.
+- Drawing at incidence with the windward shock, the leeward shock or expansion fan, Mach lines and face states;
+  handles for the wedge angle and the angle of attack. New plots: lift and drag against α (exact vs linear),
+  θ–β–M chart; Explore: Prandtl–Meyer angle and the earlier plots.
+
 ## 2026-10-26 — Nose Cone Design (`feat/nose-cone`)
 - Ogive Nose Profile, Nose Pressure Distribution and Optimum Nose Shape merged into one **Nose Cone Design**
   calculator (old URLs redirect). Twelve shapes (Crowell): cone, bi-conic, tangent and secant ogive, elliptical,

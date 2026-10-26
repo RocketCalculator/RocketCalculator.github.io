@@ -227,6 +227,11 @@ scripts/generate_pages.mjs`; write `site/docs/<slug>.html`; add REPAIR/INVARIANT
   rail fix hits its target to 1e-6.
 - Open-Meteo also fills site elevation and 2 m temperature (shared `ui/meteo.js` with Parachute Recovery).
 
+### Single Wedge (`single-wedge`) — shock–expansion (2026-10-26)
+- **Read:** NACA 1135 p. 622–626 (eqs. 142–149 oblique shock, 171–173 Prandtl–Meyer, the p. 624 statement on wedges at
+  incidence) from page images. Checks: ν_max 130.454° (eq. 172: 130.45°), ν(2) 26.38°, Ackeret limit, and the slope
+  of the exact c_n at α = 0 equals the existing exact multiplier to 1e-4.
+
 ### Nose Cone Design (`nose-cone`) — merge of ogive-nose, nose-pressure and optimum-nose (2026-10-26)
 - **Sources read this session:** G. A. Crowell, *The Descriptive Geometry of Nose Cones* (1996; all shape equations,
   C_Nα = 2, X_n = V/A, bluffness, the qualitative drag ranking); NACA Report 1135 (oblique-shock and attachment text

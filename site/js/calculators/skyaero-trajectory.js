@@ -8,7 +8,7 @@ import { s, fmt, InputError } from '../util.js';
 import { text, path } from '../ui/svg.js';
 import { toDisplay, displayUnit, unitLabel } from '../units.js';
 import { fetchWinds, mapActions, METEO_CREDIT } from '../ui/meteo.js';
-import { windSketch } from '../ui/windSketch.js';
+import { windBarbs } from '../ui/windSketch.js';
 
 const ALT = { dim: 'altitude', internal: 'ft' };
 const DIST = { dim: 'distance', internal: 'ft' };
@@ -451,9 +451,9 @@ export default {
     },
   ],
   schematicTitle: 'Flight profile',
-  schematicHint: 'Height against distance along the launch direction, both to the same scale (the launcher is enlarged): powered flight thick, coasting solid, under the drogue dashed, under the main dotted, with dots at equal time steps and the wind along the flight on the left. Drag the launcher to tilt it, the red ceiling line up or down, or the flag at the edge of the recovery area',
+  schematicHint: 'Height against distance along the launch direction, both to the same scale (the launcher is enlarged): powered flight thick, coasting solid, under the drogue dashed, under the main dotted, with dots at equal time steps, and the winds aloft on the left as standard wind barbs. Drag the launcher to tilt it, the red ceiling line up or down, or the flag at the edge of the recovery area',
   schematic(ctx, v, out) {
-    const W = 880, Hh = 420, o = out.o, hist = o.hist, lv = out.lv;
+    const W = 800, Hh = 440, o = out.o, hist = o.hist, lv = out.lv;
     const fr = ctx.frame({ width: W, height: Hh, label: 'Flight profile: height against distance along the launch direction, to scale' });
     const g = fr.layer('main'); g.replaceChildren();
     const ua = ctx.U(ALT), ud = ctx.U(DIST), us = ctx.U(SPD), A = (h) => `${fmt(ua.v(h), { digits: 3 })} ${ua.plain}`, Dd = (x) => `${fmt(ud.v(x), { digits: 3 })} ${ud.plain}`, Sp = (x) => `${fmt(us.v(x), { digits: 3 })} ${us.plain}`;
@@ -463,7 +463,7 @@ export default {
     const showEdge = v.Rf <= 2.5 * Math.max(xR - xL, 0.3 * o.hApo);
     if (showEdge) { if (side > 0) xR = Math.max(xR, v.Rf); else xL = Math.min(xL, -v.Rf); }
     const zTop = Math.max(o.hApo, showCeil ? v.ceiling : 0, 1) * 1.08;
-    const bx0 = 120, bx1 = 720, yt = 46, yg = 340, k = Math.min((bx1 - bx0) / (xR - xL || 1), (yg - yt) / zTop);
+    const bx0 = 140, bx1 = 760, yt = 52, yg = 340, k = Math.min((bx1 - bx0) / (xR - xL || 1), (yg - yt) / zTop);
     const x0 = bx0 + ((bx1 - bx0) - (xR - xL) * k) / 2, X = (x) => x0 + (x - xL) * k, Z = (z) => yg - z * k;
     // ground, recovery area, pad
     const aL = X(Math.max(xL, -v.Rf)), aR = X(Math.min(xR, v.Rf));
@@ -524,21 +524,11 @@ export default {
     g.append(s('path', { d: `M${px - 7},${yg}L${px},${yg - 12}L${px + 7},${yg}Z`, fill: 'var(--text-2)' }));
     g.append(s('line', { x1: px, y1: yg, x2: tx, y2: ty, stroke: 'var(--text)', 'stroke-width': 3, 'data-field': 'QE L' }));
     g.append(text(px, yg + 40, `QE ${fmt(v.QE, { digits: 3 })}° · off the rail at ${Sp(out.results.railV)}`, { anchor: 'middle', size: 10.5, field: 'QE vRail' }));
-    // wind along the flight, by layer, on the left: length ∝ speed (right = downrange)
+    g.append(text(W - 14, Hh - 10, `to scale · ${o.burnouts.length > 0 ? 'thick: motor burning · ' : ''}dots every ${step >= 60 ? `${step / 60} min` : `${step} s`} · site ${A(v.ho)} above sea level`, { anchor: 'end', size: 10.5, cls: 'sc-dim-text', field: 'ho' }));
+    // winds aloft as wind barbs on the left, on the drawing's height scale
     if (out.wp) {
-      const pxPer = 0.9 * (us.plain === 'm/s' ? 3.2 : 1) * us.v(1);
-      let lastY = Infinity;
-      for (const r of out.wp.L.filter((r) => Z(r.h) >= yt)) {
-        const y = Z(r.h), c = out.wp.comp(r.h).inPlane, len = Math.max(-40, Math.min(40, pxPer * c));
-        if (Math.abs(len) > 2) g.append(s('path', { d: `M${62 - len / 2},${y}h${len}`, class: 'sc-accent', 'marker-end': fr.arrow('acc'), 'data-field': 'winds' }));
-        if (lastY - y >= 13) { g.append(text(18, y - 5, `${Sp(Math.abs(c))} ${c >= 0 ? 'tail' : 'head'}`, { size: 9.5, cls: 'sc-dim-text', field: 'winds az' })); lastY = y; }
-      }
-    }
-    g.append(text(18, 20, `to scale · ${o.burnouts.length > 0 ? 'thick: motor burning · ' : ''}dots every ${step >= 60 ? `${step / 60} min` : `${step} s`} · site ${A(v.ho)} above sea level`, { size: 10.5, cls: 'sc-dim-text', field: 'ho' }));
-    // wind profile sketch on the right, on the drawing's height scale
-    if (out.wp) {
-      const top = zTop / 1.08, Lw = layered(v) ? out.wp.L : [0, 0.33, 0.66, 1].map((f) => ({ h: f * top, w: v.windU, dir: v.windDir }));
-      if (Lw.some((r) => r.w > 0)) windSketch(g, Lw, Z, { x: 780, w: 86, yTop: yt - 6, yGround: yg }, top);
+      const top = zTop / 1.08, Lw = layered(v) ? out.wp.L : [0, 0.25, 0.5, 0.75, 1].map((f) => ({ h: f * top, w: v.windU, dir: v.windDir }));
+      windBarbs(g, Lw, Z, { x: 58, yTop: yt - 4, yGround: yg }, top);
     }
     // handles
     ctx.handle('launcher', tx, ty, { field: 'QE', title: 'Drag to tilt the launcher',

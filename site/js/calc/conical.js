@@ -97,14 +97,18 @@ const TABLES = new Map();
  * Cone table at Mach M by sweeping the shock angle from the Mach angle to detachment (weak branch): rows
  * [cone half-angle °, shock angle °, surface Cp], increasing in cone angle; maxDeg = detachment cone angle. Cached.
  */
-export function coneTable(M, g = 1.4, n = 32) {
+export function coneTable(M, g = 1.4, n = 56) {
   const key = `${M.toFixed(4)}/${g}`;
   if (TABLES.has(key)) return TABLES.get(key);
   const mc = maxCone(M, g), mu = Math.asin(1 / M), rows = [[0, mu / D2R, 0]];
   for (let i = 1; i <= n; i++) {
-    const b = mu + (mc.beta - mu) * (i / n) ** 1.5, r = coneFromShock(M, b, g);
+    const b = mu + (mc.beta - mu) * (i / n) ** 2, r = coneFromShock(M, b, g);
     if (r.cone > rows[rows.length - 1][0] * D2R) rows.push([r.cone / D2R, b / D2R, surface(M, r, g).cp]);
   }
+  // exact solutions at small half-angles, where the shock-angle sweep has few rows and Cp is far from linear
+  for (const deg of [0.5, 1, 1.5, 2, 3]) if (deg * D2R < mc.cone) { const f = coneFlow(M, deg * D2R, g, mc); if (f.attached) rows.push([deg, f.beta / D2R, f.cp]); }
+  rows.sort((a, b) => a[0] - b[0]);
+  for (let i = rows.length - 1; i > 0; i--) if (rows[i][0] - rows[i - 1][0] < 1e-6) rows.splice(i, 1);
   const t = { rows, rowsCp: rows.map((q) => [q[0], q[2]]), rowsBeta: rows.map((q) => [q[0], q[1]]), maxDeg: mc.cone / D2R };
   if (TABLES.size > 60) TABLES.delete(TABLES.keys().next().value);
   TABLES.set(key, t);

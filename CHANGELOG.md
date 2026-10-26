@@ -3,6 +3,15 @@
 Newest first, in the spirit of [Keep a Changelog](https://keepachangelog.com/). From 2026-10-25 every entry names its
 branch, tag and commit range. Live site: https://rocketcalculator.github.io/.
 
+## 2026-10-26 — Wind arrows on a height axis; Prandtl–Meyer on the nose (`improve/wind-barbs-nose-pm`)
+- Trajectory and Parachute drawings: the per-layer arrows and speed labels on the left are replaced by a winds-aloft
+  axis: one arrow per layer starting on the axis at its height, length ∝ speed, angle = direction seen from above
+  (north up). The right-hand sketch is removed.
+- Nose Cone: shock–expansion surface pressure (Prandtl–Meyer along the curving surface from the tip cone) as a second
+  curve beside tangent-cone; Prandtl–Meyer waves and the shoulder expansion fan in the drawing; Mach number at the
+  shoulder as a result; a leeward Prandtl–Meyer fan at the tip when α exceeds the tip angle (drawn like the Single
+  Wedge fan). Small-angle cone pressures now exact (table seeded with exact solutions at 0.5–3°).
+
 ## 2026-10-26 — Final: Nose Cone, Trajectory, Parachute, Single Wedge (`improve/final-polish`)
 - Final (purple) badge for Nose Cone Design, Trajectory Simulation, Parachute Recovery and Single Wedge.
 - Wind-profile sketch (height, speed and direction seen from above, no numbers) on the right of the Trajectory and

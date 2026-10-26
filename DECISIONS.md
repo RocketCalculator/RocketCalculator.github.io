@@ -168,3 +168,15 @@ Decisions taken while the owner was unavailable. Each entry: date, question, opt
 - The default example now has dual deploy (drogue + 12 ft main) so the page opens on a recoverable flight; SKYAERO's
   ballistic validation case stays as the second example.
 
+## D27 — 2026-10-26 — One Nose Cone Design calculator; its verdict and its estimates
+- Ogive Nose Profile, Nose Pressure Distribution and Optimum Nose Shape are merged into **Nose Cone Design**
+  (`nose-cone`), at the owner's request: all three described the same part. Their pages and theory pages redirect to
+  it; their physics modules and tests stay.
+- Verdict: **marginal** (never unsafe) when the stagnation temperature exceeds the user's material limit — T₀ is an
+  upper bound and transient heating is not modelled; **marginal** when the windward tip shock is detached or the
+  flight is transonic (M_cr ≤ M < 1.1, no method). Otherwise safe.
+- Supersonic pressure drag of curved noses uses the tangent-cone estimate (not checked against a source here;
+  labelled ±20 %); cones are exact. Windward/leeward tip shocks at incidence use cones of θ_tip ± α (estimate).
+- The tip half-angle is the cone through the tip and the profile at 2 % of the length (Haack and power noses have an
+  infinite slope exactly at the tip).
+

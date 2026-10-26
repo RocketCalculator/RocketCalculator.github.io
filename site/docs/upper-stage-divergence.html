@@ -58,6 +58,14 @@
         <p>The denominator of eq. (1) can reach zero before <span class="tex">q_D</span>: the flexibility of the nose erodes the static margin until the rocket is no longer stable. The calculator reports this case as “unstable”. To apply these factors in a loads analysis, increase the angle of attack of every element except the nose by eq. (1), and that of the nose by eq. (2).</p>
       </section>
 
+      <section id="verdict">
+        <h2>Verdict and fixes</h2>
+        <p>The memo gives the divergence dynamic pressure but no required margin. The calculator asks for yours, <span class="tex">n_D</span> (default 2, this site’s choice, not a published limit), and compares the margin <span class="tex">q_D/q</span> with it: <strong>safe</strong> at or above <span class="tex">n_D</span>, <strong>marginal</strong> between 1.25 and <span class="tex">n_D</span>, <strong>unsafe</strong> below 1.25, where the loads are more than five times those of a rigid stage, or when the bending makes the trimmed rocket statically unstable.</p>
+        <p>The fixes use the scalings of the formulas above, so they are exact within the model. Aiming at <span class="tex">q_D=n_Dq</span>:</p>
+        <div class="eq"><div class="tex-display">t_{ok}=t\,\frac{n_Dq}{q_D},\qquad l_{ok}=l\sqrt{\frac{q_D}{n_Dq}},\qquad C_{ok}=C\,\frac{q_D}{n_Dq},\qquad q_{ok}=\frac{q_D}{n_D}</div></div>
+        <p>When the trim check finds the rocket unstable, the smallest first-stage tail slope that keeps the denominator of eq. (1) positive is <span class="tex">C_{N1\alpha}&gt;(x_2C_{N2\alpha}+x_3C_{NN\alpha}q_D/(q_D-q))/x_1</span>.</p>
+      </section>
+
       <section id="verification">
         <h2>Verification</h2>
         <p>The tests reproduce the field tool’s divergence dynamic pressures for upper-stage lengths from 140 to 220 in, and its load-amplification column. The two trim amplifications are checked against a direct solution of the coupled moment balance and beam equations. The tests also confirm <span class="tex">q_D(l_{max})=q</span>, the <span class="tex">1/l^2</span> and <span class="tex">t</span> scalings, and the flexible-joint formula.</p>

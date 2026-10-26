@@ -174,8 +174,8 @@ export default {
         const o = out.o, ud = U(DIST), last = v.table.at(-1), need = Math.max(Math.abs(o.dI), Math.abs(v.WC));
         // straight segments: the runs are interpolated linearly
         const series = [{ name: 'trajectory runs', points: v.table.map((r) => [ud.v(r.r), r.qe]), dots: true }];
-        // always defined, so the legend does not jump when a range passes the last run
-        const ext = []; if (need > last.r) for (let i = 0; i <= 20; i++) { const x = last.r + ((need - last.r) * i) / 20; ext.push([ud.v(x), qeForRange(v.table, x).qe]); }
+        // always defined (from the last run), so the legend does not jump when a range passes the last run
+        const ext = [[ud.v(last.r), last.qe]]; if (need > last.r) for (let i = 1; i <= 20; i++) { const x = last.r + ((need - last.r) * i) / 20; ext.push([ud.v(x), qeForRange(v.table, x).qe]); }
         series.push({ name: 'extrapolated', points: ext, dashed: true });
         return { x: { label: 'Zero-wind impact range', unit: ud.label }, y: { label: 'Launcher QE', unit: '{}^{\\circ}' }, series,
           markers: [{ x: ud.v(Math.abs(o.dI)), y: o.qeI, label: 'in plane' }, { x: ud.v(Math.abs(v.WC)), y: o.qeC, label: 'cross plane', color: 'var(--text-2)' }] };

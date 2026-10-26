@@ -3,6 +3,18 @@
 Newest first, in the spirit of [Keep a Changelog](https://keepachangelog.com/). From 2026-10-25 every entry names its
 branch, tag and commit range. Live site: https://rocketcalculator.github.io/.
 
+## 2026-10-26 — Upper-Stage Divergence cycle (`improve/upper-stage-divergence-2`)
+- Verdict on the margin q_D/q against your required margin (D39), with solved fixes: the thinnest wall, the longest
+  stage, the stiffest joint and the highest dynamic pressure that keep it; an unstable trim gives the first-stage tail
+  slope needed.
+- Inputs bounded with sliders, grouped (stage → flight → your limits → whole-rocket trim, advanced) with info tabs to
+  the high-school standard. Drawing coloured by the verdict, gauge banded at your margin, nose-tip / joint handle.
+  Plots mark your margin; the trim plot moved to Explore.
+- **All calculators:** a slider with its own step now snaps in the field's internal unit. A 10⁵ psi step on a modulus
+  shown in GPa used to round every position to 0 (and 100 lbf/ft² steps did the same to pressures shown in kPa).
+- Wind Compensation: the "extrapolated" series starts at the last run, so it always has a point (fixes a test failure
+  from the legend fix in #49).
+
 ## 2026-10-26 — Yo-Yo Despinner cycle (`improve/yo-yo-despin-2`)
 - **Verdict** (SAFE / MARGINAL / UNSAFE) on two things the builder cares about: the final spin against a user target ±
   tolerance, evaluated at the worst combination of the roll-inertia and initial-spin uncertainties (new inputs, ± %),

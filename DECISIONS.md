@@ -242,3 +242,8 @@ the side the slosh is now (above → narrower tank / lower pitch frequency / mor
 - Defaults: tolerance ±6 rpm (Bush's flown requirement), ±2 % inertia and spin, breaking strength 400 lbf (a user
   value, no sourced cable data).
 - A target at or above the initial spin is sized for 95 % of the initial spin (nearest buildable) with a warning.
+
+## D39 — 2026-10-26 — Upper-stage divergence verdict on the margin q_D/q
+- The user sets the margin to keep below divergence (default 2; the memo gives none). SAFE q_D/q ≥ n_D, MARGINAL
+  1.25 ≤ q_D/q < n_D, UNSAFE below 1.25 (loads ×5) or when the bending makes the trimmed rocket unstable. Same 1.25
+  inner band as D33/D36. Not a published limit.

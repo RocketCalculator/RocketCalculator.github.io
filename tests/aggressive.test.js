@@ -127,7 +127,7 @@ const INVARIANTS = {
   'launcher-deflection': (v, R) => [R.pitchDeg >= R.yawDeg - 1e-12, R.yawDeg >= 0, R.Fp >= R.Ft - 1e-12, R.I > 0, R.Lmax === 'no limit' || Math.abs(v.factor * R.Fp * R.Lmax ** 2 / (2 * R.EI) * 180 / Math.PI - v.allow) <= 1e-9 * v.allow],
   'tethered-pibal': (v, R) => [R.Vc > 0 && R.Vc <= R.V * (1 + 1e-12), R.corr > 0 && R.corr <= 1, R.lift > 0, Math.abs(Math.hypot(R.north, R.east) - R.Vc) <= 1e-9 * R.Vc, R.b >= 0 && R.c >= 0],
   'nose-cone': (v, R) => [R.T0 > 0, R.xcp > 0 && R.xcp < R.Leff, R.CNa === 2, R.S > 0, R.Vol > 0, R.Mcr > 0 && R.Mcr <= 1, R.CD === '—' || Number.isFinite(R.CD), R.beta === '—' || (R.beta > 0 && R.beta <= 90)],
-  'payload-venting': (v, R) => [Number.isFinite(R.dpMax), R.tau > 0, R.A > 0, R.p0 > 0],
+  'payload-venting': (v, R) => [Number.isFinite(R.dpMax), R.tau > 0, R.A > 0, R.p0 > 0, R.allow > 0, Number.isFinite(R.MTmax)],
   'body-bending': (v, R) => [R.f1 > 0 && R.f2 > R.f1 && R.f3 > R.f2, R.L > 0, R.W > 0],
   'ground-handling': (v, R) => [R.W > 0, R.xCG >= v.xL || R.lift0 > 0, Number.isFinite(R.FL) && Number.isFinite(R.MJ)],
   'flight-path-dispersion': (v, R) => [R.gD >= 0 && R.gG >= 0, Math.abs(Math.hypot(R.gD, R.gG) - R.gam) <= 1e-9 * R.gam + 1e-300, R.g0 <= R.gam * (1 + 1e-12), R.LA >= 0, R.n > 0 && R.n < 1],

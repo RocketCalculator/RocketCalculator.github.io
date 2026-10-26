@@ -3,6 +3,16 @@
 Newest first, in the spirit of [Keep a Changelog](https://keepachangelog.com/). From 2026-10-25 every entry names its
 branch, tag and commit range. Live site: https://rocketcalculator.github.io/.
 
+## 2026-10-26 — Payload Bay Venting cycle 1 (`improve/payload-venting`)
+- Verdict against what must hold the pressure: a taped door (Δp_allow = σL/A, Hoult; Espinoza et al., 0.2 lbf/in
+  design peel) or your own allowable (D29); solved fixes: smallest vent diameter and fewest holes.
+- Drawing: nose and bay with vents (flow arrows ∝ throat Mach), the taped door bulging with the push against what
+  the tape holds, pressure columns (cut axis), and a draggable timeline of |Δp| to scrub through the climb.
+- Plots: the climb as panels (Mach, pressures, Δp with the allowable, vent throat Mach); vent-size trade-off with the
+  allowable and twice the holes. "Fill from the Trajectory Simulation". Info tabs for every input.
+- Fixes: unstable integration for tiny bays with huge vents (now tracks the outside pressure); Kármán–Tsien guarded
+  near its singularity; warning when the critical Mach number does not match the vent Cp.
+
 ## 2026-10-26 — Wind arrows on a height axis; Prandtl–Meyer on the nose (`improve/wind-barbs-nose-pm`)
 - Trajectory and Parachute drawings: the per-layer arrows and speed labels on the left are replaced by a winds-aloft
   axis: one arrow per layer starting on the axis at its height, length ∝ speed, angle = direction seen from above

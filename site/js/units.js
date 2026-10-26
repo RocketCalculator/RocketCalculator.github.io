@@ -50,6 +50,7 @@ export const UNITS = {
   Nm2: { label: 'N·m²', ...lin(1) }, lbfin2: { label: 'lbf·in²', ...lin(LBF * IN * IN) },
   cm4: { label: 'cm⁴', ...lin(1e-8) }, in4: { label: 'in⁴', ...lin(IN ** 4) },
   Nm: { label: 'N·m', ...lin(1) }, lbfin: { label: 'lbf·in', ...lin(LBF * IN) },
+  Npm: { label: 'N/m', ...lin(1) }, lbfpin: { label: 'lbf/in', ...lin(LBF / IN) },
 };
 
 /** Default display unit per dimension and system. Fields may override with `units: {si, us}`. */
@@ -90,6 +91,7 @@ export const DIMS = {
   compliance: { si: 'radpernm', us: 'radperlbin' },
   stiffness: { si: 'Nm2', us: 'lbfin2' },
   areaInertia: { si: 'cm4', us: 'in4' },
+  lineLoad: { si: 'Npm', us: 'lbfpin' },   // force per length (tape peel strength)
   moment: { si: 'Nm', us: 'lbfin' },        // bending moment     // second moment of area
   none: { si: 'none', us: 'none' },
 };

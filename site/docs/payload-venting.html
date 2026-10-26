@@ -48,6 +48,20 @@
         <p>The vents exit into the flow over the body, at <span class="tex">p_X=p_a+\tfrac12\gamma p_aM_\infty^2C_{pX}</span>. Below the critical Mach number of the vent location, the incompressible pressure coefficient (from the Nose Pressure Distribution calculator) is scaled by Kármán–Tsien; above it, a table from a transonic or supersonic method (for example second-order shock-expansion) is interpolated. Vents just behind the nose shoulder see suction, which raises the difference across the shell; the largest difference usually comes near burnout.</p>
       </section>
 
+      <section id="door">
+        <h2>Will the door stay on? The allowable pressure difference</h2>
+        <p>A door taped round its edge is pushed outwards by the pressure difference across it. The push on the door is <span class="tex">\Delta p\,A_{door}</span>. The tape holds with its peel strength <span class="tex">\sigma</span> (force per length of edge) along the edge length <span class="tex">L</span>. So the door peels off when (Hoult, “Pressure Strength of Taped-On Doors”, 2011; Espinoza et al., eq. 1)</p>
+        <div class="eq"><div class="tex-display">A_{door}\,\Delta p\ge L\,\sigma\quad\Rightarrow\quad \Delta p_{allow}=\frac{\sigma L}{A_{door}}=\frac{2\sigma(l+w)}{lw}\ \text{(rectangular door)}</div></div>
+        <p>Espinoza, Vite, Rios and Hoult tested an 11.88 × 4.25 in door (50.47 in², 32.25 in of edge) taped with three layers of aluminium tape onto a cardboard tube. It failed at about 0.2 psi, a peel strength of about 0.3 lbf/in. They recommend 0.2 lbf/in for sizing vents, and that is the default. Smaller doors, and long narrow ones, hold more. Crenellated edges add edge length without adding area (Hoult).</p>
+        <p><b>Verdict</b> (DECISIONS D29): the largest <span class="tex">|\Delta p|</span> during the climb against the allowable.</p>
+        <ul>
+          <li>SAFE up to the allowable.</li>
+          <li>MARGINAL up to 1.25 times it. With the 0.2 lbf/in design peel, the measured failure point is 1.5 times the allowable.</li>
+          <li>UNSAFE beyond.</li>
+        </ul>
+        <p>You can enter your own allowable instead. The fixes are solved: the smallest vent diameter, by bisection on the full simulation, and the fewest holes of your size.</p>
+      </section>
+
       <section id="verification">
         <h2>Verification</h2>
         <p>With the original field tool’s trajectory (0.01 s steps), atmosphere and inputs, the tests reproduce its bay pressure, vent-exit pressure and integration constant at every checked step, and its largest difference of 0.1437 psi at 5.14 s. The memo’s plot (0.66 psi) belongs to a different case: it is labelled with a vent area of 0.0144 in², not the stored tool’s 0.0124 in². Further tests check the choking limit, the orifice interpolation and the supersonic pressure table.</p>

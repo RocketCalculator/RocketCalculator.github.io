@@ -27,21 +27,22 @@ export function lerp(rows, x) {
 
 /** Vent-exit pressure coefficient at Mach M: Kármán–Tsien on Cp0 below Mcr, the table above (memo eq. 6). */
 export function cpVent(M, Cp0, Mcr, table) {
-  if (M < Mcr) { const b = Math.sqrt(1 - M * M); return Cp0 / (b + (Cp0 / 2) * (1 - b)); }
-  const b = Math.sqrt(1 - Mcr * Mcr);
-  return lerp([[Mcr, Cp0 / (b + (Cp0 / 2) * (1 - b))], ...table.filter(([m]) => m > Mcr)], M);
+  // Kármán–Tsien is singular where its denominator reaches 0 (strong suction near Mach 1): kept above 0.05
+  const kt = (m) => { const b = Math.sqrt(1 - m * m); return Cp0 / Math.max(0.05, b + (Cp0 / 2) * (1 - b)); };
+  if (M < Mcr) return kt(M);
+  return lerp([[Mcr, kt(Mcr)], ...table.filter(([m]) => m > Mcr)], M);
 }
 
 /**
  * Cavity pressure history. { traj: [[t, h (ft MSL), V (ft/s)], …], atm: h → { p, T }, Vol (ft³), A (ft²), Cinc, Csonic,
  * Cp0, Mcr, cpTable: [[M, Cp], …] above Mcr, dt (s) }. The cavity starts at the launch-site pressure and temperature.
  */
-export function vent({ traj, atm, Vol, A, Cinc, Csonic, Cp0, Mcr, cpTable, dt }) {
+export function vent({ traj, atm, Vol, A, Cinc, Csonic, Cp0, Mcr, cpTable, dt, quasi = false }) {
   const a0 = atm(traj[0][1]), p0 = a0.p, T0 = a0.T;
   const K = (-G * Math.sqrt(G * R_AIR * T0) * A) / (Vol * p0 ** ((G - 1) / (2 * G)));
   const hOf = traj.map(([t, h]) => [t, h]), vOf = traj.map(([t, , V]) => [t, V]);
   const outside = (t) => {
-    const a = atm(lerp(hOf, t)), M = lerp(vOf, t) / Math.sqrt(G * R_AIR * a.T), Cp = cpVent(M, Cp0, Mcr, cpTable);
+    const a = atm(lerp(hOf, t)), M = lerp(vOf, t) / Math.sqrt(G * R_AIR * a.T), Cp = Math.max(cpVent(M, Cp0, Mcr, cpTable), M > 0 ? -1.8 / (G * M * M) : -Infinity);   // never below 10 % of ambient (vacuum is −2/γM²)
     return { pa: a.p, M, Cp, pX: a.p + ((G * a.p * M * M) / 2) * Cp };
   };
   const rate = (pX, pC) => {
@@ -53,11 +54,13 @@ export function vent({ traj, atm, Vol, A, Cinc, Csonic, Cp0, Mcr, cpTable, dt })
   let t = traj[0][0], pC = p0, worst = { dp: 0, t }, o = outside(t);
   for (let i = 0; i <= n; i++) {
     const dp = pC - o.pX;
-    if (i % keep === 0 || i === n) hist.push({ t, pC, ...o, dp });          // history thinned to about 2 000 rows
+    if (i % keep === 0 || i === n) hist.push({ t, pC, ...o, dp, MT: machThroat(o.pX, pC) });          // history thinned to about 2 000 rows
     if (Math.abs(dp) > Math.abs(worst.dp)) worst = { dp, t, M: o.M, pC, pX: o.pX, pa: o.pa };
     if (i === n) break;
     // RK4: the outside state at t, t + dt/2 and t + dt is computed once; t + dt carries to the next step
-    const mid = outside(t + dt / 2).pX, next = outside(t + dt);
+    const next = outside(t + dt);
+    if (quasi) { pC = next.pX; t += dt; o = next; continue; }   // vents so large the bay follows the outside at once
+    const mid = outside(t + dt / 2).pX;
     const k1 = rate(o.pX, pC), k2 = rate(mid, pC + (dt * k1) / 2), k3 = rate(mid, pC + (dt * k2) / 2), k4 = rate(next.pX, pC + dt * k3);
     pC += (dt * (k1 + 2 * k2 + 2 * k3 + k4)) / 6; t += dt; o = next;
   }

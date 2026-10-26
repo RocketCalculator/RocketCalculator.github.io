@@ -187,3 +187,9 @@ Decisions taken while the owner was unavailable. Each entry: date, question, opt
   for a fin-base pressure was read.
 - Verdict: the windward face must keep an attached shock. SAFE with ≥ 2° to spare (δ + α ≤ θ_max − 2°), MARGINAL
   within 2° or with a subsonic leading edge, UNSAFE when detached. The 2° margin is this project's choice.
+
+## D29 — 2026-10-26 — Payload venting verdict against the door (or the user's) allowable pressure difference
+- Taped doors: Δp_allow = σL/A (Hoult 2011; Espinoza et al.), σ = 0.2 lbf/in by default (their recommended design
+  value; measured failure ≈ 0.3). SAFE |Δp|max ≤ Δp_allow, MARGINAL ≤ 1.25 Δp_allow, UNSAFE beyond. The 1.25 band is
+  this project's choice (the measured peel gives failure at 1.5×). Otherwise the user enters an allowable.
+

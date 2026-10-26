@@ -75,6 +75,29 @@
         <p><strong>Fraction of the pitch wavenumber.</strong> Alternatively, for any stage, choose <span class="tex">\lambda_R</span> as a fraction of the pitch wavenumber <span class="tex">\lambda_P</span>. Body-fixed perturbations produce an angle-of-attack response proportional to <span class="tex">\lambda_P^2/(\lambda_P^2-\lambda_R^2)</span>, so roll erodes static stability; as long as <span class="tex">\lambda_R</span> stays below 30–40 % of <span class="tex">\lambda_P</span> the damage is small. A higher roll rate still reduces dispersion. The memo’s example sets the burnout roll rate to 0.3 × the burnout pitch natural frequency, about 5 roll cycles to burnout.</p>
       </section>
 
+      <section id="boost-roll">
+        <h2>Roll through the boost</h2>
+        <p>The roll does not start at its final rate. The rocket must first spin up its own roll inertia. Hoult’s “Small Sounding Rocket Boost Phase Roll Rate” (2013, eqs. 2b and 5b–5e) treats a boost with constant acceleration, <span class="tex">U^2=2ah</span>, and one representative air density. The steady roll wavenumber (roll angle per distance flown) of a common cant <span class="tex">\delta</span> is</p>
+        <div class="eq"><div class="tex-display">\lambda_{R0}=-\frac{\delta NC_{L\delta}}{RC_{Lp}},\qquad \lambda_R=\frac{\lambda_{R0}}{1-J},\quad J=\frac{k}{x-L},\quad k=\frac{I_{xx}}{2\pi\rho R^4C_{Lp}}</div></div>
+        <p>Here <span class="tex">x</span> is the height flown and <span class="tex">L</span> the launcher length. <span class="tex">J</span> is negative because <span class="tex">C_{Lp}&lt;0</span>, so the roll lags the steady value and catches up as the rocket climbs. The roll angle since launcher exit is <span class="tex">\lambda_{R0}\left[x-L+k\ln\frac{x-L-k}{-k}\right]</span>. The “Roll through the boost” plot shows both the lagging and the steady roll rate against speed, and the roll turns. The target cant includes this lag: it is solved with <span class="tex">J</span> at burnout.</p>
+      </section>
+
+      <section id="pitch-limit">
+        <h2>How fast may it roll? The verdict</h2>
+        <p>A rolling rocket turns body-fixed misalignments into a rotating disturbance. The angle-of-attack response grows by <span class="tex">\lambda_P^2/(\lambda_P^2-\lambda_R^2)</span> as the roll wavenumber approaches the pitch wavenumber (Fin Setting Theory rev. 3, p. 6). The memo advises that the damage is small while <span class="tex">\lambda_R</span> stays below 30–40 % of <span class="tex">\lambda_P</span>. The calculator reads that guidance as bands (DECISIONS D31):</p>
+        <ul>
+          <li>SAFE up to 30 % of the pitch frequency at burnout;</li>
+          <li>MARGINAL up to 40 %;</li>
+          <li>UNSAFE above 40 %. Past 100 % the roll locks onto the pitch frequency: see the Roll Lock-In calculator.</li>
+        </ul>
+        <p>The memo also asks for at least 2–3 whole roll turns between launcher exit and burnout, to average out misalignments. That is shown on the turns card. The solved values are:</p>
+        <ul>
+          <li>the cant for your target;</li>
+          <li>the largest cant that keeps the roll at 30 % of the pitch frequency;</li>
+          <li>the smallest cant for 2 turns.</li>
+        </ul>
+      </section>
+
       <section id="assumptions">
         <h2>Assumptions and limits</h2>
         <ul>

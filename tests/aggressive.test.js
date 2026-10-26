@@ -88,7 +88,7 @@ const REPAIR = {
     if (v.noseL >= v.bodyLen) v.bodyLen = v.noseL * (1.2 + 6 * r());
     if (v.bt > 0 && v.b <= v.cR * Math.tan((v.bt * Math.PI) / 180)) v.bt = 0;
   },
-  'fin-cant-angle': (v, r) => { if (v.b <= v.R) v.b = v.R * (1.1 + 2 * r()); },
+  'fin-cant-angle': (v, r) => { if (v.h <= v.L) v.h = v.L * (2 + 20 * r()) + 10; },
   'yo-yo-despin': (v, r) => { if (v.ff >= v.f0) v.ff = v.f0 * r(); v.mu = r() < 0.8 ? 0 : Math.min(v.mu, 1e-5 * r()); },
   'newtonian-drag': (v, r) => { if (v.r2 <= v.r1) v.r2 = v.r1 * (1.05 + 3 * r()) + 1e-3; },
   'nozzle-thrust': (v, r) => { if (r() < 0.8) v.pa = Math.min(v.pa, 0.45 * r() * v.pc); if (v.din < 2.6 * v.dt) v.din = v.dt * (2.6 + 3 * r()); if (v.de <= 1.02 * v.dt) v.de = v.dt * (1.1 + 5 * r()); const eps = (v.de / v.dt) ** 2, rt = v.dt / 2; v.Lc = convergentLength(rt, v.din / 2, 15 + 40 * r()); v.Ld = v.type === 'cone' ? conicalLength(rt, eps, 8 + 20 * r(), 0.382 * rt) : (0.6 + 0.4 * r()) * conicalLength(rt, eps, 15, 0.382 * rt); },
@@ -109,7 +109,7 @@ const REPAIR = {
 const INVARIANTS = {
   'bifilar-pendulum': (v, R) => [R.I_periods > 0, R.I_length > 0, R.PG_theory > 0, R.k > 0],
   'drag-coefficient': (v, R) => [R.CDf > 0, R.CDbOff >= 0, R.CDoff > 0, R.CDon > 0, R.lamFrac >= 0 && R.lamFrac <= 100 + 1e-9, R.CDoffPar >= R.CDoff - 1e-12],
-  'fin-cant-angle': (v, R, warned) => [Math.abs(R.delta) < Math.PI / 2 || warned, R.CLp < 0, R.Ycp >= v.R - 1e-9 && R.Ycp <= v.b + 1e-9],
+  'fin-cant-angle': (v, R, warned) => [Math.abs(R.deltaT) < 90 || warned, R.CLp < 0, R.Ycp >= v.R - 1e-9 && R.Ycp <= v.b + 1e-9, R.fBO >= 0, R.ratio >= 0, R.J <= 0, R.delta30 > 0, R.delta2 > 0],
   'fin-flutter': (v, R) => [R.Vf > 0, R.SF > 0, R.tNeed > 0, R.A > 0, R.eps >= 0.25, R.Valt > 0, R.Vhoult > 0, R.SFhot <= R.SF * (1 + 1e-12)],
   geophysics: (v, R) => [R.p > 0, R.rho > 0, R.gh > 0, R.T > 0, R.a > 0],
   'newtonian-drag': (v, R) => [R.CD >= 0, R.CDnose >= 0, R.CDfins >= 0, R.cpt > 0 && R.cpt < 2, !v.cap || (R.capXcp >= 0 && R.capXcp <= v.capR), !v.cone || (R.coneXcp >= 0 && R.coneXcp <= v.coneL)],
@@ -337,12 +337,20 @@ test('Nozzle: thrust falls with ambient pressure, a wider cone loses thrust, the
   for (const f of [0.7, 1.4]) assert.ok(at(opt * f) < at(opt), `C_F off-optimum ×${f}`);
 });
 
-test('Fin cant: steady cant angle is linear in roll rate and sign-symmetric', () => {
-  const a = run('fin-cant-angle', { mode: 'rate', f: 1 }).delta, b = run('fin-cant-angle', { mode: 'rate', f: 2 }).delta;
+test('Fin cant: target cant is linear in roll rate and sign-symmetric; roll grows with cant; the fixes hit their targets', () => {
+  const a = run('fin-cant-angle', { mode: 'rate', f: 1 }).deltaT, b = run('fin-cant-angle', { mode: 'rate', f: 2 }).deltaT;
   assert.ok(Math.abs(b / a - 2) < 1e-9);
-  const n = run('fin-cant-angle', { mode: 'rate', f: -1 }).delta;
+  const n = run('fin-cant-angle', { mode: 'rate', f: -1 }).deltaT;
   assert.ok(Math.abs(n + a) < 1e-12);
-  increasing([2, 4, 8].map((Mc) => run('fin-cant-angle', { mode: 'cycles', Mc }).delta), 'cant vs roll cycles');
+  increasing([2, 4, 8].map((Mc) => run('fin-cant-angle', { mode: 'cycles', Mc }).deltaT), 'cant vs roll cycles');
+  increasing([0.1, 0.2, 0.4].map((delta) => run('fin-cant-angle', { delta }).fBO), 'roll rate vs cant');
+  increasing([1000, 2000, 3000].map((V) => run('fin-cant-angle', { V }).ratio), 'roll/pitch vs burnout speed (the pitch wavenumber falls as 1/U)');
+  const r = run('fin-cant-angle', { delta: 0.4 });
+  close2(run('fin-cant-angle', { delta: r.delta30 }).ratio, 30, 'δ30 gives 30 % of pitch');
+  close2(run('fin-cant-angle', { delta: r.delta2 }).turns, 2, 'δ2 gives 2 turns');
+  close2(run('fin-cant-angle', { delta: r.deltaT }).fBO, 1.24, 'target cant gives the target rate');
+  const c = run('fin-cant-angle', { mode: 'cycles', Mc: 5 });
+  close2(run('fin-cant-angle', { mode: 'cycles', Mc: 5, delta: c.deltaT }).turns, 5, 'target cant gives the target turns');
 });
 
 test('Reliability growth: more tests and better fixing raise reliability; the worksheet table is reproduced', () => {

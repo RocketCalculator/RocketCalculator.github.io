@@ -39,7 +39,7 @@ test('Push from one calculator, pull into all others', () => {
 
   const cant = defaults(bySlug['fin-cant-angle']);
   pullShared(bySlug['fin-cant-angle'], cant, shared);
-  assert.equal(cant.R, 3.1); assert.ok(Math.abs(cant.b - 8.3) < 1e-12, 'tip radius = R + exposed span');
+  assert.equal(cant.R, 3.1); assert.equal(cant.span, 5.2, 'exposed span shared directly');
 
   const nose = defaults(bySlug['nose-cone']);
   assert.deepEqual(pullShared(bySlug['nose-cone'], nose, shared).sort(), ['L', 'R']);
@@ -49,11 +49,11 @@ test('Push from one calculator, pull into all others', () => {
   for (const def of defs) { const v = defaults(def); pullShared(def, v, shared); assert.doesNotThrow(() => def.compute(v, {}), def.slug); }
 });
 
-test('Derived link: cant-angle tip radius pushes exposed span', () => {
-  const def = bySlug['fin-cant-angle'], v = defaults(def), shared = {};
-  v.R = 3; v.b = 8;
-  pushShared(def, v, shared, ['b']);
-  assert.deepEqual(shared, { finSpan: 5 });
+test('Derived link: a leading-edge radius pushes the fin thickness', () => {
+  const def = bySlug['newtonian-drag'], v = defaults(def), shared = {};
+  v.rLE = 0.1;
+  pushShared(def, v, shared, ['rLE']);
+  assert.ok(Math.abs(shared.finT - 0.2) < 1e-12, JSON.stringify(shared));
 });
 
 test('Pull respects field limits and options', () => {

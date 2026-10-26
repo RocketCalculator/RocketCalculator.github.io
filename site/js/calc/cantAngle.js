@@ -53,3 +53,23 @@ export function cantForCycles({ Ixx, rho, h, L, Mc }, d, { R, N }) {
   const delta = (-2 * Math.PI * Mc * Rft * d.CLp) / (N * d.CLd * brkt);
   return { k, brkt, delta, deltaDeg: (delta * 180) / Math.PI };
 }
+
+/**
+ * Roll that a common cant δ (rad) gives during a constant-acceleration boost — Hoult, "Small Sounding Rocket Boost Phase
+ * Roll Rate" (2013), eqs. (2b), (5b)–(5e). Steady roll wavenumber λ_R0 = −δ N C_Lδ /(R C_Lp) (rad/ft, R in ft);
+ * at altitude x (ft above the launcher's base) J = k/(x − L), λ_R = λ_R0/(1 − J) and the roll angle since launcher exit is
+ * λ_R0 [x − L + k ln((x − L − k)/(−k))]. Below the launcher top there is no roll.
+ */
+export function rollFromCant(delta, d, { R, N, Ixx, rho, L }) {
+  const Rft = R / 12, lam0 = (-delta * N * d.CLd) / (Rft * d.CLp);
+  const k = Ixx / (2 * Math.PI * rho * Rft ** 4 * d.CLp);
+  const at = (x) => {
+    const s = x - L;
+    if (!(s > 0)) return { J: -Infinity, lam: 0, turns: 0 };
+    return { J: k / s, lam: lam0 / (1 - k / s), turns: (lam0 * (s + k * Math.log((s - k) / -k))) / (2 * Math.PI) };
+  };
+  return { lam0, k, at };
+}
+
+/** Body-fixed misalignment response factor λ_P²/(λ_P² − λ_R²) (Fin Setting Theory rev. 3, p. 6); null at or past resonance. */
+export const misalignmentGain = (ratio) => (Math.abs(ratio) < 1 ? 1 / (1 - ratio * ratio) : null);

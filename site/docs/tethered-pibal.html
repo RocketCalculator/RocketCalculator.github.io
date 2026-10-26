@@ -50,6 +50,21 @@
         <p>The balloon drifts downwind, so its azimuth <span class="tex">\psi</span> from the winch is the direction the wind blows towards. The north and east components for the trajectory simulation are <span class="tex">V_N=V_c\cos\psi</span> and <span class="tex">V_E=V_c\sin\psi</span>.</p>
       </section>
 
+      <section id="verdict">
+        <h2>Is the reading good? Verdict and fixes</h2>
+        <p>Three things decide whether a reading can be trusted.</p>
+        <ul>
+          <li><strong>Not blown down.</strong> Near the sphere’s drag crisis the drag stops growing with wind speed, so the calibration curve folds back: CSULB found it double-valued once the zenith angle passes about 75°, i.e. below about <span class="tex">15^\circ</span> elevation (Samir et al., p. 6; the balloon size was chosen from sphere drag data on p. 3). The verdict is <strong>unsafe</strong> there. The balloon Reynolds number <span class="tex">Re=\rho VD/\mu</span> (viscosity at 15 °C, an estimate) is shown with a note past <span class="tex">3\times10^5</span>, the smooth-sphere drag crisis; it is not judged, since CSULB’s measured curve stayed usable to about 30 ft/s for its 3 ft balloon.</li>
+          <li><strong>The angle error.</strong> Since <span class="tex">V\propto\sqrt{\cot\Theta}</span>, an angle error <span class="tex">\delta\Theta</span> gives</li>
+        </ul>
+        <div class="eq"><div class="tex-display">\frac{\delta V}{V}=\frac{\delta\Theta}{\sin2\Theta}</div></div>
+        <p>smallest at 45°. With your accuracy and largest accepted error <span class="tex">e_{max}</span>, the good angles are <span class="tex">\Theta_{lo}\le\Theta\le90^\circ-\Theta_{lo}</span> with <span class="tex">\sin2\Theta_{lo}=\delta\Theta/e_{max}</span> (and never below 15°).</p>
+        <ul>
+          <li><strong>The tether correction</strong> of eq. (5) is first order, so the verdict is <strong>marginal</strong> when it exceeds the correction you accept. The longest line within it is found by bisection on the tether length.</li>
+        </ul>
+        <p>When the angle is outside the band, the balloon diameter that puts the same raw wind just inside the band (30° when blown down, 60° when too high) is solved by bisection: the elevation from eq. (1), <span class="tex">\tan\Theta=(B-W)/(\tfrac12\rho V^2C_DS)</span>, rises with the diameter. The bands are this site’s choices except the 15° limit, which is from the CSULB report.</p>
+      </section>
+
       <section id="verification">
         <h2>Verification</h2>
         <p>The tests reproduce the field tool’s wind speeds, bias terms, corrected speeds and heights for both of its readings when given its own buoyancy, weights and densities. They also reproduce the memo’s worked example (3 ft balloon, 600 ft of tether at 56.44°, raw speed 10.708 ft/s, tether-weight term 0.01685), its helium weight of 0.15 lb, the component split and a sinking-balloon case.</p>

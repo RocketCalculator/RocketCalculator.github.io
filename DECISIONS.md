@@ -215,3 +215,8 @@ Decisions taken while the owner was unavailable. Each entry: date, question, opt
 - The user sets the allowed tip slope (default 0.1°, Hoult's chosen bound; CSULB used 0.05°). SAFE ≤ allowed,
   MARGINAL ≤ 1.25×, UNSAFE beyond. Not a published standard.
 
+## D35 — 2026-10-26 — Wind compensation verdict on the launcher tilt
+- The user sets the range's tilt limit (default 20° from vertical, a common safety-code value; check your range).
+  SAFE θ_T ≤ θ_max, MARGINAL within it but extrapolated past the last zero-wind run, UNSAFE beyond. The reachable
+  region is drawn as a circle of radius r(90° − θ_max) round the wind-only point (small-tilt, additive model).
+

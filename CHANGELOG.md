@@ -3,6 +3,15 @@
 Newest first, in the spirit of [Keep a Changelog](https://keepachangelog.com/). From 2026-10-25 every entry names its
 branch, tag and commit range. Live site: https://rocketcalculator.github.io/.
 
+## 2026-10-26 — Modified Newtonian Drag cycle (`improve/newtonian-drag-2`)
+- Nose as one choice (rounded cone, flat-faced cone, none) with the tip radius, flat-face diameter and nose length;
+  fins by count, thickness (the edge radius is half of it), span and sweep — what the builder measures.
+- Drawing: the nose to scale with Newtonian pressure arrows (∝ C_PT cos²θ), the stagnation point and the sketched bow
+  shock; the fin with its sweep, the cross-flow Mach number and an enlarged edge section. Plots: pressure and drag
+  along the nose; wave drag against Mach (nose, fin edges, total); Explore: trade-offs against tip radius and sweep,
+  tip pressure against Mach. Key results say which input of the Drag Coefficient calculator they go into.
+- No verdict: wave drag is not safe or unsafe and the memo gives no judgement.
+
 ## 2026-10-26 — Roll Rate History cycle (`improve/roll-rate-history-2`)
 - Verdict on the peak and apogee roll rates against your limits (D32) with the exact largest cant; "Fill from the
   Trajectory Simulation"; fin size entered as the exposed span; a burnout below the launcher top is clamped with a

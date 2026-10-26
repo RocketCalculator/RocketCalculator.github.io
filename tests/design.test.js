@@ -49,11 +49,11 @@ test('Push from one calculator, pull into all others', () => {
   for (const def of defs) { const v = defaults(def); pullShared(def, v, shared); assert.doesNotThrow(() => def.compute(v, {}), def.slug); }
 });
 
-test('Derived link: a leading-edge radius pushes the fin thickness', () => {
-  const def = bySlug['newtonian-drag'], v = defaults(def), shared = {};
-  v.rLE = 0.1;
-  pushShared(def, v, shared, ['rLE']);
-  assert.ok(Math.abs(shared.finT - 0.2) < 1e-12, JSON.stringify(shared));
+test('Derived link: the drag calculator ogive switch pushes the shared nose type', () => {
+  const def = bySlug['drag-coefficient'], v = defaults(def), shared = {};
+  v.ogive = false;
+  pushShared(def, v, shared, ['ogive']);
+  assert.deepEqual(shared, { noseType: 'cone' });
 });
 
 test('Pull respects field limits and options', () => {

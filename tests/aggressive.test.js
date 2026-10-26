@@ -89,7 +89,7 @@ const REPAIR = {
     if (v.bt > 0 && v.b <= v.cR * Math.tan((v.bt * Math.PI) / 180)) v.bt = 0;
   },
   'fin-cant-angle': (v, r) => { if (v.h <= v.L) v.h = v.L * (2 + 20 * r()) + 10; },
-  'yo-yo-despin': (v, r) => { if (v.ff >= v.f0) v.ff = v.f0 * r(); v.mu = r() < 0.8 ? 0 : Math.min(v.mu, 1e-5 * r()); },
+  'yo-yo-despin': (v, r) => { if (r() < 0.5) v.mu = 0; },   // half the sets with massless wire; the rest keep heavy wires and targets above the initial spin (handled, not refused)
   'newtonian-drag': (v, r) => { if (v.r2 <= v.r1) v.r2 = v.r1 * (1.05 + 3 * r()) + 1e-3; },
   'nozzle-thrust': (v, r) => { if (r() < 0.8) v.pa = Math.min(v.pa, 0.45 * r() * v.pc); if (v.din < 2.6 * v.dt) v.din = v.dt * (2.6 + 3 * r()); if (v.de <= 1.02 * v.dt) v.de = v.dt * (1.1 + 5 * r()); const eps = (v.de / v.dt) ** 2, rt = v.dt / 2; v.Lc = convergentLength(rt, v.din / 2, 15 + 40 * r()); v.Ld = v.type === 'cone' ? conicalLength(rt, eps, 8 + 20 * r(), 0.382 * rt) : (0.6 + 0.4 * r()) * conicalLength(rt, eps, 15, 0.382 * rt); },
   'wind-compensation': (v, r) => { for (const k of ['WI', 'WC', 'R']) if (Math.abs(v[k]) > 5500) v[k] = Math.sign(v[k]) * 5500 * r(); },
@@ -114,7 +114,7 @@ const INVARIANTS = {
   geophysics: (v, R) => [R.p > 0, R.rho > 0, R.gh > 0, R.T > 0, R.a > 0],
   'newtonian-drag': (v, R) => [R.CD >= 0, R.CDnose >= 0, R.CDfins >= 0, R.cpt > 0 && R.cpt < 2, !v.cap || (R.capXcp >= 0 && R.capXcp <= v.capR), !v.cone || (R.coneXcp >= 0 && R.coneXcp <= v.coneL)],
   'single-wedge': (v, R, warned) => [R.K >= 1 - 1e-12, R.CDw >= 0, R.CDvehicle >= 0, R.MN > 0, R.thetaMax == null || (R.thetaMax > 0 && R.thetaMax < 46)],
-  'yo-yo-despin': (v, R) => [R.weightEach > 0 || !Number.isFinite(R.weightEach), R.T1 >= 0, R.T2 >= 0, R.tRelease > 0, R.r >= 0 && R.r < 1],
+  'yo-yo-despin': (v, R, warned) => [R.weightEach >= 0, R.T1 >= 0, R.T2 >= 0, R.Tpeak >= Math.max(R.T1, R.T2) * (1 - 1e-9), R.tRelease > 0, R.r < 1, v.mode === 'check' || R.r >= -1e-12 || warned, R.ffLo <= R.ffActual + 1e-12 && R.ffActual <= R.ffHi + 1e-12],
   'nozzle-thrust': (v, R) => [R.Me >= 1, R.pStar > 0 && R.pStar < v.pc, R.lambda >= 0.5 && R.lambda <= 1, R.cfVac >= R.cf - 1e-12, (R.sepMargin === '—') === !(v.pa > 0),
     typeof R.sepMargin !== 'number' || R.sepMargin >= 1 || R.xSep !== '—' || R.xShock !== '—', Math.abs(R.isp - (R.cf * R.cstar) / 9.80665) <= 1e-9 * Math.abs(R.isp), R.peNS < R.peSub],
   'propellant-slosh': (v, R) => [R.f1 > 0 && R.f2 > R.f1 && R.f3 > R.f2, R.m1frac > 0 && R.m1frac <= 100, R.fixedFrac >= -1e-9 && R.fixedFrac <= 100, R.L1 > 0],

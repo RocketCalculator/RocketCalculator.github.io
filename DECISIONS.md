@@ -232,3 +232,13 @@ the side the slosh is now (above → narrower tank / lower pitch frequency / mor
 - GOOD otherwise. Words GOOD/CHECK/REDO instead of SAFE/MARGINAL/UNSAFE because the verdict judges a measurement,
   not a flight hardware margin (the page renderer supports `verdict.word`).
 - Stopwatch default 0.2 s per run, tape 2 mm, scale 50 g: user judgements, stated as such in the info tabs.
+
+## D38 — 2026-10-26 — verdict bands (project choices, not published limits)
+- Final spin: SAFE when every combination of inertia (1 ± ε_I) and initial spin (1 ± ε_f) lands within the user's
+  tolerance of the target; MARGINAL up to 2× the tolerance; UNSAFE ("misses the target") beyond.
+- Wire: SAFE when breaking strength ≥ user safety factor × peak pull (default 2); MARGINAL between 1× and that;
+  UNSAFE below 1 (the wire breaks). Peak pull = max of the unwinding peak and the release tension over the
+  uncertainty corners. Neither source gives a safety factor.
+- Defaults: tolerance ±6 rpm (Bush's flown requirement), ±2 % inertia and spin, breaking strength 400 lbf (a user
+  value, no sourced cable data).
+- A target at or above the initial spin is sized for 95 % of the initial spin (nearest buildable) with a warning.

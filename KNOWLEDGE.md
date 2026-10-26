@@ -330,6 +330,47 @@ correlated CG-mark errors; repeatability across trials (would need a multi-trial
 | Plot "Inertia vs measured yaw period" | REMOVE | a parabola; the number "1 % → 2 %" says it all |
 | Plot "Error budget: how many cycles to time" | KEEP (new) | shows which measurement dominates and where the total meets the target |
 
+### Yo-Yo Despinner (`yo-yo-despin`) — cycle 2 (2026-10-26)
+**Sources read**
+- J. V. Fedor, *Analytical Theory of the Stretch Yo-Yo for De-Spin of Satellites*, NASA TN D-1676, 1963 (NTRS
+  19630004528). p. 1 (PDF p. 5): a rigid yo-yo turns a percentage error in initial spin into the same percentage error
+  in final spin. p. 6 (PDF p. 10), Eqs. 17–20: momentum at release `(I/m)φ̇₂ + (l+a)(aφ̇₂ + lγ̇) = const`, energy, and
+  the release force `kδ = (m/2)(aφ̇₂² + lγ̇²)` — with δ = 0 these are exactly the calculator's release equations and its
+  T₂ (test reproduces Eq. 20). p. 7 (PDF p. 11), Eq. 25: with δ = 0 and λ² ≈ I/m it reduces to
+  `m = (1−r)I/[(1+r)(l+a)²]` (drops the −a² term the worksheet keeps). p. 10 (PDF p. 14): one third of the wire mass
+  counts in the spin mass (citing TN D-708; "full scale tests have verified").
+- K. S. Bush, *Yo-Yo Despin Mechanisms*, 2nd Aerospace Mechanisms Symposium, NASA Langley, 1967 (NTRS 19680018324).
+  pp. 4–5: flown single-stage system, 3.83 slug·ft², 84 g each (incl. fittings), 10 in drum, 15.71 ft cable (three
+  complete wraps), 270 rpm → 0 ± 6 rpm; a complete despin is insensitive to the initial spin; two-stage and stretch
+  yo-yos reduce the error (not modelled).
+- RS&T worksheet YO-YO DSP (existing tests, cached cells).
+- Fedor TN D-708 (1961) is **not on NTRS and was not read**; it is cited only through D-1676 and the worksheet and the
+  page says so.
+
+**Worked-example checks**
+- Worksheet cells Q5, R5, T5, U5, W5 reproduced (existing); sized weight equals R5/2 within 0.2 % (exact root vs Fedor's form).
+- D-1676 Eq. 20 reproduced exactly with the rigid release state.
+- Bush flown system: geometry is exactly three wraps; the massless-cable model asks for 102 g per weight against the
+  flown 84 g. The cable mass is not given; a cable of about 11 g/m (an **assumption**, used in the page's second
+  example) closes the gap through the one-third rule. Recorded as a plausibility check only, not a verification.
+
+**Errata / notes**
+- Fedor's Eq. 25 for the rigid limit drops the −a² term; the worksheet keeps it; the calculator solves the quadratic
+  exactly (differences < 0.1 % for usual designs).
+- In sizing mode with a fixed target, the whole time history is invariant to the roll inertia (m ∝ I keeps c and r
+  fixed), so the drawing's paths do not change with I — only the weights and the loads. The weight markers are sized
+  by mass so the drawing still responds.
+- Very heavy weights (m a² ≳ 20 I) make the swing-out stiff; the integrator now caps its step and the page warns when
+  the integrated final spin disagrees with the exact one by > 0.5 %.
+
+**Quality Gate**
+| Item | Verdict | Why |
+|---|---|---|
+| Drawing: end view, fixed frame, animated | REDESIGN (done) | was body-frame paths only; now shows the spiral, swing-out, release and fly-off with dimensions, wire verdict colour, loads (wire thickness), handles |
+| Spin and wire pull through the despin (panels) | REDESIGN (done) | merged two separate plots onto one time axis with target and strength limit lines |
+| Choosing the weights (final spin vs weight) | KEEP (improved) | trade-off with the target band, inertia uncertainty curves and your weights |
+| Wire length trade-off (Explore) | NEW | shows that longer wires need far lighter weights while the pull changes much less |
+
 ### Diagram Quality Gate log
 
 **Fin Flutter**

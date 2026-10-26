@@ -51,7 +51,8 @@ export function simulate({ I, a, l, w0, m, n = 400 }) {
   const c = 1 + I / (m * a * a), phiE = l / a, t1 = phiE / w0, out = [];
   for (let i = 0; i <= n; i++) {
     const t = (t1 * i) / n, phi = w0 * t;
-    out.push({ t, w: (w0 * (c - phi * phi)) / (c + phi * phi), phase: 1, T: phase1Tension(m, a, w0, c, phi) });
+    // th: body angle turned since release, ∫ω dt = −φ + 2√c·atan(φ/√c) (for the drawing's animation)
+    out.push({ t, w: (w0 * (c - phi * phi)) / (c + phi * phi), phase: 1, T: phase1Tension(m, a, w0, c, phi), phi, th: -phi + 2 * Math.sqrt(c) * Math.atan(phi / Math.sqrt(c)) });
   }
   // phase 2: θ body angle, β wire angle (absolute); ψ = β − θ runs from −π/2 (tangent) to 0 (radial)
   const J = I + m * a * a, ml = m * l, mal = m * a * l;
@@ -68,10 +69,12 @@ export function simulate({ I, a, l, w0, m, n = 400 }) {
     const psi = st[1] - st[0], [tdd] = acc(st);
     return (m / 2) * (a * st[2] * st[2] * Math.cos(psi) + l * st[3] * st[3] - a * tdd * Math.sin(psi));
   };
-  const dt = t1 / n / 4;
+  const th1 = out[n].th, st = (x) => ({ th: th1 + x[0], psi: x[1] - x[0] });
+  const dt0 = t1 / n / 4;
   let t = t1, k = 0, T2max = tension(s);
   while (s[1] - s[0] < 0 && k++ < 200000) {
-    const k1 = deriv(s), k2 = deriv(s.map((x, i) => x + (dt / 2) * k1[i])), k3 = deriv(s.map((x, i) => x + (dt / 2) * k2[i])), k4 = deriv(s.map((x, i) => x + dt * k3[i]));
+    // smaller steps where the motion is fast or stiff (a light vehicle with heavy weights near release)
+    const k1 = deriv(s), dt = Math.min(dt0, 0.02 / (Math.abs(k1[0]) + Math.abs(k1[1]) + 1e-12), Math.sqrt(0.02 / (Math.abs(k1[2]) + Math.abs(k1[3]) + 1e-12))), k2 = deriv(s.map((x, i) => x + (dt / 2) * k1[i])), k3 = deriv(s.map((x, i) => x + (dt / 2) * k2[i])), k4 = deriv(s.map((x, i) => x + dt * k3[i]));
     const next = s.map((x, i) => x + (dt / 6) * (k1[i] + 2 * k2[i] + 2 * k3[i] + k4[i]));
     if (next[1] - next[0] >= 0) {   // interpolate to ψ = 0
       const f = (0 - (s[1] - s[0])) / ((next[1] - next[0]) - (s[1] - s[0]));
@@ -80,24 +83,45 @@ export function simulate({ I, a, l, w0, m, n = 400 }) {
     }
     s = next; t += dt;
     const T = tension(s); T2max = Math.max(T2max, T);
-    if (k % 4 === 0) out.push({ t, w: s[2], phase: 2, T });
+    if (k % 4 === 0) out.push({ t, w: s[2], phase: 2, T, ...st(s) });
   }
-  out.push({ t, w: s[2], phase: 2, T: tension(s) });
+  out.push({ t, w: s[2], phase: 2, T: tension(s), ...st(s) });
   return { samples: out, t1, tRelease: t, wRelease: s[2], T2max: Math.max(T2max, tension(s)) };
+}
+
+/** Closed-form state of a given yo-yo (total despin mass m, weights + ⅓ wires): final spin ratio at radial release and
+ *  the peak tension of each wire in both phases. Used for the uncertainty corners and the fixes. */
+export function evaluate({ I, a, l, w0, m }) {
+  const r = radialSpinRatio(I, a, l, m), c = 1 + I / (m * a * a);
+  const T1 = phase1Tension(m, a, w0, c, Math.min(Math.sqrt(c / 3), l / a)), T2 = releaseTension(I, a, l, w0, r * w0, m).T;
+  return { r, wf: r * w0, c, T1, T2, T: Math.max(T1, T2) };
+}
+
+/** Bisection for x in [lo, hi] where the monotone f(x) crosses the target (null when it does not). */
+export function solve(f, target, lo, hi, n = 80) {
+  let flo = f(lo) - target, fhi = f(hi) - target;
+  if (!(flo * fhi <= 0)) return null;
+  for (let i = 0; i < n; i++) {
+    const mid = (lo + hi) / 2, fm = f(mid) - target;
+    if (flo * fm <= 0) { hi = mid; fhi = fm; } else { lo = mid; flo = fm; }
+  }
+  return (lo + hi) / 2;
 }
 
 /**
  * Design: inputs I (slug·ft²), a and l (ft), w0 and wf (rad/s), mu wire mass per length (slug/ft).
  */
-export function yoyo({ I, a, l, w0, wf, mu = 0 }) {
-  const r = wf / w0;
-  const m = radialMass(I, a, l, r), mApprox = radialMassApprox(I, a, l, r);
+export function yoyo({ I, a, l, w0, wf, mu = 0, mWeights: mGiven }) {
+  // mGiven (both weights, slug): check a given yo-yo instead of sizing one for the final spin wf
+  const mT = mGiven == null ? null : mGiven + (2 * mu * l) / 3;
+  const r = mT == null ? wf / w0 : radialSpinRatio(I, a, l, mT);
+  const m = mT ?? radialMass(I, a, l, r), mApprox = radialMassApprox(I, a, l, r);
   const mWeights = m - (2 * mu * l) / 3;                     // wires counted as one third of their mass (worksheet)
   const c = 1 + I / (m * a * a), lambda = Math.sqrt(I / m + a * a);
   const phiStar = Math.min(Math.sqrt(c / 3), l / a);
   const T1 = phase1Tension(m, a, w0, c, phiStar);
   const sim = simulate({ I, a, l, w0, m });
-  const rel = releaseTension(I, a, l, w0, wf, m);
+  const rel = releaseTension(I, a, l, w0, r * w0, m);
   return {
     r, m, mApprox, mWeights, weightEach: (G0 * mWeights) / 2, wireMass: 2 * mu * l, c, lambda, tUnwind: sim.t1, tRelease: sim.tRelease,
     T1, T1atEnd: phiStar < Math.sqrt(c / 3), T2: Math.max(rel.T, sim.T2max), T2release: rel.T, releaseSpeed: rel.u, wireRate: rel.wireRate, T2Fedor: phase2TensionFedor(mWeights, a, l, w0, r), wSim: sim.wRelease, sim,

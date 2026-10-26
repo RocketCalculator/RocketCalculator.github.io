@@ -3,6 +3,34 @@
 Newest first, in the spirit of [Keep a Changelog](https://keepachangelog.com/). From 2026-10-25 every entry names its
 branch, tag and commit range. Live site: https://rocketcalculator.github.io/.
 
+## 2026-10-26 — Yo-Yo Despinner cycle (`improve/yo-yo-despin-2`)
+- **Verdict** (SAFE / MARGINAL / UNSAFE) on two things the builder cares about: the final spin against a user target ±
+  tolerance, evaluated at the worst combination of the roll-inertia and initial-spin uncertainties (new inputs, ± %),
+  and the peak wire pull (either phase, at the fast end of the spin uncertainty) against the wire's breaking strength
+  and a user safety factor. Bands are project choices (D38).
+- **Solved fixes**: the weight each that hits the target (closed form), the wire length that makes your weights hit it
+  (bisection, wire mass following the length), the inertia or spin uncertainty that brings the spread inside the
+  tolerance (bisection), the breaking strength needed (closed form), and the lightest wire when the bare wires already
+  overshoot. Tests check each lands on its target.
+- **Checking mode**: "Check weights I have" takes the weighed mass of each weight and gives the spin it leaves
+  (inverse of the release quadratic), including spin reversal for weights that are too heavy.
+- **Never refuses** coupled inputs any more: a target at or above the initial spin is sized for 95 % of it with a
+  warning; wires heavier than the despin mass give zero weights, the spin they leave, and a lighter-wire fix.
+- **Inputs** grouped in fill order (vehicle and spin → yo-yo and wires → your limits), every one bounded with a slider and
+  a three-paragraph info tab; spin entered and shown in rpm.
+- **Drawing**: to-scale end view in a fixed (non-spinning) frame — both weights spiralling out while unwinding (dashed),
+  swinging out (red) and flying off after release (dotted, with the release speed), the wires at release coloured by the
+  wire verdict, chained a / l / R dimensions, wraps count, a time-scaled SMIL animation (≤ 0.5 rev/s on screen, "shown
+  N× slower", pause/play, off under reduced motion) with the wire thickening with its pull; handles for the wire length
+  (drag the released weight) and the drum radius.
+- **Plots**: "Spin and wire pull through the despin" (stacked panels on one time axis, target ± tolerance and breaking
+  strength / ÷ safety factor as limit lines); "Choosing the weights" (final spin against weight mass at nominal and
+  ±inertia, target band, your weights); Explore: "Wire length trade-off" (weight needed and peak pull against wire
+  length).
+- **Physics**: phase-2 integration now takes smaller steps when the motion is fast or stiff (very heavy weights on a light
+  vehicle); a warning appears when the time history is only approximate. Sources read: Fedor NASA TN D-1676 and Bush
+  1967 (both NTRS); release equations, wire force and the one-third wire-mass rule cited with page numbers.
+
 ## 2026-10-26 — Bifilar Pendulum Inertia cycle (`improve/bifilar-pendulum-2`)
 - **Verdict** GOOD / CHECK / REDO (custom `verdict.word`, same colours as SAFE / MARGINAL / UNSAFE) against **your limits**:
   least period ratio `r_min` (default 1.5), largest error `u_max` (5 %), cross-check tolerance (3 %). Solved fixes:

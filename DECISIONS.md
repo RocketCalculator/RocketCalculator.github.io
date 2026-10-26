@@ -193,3 +193,9 @@ Decisions taken while the owner was unavailable. Each entry: date, question, opt
   value; measured failure ≈ 0.3). SAFE |Δp|max ≤ Δp_allow, MARGINAL ≤ 1.25 Δp_allow, UNSAFE beyond. The 1.25 band is
   this project's choice (the measured peel gives failure at 1.5×). Otherwise the user enters an allowable.
 
+## D30 — 2026-10-26 — Subsonic CP verdict on the worst-case static margin
+- Worst of launch/burnout CG, Mach 0/top Mach and with/without NACA 1307 carry-over lift. UNSAFE below the user's
+  minimum (default 1 cal), MARGINAL below the target (default 1.5), SAFE above; > 4 cal flagged as strong
+  weathercocking. Defaults are common amateur practice, not source limits. No root-chord fix (grown forward it moves
+  fin area forward and hardly changes the margin).
+

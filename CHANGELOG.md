@@ -3,6 +3,14 @@
 Newest first, in the spirit of [Keep a Changelog](https://keepachangelog.com/). From 2026-10-25 every entry names its
 branch, tag and commit range. Live site: https://rocketcalculator.github.io/.
 
+## 2026-10-26 — Subsonic Centre of Pressure cycle (`improve/subsonic-cp`)
+- Verdict on the worst-case static margin (launch/burnout CG × Mach 0/top Mach × with/without body carry-over)
+  against your accepted minimum and target (defaults 1 and 1.5 calibres), with solved fixes: CG shift, nose ballast,
+  fin span. Inputs grouped body → nose → fins → flight and CG → your limits, all bounded with sliders.
+- Side view with the normal forces, CP and CG, a stability ruler showing where the CG may sit, the rear view and
+  13 handles; main plots: margin and CP through the flight, fin span that reaches your target.
+- ui-layout: a slider that shows or hides another input re-baselines instead of failing (boat-tail radius).
+
 ## 2026-10-26 — Payload Venting final; test tools take a server address (`chore/agent-prep`)
 - Final badge for Payload Bay Venting.
 - `uifuzz.mjs` and `smoke.mjs` read `BASE` from the environment; the slider sweep is now `scripts/sweep.mjs`.

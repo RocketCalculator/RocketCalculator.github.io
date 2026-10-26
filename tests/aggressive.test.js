@@ -276,7 +276,7 @@ test('Newtonian drag: wave drag rises past Mach 1, more sweep means less leading
   increasing([0.7, 0.9, 1.1, 2, 4].map((M) => run('newtonian-drag', { M }).CD), 'CD vs M');
   const sw = [60, 45, 30, 0].map((sweep) => run('newtonian-drag', { M: 3, sweep }).CDfins);
   increasing(sw, 'LE drag vs decreasing sweep');
-  const h = run('newtonian-drag', { M: 10, bodyR: 2, cap: true, capR: 2, thetaM: 90, cone: false, flat: false, fins: false });
+  const h = run('newtonian-drag', { M: 10, bodyR: 2, noseType: 'spherecone', rn: 2, L: 2, fins: false });   // a hemisphere
   assert.ok(Math.abs(h.CD - 0.92) < 0.01, `hemisphere CD ${h.CD}`);
 });
 

@@ -3,7 +3,8 @@
 import { test, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { workbook, close, stats } from './_workbook.js';
-import { cpStagnation, noseCap, coneSegment, flatFace, leadingEdge, fairing } from '../site/js/calc/newtonian.js';
+import { cpStagnation, noseCap, coneSegment, flatFace, leadingEdge, fairing, sphereCone, noseSurface } from '../site/js/calc/newtonian.js';
+import calc from '../site/js/calculators/newtonian-drag.js';
 
 const W = workbook('NEWTON');
 const d2r = Math.PI / 180;
@@ -79,6 +80,54 @@ test('Subsonic fairing: zero at the critical Mach number, full value from Mach 1
   assert.equal(noseCap(1, 1, 0.5).CDS, 0);
   assert.equal(leadingEdge(1, 1, 0, 0.4).CDS, 0);
   close(leadingEdge(1, 1, 0, 1).CDS, (4 / 3) * cpStagnation(1), 1e-12, 'M_N = 1');
+});
+
+test('Memo p. 7 figures, read from the page image: fin edge drag area (1/8 in, 15 in, 30°) and the cap curve (R = 0.1 ft, 80°)', () => {
+  // fin: 0.0073 ft² at Mach 1.2, 0.0082 at 1.5, 0.0091 at 2, 0.0100 at 4 (read to about ±0.0002 ft²)
+  for (const [M, ft2] of [[1.2, 0.0073], [1.5, 0.0082], [2, 0.0091], [4, 0.0100]]) {
+    const a = leadingEdge(0.0625 / 12, 15 / 12, 30 * d2r, M).CDS;
+    assert.ok(Math.abs(a - ft2) < 2.5e-4, `M ${M}: ${a} vs ${ft2} ft²`);
+  }
+  // cap: the figure plots the workbook column, twice eq. (7) (see the test above): 0.040 at Mach 1, 0.052 at 2, 0.056 at 4
+  for (const [M, ft2] of [[1, 0.040], [2, 0.052], [4, 0.056]]) {
+    const a = 2 * noseCap(0.1, 80 * d2r, M).CDS;
+    assert.ok(Math.abs(a - ft2) < 1.5e-3, `cap M ${M}: ${a} vs ${ft2} ft²`);
+  }
+});
+
+test('Sphere-cone geometry: the cap is tangent to the cone through the shoulder', () => {
+  for (const [rn, L, R] of [[1.2, 11.3033, 3], [0.3, 30, 3], [2.9, 3, 3], [1, 0.5, 3], [0, 10, 3]]) {
+    const g = sphereCone(rn, L, R);
+    assert.ok(Math.abs(R * Math.cos(g.delta) - (L - rn) * Math.sin(g.delta) - rn) < 1e-12, `tangency ${rn},${L}`);
+    assert.ok(Math.abs(Math.tan(g.delta) * g.Lc - (R - g.r1)) < 1e-12, `cone through the shoulder ${rn},${L}`);
+    assert.ok(Math.abs(g.xJ + g.Lc - L) < 1e-12, 'lengths add');
+  }
+  close(sphereCone(1.2, 11.3033, 3).delta, 10 * d2r, 1e-5, 'old default: 80° cap on a 10° cone');
+  close(sphereCone(0, 10, 3).delta, Math.atan(0.3), 1e-12, 'sharp cone');
+  assert.equal(sphereCone(3, 3, 3).delta, 0, 'hemisphere');
+});
+
+test('Surface pressure integrates to the drag areas; C_P is C_PT at the tip and C_PT sin²δ on the cone', () => {
+  const M = 2.5, cpt = cpStagnation(M), g = sphereCone(1.2, 11.3033, 3);
+  const nose = { cap: { R: 1.2, thetaM: g.thetaM }, cone: { r1: g.r1, r2: 3, L: g.Lc, x0: g.xJ } };
+  const S = noseSurface(nose, M);
+  close(S[0][2], cpt, 1e-12, 'stagnation'); close(S.at(-1)[2], cpt * Math.sin(g.delta) ** 2, 1e-12, 'cone');
+  close(S.at(-1)[3], noseCap(1.2, g.thetaM, M).CDS + coneSegment(g.r1, 3, g.Lc, M).CDS, 1e-12, 'accumulated drag area');
+  const F = noseSurface({ flat: { D: 2 } }, M);
+  close(F.at(-1)[3], flatFace(2, M).CDS, 1e-12, 'flat face');
+});
+
+test('Page: the rounded-cone default equals the old element-by-element inputs; the memo fin example per fin', () => {
+  const base = Object.fromEntries(calc.groups.flatMap((gr) => gr.fields).map((f) => [f.id, f.default]));
+  const out = calc.compute({ ...base, ...calc.examples[0].values, fins: false });
+  const g = sphereCone(1.2, 11.3033, 3), S = Math.PI * 9;
+  close(out.results.CDnose, (noseCap(1.2, g.thetaM, 2).CDS + coneSegment(g.r1, 3, g.Lc, 2).CDS) / S, 1e-12, 'nose');
+  const fin = calc.compute({ ...base, ...calc.examples[1].values });
+  close(fin.results.leCDS, leadingEdge(0.0625, 15, 30 * d2r, 4).CDS, 1e-12, 'one fin');
+  close(fin.results.lLE, 15, 1e-12, 'edge length');
+  // the nose centre of pressure: a pointed cone at 2L/3
+  const cone = calc.compute({ ...base, noseType: 'spherecone', rn: 0, L: 12, bodyR: 3, M: 3, fins: false });
+  close(cone.results.noseXcp, 8, 1e-12, 'cone CP');
 });
 
 after(() => console.log(`# newtonian: ${stats.compared} comparisons, max rel err ${stats.maxRel.toExponential(2)}`));

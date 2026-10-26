@@ -1,6 +1,6 @@
 // Propellant sloshing in an upright circular-cylinder tank — C. P. Hoult, "An Analysis of the Motion of Liquids in a
-// Partially-Filled Enclosure" (with the 2013 errata), RS&T worksheet SLOSHIT; equivalent mechanical model after
-// H. N. Abramson (ed.), "The Dynamic Behavior of Liquids in Moving Containers", NASA SP-106, 1966.
+// Partially-Filled Enclosure" (with the 2013 errata), RS&T worksheet SLOSHIT. Equivalent pendulum read from the poles and
+// residues of the report's transfer functions: slosh mass from F_z/ν_z (eq. 5-47), hinge depth from M_y/ν_z (eq. 5-49).
 // Natural frequencies: ω_n² = (a/R) λ_n tanh(λ_n h/R), λ_n the roots of J₁′(λ) = 0, h = M/(ρπR²) the fill depth.
 // Any consistent units.
 
@@ -22,13 +22,30 @@ export const fillDepth = (M, rho, R) => M / (rho * Math.PI * R * R);
 export function mode(n, { a, R, h, M }) {
   const L = LAMBDA[n - 1], x = (L * h) / R, th = Math.tanh(x);
   const w = Math.sqrt((a / R) * L * th);
-  const mFrac = (2 * th) / (L * (L * L - 1) * (h / R));   // Abramson SP-106: m_n/M
-  return { n, lambda: L, w, f: w / (2 * Math.PI), period: (2 * Math.PI) / w, mFrac, m: mFrac * M, pendulum: R / (L * th) };
+  const mFrac = (2 * th) / (L * (L * L - 1) * (h / R));   // residue of eq. (5-47) over M = πρR²h
+  // moment arm of the mode force, eq. (5-49) residue ÷ eq. (5-47) residue: the hinge depth below the free surface
+  // (negative = above it); the pendulum bob hangs L_n below the hinge, at (2R/λ) tanh(λh/2R)
+  const pendulum = R / (L * th), hinge = (R / L) * (1 - 2 / Math.cosh(x)) / th;
+  return { n, lambda: L, w, f: w / (2 * Math.PI), period: (2 * Math.PI) / w, mFrac, m: mFrac * M, pendulum, hinge, bob: hinge + pendulum };
 }
 
-/** Full evaluation. p = { a (thrust acceleration), R, M (fluid mass), rho }. */
-export function slosh({ a, R, M, rho }) {
-  const h = fillDepth(M, rho, R);
+/** Fill depth at which mode n has frequency f (Hz); null when even a deep fill stays below f. */
+export function depthFor(f, { a, R, n = 1 }) {
+  const L = LAMBDA[n - 1], y = ((2 * Math.PI * f) ** 2 * R) / (a * L);
+  return y < 1 ? (R / L) * Math.atanh(y) : null;
+}
+
+/** Tank radius (same liquid mass) at which the first mode has frequency f (Hz); f₁ falls monotonically as R grows. */
+export function radiusFor(f, { a, M, rho }, lo = 1e-6, hi = 1e6) {
+  const f1 = (R) => mode(1, { a, R, h: fillDepth(M, rho, R), M }).f;
+  for (let k = 0; k < 200; k++) { const m = Math.sqrt(lo * hi); if (f1(m) > f) lo = m; else hi = m; }
+  return Math.sqrt(lo * hi);
+}
+
+/** Full evaluation. p = { a (thrust acceleration), R, M (fluid mass), rho, hMax (optional: tank length, caps the depth) }. */
+export function slosh({ a, R, M, rho, hMax = Infinity }) {
+  const h = Math.min(fillDepth(M, rho, R), hMax);
+  M = h * rho * Math.PI * R * R;
   const modes = [1, 2, 3].map((n) => mode(n, { a, R, h, M }));
   return { h, hR: h / R, modes, fixedFrac: 1 - modes.reduce((s, q) => s + q.mFrac, 0) };
 }

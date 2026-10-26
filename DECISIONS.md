@@ -158,3 +158,13 @@ Decisions taken while the owner was unavailable. Each entry: date, question, opt
 - Coupled inputs degrade instead of refusing: a disreef height at or above the opening height means no reefed phase,
   with a warning.
 
+## D26 — 2026-10-25 — Trajectory verdict against the user's own limits
+- SKYAERO gives no pass/fail limits, so the user sets five: rail exit speed (rule of thumb 44 ft/s), liftoff T/W (rule
+  of thumb 5), altitude ceiling, recovery-area radius, accepted landing speed. Bands: rail and T/W SAFE ≥ limit,
+  MARGINAL ≥ 0.8·limit; apogee SAFE ≤ 0.9·ceiling, MARGINAL ≤ ceiling; landing speed as D25 (1.25); landing distance as
+  D25 (0.8 R_f). No parachute is UNSAFE (ballistic). Project margins, not published limits (stated on the theory page).
+- The rail exit speed judged is off the **physical** rail; the simulated (longer) rail only models weathercocking.
+- Crossrange drift is an estimate (full crosswind after apogee, none before), not a 3-D simulation; labelled as such.
+- The default example now has dual deploy (drogue + 12 ft main) so the page opens on a recoverable flight; SKYAERO's
+  ballistic validation case stays as the second example.
+

@@ -56,7 +56,8 @@ function impulseAt(m, tau) {
 /**
  * p: { site: { ho, To (°R), lat (deg) }, QE (rad), L (rail, ft), lamP (rad/ft), useSimRail, wind: [[h AGL, w ft/s]] (+ downrange),
  *      stages: [{ Wp, Wd (lb), thrust: [[t, T]], seaLevel, Ae, S, cd: [[M, CD off, CD on]], delay (s, coast before ignition) }],
- *      drogue?: { CdS, delay }, main?: { CdS, h }, tau, dt }. Optional atm(hAGL) → { p, rho, a, g } replaces the atmosphere.
+ *      drogue?: { CdS, delay }, main?: { CdS, h }, tau, dt, stopAfterRail }. Optional atm(hAGL) → { p, rho, a, g } replaces the
+ *      atmosphere; stopAfterRail ends the run at rail exit (for solving the rail length).
  */
 export function simulate(p) {
   const site = p.site, atm = p.atm ?? ((h) => { const a = atmosphere({ h: h + site.ho, ho: site.ho, To: site.To, phi: site.lat }); return { p: a.p, rho: a.rho, a: a.a, g: a.gh }; });
@@ -124,8 +125,12 @@ export function simulate(p) {
       if (p.drogue) tDrogue = tApo + p.drogue.delay;
     }
     for (let i = 0; i < N; i++) if (Math.abs(tn - tBurn[i]) < 1e-9) ev.burnout.push({ stage: i + 1, t: tn, V: null, z: yn[1], idx: hist.length });
-    t = tn; y = yn;
-    if (phase === 'rail' && Math.hypot(y[0], y[1]) >= railL) { phase = 'free'; ev.railExit = { t, V: Math.hypot(y[2], y[3]) }; }
+    if (phase === 'rail' && Math.hypot(yn[0], yn[1]) >= railL) {                // rail exit, interpolated to the rail's end
+      const s0r = Math.hypot(y[0], y[1]), fr = (railL - s0r) / (Math.hypot(yn[0], yn[1]) - s0r), V0 = Math.hypot(y[2], y[3]);
+      phase = 'free'; ev.railExit = { t: t + fr * dt, V: V0 + fr * (Math.hypot(yn[2], yn[3]) - V0) };
+      t = tn; y = yn;
+      if (p.stopAfterRail) break;
+    } else { t = tn; y = yn; }
     if (phase === 'rail' && t > 30 && y[2] * cQ + y[3] * sQ <= 0) break;       // never leaves the rail
     if (tDrogue !== null && t >= tDrogue - 1e-9 && !chute) { chute = { from: s0.CdS, to: p.drogue.CdS, t0: t, kind: 'drogue' }; phase = 'drogue'; }
     if (p.main && tApo !== null && y[1] <= p.main.h && (!chute || chute.kind !== 'main')) {
@@ -141,3 +146,19 @@ export function simulate(p) {
   return { hist, railL, railExit: ev.railExit, burnouts: ev.burnout, tApo, hApo, landed, impact: landed ? { t: last.t, x: last.x, V: Math.hypot(last.vx, last.vz) } : null,
     maxMach: peak('mach'), maxQ: peak('q'), maxG: peak('gs'), motors: M, tIgn, tBurn, liftoffTW: (M[0].vac.reduce((a, r) => Math.max(a, r[1]), 0)) / (mass(0) * G0) };
 }
+
+/**
+ * Crossrange drift estimate for the 2-D (in-plane) simulation: the point mass is carried by the full crosswind after
+ * apogee (descent, under the parachutes) and is taken as not drifting before it (it weathercocks into the wind while
+ * climbing). crossAt(h AGL) → crosswind component (ft/s, + to the right of the plane of fire). Returns the history of
+ * the crossrange y (ft) and its final value. An estimate, not a 3-D simulation.
+ */
+export function crossDrift(o, crossAt) {
+  const H = o.hist, y = [0];
+  for (let i = 1; i < H.length; i++) {
+    const dt = H[i].t - H[i - 1].t, after = H[i].t > o.tApo;
+    y.push(y[i - 1] + (after ? crossAt(Math.max(0, (H[i].z + H[i - 1].z) / 2)) * dt : 0));
+  }
+  return { y, final: y[y.length - 1] };
+}
+

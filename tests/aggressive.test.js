@@ -134,7 +134,7 @@ const INVARIANTS = {
   'ground-handling': (v, R) => [R.W > 0, R.xCG >= v.xL || R.lift0 > 0, Number.isFinite(R.FL) && Number.isFinite(R.MJ)],
   'flight-path-dispersion': (v, R) => [R.gD >= 0 && R.gG >= 0, Math.abs(Math.hypot(R.gD, R.gG) - R.gam) <= 1e-9 * R.gam + 1e-300, R.g0 <= R.gam * (1 + 1e-12), R.LA >= 0, R.n > 0 && R.n < 1],
   'roll-lock-in-design': (v, R) => [R.Pno >= 0 && R.Pno <= 100, R.sigma >= 0, R.D > 0, R.cR > 0, R.CMa < 0, R.CLp < 0, R.alphaStar === '—' || (R.alphaStar > 0 && R.alphaStar <= v.alphaMax * (1 + 1e-12))],
-  'skyaero-trajectory': (v, R) => [R.apo >= 0, R.railV > 0, R.maxMach >= 0, R.tw > 0, Number.isFinite(R.range), R.maxQ >= 0, R.railL > 0],
+  'skyaero-trajectory': (v, R) => [R.apo >= 0, R.railV > 0, R.maxMach >= 0, R.tw > 0, Number.isFinite(R.range), R.maxQ >= 0, R.railL > 0, R.dist >= 0, Number.isFinite(R.vImp), R.Dneed > 0, R.bearing >= 0 && R.bearing < 360],
   'two-stage-weights': (v, R) => [R.M01 >= v.Mpl, R.m1 >= 0 && R.m2 >= 0, Math.abs(R.M01 - v.Mpl - R.m1 - R.m2) <= 1e-9 * R.M01, Math.abs(R.dv1 + R.dv2 - v.dv) <= 1e-6 * v.dv, R.payloadPct > 0 && R.payloadPct <= 100, R.lam > 0],
   'ogive-nose': (v, R) => [R.S > 0, R.xbar > 0 && R.xbar < v.L, R.fineness > 0, R.tipHalfAngle > 0 && R.tipHalfAngle <= 90],
   'subsonic-cp': (v, R, warned) => [R.CNa > 0 || warned, R.CNaFins >= 0, Number.isFinite(R.xcp), R.d > 0],

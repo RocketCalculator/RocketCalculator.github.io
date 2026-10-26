@@ -5,6 +5,7 @@ import { recovery, descentSpeed, descentTime, aftImpact, reefedDragRatio, densit
 import { s, fmt, InputError } from '../util.js';
 import { text, dim, path } from '../ui/svg.js';
 import { toDisplay, displayUnit, unitLabel } from '../units.js';
+import { fetchWinds, mapActions, METEO_CREDIT } from '../ui/meteo.js';
 
 const MASS = { dim: 'mass', internal: 'lbm' };
 const DIST = { dim: 'distance', internal: 'ft' };
@@ -17,8 +18,6 @@ const ENERGY = { dim: 'energy', internal: 'ftlbf' };
 const reefed = (v) => !!v.reef;
 const layered = (v) => v.windMode === 'layers';
 const DIR = { dim: 'angle', internal: 'deg' };
-// Open-Meteo pressure levels used for the wind profile (hPa); 10 m wind is added as the lowest layer
-const LEVELS = [1000, 975, 950, 925, 900, 850, 800, 700, 600, 500, 400, 300, 250, 200];
 const mins = (t) => `${fmt(t / 60, { digits: 3 })} min`;
 const sp = (x) => `${fmt(toDisplay(x, SPEED), { digits: 3 })} ${unitLabel(displayUnit(SPEED))}`;
 const ds = (x) => `${fmt(toDisplay(x, DIST), { digits: 3 })} ${unitLabel(displayUnit(DIST))}`;
@@ -202,31 +201,11 @@ export default {
     {
       label: 'Load winds from Open-Meteo', title: 'Fetch the forecast winds at the launch site (Open-Meteo, free, no account) into the wind layers; also sets the ground elevation',
       async run(v) {
-        const vars = ['wind_speed_10m', 'wind_direction_10m', ...LEVELS.flatMap((p) => [`wind_speed_${p}hPa`, `wind_direction_${p}hPa`, `geopotential_height_${p}hPa`])];
-        const url = `https://api.open-meteo.com/v1/forecast?latitude=${encodeURIComponent(v.lat)}&longitude=${encodeURIComponent(v.lon)}&hourly=${vars.join(',')}&wind_speed_unit=ms&forecast_days=7&timezone=auto`;
-        const r = await fetch(url);
-        if (!r.ok) throw new Error(`Open-Meteo did not answer (${r.status}). Check the latitude and longitude, or try again later.`);
-        const d = await r.json(), H = d.hourly, elev = d.elevation;
-        // the hour nearest to now + hoursAhead (times are local; utc_offset_seconds converts them)
-        const target = Date.now() + (v.hoursAhead || 0) * 3600e3;
-        let k = 0, best = Infinity;
-        H.time.forEach((t, i) => { const ms = Date.parse(t + 'Z') - d.utc_offset_seconds * 1000, e = Math.abs(ms - target); if (e < best) { best = e; k = i; } });
-        const M2FT = 1 / 0.3048, rows = [{ h: 10 * M2FT, w: H.wind_speed_10m[k] * M2FT, dir: H.wind_direction_10m[k] }];
-        for (const p of LEVELS) {
-          const z = H[`geopotential_height_${p}hPa`]?.[k], w = H[`wind_speed_${p}hPa`]?.[k], dir = H[`wind_direction_${p}hPa`]?.[k];
-          if ([z, w, dir].every(Number.isFinite) && z - elev > 30) rows.push({ h: (z - elev) * M2FT, w: w * M2FT, dir });
-        }
-        return { values: { windMode: 'layers', winds: rows, hG: Math.max(0, elev * M2FT) }, message: `Loaded ${rows.length} wind layers for ${H.time[k].replace('T', ' ')} local time; ground elevation set to ${Math.round(elev)} m. Weather data by Open-Meteo.com (CC BY 4.0).` };
+        const m = await fetchWinds(v.lat, v.lon, v.hoursAhead);
+        return { values: { windMode: 'layers', winds: m.rows, hG: m.elevFt }, message: `Loaded ${m.rows.length} wind layers for ${m.when} local time; ground elevation set to ${Math.round(m.elevM)} m. ${METEO_CREDIT}` };
       },
     },
-    {
-      label: 'Open in OpenStreetMap', title: 'Show the launch site on OpenStreetMap',
-      async run(v) { window.open(`https://www.openstreetmap.org/?mlat=${v.lat}&mlon=${v.lon}#map=12/${v.lat}/${v.lon}`, '_blank', 'noopener'); return {}; },
-    },
-    {
-      label: 'Open in Google Maps', title: 'Show the launch site on Google Maps',
-      async run(v) { window.open(`https://www.google.com/maps/search/?api=1&query=${v.lat},${v.lon}`, '_blank', 'noopener'); return {}; },
-    },
+    ...mapActions(),
   ],
   plots: [
     {

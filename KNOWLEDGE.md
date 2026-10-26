@@ -218,6 +218,15 @@ scripts/generate_pages.mjs`; write `site/docs/<slug>.html`; add REPAIR/INVARIANT
 - **Not done (no primary source read):** humidity (virtual temperature, saturation vapour pressure); WGS-84
   Somigliana gravity instead of Potsdam; winds.
 
+### Trajectory Simulation (`skyaero-trajectory`) — cycle 1, branch `improve/trajectory-cycle-1`
+- **Additions (this site's, not SKYAERO's):** wind layers with direction split into in-plane and cross components by
+  the launch azimuth (exact, components are linear); crossDrift (full crosswind after apogee; estimate); verdict D26;
+  solved fixes (shortest physical rail by bisection with `stopAfterRail`, main diameter closed form at ground density,
+  top-stage ballast and main opening height by bisection) — tests fly each suggested value and hit the target.
+- **Rail exit is interpolated** to the rail's end inside the step (was the first step past it, up to ~2 % fast), so the
+  rail fix hits its target to 1e-6.
+- Open-Meteo also fills site elevation and 2 m temperature (shared `ui/meteo.js` with Parachute Recovery).
+
 ### Parachute Recovery (`parachute-recovery`) — cycle 1, branch `improve/recovery-cycle-1`
 - **Sources (repo library, read this session):** Hoult, *Dual Purpose Parachute Recovery System rev2* (2013) and
   *Parachute Reefing* (2013, after Knacke AD-A036 497). They give the descent and drift model, the aft-body slowing
@@ -272,6 +281,17 @@ scripts/generate_pages.mjs`; write `site/docs/<slug>.html`; add REPAIR/INVARIANT
 | Temperature profile (main) | What is the temperature at each altitude? | Yes, with the standard overlay and both tropopauses | Sees the local tropopause | Tropopause, launch site | Axes | KEEP (standard overlay added) |
 | Dynamic pressure and Mach at your speed (new, Explore) | What loads would this speed give at each altitude? | Yes — q falls with altitude; marker shows Mach | Picks the max-q altitude for loads | Marker | Axes | KEEP |
 | Ratios, tropopause vs latitude, gravity vs latitude | Context | Partly | — | — | Axes | KEEP, moved to Explore |
+
+**Trajectory Simulation**
+| Diagram | 1 Question | 2 Better than a number? | 3 What the user does | 4 Shows the problem | 5 Scale | Verdict |
+|---|---|---|---|---|---|---|
+| Flight profile (drawing) | Does it stay under the ceiling and land inside the area? | Yes — the whole flight with ceiling, area, events and wind by layer | Drags the launcher, ceiling or area edge | Ceiling in danger red, landing point coloured by verdict | Height and distance to one scale (launcher enlarged, labelled) | REDESIGN done (was stretched) |
+| The whole flight (main, panels) | How do height, speed (Mach in the tooltip) and distance evolve? | Yes — events and limits on one time axis | Reads when each phase happens and how close to the limits | Ceiling and area lines | Axes with units | KEEP (new; replaces separate altitude and speed plots) |
+| The boost (main, panels) | Thrust, drag, g, Mach and q while the motors burn | Yes — the burn is seconds long and hidden on the full-flight axis | Takes max q / max g to structure and flutter checks | Rail exit, burnouts, max q lines | Axes | KEEP (new; replaces separate thrust/drag and q plots) |
+| Ground track from above (main) | Where does it land on the map? | Yes — direction and distance against the area circle | Changes azimuth / waits for other winds | Area circle, verdict-coloured landing | Equal axes | KEEP (new) |
+| Rail exit speed vs rail length (Explore) | How long must the rail be? | Yes — diminishing return and the crossing | Picks a rail | Target line, your rail | Axes | KEEP (new) |
+| Wind along/across the flight, flight path angle (Explore) | Secondary | Yes | — | — | Axes | KEEP |
+| *Removed:* altitude vs downrange plot | duplicated by the to-scale drawing | | | | | REMOVE |
 
 **Parachute Recovery**
 | Diagram | 1 Question | 2 Better than a number? | 3 What the user does | 4 Shows the problem | 5 Scale | Verdict |

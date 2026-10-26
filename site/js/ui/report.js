@@ -83,6 +83,7 @@ function buildModel({ def, state, refList, getSystem }) {
     }
     let value, unit = '';
     if (f.kind === 'bool') value = val ? '\\text{yes}' : '\\text{no}';
+    else if (f.kind === 'datetime') value = `\\text{${val || 'now'}}`;
     else if (f.kind === 'select') value = `\\text{${(f.options.find((o) => o.value === val)?.label || String(val)).replace(/[{}\\]/g, '')}}`;
     else if (val == null) continue;
     else { value = texNum(toDisplay(val, f, sys), 6); unit = f.dim && f.dim !== 'none' ? unitTex(displayUnit(f, sys)) : ''; }

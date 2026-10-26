@@ -311,8 +311,10 @@ a.topic-card:hover .chip { background: rgba(127, 127, 127, 0.25); color: inherit
 .field label .sym { color: var(--text-2); }
 .field .ctl { display: flex; align-items: stretch; border: 1px solid var(--hairline); border-radius: var(--radius); background: var(--surface-2); overflow: hidden; }
 .field .ctl:focus-within { border-color: var(--red); box-shadow: 0 0 0 3px var(--accent-soft); }
-.field input[type="number"], .field input[type="text"], .field select { width: 100%; min-width: 0; border: 0; background: transparent; color: var(--text); padding: 8px 10px; font: 600 0.95rem/1.3 var(--font-sans); font-variant-numeric: tabular-nums; outline: none; }
+.field input[type="number"], .field input[type="text"], .field input[type="datetime-local"], .field select { width: 100%; min-width: 0; border: 0; background: transparent; color: var(--text); padding: 8px 10px; font: 600 0.95rem/1.3 var(--font-sans); font-variant-numeric: tabular-nums; outline: none; }
 .field select { font-weight: 400; cursor: pointer; }
+.field.date { grid-template-columns: 1fr; }
+.field input[type="datetime-local"] { color-scheme: light dark; }
 .field .unit { flex: none; align-self: center; min-width: 5ch; text-align: right; padding: 0 10px 0 2px; font-size: 0.85rem; color: var(--text-3); white-space: nowrap; }
 /* the message floats under the control instead of inserting a row, so a validation error never moves the fields below */
 .field { position: relative; }

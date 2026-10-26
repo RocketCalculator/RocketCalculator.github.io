@@ -53,7 +53,10 @@ and by how much?* Every page answers all three within five seconds.
 - Choices are `select`s, grouped with `<optgroup>`s when long (e.g. fin materials by family, with each value's source).
 - Tables (`kind: 'table'`) for profiles: wind layers, flight profiles.
 - **Action buttons** for things a form cannot do: fill from another calculator, load forecast winds, open the site on a
-  map. They report what they did in a toast, with the data source's attribution.
+  map. They report what they did in a toast, with the data source's attribution. A button that uses particular inputs
+  sits **right after them in their group** (`group` on the action): load winds and the map links follow latitude,
+  longitude and the launch date.
+- **Dates are dates** (`kind: 'datetime'`, site local time, empty = now), not "hours from now".
 - Every input has an info tab (§7).
 
 ## 4. The drawing

@@ -79,17 +79,25 @@ export async function mountCalculator(def) {
   const compatBox = null;
   const inputsCard = h('aside.card.calc-inputs', { 'aria-label': 'Inputs' },
     h('div.card-head', h('h2', 'Inputs'), h('span.spacer'), h('div.form-actions', exampleSel, exampleBtn, resetBtn, linkBtn)),
-    h('div.form-scroll', form.el, def.actions?.length ? h('div.def-actions', def.actions.map((a) => {
-      // def.actions: [{ label, title, run(values) → Promise<{ values, message }> }] e.g. fill inputs from another calculator
-      const b = h('button.btn.small', { type: 'button', title: a.title || null }, a.label);
-      b.addEventListener('click', async () => {
-        b.disabled = true;
-        try { const r = await a.run(clone(state.values)); if (r?.values) { Object.assign(state.values, r.values); form.refresh(); recompute(); } if (r?.message) toast(r.message); }
-        catch (err) { toast(err.message || String(err)); }
-        finally { b.disabled = false; }
-      });
-      return b;
-    })) : null));
+    h('div.form-scroll', form.el, def.actions?.some((a) => !a.group) ? h('div.def-actions', def.actions.filter((a) => !a.group).map(actionButton)) : null));
+  // actions with a group sit at the end of that input group (e.g. load winds right after the site and date)
+  for (const a of def.actions || []) if (a.group) {
+    const fs = form.el.querySelector(`[data-group="${a.group}"]`);
+    let row = fs?.querySelector(':scope > .def-actions');
+    if (fs && !row) { row = h('div.def-actions'); fs.append(row); }
+    row?.append(actionButton(a));
+  }
+  function actionButton(a) {
+    // def.actions: [{ label, title, group?, run(values) → Promise<{ values, message }> }] e.g. fill inputs from another calculator
+    const b = h('button.btn.small', { type: 'button', title: a.title || null }, a.label);
+    b.addEventListener('click', async () => {
+      b.disabled = true;
+      try { const r = await a.run(clone(state.values)); if (r?.values) { Object.assign(state.values, r.values); form.refresh(); recompute(); } if (r?.message) toast(r.message); }
+      catch (err) { toast(err.message || String(err)); }
+      finally { b.disabled = false; }
+    });
+    return b;
+  }
 
   // ---------- design bar: shared rocket, design files, baseline comparison ----------
   const nameInput = h('input.rocket-name', { type: 'text', value: getRocket().name, maxlength: 80, 'aria-label': 'Rocket name', title: 'Rocket name (saved with the design file)' });

@@ -107,8 +107,8 @@ export default {
           info: { text: ['North–south position of the launch site in degrees (north positive), as shown by any map app.', 'Used to load the forecast winds and to open the site on a map.'], doc: 'drift' } },
         { id: 'lon', label: 'Launch site longitude', sym: '\\lambda_E', dim: 'angle', internal: 'deg', default: -119.07, min: -180, max: 180,
           info: { text: ['East–west position of the launch site in degrees (east positive, west negative).'], doc: 'drift' } },
-        { id: 'hoursAhead', label: 'Forecast for … hours from now', sym: '\\Delta t_f', dim: 'none', default: 0, min: 0, max: 160, step: 1, when: layered, slider: { min: 0, max: 160, step: 1 },
-          info: { text: ['Which forecast hour to load: 0 is now, 24 is this time tomorrow (up to about a week).', 'Pick the hour of your launch window, then press “Load winds from Open-Meteo”.'], doc: 'drift' } },
+        { id: 'when', label: 'Launch date and time (site local)', kind: 'datetime', default: '',
+          info: { text: ['The date and hour of your launch, in the launch site’s local time. Leave it empty for now.', 'Then press “Load winds from Open-Meteo” to fill the wind layers from the forecast for that hour. Forecasts reach about 16 days ahead; past dates up to about 3 months back give the model’s recent analysis.'], doc: 'drift' } },
       ],
     },
     {
@@ -199,13 +199,13 @@ export default {
   },
   actions: [
     {
-      label: 'Load winds from Open-Meteo', title: 'Fetch the forecast winds at the launch site (Open-Meteo, free, no account) into the wind layers; also sets the ground elevation',
+      label: 'Load winds from Open-Meteo', group: 'windgrp', title: 'Fetch the forecast winds at the launch site (Open-Meteo, free, no account) into the wind layers; also sets the ground elevation',
       async run(v) {
-        const m = await fetchWinds(v.lat, v.lon, v.hoursAhead);
+        const m = await fetchWinds(v.lat, v.lon, v.when);
         return { values: { windMode: 'layers', winds: m.rows, hG: m.elevFt }, message: `Loaded ${m.rows.length} wind layers for ${m.when} local time; ground elevation set to ${Math.round(m.elevM)} m. ${METEO_CREDIT}` };
       },
     },
-    ...mapActions(),
+    ...mapActions('windgrp'),
   ],
   plots: [
     {

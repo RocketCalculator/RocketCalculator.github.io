@@ -302,6 +302,34 @@ scripts/generate_pages.mjs`; write `site/docs/<slug>.html`; add REPAIR/INVARIANT
 | f1 vs tank diameter | NEW, KEEP | Trade-off behind the diameter fix, with your tank and the fix marked |
 | f1 over the drain at 1–15 g | NEW, Explore | Shows at which depth each acceleration meets the band |
 
+### Bifilar Pendulum Inertia (`bifilar-pendulum`) — cycle 2 (2026-10-26)
+**Source read**: C. P. Hoult, "Moment of Inertia Measurement with a Bifilar Pendulum", RS&T memo, 11 June 2009
+(site/references/from-word/Bifilar Pendulum.pdf, 4 pp.). p. 1: set-up sketch (two equal wires, CG between them,
+plumb bob, floor line; "measure many oscillations"). p. 2: the two modes, the trap, Galilean ω_G² = g/l. p. 3:
+T1, T2, θ_i = x_i ψ/l, yaw torque mgψx1x2/l, ω_Y² = mgx1x2/(Il), I = m x1 x2 P_Y²/P_G², P_Y²/P_G² = k²/x1x2,
+uniform rod 0.577 (wires at the ends) and 1.155 (half-way), "wires close to the CG".
+
+**Worked example check**: the memo has no numerical example; tests reproduce its two rod ratios (0.577, 1.155) and
+recover the rod inertia with both formulas.
+
+**Errata**: none found. The memo writes "to close to unity" (typo for "too"). Its torque sum checks:
+T1x1θ1 + T2x2θ2 = mgψ x1x2(x1+x2)/((x1+x2) l).
+
+**Not from the memo (labelled as such)**: the uncertainty estimate (standard first-order error propagation), the
+verdict bands, the wire-length cross-check tolerance.
+
+**Left out (no source read)**: large-amplitude period correction; coupled two-mode analysis (memo declines it);
+correlated CG-mark errors; repeatability across trials (would need a multi-trial table — possible later).
+
+**Quality Gate**
+
+| Item | Verdict | Why |
+|---|---|---|
+| Drawing: front view to scale + animated yaw/swing insets | REDESIGN (done) | was not to scale (wire compressed); now one scale, physics on it, both modes animated side by side |
+| Plot "Mode separation vs wire spacing" | REDESIGN → "Where to put the wires" | adds the periods (crossing = resonance) and the error trade-off on the same spacing axis |
+| Plot "Inertia vs measured yaw period" | REMOVE | a parabola; the number "1 % → 2 %" says it all |
+| Plot "Error budget: how many cycles to time" | KEEP (new) | shows which measurement dominates and where the total meets the target |
+
 ### Diagram Quality Gate log
 
 **Fin Flutter**

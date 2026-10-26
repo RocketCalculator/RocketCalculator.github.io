@@ -132,7 +132,7 @@ export default {
     { id: 'Tpeak', label: 'Peak wire tension', sym: 'T_{max}', ...FORCE, key: true, digits: 3, status: (x, out) => ST[out.wireLv],
       note: (x, out) => `${fmt(out.results.nWire, { digits: 3 })}× under the breaking strength (you ask ${fmt(out.v.SF, { digits: 3 })}×)`,
       info: { text: ['The highest pull in each wire, in either phase, at the worst end of your spin and inertia uncertainty.', 'It usually peaks while the wire unwinds; the swing-out ends at a second, lower peak.', 'It grows with the square of the spin and roughly with the drum radius.'], tex: 'T_{max}=\\max(T_{1,max},T_{2,max})', doc: 'verdict' } },
-    { id: 'tRelease', label: 'Despin time', sym: 't_r', ...TIME, key: true, digits: 3, note: (x, out) => `unwinding ${fmt(out.o.tUnwind, { digits: 3 })} s, then swing-out`,
+    { id: 'tRelease', label: 'Despin time', sym: 't_r', ...TIME, digits: 3, note: (x, out) => `unwinding ${fmt(out.o.tUnwind, { digits: 3 })} s, then swing-out`,
       info: { text: ['Time from letting the weights go to their release.', 'Unwinding takes the unwound angle divided by the initial spin; the swing-out is integrated in time.', 'Longer wires take longer and pull more gently.'], tex: 't_r=\\frac{l}{a\\,\\omega_0}+t_{swing}', doc: 'phase1' } },
     { id: 'nWire', label: 'Wire safety factor achieved', sym: 'n', ...NONE, digits: 3, info: { text: ['Breaking strength over the peak tension.'], tex: 'n=\\frac{T_b}{T_{max}}', doc: 'verdict' } },
     { id: 'ffLo', label: 'Final spin, low end of the uncertainty', sym: 'f_{f,min}', ...SPIN, digits: 4, info: { text: ['Lowest final spin over the inertia and initial-spin uncertainty, with the weights fixed.'], doc: 'uncertainty' } },
@@ -203,11 +203,11 @@ export default {
       info: { text: ['Two views on one time axis, from letting the weights go to their release: the vehicle’s spin (with your target and tolerance as red lines) and the pull in each wire (with the breaking strength in red and the strength divided by your safety factor dashed).', 'The pull peaks while the wire unwinds, drops, and rises again as the wire swings out. Hover to read both at one moment.'], doc: 'phase1' },
       build(v, out, { U }) {
         const us = U(SPIN), uf = U(FORCE), smp = out.o.sim.samples, ph = (k, f) => smp.filter((q) => q.phase === k).map((q) => [q.t, f(q)]);
-        const T = (q) => uf.v(q.T), W = (q) => us.v(q.w / TAU), top = 1.12 * Math.max(out.Tmax, Math.min(v.Tb, 2.5 * out.Tmax));
+        const T = (q) => uf.v(q.T), W = (q) => us.v(q.w / TAU), top = uf.v(1.12 * Math.max(out.Tmax, Math.min(v.Tb, 2.5 * out.Tmax)));
         const tl = [out.target - v.tol, out.target + v.tol].map((y) => us.v(y));
         return {
           x: { label: 'Time after letting go', unit: '\\mathrm{s}' }, xDomain: [0, out.o.tRelease],
-          vlines: [{ x: out.o.tUnwind, label: 'fully unwound', color: 'var(--text-3)' }, { x: out.o.tRelease, label: 'release', color: 'var(--text-3)' }],
+          vlines: [{ x: out.o.tUnwind, label: 'unwound', color: 'var(--text-3)' }],
           panels: [
             { y: { label: 'Spin', unit: us.label }, color: 'var(--series-2)', includeZero: true,
               series: [{ name: 'spin, unwinding', points: ph(1, W) }, { name: 'spin, swing-out', dash: '7 4', points: ph(2, W) }],
@@ -230,7 +230,7 @@ export default {
           return [um.v(each), us.v((radialSpinRatio(p.I * k, p.a, p.l, 2 * each + wire) * v.f0))];
         });
         const series = [{ name: 'nominal inertia', points: curve(1) }];
-        if (v.eI > 0) series.push({ name: `inertia −${fmt(v.eI, { digits: 2 })} %`, dash: '7 4', color: 'var(--text-3)', points: curve(1 - v.eI / 100) }, { name: `inertia +${fmt(v.eI, { digits: 2 })} %`, dash: '2 3', color: 'var(--text-3)', points: curve(1 + v.eI / 100) });
+        if (v.eI > 0) series.push({ name: `inertia −${fmt(v.eI, { digits: 2 })} %`, dashed: true, color: 'var(--series-3)', points: curve(1 - v.eI / 100) }, { name: `inertia +${fmt(v.eI, { digits: 2 })} %`, dashed: true, color: 'var(--series-5)', points: curve(1 + v.eI / 100) });
         const markers = [{ x: um.v(mw), y: us.v(out.results.ffActual), label: check(v) ? 'your weights' : 'sized weights' }];
         if (check(v) && typeof out.results.mNeedEach === 'number') markers.push({ x: um.v(mn), y: us.v(out.target), label: 'hits the target' });
         return { x: { label: 'Each weight $m_w/2$', unit: um.label }, y: { label: 'Final spin $f_f$', unit: us.label }, xDomain: [0, um.v(top)], series,
@@ -242,17 +242,17 @@ export default {
       info: { text: ['For other wire lengths (same drum, inertia and target): the weight each needs to hit the target, and the peak pull in each wire with that weight. The marker is your wire.', 'Longer wires need much lighter weights; the pull changes much less.'], doc: 'release' },
       build(v, out, { U }) {
         const um = U(MASS), uf = U(FORCE), ul = U(WIRE), p = out.p, rT = out.target / v.f0, A = [], B = [];
-        for (let i = 1; i <= 60; i++) {
-          const l = (2.5 * v.l * i) / 60 / 12, m = radialMass(p.I, p.a, l, rT), each = (m - (2 * p.mu * l) / 3) / 2;
+        for (let i = 0; i <= 60; i++) {
+          const l = (v.l * (0.3 + (2.2 * i) / 60)) / 12, m = radialMass(p.I, p.a, l, rT), each = (m - (2 * p.mu * l) / 3) / 2;
           if (!(each > 0)) continue;
           A.push([ul.v(l * 12), um.v(each)]); B.push([ul.v(l * 12), uf.v(evaluate({ I: p.I, a: p.a, l, w0: p.w0, m }).T)]);
         }
         const mT = radialMass(p.I, p.a, p.l, rT), x0 = ul.v(v.l);
         return {
-          x: { label: 'Wire length $l$', unit: ul.label }, xDomain: [0, ul.v(2.5 * v.l)], vlines: [{ x: x0, label: 'your wire', color: 'var(--text-3)' }],
+          x: { label: 'Wire length $l$', unit: ul.label }, xDomain: [A[0]?.[0] ?? 0, A.at(-1)?.[0] ?? 1], vlines: [{ x: x0, label: 'your wire', color: 'var(--text-3)' }],
           panels: [
             { y: { label: 'Each weight', unit: um.label }, color: 'var(--series-2)', includeZero: true, series: [{ name: 'weight for the target', points: A }] },
-            { y: { label: 'Peak pull', unit: uf.label }, color: 'var(--series-1)', includeZero: true, series: [{ name: 'peak pull', dash: '7 4', points: B }],
+            { y: { label: 'Peak pull', unit: uf.label }, color: 'var(--series-5)', includeZero: true, series: [{ name: 'peak pull', dash: '7 4', points: B }],
               hlines: [{ y: uf.v(v.Tb), label: 'breaking strength', color: 'var(--danger)' }].filter((h) => h.y <= 3 * Math.max(...B.map((q) => q[1]), uf.v(evaluate({ I: p.I, a: p.a, l: p.l, w0: p.w0, m: mT }).T))) },
           ],
         };
@@ -262,7 +262,7 @@ export default {
   schematicTitle: 'The despin seen from the nose',
   schematicHint: 'End view, to scale, in a fixed (non-spinning) frame: the vehicle, the paths of both weights — unwinding (dashed), swinging out (solid) and flying away after release (dotted) — and the moment of release with the wires along the radius. The animation replays the despin slowed down, the wire getting thicker as it pulls harder. Drag the weight to change the wire length, or the top of the drum to change its radius',
   schematic(ctx, v, out) {
-    const W = 800, H = 480, cx = 290, cy = 220, p = out.p, o = out.o, smp = o.sim.samples;
+    const W = 800, H = 500, cx = 290, cy = 220, p = out.p, o = out.o, smp = o.sim.samples;
     const fr = ctx.frame({ width: W, height: H, label: 'Yo-yo despin seen from the nose: vehicle, paths of the weights and release' });
     const g = fr.layer('main'); g.replaceChildren();
     const R = p.a + p.l, k = 175 / R, raTrue = p.a * k, ra = Math.max(12, raTrue), lpx = R * k - ra, phiE = p.l / p.a;
@@ -320,16 +320,19 @@ export default {
         wire.append(s('animate', { attributeName: 'd', dur: `${dur}s`, repeatCount: 'indefinite', keyTimes: kt, calcMode: 'discrete',
           values: vals((t) => { const q = pos(t); return t <= o.tRelease ? `M${q[2].toFixed(1)},${q[3].toFixed(1)}L${q[0].toFixed(1)},${q[1].toFixed(1)}` : `M${q[0].toFixed(1)},${q[1].toFixed(1)}`; }) }));
         wire.append(s('animate', { attributeName: 'stroke-width', dur: `${dur}s`, repeatCount: 'indefinite', keyTimes: kt, values: vals((t) => (t <= o.tRelease ? (1 + (4 * at(t).T) / out.Tmax).toFixed(2) : 0)) }));
-        const ball = s('circle', { cx: cx + sgn * R * k, cy, r: 6.5, class: 'sc-body-2' });
+        const ball = s('circle', { cx: cx + sgn * R * k, cy, r: 5, class: 'sc-body-2' });
         for (const [attr, j] of [['cx', 0], ['cy', 1]]) ball.append(s('animate', { attributeName: attr, dur: `${dur}s`, repeatCount: 'indefinite', keyTimes: kt, values: vals((t) => pos(t)[j].toFixed(1)) }));
         g.append(wire, ball);
       }
-    } else for (const sgn of [1, -1]) g.append(s('circle', { cx: cx + sgn * R * k, cy, r: 6.5, class: 'sc-body-2' }));
+    } else for (const sgn of [1, -1]) g.append(s('circle', { cx: cx + sgn * R * k, cy, r: 5, class: 'sc-body-2' }));
     // dimensions and labels (outside the paths)
     const ul = ctx.U(WIRE), ud = ctx.U(DRUM), us = ctx.U(SPIN), uf = ctx.U(FORCE), um = ctx.U(MASS);
-    g.append(dim(fr, cx, cy + R * k + 22, cx + R * k, cy + R * k + 22, `R=a+l=${fmt(ul.v((p.a + p.l) * 12), { digits: 3 })}\\,${ul.plain}`, { field: 'l a' }));
-    g.append(text(cx + ra + 8, cy + 16, `l = ${fmt(ul.v(v.l), { digits: 3 })} ${ul.plain} (${fmt(out.results.wraps, { digits: 2 })} wraps)`, { size: 11, field: 'l' }));
-    g.append(text(cx - 8, cy - ra - 12, `a = ${fmt(ud.v(v.a), { digits: 3 })} ${ud.plain}${ra > raTrue + 0.5 ? ' (drum enlarged)' : ''}`, { anchor: 'end', size: 11, field: 'a' }));
+    // chained dimensions below the circle: a and l on one baseline, R under them
+    const yb = cy + R * k + 22;
+    for (const xx of [cx, cx + ra, cx + R * k]) g.append(s('line', { x1: xx, x2: xx, y1: yb - 6, y2: yb + 28, class: 'sc-thin', opacity: 0.5 }));
+    g.append(dim(fr, cx, yb, cx + ra, yb, `a=${fmt(ud.v(v.a), { digits: 3 })}\\,${ud.plain}${ra > raTrue + 0.5 ? ' (drum enlarged)' : ''}`, { field: 'a', labelPos: 'before' }));
+    g.append(dim(fr, cx + ra, yb, cx + R * k, yb, `l=${fmt(ul.v(v.l), { digits: 3 })}\\,${ul.plain}\\ (${fmt(out.results.wraps, { digits: 2 })}\\ wraps)`, { field: 'l' }));
+    g.append(dim(fr, cx, yb + 24, cx + R * k, yb + 24, `R=a+l=${fmt(ul.v((p.a + p.l) * 12), { digits: 3 })}\\,${ul.plain}`, { field: 'l a' }));
     g.append(text(cx + R * k + 12, cy + 4, 'release', { size: 10.5, cls: 'sc-dim-text' }));
     g.append(text(cx + R * k + 12, cy - 24, `u = ${fmt(ctx.U({ dim: 'speed', internal: 'fts' }).v(o.releaseSpeed), { digits: 3 })} ${ctx.U({ dim: 'speed', internal: 'fts' }).plain}`, { size: 10.5, cls: 'sc-dim-text' }));
     // right column: the numbers the drawing is about
@@ -343,7 +346,7 @@ export default {
     g.append(text(x2, 128, `breaks at ${fmt(uf.v(v.Tb), { digits: 3 })} (${fmt(out.results.nWire, { digits: 2 })}×)`, { size: 10.5, cls: 'sc-dim-text', field: 'Tb SF' }));
     g.append(text(x2, 154, `despin ${fmt(o.tRelease, { digits: 3 })} s`, { size: 12 }));
     // spin arrow (counter-clockwise seen from the nose)
-    const ar = ra + 10;
+    const ar = ra + 16;
     g.append(s('path', { d: `M${cx + ar * Math.cos(2.4)},${cy - ar * Math.sin(2.4)} A${ar},${ar} 0 0 0 ${cx + ar * Math.cos(1.4)},${cy - ar * Math.sin(1.4)}`, fill: 'none', class: 'sc-accent', 'marker-end': fr.arrow('acc') }));
     g.append(text(16, H - 30, `To scale${ra > raTrue + 0.5 ? ' except the drum' : ''}; fixed frame seen from the nose. Dashed: unwinding · red: swing-out · dotted: after release.`, { size: 10, cls: 'sc-dim-text' }));
     g.append(text(16, H - 14, motion ? `Animation shown ${slow}× slower; the wire thickens as it pulls harder.` : 'Animation off (reduced motion).', { size: 10, cls: 'sc-dim-text' }));
@@ -397,8 +400,8 @@ export default {
     { title: 'Yo-yo despin worksheet (YO-YO DSP)', authors: 'C. P. Hoult', venue: 'Rocket Science and Technology', url: 'http://www.rsandt.com/media/YO-YO%20DSP.xls' },
   ],
   examples: [
-    { name: 'Worksheet: 450 → 100 rpm, 17 ft wires on a 15 in drum', values: { mode: 'size', I: 2.5, eI: 2, f0: 7.5, ef: 2, ff: 1.66667, tol: 0.1, a: 15, l: 206, mu: 0.0002083, Tb: 400, SF: 2 } },
-    { name: 'Flown sounding rocket (Bush): 270 rpm → 0, three wraps on a 10 in drum, 84 g weights (cable mass assumed)', values: { mode: 'check', I: 3.83, eI: 3, f0: 4.5, ef: 10, ff: 0, tol: 0.1, a: 10, l: 188.5, mu: 0.000625, mwEach: 0.0057558, Tb: 400, SF: 2 } },
-    { name: 'Complete despin of a small payload, inertia only estimated', values: { mode: 'size', I: 0.15, eI: 15, f0: 4, ef: 5, ff: 0, tol: 0.05, a: 3, l: 40, mu: 0.0001, Tb: 100, SF: 2 } },
+    { name: 'Worksheet: 450 → 100 rpm', values: { mode: 'size', I: 2.5, eI: 2, f0: 7.5, ef: 2, ff: 1.66667, tol: 0.1, a: 15, l: 206, mu: 0.0002083, Tb: 400, SF: 2 } },
+    { name: 'Flown payload (Bush): 270 rpm → 0', values: { mode: 'check', I: 3.83, eI: 3, f0: 4.5, ef: 10, ff: 0, tol: 0.1, a: 10, l: 188.5, mu: 0.000625, mwEach: 0.0057558, Tb: 400, SF: 2 } },
+    { name: 'Small payload, inertia estimated', values: { mode: 'size', I: 0.15, eI: 15, f0: 4, ef: 5, ff: 0, tol: 0.05, a: 3, l: 40, mu: 0.0001, Tb: 100, SF: 2 } },
   ],
 };

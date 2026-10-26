@@ -53,4 +53,56 @@ test('Design trends: more spin removed needs more mass; longer wires need less',
   assert.ok(m(inp.wf, 10) > m(inp.wf, 20));
 });
 
+// ---------- page: verdict, checking mode and solved fixes ----------
+const def = (await import('../site/js/calculators/yo-yo-despin.js')).default;
+const base = () => { const v = {}; for (const g of def.groups) for (const f of g.fields) v[f.id] = f.default; return v; };
+const page = (patch) => def.compute({ ...base(), ...patch });
+
+test('Sizing and checking are inverse: the sized weights checked give the target spin', () => {
+  const a = page({ mode: 'size' });
+  const b = page({ mode: 'check', mwEach: a.results.weightEach });
+  close(b.results.ffActual, base().ff, 1e-9, 'checked final spin');
+  close(a.results.weightEach, W('R5') / 2, 2e-3, 'sized weight vs worksheet R5/2');
+});
+
+test('Solved fixes land on their targets', () => {
+  const v = { mode: 'check', mwEach: 0.0015, eI: 0, ef: 0 };
+  const o = page(v);
+  assert.equal(o.spinLv, 'unsafe');
+  close(page({ ...v, mwEach: o.results.mNeedEach }).results.ffActual, base().ff, 1e-9, 'weight fix');
+  close(page({ ...v, l: o.results.lNeed }).results.ffActual, base().ff, 1e-9, 'wire length fix');
+  const w = page({ Tb: 100 });
+  assert.equal(w.wireLv, 'unsafe');
+  close(page({ Tb: w.results.TbNeed }).results.nWire, base().SF, 1e-12, 'breaking strength fix');
+  // uncertainty fix: the inertia tolerance that brings the worst miss to the spin tolerance
+  const u = page({ eI: 8, ef: 0 }), m = u.verdict.fixes.join(' ').match(/within <b>±([\d.]+) %/);
+  assert.ok(u.spinLv !== 'safe' && m, u.verdict.fixes.join(' '));
+  const at = page({ eI: +m[1], ef: 0 });
+  assert.ok(Math.abs(Math.max(Math.abs(at.results.ffLo - base().ff), Math.abs(at.results.ffHi - base().ff)) / base().tol - 1) < 0.03, 'spread at the solved tolerance is the tolerance');
+});
+
+test('Coupled inputs are never refused: target above the initial spin, wires heavier than the despin mass', () => {
+  const a = page({ ff: 9 });
+  assert.ok(a.warnings.some((w) => /only slow/.test(w.text)) && a.results.ffActual < base().f0);
+  const b = page({ mu: 0.005 });
+  assert.equal(b.results.weightEach, 0);
+  assert.ok(b.results.ffActual < base().ff && b.verdict.fixes.some((f) => /wire of at most/.test(f)));
+});
+
+test('Release tension matches Fedor D-1676 Eq. 20 with the rigid release state of Eq. 18', () => {
+  const o = yoyo(inp), R = inp.a + inp.l, wf = o.r * inp.w0, J = inp.I + o.m * inp.a ** 2;
+  const v = (J * inp.w0 - inp.I * wf) / (o.m * R), gd = (v - inp.a * wf) / inp.l;   // weight speed a·φ̇ + l·γ̇ at release
+  close(o.T2release, (o.m / 2) * (inp.a * wf * wf + inp.l * gd * gd), 1e-12, 'Eq. 20');
+});
+
+test('Bush (1967) flown yo-yo: three wraps; the massless-cable model is heavier than the flown 84 g by the cable share', () => {
+  const a = 10 / 12, l = 15.71;
+  close(l / (2 * Math.PI * a), 3, 1e-3, 'three complete wraps');
+  const each = (radialMass(3.83, a, l, 0) / 2) * 14593.9;   // g
+  assert.ok(each > 84 && each < 84 * 1.25, `${each} g`);
+  // a complete despin is insensitive to the initial spin (Bush p. 5): r does not depend on the initial spin
+  const o = page({ mode: 'check', I: 3.83, a: 10, l: 188.52, mu: 0, mwEach: each / 14593.9, ff: 0, eI: 0, ef: 20 });
+  assert.ok(Math.abs(o.results.ffLo) < 1e-6 && Math.abs(o.results.ffHi) < 1e-6, `${o.results.ffLo} ${o.results.ffHi}`);
+});
+
 after(() => console.log(`# yoyo: ${stats.compared} comparisons, max rel err ${stats.maxRel.toExponential(2)}`));

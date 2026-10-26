@@ -15,7 +15,7 @@
 <div class="wrap">
   <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Home</a><span class="sep">/</span><a href="../index.html#area-dyn">Flight Dynamics &amp; Mass Properties</a><span class="sep">/</span><a href="../calculators/yo-yo-despin.html">Yo-Yo Despinner</a><span class="sep">/</span><span>Documentation</span></nav>
   <div class="calc-title"><h1>Yo-Yo Despinner — theory</h1></div>
-  <p class="calc-sub">Despin weights for spin-stabilised stages and payloads. Based on J. V. Fedor, <em>Theory and Design Curves for a Yo-Yo De-Spin Mechanism for Satellites</em>, NASA TN D-708, 1961, as used in the RS&amp;T yo-yo worksheet.</p>
+  <p class="calc-sub">Despin weights for spin-stabilised stages and payloads. Based on the RS&amp;T yo-yo worksheet (which follows J. V. Fedor, NASA TN D-708, 1961), Fedor’s NASA TN D-1676 (1963) and K. S. Bush’s survey of flown yo-yo systems (1967).</p>
   <div class="calc-badges"><a class="btn small primary" href="../calculators/yo-yo-despin.html">Open the calculator</a></div>
   <div class="doc-layout">
     <nav class="doc-toc" aria-label="Contents"></nav>
@@ -46,14 +46,41 @@
         <p>Eliminating <span class="tex">u</span> with <span class="tex">r=\omega_f/\omega_0</span>, <span class="tex">D=I(1-r)</span> and <span class="tex">D^\prime=I(1-r^2)</span> gives a quadratic for the despin mass:</p>
         <div class="eq"><div class="tex-display">(D+ma^2)^2=mR^2\,(D^\prime+ma^2)</div></div>
         <p>Its coefficients have opposite signs, so there is exactly one positive root, which the calculator uses. Dropping the small terms in <span class="tex">ma^2</span> gives Fedor’s closed form <span class="tex">m\approx(1-r)I/[(1+r)R^2-a^2]</span>. The two agree to within 0.1 % for usual designs and exactly when <span class="tex">r=0</span>.</p>
-        <p>The wire then turns at <span class="tex">\dot\beta=(u-a\omega_f)/l</span>, and the tension at release is</p>
+        <p>These are Fedor’s release equations (NASA TN D-1676, p. 6, Eqs. 18–19) with the spring stretch set to zero. With the further approximation <span class="tex">\lambda^2\approx I/m</span> his Eq. 25 (p. 7) reduces for a rigid yo-yo to <span class="tex">m=(1-r)I/[(1+r)R^2]</span>; the worksheet keeps the <span class="tex">-a^2</span> term, and the calculator solves the quadratic exactly.</p>
+        <p>The wire then turns at <span class="tex">\dot\beta=(u-a\omega_f)/l</span>, and the tension at release (Fedor, D-1676, Eq. 20, the spring force replaced by the wire tension) is</p>
         <div class="eq"><div class="tex-display">T_2=\frac m2\left(a\omega_f^2+l\dot\beta^2\right)</div></div>
         <p>The swing-out is integrated in time from the full equations of motion, which gives the spin and tension histories and the release time. Over the swing the tension rises to this release value. It is continuous with the phase-1 tension at full unwinding.</p>
       </section>
 
       <section id="wire">
         <h2>Wire mass</h2>
-        <p>Each wire of mass <span class="tex">\mu l</span> moves less than the weight at its end. It is counted as one third of its mass in the despin mass, so each weight is <span class="tex">\tfrac12(m-\tfrac23\mu l)</span>. If the wires alone would supply more than the needed despin mass, the design is refused: use lighter or shorter wire.</p>
+        <p>Each wire of mass <span class="tex">\mu l</span> moves less than the weight at its end. It is counted as one third of its mass in the despin mass (Fedor, D-1676, p. 10, citing TN D-708; full-scale tests confirmed it), so each weight is <span class="tex">\tfrac12(m-\tfrac23\mu l)</span>. If the wires alone would supply more than the needed despin mass, the calculator uses no weights at all, shows the spin the bare wires leave, and gives the lightest wire that would work.</p>
+      </section>
+
+      <section id="checking">
+        <h2>Checking weights you have</h2>
+        <p>In the checking mode the total despin mass is known, <span class="tex">m=m_w+\tfrac23\mu l</span>, and the same release equations are solved for the spin ratio instead: <span class="tex">I(I+mR^2)r^2-2IJr+J^2-mR^2J=0</span> with <span class="tex">J=I+ma^2</span>, taking the root below 1. Weights that are too heavy give a negative ratio: the vehicle ends up spinning the other way.</p>
+      </section>
+
+      <section id="uncertainty">
+        <h2>What you do not know exactly</h2>
+        <p>A rigid yo-yo leaves a fixed ratio <span class="tex">r</span> of the spin. An error in the initial spin therefore appears as the same percentage error in the final spin, and an error in the roll inertia changes <span class="tex">r</span> itself (Fedor, D-1676, p. 1; Bush, p. 5). For a complete despin, <span class="tex">r=0</span> whatever the initial spin, which is why that case is insensitive to it (Bush, p. 5).</p>
+        <p>The calculator keeps the weights fixed and evaluates the final spin and both wire tensions at the nine combinations of inertia <span class="tex">I(1-\epsilon_I),\,I,\,I(1+\epsilon_I)</span> and initial spin <span class="tex">f_0(1-\epsilon_f),\,f_0,\,f_0(1+\epsilon_f)</span>. The verdict uses the worst miss of the target and the highest tension. Where the spread is too large Bush describes two-stage and stretch yo-yos; they are not modelled here.</p>
+      </section>
+
+      <section id="verdict">
+        <h2>Verdict and fixes</h2>
+        <p>Neither source gives a pass mark, so the limits are yours and the bands are a project choice, not a published limit:</p>
+        <ul>
+          <li><strong>Final spin:</strong> on target when every combination of the uncertainties lands within your tolerance; marginal up to twice the tolerance; beyond that it misses the target.</li>
+          <li><strong>Wire:</strong> safe when the breaking strength is at least your safety factor times the highest pull; marginal between 1 and that factor; below 1 the wire breaks. The highest pull is the larger of the unwinding peak <span class="tex">T_{1,max}</span> and the release value <span class="tex">T_2</span>, taken at the worst corner of the uncertainty (it grows with the square of the spin).</li>
+        </ul>
+        <p>The fixes are solved on the same model: the weight that hits the target exactly (closed form, the release quadratic), the wire length that makes your weights hit it (bisection, the wire mass changing with the length), the inertia or spin uncertainty that brings the spread within the tolerance (bisection) and the breaking strength needed, <span class="tex">T_{b,req}=n_{req}T_{max}</span>. Tests check that each fix lands on its target.</p>
+      </section>
+
+      <section id="drawing">
+        <h2>The drawing</h2>
+        <p>The end view is drawn in a fixed, non-spinning frame. The body angle during unwinding is the integral of the spin, <span class="tex">\theta=-\varphi+2\sqrt c\,\arctan(\varphi/\sqrt c)</span>; during the swing-out it comes from the integrated equations of motion. In this frame each weight spirals outwards several times while its wire unwinds: the vehicle keeps turning underneath it. After release the weights fly straight on at speed <span class="tex">u</span>. The drawing is to scale except that a very small drum is drawn at a minimum size, which the label says.</p>
       </section>
 
       <section id="verification">
@@ -64,7 +91,9 @@
           <li>that the exact despin mass conserves momentum and energy, and lies within 0.1 % of Fedor’s form;</li>
           <li>that integrating both phases from rest ends at exactly the target spin, to 10⁻⁶;</li>
           <li>that the simulated peak tensions match the closed forms;</li>
-          <li>that tension is continuous between the two phases.</li>
+          <li>that tension is continuous between the two phases;</li>
+          <li>that sizing and checking are inverse to each other, and that every solved fix (weight, wire length, uncertainty, breaking strength) lands on its target;</li>
+          <li>a plausibility check against the flown single-stage system in Bush (p. 5): 3.83 slug·ft², 10 in drum, 15.71 ft cables (exactly three wraps), 270 rpm to zero with 84 g weights. With massless cables the model asks for 102 g each; the paper does not give the cable mass, and a cable of about 11 g/m (an assumption) closes the gap through the one-third rule. This is not an independent verification.</li>
         </ul>
       </section>
 
@@ -74,13 +103,17 @@
           <li><strong>Despin mass.</strong> The exact positive root of the release quadratic is used. Fedor’s closed form is shown alongside.</li>
           <li><strong>Release tension.</strong> It comes from the exact release state. The worksheet’s simpler phase-2 estimate is about 20 % lower in the example and is shown only for comparison.</li>
           <li><strong>Model.</strong> Rigid vehicle, massless or lumped wire, no aerodynamic or gravity forces, and both weights released together.</li>
+          <li><strong>Not modelled.</strong> Stretch (spring) and two-stage yo-yos, unequal or unsymmetric release, wire elasticity and the snatch load if a wire goes slack.</li>
+          <li><strong>Very heavy weights.</strong> When the weights carry many times the roll inertia, the integrated time history becomes stiff and only approximate; the page warns, and the final spin and release values still come from the exact conservation solution.</li>
         </ul>
       </section>
 
       <section id="references">
         <h2>References</h2>
         <ol class="refs">
-          <li>J. V. Fedor, “Theory and Design Curves for a Yo-Yo De-Spin Mechanism for Satellites,” NASA TN D-708, August 1961.</li>
+          <li>J. V. Fedor, “Analytical Theory of the Stretch Yo-Yo for De-Spin of Satellites,” NASA TN D-1676, April 1963. <a href="https://ntrs.nasa.gov/citations/19630004528" rel="noopener">NTRS</a></li>
+          <li>K. S. Bush, “Yo-Yo Despin Mechanisms,” Second Aerospace Mechanisms Symposium, NASA Langley, 1967. <a href="https://ntrs.nasa.gov/citations/19680018324" rel="noopener">NTRS</a></li>
+          <li>J. V. Fedor, “Theory and Design Curves for a Yo-Yo De-Spin Mechanism for Satellites,” NASA TN D-708, August 1961 (not read directly; cited through the two above and the worksheet).</li>
           <li>C. P. Hoult, yo-yo despin worksheet (YO-YO DSP), Rocket Science and Technology. <a href="http://www.rsandt.com/media/YO-YO%20DSP.xls" rel="noopener">Source file</a></li>
         </ol>
       </section>

@@ -125,7 +125,7 @@ const INVARIANTS = {
   'parachute-recovery': (v, R) => [R.t > 0, R.drift >= 0, R.vAft <= R.vNose * (1 + 1e-12), R.vAft >= R.vAftMin * (1 - 1e-12), R.vDeploy > 0, !v.reef || (R.k > 0 && R.k <= 1 && R.tReefed > 0)],
   'upper-stage-divergence': (v, R) => [R.qD > 0, typeof R.amp !== 'number' || R.amp >= 1, typeof R.margin !== 'number' || Math.abs(R.margin - R.qD / v.q) <= 1e-9 * R.margin, v.mode !== 'tube' || Math.abs(R.lmax - v.l * Math.sqrt(R.qD / v.q)) <= 1e-9 * R.lmax],
   'launcher-deflection': (v, R) => [R.pitchDeg >= R.yawDeg - 1e-12, R.yawDeg >= 0, R.Fp >= R.Ft - 1e-12, R.I > 0, R.Lmax === 'no limit' || Math.abs(v.factor * R.Fp * R.Lmax ** 2 / (2 * R.EI) * 180 / Math.PI - v.allow) <= 1e-9 * v.allow],
-  'tethered-pibal': (v, R) => [R.Vc > 0 && R.Vc <= R.V * (1 + 1e-12), R.corr > 0 && R.corr <= 1, R.lift > 0, Math.abs(Math.hypot(R.north, R.east) - R.Vc) <= 1e-9 * R.Vc, R.b >= 0 && R.c >= 0],
+  'tethered-pibal': (v, R) => R.lift <= 0 ? [R.Vc === '—' && R.corr === '—'] : [R.Vc > 0 && R.Vc <= R.V * (1 + 1e-12), R.corr > 0 && R.corr <= 1, R.lift > 0, Math.abs(Math.hypot(R.north, R.east) - R.Vc) <= 1e-9 * R.Vc, R.b >= 0 && R.c >= 0],
   'nose-cone': (v, R) => [R.T0 > 0, R.xcp > 0 && R.xcp < R.Leff, R.CNa === 2, R.S > 0, R.Vol > 0, R.Mcr > 0 && R.Mcr <= 1, R.CD === '—' || Number.isFinite(R.CD), R.beta === '—' || (R.beta > 0 && R.beta <= 90)],
   'payload-venting': (v, R) => [Number.isFinite(R.dpMax), R.tau > 0, R.A > 0, R.p0 > 0, R.allow > 0, Number.isFinite(R.MTmax)],
   'body-bending': (v, R) => [R.f1 > 0 && R.f2 > R.f1 && R.f3 > R.f2, R.L > 0, R.W > 0],
@@ -425,6 +425,12 @@ test('Tethered pibal: a lower angle means more wind; a longer tether needs more 
   increasing([80, 60, 40, 20].map((theta) => run('tethered-pibal', { theta }).Vc), 'wind vs lower angle');
   increasing([1000, 500, 200, 50].map((L) => run('tethered-pibal', { L }).corr), 'correction vs shorter tether');
   increasing([2, 3, 4].map((D) => run('tethered-pibal', { D }).lift), 'lift vs bigger balloon');
+  // the solved fixes: the longest line sits on your correction limit; the solved balloon reads the same wind mid-band
+  const P0 = run('tethered-pibal', { L: 1400, corrMax: 5 });
+  assert.ok(Math.abs((1 - run('tethered-pibal', { L: P0.Lok, corrMax: 5 }).corr) * 100 - 5) < 1e-6, 'pibal longest line');
+  const P1 = run('tethered-pibal', { theta: 12 });
+  assert.ok(typeof P1.Dok === 'number' && P1.Dok > 3, 'pibal bigger balloon when blown down');
+  assert.ok(Math.abs(run('tethered-pibal', { theta: 45 }).err - 100 * Math.PI / 180) < 1e-9, 'pibal angle error at 45 degrees');
 });
 
 test('Nose cone: subsonic trends (cone vs ogive, Mach, length), the optimum beats cone and ogive, supersonic drag falls with fineness', () => {

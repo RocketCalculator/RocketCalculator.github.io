@@ -247,3 +247,9 @@ the side the slosh is now (above → narrower tank / lower pitch frequency / mor
 - The user sets the margin to keep below divergence (default 2; the memo gives none). SAFE q_D/q ≥ n_D, MARGINAL
   1.25 ≤ q_D/q < n_D, UNSAFE below 1.25 (loads ×5) or when the bending makes the trimmed rocket unstable. Same 1.25
   inner band as D33/D36. Not a published limit.
+
+## D40 — 2026-10-26 — Tethered balloon reading verdict
+- UNSAFE below 15° elevation (CSULB report p. 6: double-valued past ~75° zenith). MARGINAL when the wind error from the
+  angle reading (δΘ/sin 2Θ) exceeds your limit (default 10 % at ±1°), when the tether correction exceeds your limit
+  (default 10 %). SAFE otherwise. The balloon Reynolds number (viscosity at 15 °C, estimate) is only a note past 3×10⁵:
+  CSULB's measured curve stays usable to ~30 ft/s for a 3 ft balloon, beyond the smooth-sphere crisis. The 10 % defaults are this site's choices, not published limits.

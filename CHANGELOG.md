@@ -3,6 +3,15 @@
 Newest first, in the spirit of [Keep a Changelog](https://keepachangelog.com/). From 2026-10-25 every entry names its
 branch, tag and commit range. Live site: https://rocketcalculator.github.io/.
 
+## 2026-10-26 — Tethered Balloon Wind Sensor cycle (`improve/tethered-pibal-2`)
+- Verdict on the reading (D40): unusable below 15° elevation (CSULB), marginal when the angle error, the tether
+  correction or the drag crisis exceed your limits. Solved fixes: the balloon diameter for a good angle, the longest
+  tether within your correction limit, the angle accuracy needed.
+- New key result: the wind error from your angle-reading accuracy (δΘ/sin 2Θ). Inputs bounded with sliders, grouped
+  (balloon → tether → reading → your limits) with info tabs to the high-school standard.
+- Drawing: line of sight in the verdict colour, your accuracy wedge, the good-angle band. Plots mark the 15° limit and
+  your limits; the bias-term plot moved to Explore.
+
 ## 2026-10-26 — Upper-Stage Divergence cycle (`improve/upper-stage-divergence-2`)
 - Verdict on the margin q_D/q against your required margin (D39), with solved fixes: the thinnest wall, the longest
   stage, the stiffest joint and the highest dynamic pressure that keep it; an unstable trim gives the first-stage tail

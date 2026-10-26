@@ -89,3 +89,60 @@ export function singleWedge({ M, delta, sweep = 0, N = 0, S = 0, Sref = 0 }) {
     CDwN, CDw, CDvehicle: Sref > 0 ? (N * S * CDw) / Sref : null,
   };
 }
+
+// ---- Shock–expansion theory (NACA Report 1135): each face of the section takes the exact oblique shock (compression)
+// or Prandtl–Meyer expansion (eqs. 171–173) for its turning angle; "if the angle of attack exceeds the semivertex angle
+// of the wedge, the flow over the upper (leeward) surface is given by a Prandtl-Meyer expansion" (p. 624).
+
+/** Prandtl–Meyer angle ν(M) (rad), eq. 171c. */
+export function prandtlMeyer(M, g = GAMMA) {
+  if (!(M >= 1)) return 0;
+  const k = Math.sqrt((g + 1) / (g - 1)), b = Math.sqrt(M * M - 1);
+  return k * Math.atan(b / k) - Math.atan(b);
+}
+/** Maximum Prandtl–Meyer angle (M → ∞), eq. 172: 130.45° for γ = 1.4. */
+export const nuMax = (g = GAMMA) => (Math.sqrt((g + 1) / (g - 1)) - 1) * (Math.PI / 2);
+/** Mach number for a Prandtl–Meyer angle (bisection on eq. 171c). */
+export function machFromNu(nu, g = GAMMA) {
+  let lo = 1, hi = 2;
+  while (prandtlMeyer(hi, g) < nu && hi < 1e6) hi *= 2;
+  for (let i = 0; i < 100; i++) { const m = (lo + hi) / 2; if (prandtlMeyer(m, g) < nu) lo = m; else hi = m; }
+  return (lo + hi) / 2;
+}
+const pRatioIsen = (M1, M2, g) => ((1 + ((g - 1) / 2) * M1 * M1) / (1 + ((g - 1) / 2) * M2 * M2)) ** (g / (g - 1));
+
+/**
+ * Flow behind a surface that turns the stream by θ (rad; > 0 into the flow) at Mach M: { kind, beta, p (p2/p1), M2, pt
+ * (total-pressure ratio), T (T2/T1), cp }, or { kind: 'detached' }. Shock: eqs. 128–145; expansion: eqs. 171–173.
+ */
+export function turn(M, theta, g = GAMMA) {
+  if (theta > 0) {
+    const sh = obliqueShock(M, theta, g);
+    if (!sh) return { kind: 'detached', thetaMax: maxDeflection(M, g).theta };
+    const Mn = M * Math.sin(sh.beta), p = 1 + ((2 * g) / (g + 1)) * (Mn * Mn - 1);
+    const Mn2 = Math.sqrt((1 + ((g - 1) / 2) * Mn * Mn) / (g * Mn * Mn - (g - 1) / 2)), M2 = Mn2 / Math.sin(sh.beta - theta);
+    const rho = ((g + 1) * Mn * Mn) / ((g - 1) * Mn * Mn + 2), T = p / rho;
+    const pt = (rho ** (g / (g - 1))) * ((g + 1) / (2 * g * Mn * Mn - (g - 1))) ** (1 / (g - 1));   // eq. 142
+    return { kind: 'shock', beta: sh.beta, p, M2, pt, T, cp: (2 / (g * M * M)) * (p - 1) };
+  }
+  if (theta === 0) return { kind: 'none', beta: Math.asin(1 / M), p: 1, M2: M, pt: 1, T: 1, cp: 0 };
+  const nu2 = prandtlMeyer(M, g) - theta;                    // turning away from the flow: expansion by |θ|
+  if (nu2 >= nuMax(g)) return { kind: 'vacuum', p: 0, M2: Infinity, pt: 1, T: 0, cp: -2 / (g * M * M) };
+  const M2 = machFromNu(nu2, g), p = pRatioIsen(M, M2, g);
+  return { kind: 'expansion', mu1: Math.asin(1 / M), mu2: Math.asin(1 / M2), p, M2, pt: 1, T: p ** ((g - 1) / g), cp: (2 / (g * M * M)) * (p - 1) };
+}
+
+/**
+ * Single-wedge section (sharp leading edge, faces at ±δ to the chord, blunt base of thickness 2c·tanδ) at angle of
+ * attack α, Mach M (all normal to the edge). Coefficients on the chord: C_N = C_p,lower − C_p,upper,
+ * C_A = (C_p,lower + C_p,upper − 2C_p,base)·tanδ; lift and drag in wind axes. Linear (Ackeret) values for comparison.
+ */
+export function wedgeSection(M, delta, alpha, cpBase = 0, g = GAMMA) {
+  const lower = turn(M, delta + alpha, g), upper = turn(M, delta - alpha, g);
+  const ok = lower.kind !== 'detached' && upper.kind !== 'detached';
+  const CN = ok ? lower.cp - upper.cp : null, CA = ok ? (lower.cp + upper.cp - 2 * cpBase) * Math.tan(delta) : null;
+  const CL = ok ? CN * Math.cos(alpha) - CA * Math.sin(alpha) : null, CD = ok ? CN * Math.sin(alpha) + CA * Math.cos(alpha) : null;
+  const b = Math.sqrt(M * M - 1);
+  return { lower, upper, ok, CN, CA, CL, CD, LD: ok && CD > 0 ? CL / CD : null,
+    lin: { CN: (4 * alpha) / b, CD: (4 * (alpha * alpha + delta * delta)) / b }, thetaMax: maxDeflection(M, g).theta, mu: Math.asin(1 / M), nu: prandtlMeyer(M, g) };
+}

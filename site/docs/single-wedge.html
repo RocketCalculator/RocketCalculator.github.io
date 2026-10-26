@@ -61,6 +61,26 @@
         <p>The analysis is two-dimensional in the plane normal to the leading edge. A swept edge lowers <span class="tex">M_N</span>. When <span class="tex">M_N\le1</span> the edge is subsonic, the multiplier is 1 (flat-plate lift) and there is no attached shock or supersonic wave-drag increment.</p>
       </section>
 
+      <section id="shockexp">
+        <h2>Shock–expansion theory: the exact section</h2>
+        <p>The Busemann series is a small-angle expansion. The calculator also solves the section exactly, face by face, in the plane normal to the leading edge (NACA Report 1135, p. 624). At an angle of attack <span class="tex">\alpha</span> the lower (windward) face turns the flow into itself by <span class="tex">\delta+\alpha</span>, through an oblique shock. The upper face turns it by <span class="tex">\delta-\alpha</span>. While that is positive, the upper face has a weaker shock. Once <span class="tex">\alpha&gt;\delta</span>, the report notes, the flow over the leeward surface is a Prandtl–Meyer expansion instead.</p>
+        <p><b>Shock.</b> The shock angle <span class="tex">\beta</span> solves the deflection relation of eqs. 148 on the weak branch. The ratios across the shock are those of a normal shock at the normal Mach number <span class="tex">M\sin\beta</span> (eqs. 128–145), and the total-pressure ratio is eq. 142.</p>
+        <div class="eq"><div class="tex-display">\frac{p_2}{p_1}=1+\frac{2\gamma}{\gamma+1}\left(M^2\sin^2\beta-1\right),\qquad C_p=\frac{4\left(M^2\sin^2\beta-1\right)}{(\gamma+1)M^2}</div></div>
+        <p><b>Expansion.</b> The Prandtl–Meyer angle (eq. 171c) is</p>
+        <div class="eq"><div class="tex-display">\nu(M)=\sqrt{\tfrac{\gamma+1}{\gamma-1}}\tan^{-1}\sqrt{\tfrac{\gamma-1}{\gamma+1}(M^2-1)}-\tan^{-1}\sqrt{M^2-1}</div></div>
+        <p>Turning the flow away from itself by <span class="tex">\Delta\nu</span> raises its Mach number to the one where <span class="tex">\nu=\nu(M_1)+\Delta\nu</span>. The pressure follows isentropically (eq. 173), and <span class="tex">\nu</span> cannot exceed 130.45° (eq. 172). The fan runs from the free-stream Mach line to the Mach line of the turned flow.</p>
+        <p><b>Forces.</b> Each face is flat and carries one uniform pressure. On the chord <span class="tex">c</span>, with the blunt base at pressure coefficient <span class="tex">C_{p,b}</span> (a user input, 0 by default because no source for it was read):</p>
+        <div class="eq"><div class="tex-display">c_n=C_{p,l}-C_{p,u},\quad c_a=\left(C_{p,l}+C_{p,u}-2C_{p,b}\right)\tan\delta,\quad c_l=c_n\cos\alpha-c_a\sin\alpha,\quad c_d=c_n\sin\alpha+c_a\cos\alpha</div></div>
+        <p>For comparison, linear (Ackeret) theory gives <span class="tex">c_n=4\alpha/\sqrt{M^2-1}</span> and <span class="tex">c_d=4(\alpha^2+\delta^2)/\sqrt{M^2-1}</span>. The exact normal-force slope at <span class="tex">\alpha=0</span>, divided by the flat-plate slope, is the exact multiplier <span class="tex">K_{W,exact}</span>.</p>
+        <p><b>Verdict</b> (DECISIONS D28): the windward face must keep an attached shock, <span class="tex">\delta+\alpha\le\theta_{max}(M_N)</span>.</p>
+        <ul>
+          <li>SAFE with at least 2° to spare.</li>
+          <li>MARGINAL within 2° of the limit, or when the leading edge is subsonic (no wedge benefit).</li>
+          <li>UNSAFE when the shock detaches: the method no longer applies, and a detached bow shock means high drag at the leading edge.</li>
+        </ul>
+        <p>The fixes are the largest half-angle that keeps the 2° margin, and the Mach number above which the shock attaches (bisection on <span class="tex">\theta_{max}</span>).</p>
+      </section>
+
       <section id="verification">
         <h2>Verification</h2>
         <p><code>tests/wedge.test.js</code> checks the following:</p>

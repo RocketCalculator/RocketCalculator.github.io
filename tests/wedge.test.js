@@ -62,3 +62,22 @@ test('Single wedge: subsonic leading edge gives multiplier 1, sweep reduces the 
 });
 
 after(() => console.log(`# wedge: ${stats.compared} comparisons, max rel err ${stats.maxRel.toExponential(2)}`));
+
+test('Shock–expansion section: NACA 1135 Prandtl–Meyer values, small-angle limit, exact multiplier, expansion branch', async () => {
+  const { prandtlMeyer, nuMax, machFromNu, wedgeSection, exactMultiplier, turn } = await import('../site/js/calc/wedge.js');
+  const D = Math.PI / 180, near = (a, b, t, w) => assert.ok(Math.abs(a - b) <= t, `${w}: ${a} vs ${b}`);
+  near(nuMax() / D, 130.45, 0.01, 'ν_max (eq. 172)');
+  near(prandtlMeyer(2) / D, 26.38, 0.01, 'ν(2)');
+  near(machFromNu(prandtlMeyer(3.7)), 3.7, 1e-6, 'inverse');
+  // thin section, tiny angle: linear theory
+  const t = wedgeSection(2.5, 1e-4, 1e-3);
+  near(t.CN / t.lin.CN, 1, 2e-3, 'Ackeret limit');
+  // slope at α = 0 gives the exact multiplier
+  const h = 1e-4, d = 6 * D, K = (wedgeSection(3, d, h).CN - wedgeSection(3, d, -h).CN) / (2 * h) / (4 / Math.sqrt(8));
+  near(K, exactMultiplier(3, d), 1e-4, 'exact multiplier');
+  // α > δ: the upper face expands, the pressure there is below ambient, M rises
+  const e = wedgeSection(2.5, 3 * D, 8 * D);
+  assert.equal(e.upper.kind, 'expansion'); assert.ok(e.upper.cp < 0 && e.upper.M2 > 2.5);
+  // detachment
+  assert.equal(turn(1.6, 15 * D).kind, 'detached');
+});

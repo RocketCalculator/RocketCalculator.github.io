@@ -21,7 +21,12 @@ function flight(th, w) {
   let x = xa, hh = ha;
   while (hh > HM) { hh -= VD * dt; x += w * dt; pts.push({ x, h: Math.max(hh, HM), phase: 'drogue' }); }
   while (hh > 0) { hh -= VM * dt; x += w * dt; pts.push({ x, h: Math.max(hh, 0), phase: 'main' }); }
-  return { pts: pts.map((p) => ({ ...p, y: GY - p.h })), xb, hb, xa, ha };
+  // fill the frame: the climb's sideways spread is stretched (it is small next to the drift), then the whole flight is
+  // scaled so the landing sits near the right edge; heights stay to scale
+  const ASC = 3.2, xaS = X0 + ASC * (xa - X0), land = x - xa;
+  const sx = (p) => (p.phase === 'drogue' || p.phase === 'main' ? xaS + (p.x - xa) : X0 + ASC * (p.x - X0));
+  const k = (600 - X0) / Math.max(xaS - X0 + land, xaS - X0 + 120, 160), X = (v) => X0 + k * (v - X0);
+  return { pts: pts.map((p) => ({ ...p, x: X(sx(p)), y: GY - p.h })), xb: X(X0 + ASC * (xb - X0)), hb, xa: X(xaS), ha };
 }
 
 function heroArt() {

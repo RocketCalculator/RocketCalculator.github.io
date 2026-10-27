@@ -77,6 +77,13 @@
         <p>The memo applies this closed form with the average <span class="tex">(I_{SP1}+I_{SP2})/2</span> when the impulses differ. The calculator shows that result in the full results table, with the ideal velocity its split really gives when each stage has its own impulse. When the impulses are equal, the general solution and the closed form agree to <span class="tex">10^{-11}</span>.</p>
       </section>
 
+      <section id="verdict">
+        <h2>Verdict and fixes</h2>
+        <p>The optimum split gives the lightest rocket; whether it is light enough depends on what you can build and launch. The calculator asks for your heaviest liftoff mass <span class="tex">M_{max}</span> (default 50 lb, a placeholder) and compares: <strong>safe</strong> up to it, <strong>marginal</strong> up to 1.25×, <strong>unsafe</strong> beyond.</p>
+        <p>Every mass scales with the payload, so the heaviest payload that fits is exact: <span class="tex">M_{PL,max}=M_{PL}M_{max}/M_{01}</span>. The fastest ideal velocity within the limit, and the structural fractions (both scaled by the same factor) that fit it, are found by bisection on the full optimum.</p>
+        <p>An ideal velocity above <span class="tex">\Delta V_{lim}=-c_1\ln\sigma_1-c_2\ln\sigma_2</span> cannot be reached by any two-stage rocket with these stages. Scaling both structural fractions by <span class="tex">k</span> moves the limit by <span class="tex">-(c_1+c_2)\ln k</span>, so the fractions below which the velocity becomes reachable at all follow exactly; the verdict is unsafe and gives that and the largest reachable velocity.</p>
+      </section>
+
       <section id="verification">
         <h2>Verification</h2>
         <p><code>tests/twostage.test.js</code> checks the following:</p>

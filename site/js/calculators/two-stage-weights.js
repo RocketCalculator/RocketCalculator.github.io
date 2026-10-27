@@ -16,11 +16,30 @@ const which = (k) => (k === 1 ? 'first' : 'second');
 // a mass in the reader's unit, for result notes
 const dm = (x) => `${fmt(toDisplay(x, MASS), { digits: 4 })} ${unitLabel(displayUnit(MASS))}`;
 const split = (st) => `propellant ${dm(st.pr)} · structure ${dm(st.st)}`;
+const dv = (x) => `${fmt(toDisplay(x, SPEED), { digits: 4 })} ${unitLabel(displayUnit(SPEED))}`;
+// verdict bands (DECISIONS D44): liftoff mass against your limit; up to 1.25× is marginal
+const MARGIN = 1.25;
+const ST = { safe: 'ok', marginal: 'warn', unsafe: 'err' };
+const COL = { safe: 'var(--ok)', marginal: 'var(--warn)', unsafe: 'var(--danger)' };
+function solve(f, lo, hi) {
+  let flo = f(lo); if (!(flo * f(hi) <= 0)) return null;
+  for (let i = 0; i < 80; i++) { const m = (lo + hi) / 2, fm = f(m); if (fm * flo > 0) { lo = m; flo = fm; } else hi = m; }
+  return (lo + hi) / 2;
+}
+/** Liftoff mass of the optimum split, Infinity when the stages cannot reach dv. */
+const liftoff = (v, over = {}) => {
+  const w = { ...v, ...over }, p = stagesOf(w);
+  if (!(w.dv < velocityRange(p).max)) return Infinity;
+  const o = twoStage({ dv: w.dv, Mpl: w.Mpl, ...p });
+  return Number.isFinite(o.M01) && o.etaTot > 0 ? o.M01 : Infinity;
+};
 
-export default {
+const DEF = {
   slug: 'two-stage-weights',
   topic: 'optimum-weight-allocation',
   title: 'Two-Stage Weight Allocation',
+  verdict: true,
+  tiers: true,
   subtitle: 'The <b>lightest two-stage rocket</b> that gives a payload a required ideal velocity: how much propellant and structure each stage should carry.',
   intro: {
     what: 'Splits the liftoff mass between two stages so that a given payload reaches a required ideal velocity with the least total mass, and gives the propellant and structure of each stage.',
@@ -39,6 +58,7 @@ export default {
       'Enter the specific impulse and structural fraction of each stage.',
       'The multiplier $\\lambda$ is found so that the optimum split gives the required ideal velocity.',
       'The payload ratios give the liftoff mass and the propellant and structure of each stage.',
+      'The verdict compares the liftoff mass with the most you can build or launch, and gives the payload, velocity or structure that fits.',
     ],
     doc: 'overview',
   },
@@ -46,36 +66,51 @@ export default {
     {
       id: 'mission', title: 'Mission',
       fields: [
-        { id: 'dv', label: 'Required ideal velocity', sym: '\\Delta V_{ID}', ...SPEED, default: 2000, min: 0, minExclusive: true,
-          info: { text: 'Velocity the two stages must add with no drag or gravity losses (the rocket-equation velocity). Add an allowance for those losses to the burnout velocity you need.', range: 'Gravity and drag losses for a vertical sounding-rocket flight are often 10–30 % of the ideal velocity.', doc: 'overview' } },
-        { id: 'Mpl', label: 'Payload mass', sym: 'M_{PL}', ...MASS, default: 10, min: 0, minExclusive: true, info: { text: 'Everything above the second stage: payload, recovery system and nose cone. All stage masses scale with it.', doc: 'masses' } },
+        { id: 'dv', label: 'Required ideal velocity', sym: '\\Delta V_{ID}', ...SPEED, default: 2000, min: 0, minExclusive: true, max: 40000, slider: { min: 200, max: 15000, step: 10 },
+          info: { text: ['Velocity the two stages must add with no drag or gravity losses (the rocket-equation velocity).', 'Take the burnout velocity you need and add an allowance for drag and gravity losses.', 'The liftoff mass grows steeply as it nears the limit of the stages; the verdict gives the fastest velocity within your mass limit.'], tex: '\\Delta V_{ID}=\\Delta V_1+\\Delta V_2', range: 'Gravity and drag losses for a vertical sounding-rocket flight are often 10–30 % of the ideal velocity.', doc: 'overview' } },
+        { id: 'Mpl', label: 'Payload mass', sym: 'M_{PL}', ...MASS, default: 10, min: 0, minExclusive: true, max: 1e5, slider: { min: 0.5, max: 200, step: 0.5 },
+          info: { text: ['Everything above the second stage: payload, recovery system and nose cone.', 'Weigh it, or add up the parts list.', 'Every stage mass scales in proportion to it, so the heaviest payload within your mass limit follows directly.'], tex: 'M_{01}=\\frac{M_{PL}}{\\eta_1\\eta_2}', doc: 'masses' } },
       ],
     },
     {
       id: 'stage1', title: 'Stage 1 (lower)',
       fields: [
-        { id: 'Isp1', label: 'Stage 1 specific impulse', sym: 'I_{SP1}', ...ISP, ...ISP_SLIDER, default: 210, min: 0, minExclusive: true, info: { text: 'Delivered specific impulse of the first-stage motor. Exhaust velocity is $c_1=g_0I_{SP1}$.', range: 'Amateur solid motors 150–240 s; hybrids 180–250 s.', doc: 'optimum' } },
+        { id: 'Isp1', label: 'Stage 1 specific impulse', sym: 'I_{SP1}', ...ISP, ...ISP_SLIDER, default: 210, min: 0, minExclusive: true, max: 500,
+          info: { text: ['Delivered specific impulse of the first-stage motor: total impulse divided by propellant weight.', 'From the motor data sheet or a static test.', 'Exhaust velocity is $c_1=g_0I_{SP1}$; a higher value means less propellant for the same velocity.'], tex: 'c_1=g_0I_{SP1}', range: 'Amateur solid motors 150–240 s; hybrids 180–250 s.', doc: 'optimum' } },
         { id: 's1', label: 'Stage 1 structural fraction', sym: '\\sigma_1', ...FRAC, default: 0.15,
-          info: { text: 'Inert mass of the stage (case, nozzle, fins, interstage, unburnt propellant) divided by its loaded mass: $\\sigma_1=M_{ST1}/(M_{ST1}+M_{PR1})$. Also called structural efficiency; smaller is better.', range: 'Large solid stages 0.08–0.15; amateur stages 0.2–0.5.', doc: 'optimum' } },
+          info: { text: ['Inert mass of the stage (case, nozzle, fins, interstage, unburnt propellant) divided by its loaded mass.', 'Weigh the stage loaded and empty.', 'Smaller is better: it sets the limit of what the stages can ever reach.'], tex: '\\sigma_1=\\frac{M_{ST1}}{M_{ST1}+M_{PR1}}', range: 'Large solid stages 0.08–0.15; amateur stages 0.2–0.5.', doc: 'optimum' } },
       ],
     },
     {
       id: 'stage2', title: 'Stage 2 (upper)',
       fields: [
-        { id: 'Isp2', label: 'Stage 2 specific impulse', sym: 'I_{SP2}', ...ISP, ...ISP_SLIDER, default: 210, min: 0, minExclusive: true, info: { text: 'Delivered specific impulse of the second-stage motor; it may differ from the first stage’s.', doc: 'optimum' } },
-        { id: 's2', label: 'Stage 2 structural fraction', sym: '\\sigma_2', ...FRAC, default: 0.14, info: { text: 'Inert mass of the second stage divided by its loaded mass, $\\sigma_2=M_{ST2}/(M_{ST2}+M_{PR2})$.', doc: 'optimum' } },
+        { id: 'Isp2', label: 'Stage 2 specific impulse', sym: 'I_{SP2}', ...ISP, ...ISP_SLIDER, default: 210, min: 0, minExclusive: true, max: 500,
+          info: { text: ['Delivered specific impulse of the second-stage motor; it may differ from the first stage’s.', 'Upper-stage motors often have a longer nozzle and a slightly higher value.', 'The optimum gives the better stage more of the work.'], tex: 'c_2=g_0I_{SP2}', doc: 'optimum' } },
+        { id: 's2', label: 'Stage 2 structural fraction', sym: '\\sigma_2', ...FRAC, default: 0.14,
+          info: { text: ['Inert mass of the second stage divided by its loaded mass.', 'Weigh the stage loaded and empty.', 'Upper-stage structure is carried all the way, so it costs the most.'], tex: '\\sigma_2=\\frac{M_{ST2}}{M_{ST2}+M_{PR2}}', doc: 'optimum' } },
+      ],
+    },
+    {
+      id: 'limits', title: 'Your limits',
+      fields: [
+        { id: 'Mmax', label: 'Heaviest liftoff mass you can launch', sym: 'M_{max}', ...MASS, default: 50, min: 0, minExclusive: true, max: 1e6, slider: { min: 2, max: 1000, step: 1 },
+          info: { text: ['The most the rocket may weigh at liftoff: your launcher’s rating, the motor class you may fly, the range’s limit or your budget.', 'This site’s default of 50 lb is a placeholder: set your own.', 'The verdict compares the liftoff mass with it (up to 1.25× is marginal) and gives the payload, velocity or structure that fits.'], doc: 'verdict' } },
       ],
     },
   ],
   results: [
-    { id: 'M01', label: 'Liftoff mass', sym: 'M_{01}', ...MASS, key: true, note: (x, out, v) => `${fmt(out.o.M01 / v.Mpl, { digits: 4 })} × the payload`,
+    { id: 'M01', label: 'Liftoff mass', sym: 'M_{01}', ...MASS, key: true, status: (x, out) => ST[out.lv], note: (x, out, v) => (out.o ? `${fmt(out.o.M01 / v.Mpl, { digits: 4 })} × the payload · you allow ${dm(v.Mmax)}` : ''),
       info: { text: 'Smallest total mass at liftoff that gives the payload the required ideal velocity.', tex: 'M_{01}=\\frac{M_{PL}}{\\eta_1\\eta_2}', doc: 'masses' } },
-    { id: 'm1', label: 'First stage, loaded', sym: 'M_1', ...MASS, key: true, note: (x, out) => (out.o.single === 2 ? 'leave this stage out' : split(out.o.stage1)),
+    { id: 'm1', label: 'First stage, loaded', sym: 'M_1', ...MASS, key: true, status: () => 'ok', note: (x, out) => (!out.o ? '' : out.o.single === 2 ? 'leave this stage out' : split(out.o.stage1)),
       info: { tex: 'M_1=M_{01}-M_{02}', doc: 'masses' } },
-    { id: 'm2', label: 'Second stage, loaded', sym: 'M_2', ...MASS, key: true, note: (x, out) => (out.o.single === 1 ? 'leave this stage out' : split(out.o.stage2)),
+    { id: 'm2', label: 'Second stage, loaded', sym: 'M_2', ...MASS, key: true, status: () => 'ok', note: (x, out) => (!out.o ? '' : out.o.single === 1 ? 'leave this stage out' : split(out.o.stage2)),
       info: { tex: 'M_2=M_{02}-M_{PL}', doc: 'masses' } },
-    { id: 'payloadPct', label: 'Payload fraction of liftoff mass', sym: '\\eta_{TOT}', dim: 'percent', internal: 'pct', key: true, digits: 4, note: (x, out) => `$\\eta_1=${fmt(out.o.eta1, { digits: 4 })}$ · $\\eta_2=${fmt(out.o.eta2, { digits: 4 })}$`,
+    { id: 'payloadPct', label: 'Payload fraction of liftoff mass', sym: '\\eta_{TOT}', dim: 'percent', internal: 'pct', digits: 4, note: (x, out) => !out.o ? '' : `$\\eta_1=${fmt(out.o.eta1, { digits: 4 })}$ · $\\eta_2=${fmt(out.o.eta2, { digits: 4 })}$`,
       info: { tex: '\\eta_{TOT}=\\frac{M_{PL}}{M_{01}}=\\eta_1\\eta_2', doc: 'optimum' } },
+    { id: 'MplMax', label: 'Heaviest payload within your mass limit', sym: 'M_{PL,max}', ...MASS, key: true, digits: 4, status: (x, out, v) => (typeof x === 'number' && x >= v.Mpl ? 'ok' : ST[out.lv]), note: (x, out, v) => `now ${dm(v.Mpl)}`,
+      info: { text: ['The payload whose optimum two-stage rocket weighs exactly your liftoff limit, at the same velocity and stages.', 'All masses scale with the payload, so it is your payload times limit over liftoff mass.', 'Use it to decide what the payload may weigh before the stages are built.'], tex: 'M_{PL,max}=M_{PL}\\frac{M_{max}}{M_{01}}', doc: 'verdict' } },
+    { id: 'dvOk', label: 'Fastest ideal velocity within your mass limit', sym: '\\Delta V_{ok}', ...SPEED, digits: 4,
+      info: { text: ['The ideal velocity whose optimum rocket, with your payload and stages, weighs exactly your limit (bisection).'], doc: 'verdict' } },
     { id: 'pr1', label: 'First-stage propellant', sym: 'M_{PR1}', ...MASS, info: { tex: 'M_{PR1}=(1-\\sigma_1)M_1', doc: 'masses' } },
     { id: 'st1', label: 'First-stage structure', sym: 'M_{ST1}', ...MASS, info: { tex: 'M_{ST1}=\\sigma_1\\,M_1', doc: 'masses' } },
     { id: 'pr2', label: 'Second-stage propellant', sym: 'M_{PR2}', ...MASS, info: { tex: 'M_{PR2}=(1-\\sigma_2)M_2', doc: 'masses' } },
@@ -98,27 +133,55 @@ export default {
   ],
   compute(v) {
     const p = stagesOf(v), range = velocityRange(p);
-    const tooFast = 'These stages cannot reach this ideal velocity even with an infinitely heavy rocket — lower the ideal velocity, or raise the specific impulses or lower the structural fractions.';
-    if (!(v.dv < range.max)) throw new InputError(tooFast);
-    const o = twoStage({ dv: v.dv, Mpl: v.Mpl, ...p });
-    if (!Number.isFinite(o.M01) || !(o.etaTot > 0)) throw new InputError(tooFast);
+    // the fastest velocity and the structure (both fractions scaled together) that fit your mass limit
+    const dvOk = liftoff(v, { dv: 1 }) > v.Mmax ? null : solve((x) => Math.min(1e12, liftoff(v, { dv: x })) - v.Mmax, 1, 0.999999 * range.max);
+    const sScale = solve((k) => Math.min(1e12, liftoff(v, { s1: v.s1 * k, s2: v.s2 * k })) - v.Mmax, 0.05, 1);
+    const reach = v.dv < range.max ? twoStage({ dv: v.dv, Mpl: v.Mpl, ...p }) : null;
+    if (!reach || !Number.isFinite(reach.M01) || !(reach.etaTot > 0)) {
+      // beyond the limit of the stages: an answer, not an input error
+      // scaling both fractions by k moves the limit by −(c₁ + c₂) ln k
+      const kLim = Math.exp(-(v.dv - range.max) / (p.c1 + p.c2));
+      const fixes = [`Ask for at most <b>${dv(range.max)}</b> — the limit of an infinitely heavy rocket with these stages; ${dvOk ? `<b>${dv(dvOk)}</b> fits your mass limit` : 'less to fit your mass limit'}, or`,
+        `lighter stages: below structural fractions of <b>${fmt(v.s1 * kLim, { digits: 3 })}</b> and <b>${fmt(v.s2 * kLim, { digits: 3 })}</b> (now ${fmt(v.s1, { digits: 3 })} and ${fmt(v.s2, { digits: 3 })}) ${dv(v.dv)} becomes reachable at all, or`,
+        'higher specific impulse motors.'];
+      const dash = Object.fromEntries(DEF.results.map((r) => [r.id, '—']));
+      return { results: { ...dash, dvMax: range.max, dvPays: range.min, dvOk: dvOk ?? '—' }, warnings: [{ level: 'err', text: 'These stages cannot reach this ideal velocity even with an infinitely heavy rocket.', fix: `Ask for at most ${dv(range.max)}.` }],
+        verdict: { level: 'unsafe', title: 'Out of reach for these stages', text: `The ideal velocity ${dv(v.dv)} is above <b>${dv(range.max)}</b>, the most these two stages could give with no payload limit at all.`, fixes }, lv: 'unsafe', blocked: true, p };
+    }
+    const o = reach, r = o.M01 / v.Mmax, lv = r <= 1 ? 'safe' : r <= MARGIN ? 'marginal' : 'unsafe';
+    const MplMax = v.Mpl / r;
+    const fixes = [];
+    if (lv !== 'safe') {
+      fixes.push(`Lighten the payload to <b>${dm(MplMax)}</b> (now ${dm(v.Mpl)}), or`);
+      if (dvOk != null) fixes.push(`ask for <b>${dv(dvOk)}</b> ideal velocity (now ${dv(v.dv)}), or`);
+      if (sScale != null) fixes.push(`build lighter stages: structural fractions <b>${fmt(v.s1 * sScale, { digits: 3 })}</b> and <b>${fmt(v.s2 * sScale, { digits: 3 })}</b> (now ${fmt(v.s1, { digits: 3 })} and ${fmt(v.s2, { digits: 3 })}).`);
+      fixes[fixes.length - 1] = fixes[fixes.length - 1].replace(/, or$/, '.');
+    }
+    const verdict = {
+      level: lv,
+      title: lv === 'safe' ? 'Within your liftoff mass' : lv === 'marginal' ? 'Slightly over your liftoff mass' : 'Too heavy for your limit',
+      text: `The lightest two-stage rocket for ${dm(v.Mpl)} of payload at ${dv(v.dv)} weighs <b>${dm(o.M01)}</b> at liftoff; you allow <b>${dm(v.Mmax)}</b>.${o.single ? ` The best design uses only the ${which(o.single)} stage.` : ''}`,
+      fixes,
+    };
     const warnings = [];
-    if (o.single) warnings.push({ level: 'warn', text: `At this ideal velocity a second stage does not pay: the lightest design puts everything in the ${which(o.single)} stage. A second stage pays only above the ideal velocity at which both stages carry mass (see the results table).` });
-    if (o.M01 > 100 * v.Mpl) warnings.push({ level: 'warn', text: 'The liftoff mass is more than 100 times the payload: the ideal velocity is close to the limit of these stages, so small changes in the structural fractions change the result a lot. Lighter structure or higher specific impulse would help.' });
+    if (o.single) warnings.push({ level: 'warn', text: `At this ideal velocity a second stage does not pay: the lightest design puts everything in the ${which(o.single)} stage. A second stage pays only above ${dv(range.min)}.` });
+    if (o.M01 > 100 * v.Mpl) warnings.push({ level: 'warn', text: 'The liftoff mass is more than 100 times the payload: the ideal velocity is close to the limit of these stages, so small changes in the structural fractions change the result a lot.', fix: 'Lighter structure or higher specific impulse would help.' });
+    if (lv !== 'safe') warnings.push({ level: lv === 'unsafe' ? 'err' : 'warn', text: `The liftoff mass ${dm(o.M01)} is above the ${dm(v.Mmax)} you allow.`, fix: 'See the verdict for the payload, velocity or structure that fits.' });
     const c = (p.c1 + p.c2) / 2, cm = commonIsp({ dv: v.dv, Mpl: v.Mpl, c, s1: v.s1, s2: v.s2 });
     const avg = cm.valid ? { ...cm, c, dvTrue: splitDV(v.Mpl, cm.M01, cm.M02, p) } : null;
     const results = {
-      M01: o.M01, m1: o.stage1.loaded, m2: o.stage2.loaded, payloadPct: 100 * o.etaTot, pr1: o.stage1.pr, st1: o.stage1.st, pr2: o.stage2.pr, st2: o.stage2.st, M02: o.M02,
+      M01: o.M01, m1: o.stage1.loaded, m2: o.stage2.loaded, payloadPct: 100 * o.etaTot, MplMax, dvOk: dvOk ?? '—', pr1: o.stage1.pr, st1: o.stage1.st, pr2: o.stage2.pr, st2: o.stage2.st, M02: o.M02,
       eta1: o.eta1, eta2: o.eta2, mu1: o.mu1, mu2: o.mu2, dv1: o.dv1, dv2: o.dv2, lam: o.lam, dvMax: range.max, dvPays: range.min,
       M01avg: avg ? avg.M01 : null, dvAvg: avg ? avg.dvTrue : null,
     };
-    return { results, warnings, o, p, avg };
+    return { results, warnings, verdict, lv, o, p, avg };
   },
   plots: [
     {
       id: 'split', title: 'Ideal velocity vs stage split',
       info: { text: 'Ideal velocity of every way of splitting your liftoff mass between the two stages, with the payload fixed. The optimum split is at the top of the curve; the dot is the calculated design.', doc: 'optimum' },
       build(v, out, { U }) {
+        if (out.blocked) return null;
         const us = U(SPEED), o = out.o, pts = [];
         for (let i = 0; i <= 200; i++) {
           const f = i / 200, M02 = v.Mpl + f * (o.M01 - v.Mpl);
@@ -130,8 +193,9 @@ export default {
     },
     {
       id: 'liftoff', title: 'Liftoff mass vs required ideal velocity',
-      info: { text: 'Lightest liftoff mass for your payload as the required ideal velocity rises, with each stage used alone for comparison. Where the two-stage curve leaves the single-stage one, a second stage starts to pay.', doc: 'single' },
+      info: { text: ['Lightest liftoff mass for your payload as the required ideal velocity rises, with each stage used alone for comparison. Where the two-stage curve leaves the single-stage one, a second stage starts to pay.', 'Where the two-stage curve crosses the red line is the fastest ideal velocity within your mass limit.'], doc: 'verdict' },
       build(v, out, { U }) {
+        if (out.blocked) return null;
         const us = U(SPEED), um = U(MASS), o = out.o, p = out.p, r = o.range;
         const top = Math.max(v.dv, Math.min(1.6 * v.dv, r.min + 0.9 * (r.max - r.min)));
         const cap = 2.5 * twoStage({ dv: top, Mpl: v.Mpl, ...p }).M01;
@@ -145,14 +209,22 @@ export default {
         }
         return { x: { label: 'Required ideal velocity', unit: us.label }, y: { label: 'Liftoff mass', unit: um.label }, includeZero: true, series: [two, one1, one2],
           vlines: r.min > 0 && r.min < top ? [{ x: us.v(r.min), label: 'both stages used', color: 'var(--text-3)' }] : [],
-          markers: [{ x: us.v(v.dv), y: um.v(o.M01), label: 'design' }] };
+          hlines: [{ y: um.v(v.Mmax), label: 'your limit', color: 'var(--danger)' }],
+          markers: [{ x: us.v(v.dv), y: um.v(o.M01), label: 'your rocket' }] };
       },
     },
   ],
   schematicTitle: 'Stage masses (lengths to scale)',
   schematicHint: 'Each section’s length is proportional to its mass (equal density), red is propellant, and a stage the optimum leaves out is drawn dashed. The bar below splits the ideal velocity between the stages',
   schematic(ctx, v, out) {
-    const W = 760, H = 330, o = out.o;
+    const W = 760, H = 330;
+    if (out.blocked) {
+      const fr = ctx.frame({ width: W, height: H, label: 'Out of reach for these stages' }), g = fr.layer('main'); g.replaceChildren();
+      g.append(text(W / 2, H / 2 - 8, 'Out of reach for these stages', { anchor: 'middle', size: 14 }));
+      g.append(text(W / 2, H / 2 + 16, 'even an infinitely heavy rocket could not give this ideal velocity', { anchor: 'middle', size: 11, cls: 'sc-dim-text' }));
+      return;
+    }
+    const o = out.o;
     const fr = ctx.frame({ width: W, height: H, label: 'Two-stage rocket with section lengths proportional to mass' });
     const g = fr.layer('main'); g.replaceChildren();
     const um = ctx.U(MASS), us = ctx.U(SPEED), M = (x) => `${fmt(um.v(x), { digits: 4 })} ${um.label}`, V = (x) => `${fmt(us.v(x), { digits: 4 })} ${us.label}`;
@@ -202,7 +274,13 @@ export default {
       g.append(s('path', { d: `M${l.lx},${44}V${50}L${l.x},${Math.min(yTop - 4, 64)}V${yTop - 2}`, class: 'sc-thin', fill: 'none', opacity: 0.6, 'data-field': l.field }));
       l.t.forEach((t, i) => t && g.append(text(l.lx, 8 + (i + 1) * 13 - (i ? 0 : 0), t, { anchor: 'middle', size: i ? 10.5 : 11.5, cls: i ? 'sc-dim-text' : 'sc-label', field: l.field })));
     }
-    g.append(text(xn + 24, cy + h1 / 2 + 46, `liftoff mass M_{01} = ${M(o.M01)} · ${fmt(o.M01 / mp, { digits: 4 })} × payload`, { anchor: 'end', size: 11 }));
+    // liftoff mass against your limit: a gauge in the verdict colour
+    const gy = cy + h1 / 2 + 40, gl = 260, gx = xn + 24 - gl, top = Math.max(1.3 * v.Mmax, o.M01), G = (m) => gx + (gl * Math.min(m, top)) / top;
+    g.append(s('rect', { x: gx, y: gy - 4, width: gl, height: 8, fill: 'var(--surface-2)', stroke: 'var(--border)' }));
+    g.append(s('rect', { x: gx, y: gy - 4, width: G(o.M01) - gx, height: 8, fill: COL[out.lv], 'fill-opacity': 0.6, 'data-field': 'dv Mpl Isp1 Isp2 s1 s2' }));
+    g.append(s('line', { x1: G(v.Mmax), x2: G(v.Mmax), y1: gy - 9, y2: gy + 9, stroke: 'var(--danger)', 'stroke-width': 2, 'data-field': 'Mmax' }));
+    g.append(text(gx - 8, gy + 4, `liftoff M_{01} = ${M(o.M01)} · ${fmt(o.M01 / mp, { digits: 3 })} × payload`, { anchor: 'end', size: 11 }));
+    g.append(text(G(v.Mmax), gy + 22, `your limit ${M(v.Mmax)}`, { anchor: 'middle', size: 10, cls: 'sc-dim-text', field: 'Mmax' }));
     // ideal velocity contributed by each stage
     const yb = 252, bh = 18, bl = xn + 24 - x0, B1 = bl * (o.dv1 / (o.dv1 + o.dv2 || 1));
     g.append(s('rect', { x: x0, y: yb, width: B1, height: bh, class: 'sc-body', 'data-field': 'dv' }));
@@ -225,6 +303,7 @@ export default {
     { sym: 'g_0', desc: 'standard acceleration of gravity', si: [G0 * 0.3048, '\\mathrm{m\\,s^{-2}}'], us: [G0, '\\mathrm{ft\\,s^{-2}}'] },
   ],
   report(v, out, R) {
+    if (out.blocked) return [];
     const o = out.o, p = out.p, n = R.n, cv = (x) => R.v(x, SPEED), m = (x) => R.v(x, MASS);
     const c1 = cv(p.c1), c2 = cv(p.c2), g0 = R.pick(n(G0 * 0.3048, 7), n(G0, 7));
     const steps = [
@@ -275,3 +354,4 @@ export default {
     { name: 'Amateur stages, 4 lb payload, 4000 ft/s', values: { dv: 4000, Mpl: 4, Isp1: 230, Isp2: 240, s1: 0.3, s2: 0.25 } },
   ],
 };
+export default DEF;

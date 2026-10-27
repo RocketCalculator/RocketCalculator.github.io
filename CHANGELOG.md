@@ -3,6 +3,14 @@
 Newest first, in the spirit of [Keep a Changelog](https://keepachangelog.com/). From 2026-10-25 every entry names its
 branch, tag and commit range. Live site: https://rocketcalculator.github.io/.
 
+## 2026-10-26 — Roll Lock-In cycle (`improve/roll-lock-in-design-2`)
+- Verdict on the lock-in risk against your limit (D43), with fixes: the static margin (bisection on the full model),
+  six or eight fins, and the alignment (closed form from the Rayleigh trim statistics). New key result: the lock-in
+  angle your risk needs, drawn on the plots.
+- Unreachable static margins and fins ahead of separation are clamped with a note instead of refused. Every input
+  bounded with a slider and an info tab; fins coloured by the verdict; span and static-margin handles; roll-moment and
+  fin-count plots moved to Explore.
+
 ## 2026-10-26 — Flight Path Angle Dispersions cycle (`improve/flight-path-dispersion-2`)
 - Verdict on the equivalent launcher error against your limit (D42), with fixes solved on the model: the motor
   alignment, the static margin, the rail length and the best roll wavelength (new key result). Roll lock-in and

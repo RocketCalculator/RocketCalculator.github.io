@@ -265,3 +265,8 @@ the side the slosh is now (above → narrower tank / lower pitch frequency / mor
   MARGINAL ≤ 1.25×, UNSAFE beyond. Roll wave number ≥ 95 % of the pitch wave number is reported as roll lock-in
   (UNSAFE, no steady answer, fix to 70 %); thrust below 1.5× weight is outside the model (UNSAFE, no answer); burnout
   below the launcher top is clamped. Rail fixes are shown only up to 3× the present rail. Not a published limit.
+
+## D43 — 2026-10-26 — Roll lock-in verdict on the lock-in risk
+- The user sets the largest lock-in risk (default 1 %; the memo gives probabilities, not a target). SAFE risk ≤ r_max,
+  MARGINAL ≤ 2 r_max, UNSAFE beyond. No α* found up to α_max → the risk beyond α_max (an upper bound). Unreachable
+  static margins and fins ahead of the separation point are clamped with a note. Not a published limit.

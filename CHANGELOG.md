@@ -3,6 +3,13 @@
 Newest first, in the spirit of [Keep a Changelog](https://keepachangelog.com/). From 2026-10-25 every entry names its
 branch, tag and commit range. Live site: https://rocketcalculator.github.io/.
 
+## 2026-10-26 — Two-Stage Weight Allocation cycle (`improve/two-stage-weights-2`)
+- Verdict on the liftoff mass against your limit (D44), with fixes: the heaviest payload (exact), the fastest ideal
+  velocity and the lighter structure that fit (bisection on the optimum). New key result: the heaviest payload.
+- A velocity beyond the stages' limit is an answer (UNSAFE with the reachable velocity and the structure needed)
+  instead of a refusal. Inputs bounded with sliders and info tabs; liftoff-mass gauge against your limit in the drawing;
+  your limit on the liftoff plot.
+
 ## 2026-10-26 — Roll Lock-In cycle (`improve/roll-lock-in-design-2`)
 - Verdict on the lock-in risk against your limit (D43), with fixes: the static margin (bisection on the full model),
   six or eight fins, and the alignment (closed form from the Rayleigh trim statistics). New key result: the lock-in

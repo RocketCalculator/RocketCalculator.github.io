@@ -133,7 +133,7 @@ const INVARIANTS = {
   'flight-path-dispersion': (v, R) => R.g0 === '—' ? [R.gD === '—'] : [R.gD >= 0 && R.gG >= 0, Math.abs(Math.hypot(R.gD, R.gG) - R.gam) <= 1e-9 * R.gam + 1e-300, R.g0 <= R.gam * (1 + 1e-12), R.LA >= 0, R.n > 0 && R.n < 1],
   'roll-lock-in-design': (v, R) => [R.Pno >= 0 && R.Pno <= 100, R.sigma >= 0, R.D > 0, R.cR > 0, R.CMa < 0, R.CLp < 0, R.alphaStar === '—' || (R.alphaStar > 0 && R.alphaStar <= v.alphaMax * (1 + 1e-12))],
   'skyaero-trajectory': (v, R) => [R.apo >= 0, R.railV > 0, R.maxMach >= 0, R.tw > 0, Number.isFinite(R.range), R.maxQ >= 0, R.railL > 0, R.dist >= 0, Number.isFinite(R.vImp), R.Dneed > 0, R.bearing >= 0 && R.bearing < 360],
-  'two-stage-weights': (v, R) => [R.M01 >= v.Mpl, R.m1 >= 0 && R.m2 >= 0, Math.abs(R.M01 - v.Mpl - R.m1 - R.m2) <= 1e-9 * R.M01, Math.abs(R.dv1 + R.dv2 - v.dv) <= 1e-6 * v.dv, R.payloadPct > 0 && R.payloadPct <= 100, R.lam > 0],
+  'two-stage-weights': (v, R) => R.M01 === '—' ? [R.dvMax <= v.dv] : [R.M01 >= v.Mpl, R.m1 >= 0 && R.m2 >= 0, Math.abs(R.M01 - v.Mpl - R.m1 - R.m2) <= 1e-9 * R.M01, Math.abs(R.dv1 + R.dv2 - v.dv) <= 1e-6 * v.dv, R.payloadPct > 0 && R.payloadPct <= 100, R.lam > 0],
   'subsonic-cp': (v, R, warned) => [R.CNa > 0 || warned, R.CNaFins >= 0, Number.isFinite(R.xcp), R.d > 0],
 };
 
@@ -369,6 +369,11 @@ test('Reliability growth: more tests and better fixing raise reliability; the wo
 
 test('Two-stage weights: a faster or heavier-structured rocket is heavier; better impulse makes it lighter', () => {
   increasing([1000, 3000, 6000, 10000, 15000].map((dv) => run('two-stage-weights', { dv }).M01), 'M01 vs ΔV');
+  // the solved payload and velocity land exactly on the liftoff limit; out of reach is an answer
+  const T0 = run('two-stage-weights', { dv: 9000 });
+  assert.ok(Math.abs(run('two-stage-weights', { dv: 9000, Mpl: T0.MplMax }).M01 - 50) < 1e-6, 'heaviest payload');
+  assert.ok(Math.abs(run('two-stage-weights', { dv: T0.dvOk }).M01 - 50) < 1e-6, 'fastest velocity');
+  assert.equal(run('two-stage-weights', { dv: 30000 }).M01, '—');
   increasing([0.08, 0.12, 0.2, 0.3].map((s1) => run('two-stage-weights', { dv: 8000, s1 }).M01), 'M01 vs σ1');
   increasing([300, 260, 220, 180].map((Isp2) => run('two-stage-weights', { dv: 8000, Isp2 }).M01), 'M01 vs falling Isp2');
   const a = run('two-stage-weights', { Mpl: 1 }), b = run('two-stage-weights', { Mpl: 7 });

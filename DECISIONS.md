@@ -270,3 +270,8 @@ the side the slosh is now (above → narrower tank / lower pitch frequency / mor
 - The user sets the largest lock-in risk (default 1 %; the memo gives probabilities, not a target). SAFE risk ≤ r_max,
   MARGINAL ≤ 2 r_max, UNSAFE beyond. No α* found up to α_max → the risk beyond α_max (an upper bound). Unreachable
   static margins and fins ahead of the separation point are clamped with a note. Not a published limit.
+
+## D44 — 2026-10-26 — Two-stage verdict on the liftoff mass
+- The user sets the heaviest liftoff mass (default 50 lb, a placeholder for the launcher, motor class or budget).
+  SAFE M₀₁ ≤ M_max, MARGINAL ≤ 1.25×, UNSAFE beyond. An ideal velocity above the stages' limit is UNSAFE with the
+  reachable velocity and the structural fractions that make it reachable, instead of a refusal. Not a published limit.

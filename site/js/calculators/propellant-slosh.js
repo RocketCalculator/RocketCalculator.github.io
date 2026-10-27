@@ -59,11 +59,9 @@ export default {
           info: { text: ['The inside diameter of the round tank, wall to wall.', 'Measure the bore, or take the outside diameter minus twice the wall. Drag the bottom-right corner of the tank in the drawing to change it.', 'A narrower tank sloshes faster: in a deep fill the frequency grows as $1/\\sqrt D$, so halving the diameter raises it by 41 %.'],
             tex: 'R=\\frac D2', range: 'Student liquid rockets and hybrid oxidiser tanks 75–200 mm (3–8 in); sounding-rocket stages 0.3–1 m; launch-vehicle stages 1.5–4 m.', doc: 'modes' } },
         { id: 'Lt', label: 'Tank inside length (straight part)', sym: 'L_t', ...LEN, default: 3, min: 0, minExclusive: true, max: 300, slider: { min: 0.2, max: 40, step: 0.05 },
-          info: { text: ['How tall the straight, round part of the tank is inside.', 'Measure between the end caps; domed ends are not modelled, so use the straight length (the drawing shows flat ends).', 'It sets how much propellant fits and the depth range of the drain plot; it does not change the frequencies at a given depth. Drag the top of the tank to change it.'],
-            range: 'Usually 3–10 tank diameters.', doc: 'modes' } },
+          info: { text: ['How tall the straight, round part of the tank is inside.', 'Measure between the end caps; domed ends are not modelled, so use the straight length (the drawing shows flat ends).', 'It sets how much propellant fits and the depth range of the drain plot; it does not change the frequencies at a given depth. Drag the top of the tank to change it.'], range: 'Usually 3–10 tank diameters.', doc: 'modes', tex: 'M=\\rho\\,\\pi R^2h,\\qquad h\\le L_t' } },
         { id: 'rho', label: 'Propellant density', sym: '\\rho', ...DENS, default: 1.5309, min: 0, minExclusive: true, max: 5, slider: { min: 0.1, max: 3, step: 0.0005 },
-          info: { text: ['The mass of one litre (or cubic foot) of the liquid.', 'Look it up for your propellant at its tank temperature; liquefied gases such as nitrous oxide change a lot with temperature.', 'It converts the propellant mass into a liquid depth: a lighter liquid of the same mass stands deeper. The frequencies do not depend on density otherwise.'],
-            range: 'Ethanol 789, kerosene/RP-1 ≈ 810, water 1000, liquid oxygen 1141 kg/m³ (49, 51, 62, 71 lb/ft³); nitrous oxide ≈ 750–1000 kg/m³ at 0–30 °C.', doc: 'modes' } },
+          info: { text: ['The mass of one litre (or cubic foot) of the liquid.', 'Look it up for your propellant at its tank temperature; liquefied gases such as nitrous oxide change a lot with temperature.', 'It converts the propellant mass into a liquid depth: a lighter liquid of the same mass stands deeper. The frequencies do not depend on density otherwise.'], range: 'Ethanol 789, kerosene/RP-1 ≈ 810, water 1000, liquid oxygen 1141 kg/m³ (49, 51, 62, 71 lb/ft³); nitrous oxide ≈ 750–1000 kg/m³ at 0–30 °C.', doc: 'modes', tex: 'h=\\frac{M}{\\rho\\,\\pi R^2}' } },
         { id: 'M', label: 'Propellant in the tank now', sym: 'M', ...MASS, default: 0.45, min: 0, minExclusive: true, max: 1e5, slider: { min: 0.002, max: 60, step: 0.001 },
           info: { text: ['The liquid left in this tank at the moment you check.', 'The loaded mass minus what has flowed out by then (mass flow × time). Drag the liquid surface in the drawing to change it.', 'Less liquid means a shallower pool and slower sloshing: below a depth of about one radius the frequencies drop quickly, and a larger share of the liquid sloshes.'],
             tex: 'h=\\frac{M}{\\rho\\pi R^2}', range: 'Check full (lift-off), half (around maximum dynamic pressure) and nearly empty (burnout).', doc: 'modes' } },
@@ -81,8 +79,7 @@ export default {
       id: 'rocket', title: 'Rocket pitch motion',
       fields: [
         { id: 'fp', label: 'Rocket pitch frequency', sym: 'f_p', ...HZ, default: 3, min: 0.01, max: 200, slider: { min: 0.1, max: 20, step: 0.05 },
-          info: { text: ['How many times per second the rocket wobbles nose-up and nose-down about its centre of gravity (weathercock motion), or the bandwidth of its autopilot.', 'The Pitch-Yaw Wave Number calculator gives it from the speed, the stability and the pitch inertia (“Fill from the Pitch-Yaw Wave Number”). It rises with speed, so use the value at the moment you check.', 'The verdict wants the first slosh frequency well above or well below it.'],
-            range: 'High-power rockets 1–10 Hz near burnout; controlled vehicles: the control bandwidth, 0.5–5 Hz.', doc: 'verdict' } },
+          info: { text: ['How many times per second the rocket wobbles nose-up and nose-down about its centre of gravity (weathercock motion), or the bandwidth of its autopilot.', 'The Pitch-Yaw Wave Number calculator gives it from the speed, the stability and the pitch inertia (“Fill from the Pitch-Yaw Wave Number”). It rises with speed, so use the value at the moment you check.', 'The verdict wants the first slosh frequency well above or well below it.'], range: 'High-power rockets 1–10 Hz near burnout; controlled vehicles: the control bandwidth, 0.5–5 Hz.', doc: 'verdict', tex: 'S=\\max\\left(\\frac{f_1}{f_p},\\frac{f_p}{f_1}\\right)' } },
       ],
     },
     {
@@ -136,8 +133,8 @@ export default {
     { id: 'Dfix', label: 'Tank diameter for your separation (same propellant)', sym: 'D_{req}', ...LEN, digits: 4,
       info: { text: ['The inside diameter that puts the first slosh frequency exactly at your separation from the pitch frequency, on the side it is now, with the same propellant mass.', 'Smaller when the slosh is faster than the pitch (raise it further), larger when it is slower.'], doc: 'verdict' } },
     { id: 'fpOk', label: 'Pitch frequency for your separation', sym: 'f_{p,req}', ...HZ, digits: 4, info: { text: ['The pitch frequency that gives your separation with this slosh: at most $f_1/r$ when the slosh is faster, at least $r f_1$ when slower.'], doc: 'verdict' } },
-    { id: 'm2', label: 'Second-mode slosh mass', sym: 'm_2', ...MASS, digits: 4, info: { tex: 'm_2=M\\,\\frac{2\\tanh(\\lambda_2h/R)}{\\lambda_2(\\lambda_2^2-1)\\,h/R}', doc: 'model' } },
-    { id: 'm3', label: 'Third-mode slosh mass', sym: 'm_3', ...MASS, digits: 4, info: { tex: 'm_3=M\\,\\frac{2\\tanh(\\lambda_3h/R)}{\\lambda_3(\\lambda_3^2-1)\\,h/R}', doc: 'model' } },
+    { id: 'm2', label: 'Second-mode slosh mass', sym: 'm_2', ...MASS, digits: 4, info: { text: ['The part of the liquid that swings in the second mode; much smaller than the first.'], tex: 'm_2=M\\,\\frac{2\\tanh(\\lambda_2h/R)}{\\lambda_2(\\lambda_2^2-1)\\,h/R}', doc: 'model' } },
+    { id: 'm3', label: 'Third-mode slosh mass', sym: 'm_3', ...MASS, digits: 4, info: { text: ['The part of the liquid that swings in the third mode.'], tex: 'm_3=M\\,\\frac{2\\tanh(\\lambda_3h/R)}{\\lambda_3(\\lambda_3^2-1)\\,h/R}', doc: 'model' } },
     { id: 'fixedFrac', label: 'Liquid moving with the tank (outside modes 1–3)', sym: 'm_0/M', dim: 'percent', internal: 'pct', digits: 4, info: { text: ['The share of the liquid that does not slosh in the first three modes and moves with the tank as a solid.'], tex: '\\frac{m_0}{M}=1-\\sum_{n=1}^{3}\\frac{m_n}{M}', doc: 'model' } },
   ],
   compute(v) {
@@ -352,6 +349,7 @@ export default {
     L_n: 'equivalent pendulum length of mode $n$ (mm or in)', L_1: 'first-mode pendulum length (mm or in)', e_1: 'depth of the first-mode pendulum hinge below the surface (mm or in)',
     f_p: 'rocket pitch frequency (Hz)', r: 'separation you want (no unit)', 'h_\\times': 'depth at which $f_1=f_p$ (mm or in)', 'f_{1,\\infty}': 'first slosh frequency of a deep fill (Hz)',
     'f_{p,req}': 'pitch frequency for your separation (Hz)', 'D_{req}': 'tank diameter for your separation (mm or in)', L_t: 'tank inside length (mm or in)',
+    S: 'separation between the slosh and pitch frequencies',
   },
   report(v, out, R) {
     const o = out.o, n = R.n, l = (x) => R.v(x, LEN), m1 = o.modes[0];

@@ -371,6 +371,54 @@ correlated CG-mark errors; repeatability across trials (would need a multi-trial
 | Choosing the weights (final spin vs weight) | KEEP (improved) | trade-off with the target band, inertia uncertainty curves and your weights |
 | Wire length trade-off (Explore) | NEW | shows that longer wires need far lighter weights while the pull changes much less |
 
+### Cycle-2 calculators, 2026-10-26/27 (verdicts D35–D45)
+Sources: “cited” means listed on the theory page and read when that calculator was built; “read this session” gives
+the pages read on 2026-10-26/27. Checks are the ones in each page’s Verification section and the tests.
+
+| Calculator | Verdict (decision) | Sources | Checks |
+|---|---|---|---|
+| Wind Compensation | tilt vs your limit, extrapolated = marginal (D35) | cited: Hoult, Espinoza & Cortez (IREC 2012/13); Lewis BRL 685; Hoult 1979; Van der Hoven 1957 | field example exact (QE 81.061°, azimuth +70.85°); nearest reachable range sits on the limit |
+| Upper-Stage Divergence | q_D/q vs your margin; < 1.25 unsafe (D39) | cited: Hoult, *Upper Stage Bending Influence on Static Stability* rev. 3 (gives q_D, no required margin) | field-tool q_D for 140–220 in; wall and length fixes land on the margin |
+| Tethered Balloon | < 15° elevation unusable; angle error and tether correction vs your limits (D40) | read this session: CSULB *A New Wind Sensor* p. 3 (balloon sized from sphere drag data) and p. 6 (double-valued past ~75° zenith, unusable above ~25 ft/s); Hoult *TPB Bias Errors* rev. 1, last page (the 5.4 % worked example and the recommendation to correct with eq. 5) | memo example; longest tether lands on the correction limit; δV/V = δΘ/sin 2Θ checked at 45° |
+| Ground Handling | button pull and joint moment vs your strengths, 80 % = marginal (D41) | read this session: Hoult *Ground Handling Loads* (N = 2 suggested; K = 2 recommended, 243 lb example; both lugs to the same criteria, countersunk heads; aft button shear with the same factor) | 241.8 lb at K = 2; K_max puts the pull exactly on the strength |
+| Flight Path Dispersions | γ₀ vs your limit, 1.25× marginal; lock-in and T < 1.5 W are answers (D42) | read this session: Hoult *Flight Path Angle Dispersions* rev. 1, pp. 8–9 (example equivalent launcher error up to about 0.03 rad against burnout altitude; 1000 ft roll wavelength near optimum; a knee against pitch wave number) | memo Figs. 1 and 3; best roll wavelength no worse than the design |
+| Roll Lock-In | lock-in risk vs your limit, 2× marginal (D43) | read this session: Hoult & Tran *Fin Design to Mitigate Roll Lock-In* (recommendation: margins above two calibres, more than four fins; probability is the objective, no target) | field-tool derivatives and \|C_Li\|max table; margin fix brings the risk to the limit |
+| Two-Stage Weights | liftoff mass vs your limit, 1.25× marginal (D44) | cited: Hoult *Optimum Allocation of Weight Between Two Stages* rev. 1; Vertregt 1955/56 | closed form to 1e-12; heaviest payload and fastest velocity land on the limit; beyond ΔV_lim is an answer |
+| Reliability Growth | 1 − R_T vs 1 − R*, 2× marginal (D45) | cited: Hoult *Reliability Growth During Flight Test*; Schaechter & Hoult 1967 | reference table; fixing-rate and starting-defect fixes land on the target exactly |
+| Launcher Deflection | tip slope vs your allowed slope (D34) | cited: Hoult *Launcher Tipoff Deflection*; Calderon et al. 2011; Ammons & Hoult 1970 | Gold Rush II loads; memo tip-angle plot (0.053° at 240 in, QE 80°) |
+| Body Bending | separation of f₁ from the excitation (D33) | cited: Hoult *Longitudinal Body Bending Dynamics* | Aries example 257.6 / 585.5 / 1523.7 rad/s within 0.1–0.2 % |
+| Propellant Sloshing | slosh/pitch separation (D36) | see its own section above | — |
+| Bifilar Pendulum | measurement quality (D37) | see its own section above | — |
+| Yo-Yo Despinner | final spin and wire pull (D38) | see its own section above | — |
+| Fin Cant, Roll Rate History, Pitch-Yaw, Subsonic CP | D30–D32 | cited on each theory page (Hoult strip theory, boost and apogee roll rate, pitch-yaw wave number; NACA 1307) | see each page’s Verification |
+| Drag Coefficient, Newtonian Drag, Geophysics | no verdict (D45: they feed other calculators) | cited on each theory page | see each page’s Verification |
+
+**Quality gate (cycle 2, the six built in this session).** Drawings: KEEP with additions — the verdict colour on the
+critical item, your limit drawn (Upper-Stage gauge band, Tethered accuracy wedge and good-angle rays, Ground Handling
+bending-moment diagram with the joint strength, Dispersion limit circle, Two-Stage liftoff gauge), and handles on the
+main geometric inputs. Plots: KEEP the main trade-off plots and add the red `--danger` limit line; secondary plots
+moved to Explore (Upper-Stage trim, Tethered bias terms, Dispersion hodograph and roll, Roll Lock-In roll moment and
+fin count, Reliability Growth exposure and fixing).
+
+#### Lessons from this round
+- **Slider steps are in internal units.** `slider.step` was applied to the displayed value, so a 10⁵ psi step on a
+  modulus shown in GPa rounded every position to 0 (and 100 lbf/ft² steps did the same to kPa). Fixed in
+  `ui/form.js`: snap in the internal unit, convert the step for display. The path-only sweep showed it as “same”.
+- **Answers, not refusals.** A balloon that cannot lift itself, a rocket rolling at its pitch frequency, a velocity
+  beyond what the stages can reach: each is now an UNSAFE verdict with the fix. The sweep's refusal check matches the
+  words must/cannot/never in an error notice, so warning texts avoid them.
+- **Symbols in info tabs.** The drawer lists a formula's symbols from `symbols`. A one-character subscript ends at
+  that character in TeX (`\rho_GS` is ρ_G·S, `x_1x_2` is x₁·x₂); the matcher in `ui/report.js` now accepts that.
+  Symbols glued to a letter without a subscript (`NUC_{L\delta}`, `\rho SC_{L\alpha}`) are still read as one name:
+  write `N\,U\,C_{L\delta}`.
+- **Info tabs (2026-10-27).** All calculators rewritten to DESIGN-GUIDE §6a: three paragraphs, a formula with every
+  symbol and unit in `symbols`, typical values. Remaining audit flags are inputs the drawing does not show (flight
+  conditions, limits), which have no diagram by design.
+- **Key results are coloured by status only.** The card edge and the results-table value were red by default, which
+  read as a failure on SAFE designs; both are now neutral unless judged.
+- **Test runtime.** The full suite takes about 8 minutes (Payload Venting's random-input test alone about 4); run it
+  in the background, never under a 5-minute timeout.
+
 ### Diagram Quality Gate log
 
 **Fin Flutter**

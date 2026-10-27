@@ -3,6 +3,14 @@
 Newest first, in the spirit of [Keep a Changelog](https://keepachangelog.com/). From 2026-10-25 every entry names its
 branch, tag and commit range. Live site: https://rocketcalculator.github.io/.
 
+## 2026-10-27 — Info tabs, input bounds and key-result colours (`improve/info-tabs-2`)
+- Every calculator's info tabs rewritten to the DESIGN-GUIDE §6a standard: three plain paragraphs (what it is, where
+  the number comes from, what changing it does), the formula with every symbol and its unit listed, typical values.
+- Inputs bounded with sliders where they were not (Fin Flutter, Single Wedge, Geophysics, Nose Cone table step).
+- The info drawer now lists symbols written with a one-character subscript next to another symbol (`\rho_GS`,
+  `x_1x_2`); glued symbols in Fin Cant, Dispersion, Nose Cone, Payload Venting and Roll Rate separated.
+- KNOWLEDGE.md: cycle-2 sources, checks and lessons for the calculators done this phase.
+
 ## 2026-10-27 — Verdict and Explore review (`improve/verdict-review`)
 - Reliability Growth: verdict on the next flight against your target reliability (D45), with exact fixes (tests needed,
   fixing rate, starting defects); the two sensitivity plots moved to Explore.

@@ -79,11 +79,7 @@ export default {
       id: 'flight', title: 'Flight condition',
       fields: [
         { id: 'M', label: 'Mach number', sym: 'M_\\infty', ...NONE, default: 2, min: 0, minExclusive: true, max: 25, slider: { min: 0.3, max: 6, step: 0.01 },
-          info: { text: [
-            'Flight speed divided by the speed of sound. Check the fastest point of the flight: the peak Mach number from the Trajectory Simulation (the button below fills it in).',
-            'The method is meant for supersonic flight. Below Mach 1 the values are blended down to zero (an estimate, flagged on the page).',
-            'Faster flight raises the pressure at the tip, from $C_{PT}=1.28$ at Mach 1 to 1.84 at very high speed, so the drag coefficients grow by up to about 45 %.',
-          ], range: 'High-power rockets: Mach 1.2–3. Research rockets: up to Mach 5+.', doc: 'stagnation' } },
+          info: { text: ['Flight speed divided by the speed of sound. Check the fastest point of the flight: the peak Mach number from the Trajectory Simulation (the button below fills it in).', 'The method is meant for supersonic flight. Below Mach 1 the values are blended down to zero (an estimate, flagged on the page).', 'Faster flight raises the pressure at the tip, from $C_{PT}=1.28$ at Mach 1 to 1.84 at very high speed, so the drag coefficients grow by up to about 45 %.'], range: 'High-power rockets: Mach 1.2–3. Research rockets: up to Mach 5+.', doc: 'stagnation', tex: '\\frac{p_T}{p_\\infty}=\\left(\\frac{\\gamma+1}{2}M_\\infty^2\\right)^{\\frac{\\gamma}{\\gamma-1}}\\left(\\frac{\\gamma+1}{2\\gamma M_\\infty^2-(\\gamma-1)}\\right)^{\\frac{1}{\\gamma-1}}' } },
       ],
     },
     {
@@ -101,10 +97,7 @@ export default {
       id: 'nose', title: 'Nose',
       fields: [
         { id: 'noseType', label: 'Nose type', kind: 'select', default: 'spherecone', options: NOSE_TYPES,
-          info: { text: [
-            'A rounded cone is a cone with a ball-shaped (spherical) tip that blends smoothly into it; with a tip radius of 0 it is a sharp cone. A flat-faced cone has its tip cut off flat.',
-            'For an ogive or other curved nose use the Nose Cone Design calculator, which already uses this method for a rounded tip; choose “No blunt nose” here to work out the fins only.',
-          ], doc: 'cap' } },
+          info: { text: ['A rounded cone is a cone with a ball-shaped (spherical) tip that blends smoothly into it; with a tip radius of 0 it is a sharp cone. A flat-faced cone has its tip cut off flat.', 'For an ogive or other curved nose use the Nose Cone Design calculator, which already uses this method for a rounded tip; choose “No blunt nose” here to work out the fins only.', 'A blunter tip meets the air head-on over more area: its drag rises quickly with the tip radius, while a sharp cone’s comes only from its slope.'], doc: 'cap' } },
         { id: 'rn', label: 'Tip radius', sym: 'r_n', ...LEN, default: 1.2, min: 0, max: 200, slider: { min: 0, max: 3, step: 0.01 }, when: isSC,
           info: { text: [
             'Radius of the ball-shaped tip: measure the tip with a radius gauge, or half the width of the rounded part.',
@@ -112,11 +105,7 @@ export default {
             'A rounder tip carries more of the full stagnation pressure: the cap’s drag grows with the square of its radius. Drag the handle under the tip to change it.',
           ], tex: 'R\\cos\\delta-(L-r_n)\\sin\\delta=r_n', range: 'Hobby noses: 5–10 % of the body radius. Blunt re-entry-like noses: 50–100 %.', doc: 'cap' } },
         { id: 'Df', label: 'Flat-face diameter', sym: 'D_F', ...LEN, default: 1.5, min: 0, max: 400, slider: { min: 0, max: 6, step: 0.01 }, when: isFlat,
-          info: { text: [
-            'Diameter of the flat face at the front of the nose.',
-            'At most the body diameter: then the nose is a flat-ended cylinder.',
-            'The face carries the full stagnation pressure, so its drag grows with its area (the square of the diameter). Drag the handle at the edge of the face to change it.',
-          ], tex: '(C_DS)_F=C_{PT}\\frac{\\pi D_F^2}{4}', doc: 'flat' } },
+          info: { text: ['Diameter of the flat face at the front of the nose.', 'At most the body diameter: then the nose is a flat-ended cylinder.', 'The face carries the full stagnation pressure, so its drag grows with its area (the square of the diameter). Drag the handle at the edge of the face to change it.'], tex: '(C_DS)_F=C_{PT}\\frac{\\pi D_F^2}{4}', doc: 'flat', range: '2–8 in (5–20 cm) for most nose tips of blunt designs.' } },
         { id: 'L', shared: 'noseL', label: 'Nose length (tip to shoulder)', sym: 'L', ...LEN, default: 11.3033, min: 0.001, max: 2000, slider: { min: 0.5, max: 40, step: 0.01 }, when: hasNose,
           info: { text: [
             'From the very front of the nose to the shoulder, where it meets the body tube (not counting the part that slides inside).',
@@ -129,11 +118,9 @@ export default {
       id: 'fing', title: 'Fins',
       fields: [
         { id: 'fins', label: 'Rounded fin leading edges', kind: 'bool', default: true,
-          info: { text: [
-            'Fins cut from flat plate with the front edge sanded round (a half-cylinder). Sharp or bevelled edges are not blunt: their wave drag comes from the supersonic fin tools instead.',
-          ], doc: 'leading-edge' } },
+          info: { text: ['Fins cut from flat plate with the front edge sanded round (a half-cylinder).', 'Sharp or bevelled edges are not blunt: their wave drag comes from the supersonic fin tools (Single Wedge) instead.', 'A rounded edge stops the air on a line along the whole span, so its drag grows with the edge radius and falls with sweep.'], doc: 'leading-edge', tex: 'C_{D,LE}=\\frac{N\\,(C_DS)_{LE}}{S_{ref}}' } },
         { id: 'N', backView: (v) => ({ R: v.bodyR, span: v.b, t: v.t, unit: LEN, range: [1, 12], note: 'The leading-edge drag is N times one fin’s.' }), shared: 'finN', label: 'Number of fins', sym: 'N', ...NONE, default: 4, min: 1, max: 12, slider: { min: 1, max: 8, step: 1 }, when: fins,
-          info: { text: ['How many fins the rocket has.', 'The leading-edge drag is that of one fin times the count.'], range: '3 or 4.', doc: 'leading-edge' } },
+          info: { text: ['How many fins the rocket has.', 'Count them on the rocket.', 'The leading-edge drag is that of one fin times the count: four fins give a third more than three.'], range: '3 or 4.', doc: 'leading-edge', tex: 'C_{D,LE}=\\frac{N\\,(C_DS)_{LE}}{S_{ref}}' } },
         { id: 't', shared: 'finT', label: 'Fin thickness', sym: 't', ...LEN, default: 0.125, min: 0.001, max: 5, slider: { min: 0.03, max: 0.5, step: 0.005 }, when: fins,
           info: { text: [
             'Thickness of the fin plate. A fully rounded edge has a radius of half the thickness, $R_{LE}=t/2$.',
@@ -141,11 +128,7 @@ export default {
             'The edge drag is proportional to the thickness: a 1/4 in fin has twice the drag of a 1/8 in fin.',
           ], tex: 'R_{LE}=t/2', range: '1/16–1/8 in (1.5–3 mm) for mid-power, 1/8–1/4 in (3–6 mm) for high-power fins.', doc: 'leading-edge' } },
         { id: 'b', shared: 'finSpan', label: 'Fin span (height from the body)', sym: 'b', ...LEN, default: 6, min: 0.01, max: 500, slider: { min: 0.5, max: 24, step: 0.01 }, when: fins,
-          info: { text: [
-            'Height of the fin from the body tube to its tip (the exposed semispan).',
-            'With the sweep it sets the length of the leading edge, $l=b/\\cos\\Lambda$.',
-            'The edge drag grows in proportion to the span.',
-          ], tex: 'l=\\frac{b}{\\cos\\Lambda}', doc: 'leading-edge' } },
+          info: { text: ['Height of the fin from the body tube to its tip (the exposed semispan).', 'With the sweep it sets the length of the leading edge, $l=b/\\cos\\Lambda$.', 'The edge drag grows in proportion to the span.'], tex: 'l=\\frac{b}{\\cos\\Lambda}', doc: 'leading-edge', range: '2–10 in (5–25 cm).' } },
         { id: 'sweep', label: 'Leading-edge sweep angle', sym: '\\Lambda', ...ANG, default: 30, min: 0, max: 85, slider: { min: 0, max: 80, step: 0.5 }, when: fins,
           info: { text: [
             'How far the front edge leans back, measured from a line straight out from the body (0° = edge square to the flow).',
@@ -489,6 +472,8 @@ export default {
     '(C_DS)_{cap}': 'drag area of the rounded tip (cm² or in²)', '(C_DS)_{cone}': 'drag area of the cone (cm² or in²)', '(C_DS)_F': 'drag area of the flat face (cm² or in²)', '(C_DS)_{LE}': 'drag area of one leading edge (cm² or in²)',
     'C_{D,nose}': 'nose wave-drag coefficient (no unit)', 'C_{D,LE}': 'leading-edge drag coefficient of all fins (no unit)', C_D: 'drag coefficient of the blunt parts (no unit)',
     'C_{N\\alpha,nose}': 'nose normal-force slope (per radian)', 'C_{N\\alpha}': 'normal-force slope (per radian)', 'X_{CP}': 'nose centre of pressure behind the tip (mm or in)', u: 'one minus the cosine of the cap angle (no unit)', f: 'subsonic blending factor (no unit)',
+    X: 'distance from the nose tip (m or in)',
+    'C_{PT}(M_N)': 'stagnation pressure coefficient at the edge-normal Mach number',
   },
   report(v, out, R) {
     const o = out.o, G = out.G, n = R.n, l = (x) => R.v(x, LEN), A = (x) => R.Q(x, AREA), steps = [];

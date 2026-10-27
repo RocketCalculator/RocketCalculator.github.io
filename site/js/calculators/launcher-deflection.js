@@ -120,10 +120,10 @@ export default {
     { id: 'Wmax', label: 'Heaviest rocket for this rail', sym: 'W_{max}', ...MASS, digits: 4, info: { text: ['The heaviest rocket (same thrust and misalignment) whose tip slope just equals your allowed slope on this rail. “—” when the misalignment alone exceeds it or the rail is vertical.'], tex: 'W_{max}=\\frac{2EI\\theta_{max}/(k_dL^2)-n_\\sigma T\\sigma_\\delta}{\\cos QE}', doc: 'verdict' } },
     { id: 'Ireq', label: 'Second moment of area needed', sym: 'I_{req}', ...AI, digits: 4, info: { text: ['The stiffness of section (with the same material) at which this rail just meets your allowed slope.'], tex: 'I_{req}=k_d\\frac{FL^2}{2E\\theta_{max}}', doc: 'verdict' } },
     { id: 'Mbase', label: 'Bending moment at the base (static)', sym: 'M_0', ...MOM, digits: 4, info: { text: ['The bending moment the tip load puts on the rail at its pivot, before the overshoot: what the base fittings must hold.'], tex: 'M_0=FL', doc: 'beam' } },
-    { id: 'Fw', label: 'Weight component across the rail', sym: 'W\\cos QE', ...FORCE, digits: 4, info: { tex: 'W\\cos QE', doc: 'loads' } },
-    { id: 'Ft', label: 'Thrust misalignment load', sym: 'n_\\sigma T\\sigma_\\delta', ...FORCE, digits: 4, info: { tex: 'n_\\sigma T\\sigma_\\delta', doc: 'loads' } },
-    { id: 'I', label: 'Second moment of area', sym: 'I', ...AI, digits: 4, info: { tex: 'I=\\frac{\\pi Dt\\,d^2}{2}', doc: 'section' } },
-    { id: 'EI', label: 'Bending stiffness', sym: 'EI', dim: 'stiffness', internal: 'lbfin2', digits: 4, info: { doc: 'beam' } },
+    { id: 'Fw', label: 'Weight component across the rail', sym: 'W\\cos QE', ...FORCE, digits: 4, info: { text: ['The part of the rocket’s weight that presses across the rail when it is tilted: zero for a vertical rail.'], tex: 'F_w=W\\cos QE', doc: 'loads' } },
+    { id: 'Ft', label: 'Thrust misalignment load', sym: 'n_\\sigma T\\sigma_\\delta', ...FORCE, digits: 4, info: { text: ['The sideways push of a misaligned thrust, at the number of standard deviations you cover.'], tex: 'F_t=n_\\sigma T\\sigma_\\delta', doc: 'loads' } },
+    { id: 'I', label: 'Second moment of area', sym: 'I', ...AI, digits: 4, info: { text: ['How much the tower section resists bending: three tubes at the corners of the face, far from the centre.'], tex: 'I=\\frac{\\pi Dt\\,d^2}{2}', doc: 'section' } },
+    { id: 'EI', label: 'Bending stiffness', sym: 'EI', dim: 'stiffness', internal: 'lbfin2', digits: 4, info: { text: ['Bending stiffness of the rail support: Young’s modulus times the second moment of area.'], tex: 'EI=E\\,I', doc: 'beam' } },
   ],
   compute(v) {
     if (v.section === 'tower' && !(v.D > 2 * v.t)) throw new InputError('The tube wall must be thinner than half the tube diameter.');
@@ -342,6 +342,10 @@ export default {
     d: 'tower face width (in or m)', '\\theta': 'rail slope (rad or °)', '\\theta_{tip}': 'rail tip slope (rad or °)', '\\theta_{pitch}': 'rail tip slope in pitch (rad or °)', '\\theta_{yaw}': 'rail tip slope in yaw (rad or °)', '\\theta_{tot}': 'combined tip-off error (°)',
     '\\theta_{max}': 'allowed tip slope (rad or °)', 'L_{max}': 'longest acceptable rail (in or m)', y_tip: 'tip deflection (in or m)', 'y_{tip}': 'tip deflection (in or m)', 'F_{yaw}': 'lateral load in yaw (lbf or N)',
     'W_{max}': 'heaviest rocket for the rail (lbf or N)', 'I_{req}': 'second moment of area needed (in⁴ or m⁴)', M: 'bending moment (lbf·in or N·m)', M_0: 'bending moment at the base (lbf·in or N·m)',
+    F_w: 'weight component across the rail (N or lbf)',
+    F_t: 'thrust misalignment load (N or lbf)',
+    'W\\cos QE': 'weight component across the rail (N or lbf)',
+    'n_\\sigma T\\sigma_\\delta': 'thrust misalignment load (N or lbf)',
   },
   limits: [
     'The rail and truss are a uniform beam fixed rigidly at the pivot; flexible hinges, jacks or legs add to the tip slope.',

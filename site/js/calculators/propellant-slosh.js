@@ -28,6 +28,7 @@ export default {
   slug: 'propellant-slosh',
   topic: 'propellant-sloshing',
   title: 'Propellant Sloshing',
+  tiers: true,
   subtitle: 'The <b>sloshing frequencies</b> of liquid propellant in a round tank under thrust, the <b>equivalent pendulum</b> (length, hinge and mass) for a dynamics model, and whether the first slosh frequency stays clear of the rocket’s pitch frequency.',
   verdict: true,
   intro: {

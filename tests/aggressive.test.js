@@ -362,6 +362,10 @@ test('Fin cant: target cant is linear in roll rate and sign-symmetric; roll grow
 
 test('Reliability growth: more tests and better fixing raise reliability; the worksheet table is reproduced', () => {
   increasing([0, 1, 3, 6, 10].map((N) => run('reliability-growth', { N }).RT), 'R vs tests');
+  // the solved fixing rate and starting defects land exactly on the target
+  const G1 = run('reliability-growth', { N: 6, d: 0.5, Rt: 0.95 });
+  assert.ok(Math.abs(run('reliability-growth', { N: 6, Rt: 0.95, d: G1.dNeed }).RT - 0.95) < 1e-9, 'fixing rate fix');
+  assert.ok(Math.abs(run('reliability-growth', { N: 6, d: 0.5, Rt: 0.95, D0: G1.D0need }).RT - 0.95) < 1e-9, 'starting defects fix');
   increasing([0, 0.3, 0.6, 1].map((d) => run('reliability-growth', { d }).RT), 'R vs d');
   increasing([8, 4, 2, 1].map((D0) => run('reliability-growth', { D0 }).RT), 'R vs fewer defects');
   assert.ok(Math.abs(run('reliability-growth', { D0: 4, p: 0.6, d: 0.8, N: 10 }).RT - 0.9947158304489335) < 1e-12);

@@ -3,6 +3,13 @@
 Newest first, in the spirit of [Keep a Changelog](https://keepachangelog.com/). From 2026-10-25 every entry names its
 branch, tag and commit range. Live site: https://rocketcalculator.github.io/.
 
+## 2026-10-27 — Verdict and Explore review (`improve/verdict-review`)
+- Reliability Growth: verdict on the next flight against your target reliability (D45), with exact fixes (tests needed,
+  fixing rate, starting defects); the two sensitivity plots moved to Explore.
+- Propellant Sloshing and Pitch-Yaw Wave Number: their Explore plots now actually go into the Explore section (the
+  page's two-tier switch was missing).
+- Reviewed and left without a verdict: Drag Coefficient, Newtonian Drag, Geophysics (see D45).
+
 ## 2026-10-26 — Two-Stage Weight Allocation cycle (`improve/two-stage-weights-2`)
 - Verdict on the liftoff mass against your limit (D44), with fixes: the heaviest payload (exact), the fastest ideal
   velocity and the lighter structure that fit (bisection on the optimum). New key result: the heaviest payload.

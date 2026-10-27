@@ -59,8 +59,10 @@ export function symbolsIn(tex, dict) {
     while (i >= 0) {
       const b = src[i - 1], a = src[i + key.length];
       // not a subscript, and not part of a longer name (a command such as \delta cannot merge with a letter before it)
-      const okB = !inSub[i] && (!b || (key[0] === '\\' ? b !== '\\' : !/[A-Za-z\\]/.test(b)) && b !== '_');
-      const okA = !a || /[}]$/.test(key) || (!/[A-Za-z0-9]/.test(a) && !(a === '_' && !/_/.test(key)) && !(a === '{' && /\\[a-z]+$/.test(key)));
+      // a one-character subscript ends at that character in TeX: \rho_GS is ρ_G·S and x_1x_2 is x₁·x₂
+      const afterSub = b && src[i - 2] === '_' && /[A-Za-z0-9]/.test(b);
+      const okB = !inSub[i] && (!b || afterSub || (key[0] === '\\' ? b !== '\\' : !/[A-Za-z\\]/.test(b)) && b !== '_');
+      const okA = !a || /[}]$/.test(key) || /_[A-Za-z0-9]$/.test(key) || (!/[A-Za-z0-9]/.test(a) && !(a === '_' && !/_/.test(key)) && !(a === '{' && /\\[a-z]+$/.test(key)));
       if (okB && okA) { first = i; break; }
       i = src.indexOf(key, i + 1);
     }

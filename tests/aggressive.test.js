@@ -295,6 +295,9 @@ test('Roll lock-in: more static margin raises α*; worse alignment lowers the ch
   increasing([16, 18, 20].map((SM) => run('roll-lock-in-design', { SM: SM * 0.0254 }).alphaStar), 'α* vs SM');
   increasing([0.006, 0.004, 0.002].map((sdT) => run('roll-lock-in-design', { sdT, T: 20000 }).Pno), 'P vs better alignment');
   increasing([0.001, 0.002, 0.004].map((sdT) => run('roll-lock-in-design', { sdT }).sigma), 'σ_α vs δ_T');
+  // the solved static margin brings the risk to your limit (coarse grid inside the solver: a few per cent)
+  const R1 = run('roll-lock-in-design', { sdT: 0.01, T: 20000 });
+  assert.ok(Math.abs(100 - run('roll-lock-in-design', { sdT: 0.01, T: 20000, SM: R1.SMok }).Pno - 1) < 0.3, 'lock-in margin fix');
 });
 
 test('Trajectory: lower elevation flies farther; more weight or drag lowers apogee', () => {

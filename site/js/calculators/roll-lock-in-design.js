@@ -15,18 +15,43 @@ const Lq = (x) => `${fmt(toDisplay(x, LEN), { digits: 3 })} ${unitLabel(displayU
 const P = (v) => ({ ...v, sweep: v.sweep, alphaMax: v.alphaMax });
 const xi = (p, a) => ((p.xF - p.xS) * a) / p.R;
 /** |C_Li|max / damping term against α for a design (coarser grid for the trade plots). */
+// verdict bands (DECISIONS D43): lock-in risk 100 − P against your accepted risk; up to 2× it is marginal
+const ST = { safe: 'ok', marginal: 'warn', unsafe: 'err' };
+const COL = { safe: 'var(--ok)', marginal: 'var(--warn)', unsafe: 'var(--danger)' };
+/** Lock-in risk (%) for a design: Rayleigh tail beyond α* (no α* found up to α_max: the risk beyond α_max, an upper bound). */
+function risk(p) {
+  const d = design(p);
+  if (!(d.cR > 0) || !(d.CMa < 0)) return { r: 100, d, aS: null, sig: NaN };
+  const L = lockIn(p, d, 40, 24), sig = sigmaAlpha(p, d), edge = L.alphaStar ?? p.alphaMax;
+  return { r: 100 * (sig > 0 ? Math.exp(-(edge * edge) / (2 * sig * sig)) : 0), d, aS: L.alphaStar, sig };
+}
+function solve(f, lo, hi, n = 30) {
+  let flo = f(lo); if (!(flo * f(hi) <= 0)) return null;
+  for (let i = 0; i < n; i++) { const m = (lo + hi) / 2, fm = f(m); if (fm * flo > 0) { lo = m; flo = fm; } else hi = m; }
+  return (lo + hi) / 2;
+}
+/** Stations clamped to a buildable layout (fins behind separation, a reachable static margin), with notes. */
+function layout(v) {
+  const w = { ...v }, notes = [];
+  if (!(w.xF > w.xN)) { w.xN = 0.5 * w.xF; notes.push(`the nose centre of pressure is taken at ${Lq(w.xN)}, ahead of the fins`); }
+  if (!(w.xF > w.xS)) { w.xS = 0.95 * w.xF; notes.push(`the vortex separation is taken at ${Lq(w.xS)}, just ahead of the fins`); }
+  if (!(w.xCG < w.xF - 0.05 * (w.xF - w.xN))) { w.xCG = w.xN + 0.5 * (w.xF - w.xN); notes.push(`the centre of mass is taken at ${Lq(w.xCG)}, ahead of the fins`); }
+  const lo = Math.max(1e-4, w.xN - w.xCG) + 0.01 * (w.xF - w.xN), hi = w.xF - w.xCG - 0.01 * (w.xF - w.xN);
+  if (w.SM < lo || w.SM > hi) { w.SM = Math.min(hi, Math.max(lo, w.SM)); notes.push(`the static margin is taken as ${Lq(w.SM)}, the nearest one these nose and fin positions can give`); }
+  return { w, notes, lo, hi };
+}
 const ratioCurve = (p, n = 40) => { const d = design(p), L = lockIn(p, d, n, 24); return L.curve.map((c) => [c.alpha, Math.abs(c.cl) / d.D]); };
 
 function check(v) {
   for (const k of ['U', 'q', 'R', 'Ip', 'CNN', 'b', 'SM', 'CNa', 'alphaMax']) if (!(v[k] > 0)) throw new InputError('Speed, dynamic pressure, radius, inertia, lift slopes, fin span, static margin and the angle range must be positive.');
-  if (!(v.xF > v.xS)) throw new InputError('The fins must be behind the vortex separation station: no vortex reaches them otherwise.');
-  if (!(v.xF > v.xCG + v.SM && v.xCG + v.SM > v.xN)) throw new InputError('This static margin cannot be reached: the required centre of pressure (CG + static margin) must lie between the nose and fin centres of pressure.');
 }
 
 export default {
   slug: 'roll-lock-in-design',
   topic: 'roll-lock-in',
   title: 'Roll Lock-In',
+  verdict: true,
+  tiers: true,
   subtitle: 'Smallest angle of attack at which <b>nose vortices</b> can lock a rocket’s roll rate onto its pitch frequency, and the chance it never gets there.',
   intro: {
     what: 'Sizes the fins for a required static margin, computes the roll moment induced on them by the vortex pair shed from the nose, and finds the smallest angle of attack at which that moment can hold the roll rate at the pitch frequency against roll damping. Thrust misalignment statistics then give the probability of no lock-in.',
@@ -40,94 +65,149 @@ export default {
       'More static margin and more fins (six or eight) raise the lock-in angle; taper and span matter little.',
     ],
     tex: '\\left|\\frac{C_{Lp}}{U}\\left(R\\omega-R\\omega_n\\right)\\right|\\le\\left|C_{Li\\,max}(\\alpha^*)\\right|',
-    steps: ['Enter the flight condition at resonance and the body data.', 'Enter the fin layout and the required static margin; the root chord follows.', 'Enter the thrust misalignment statistics.', 'Read the lock-in angle of attack and the probability of no lock-in; try more fins or margin.'],
+    steps: ['Enter the flight condition at resonance and the body data.', 'Enter the fin layout and the required static margin; the root chord follows.', 'Enter the thrust misalignment statistics.', 'Set the lock-in risk you accept.', 'Read the verdict and the fixes: static margin, fin count or alignment.'],
     doc: 'overview',
   },
   groups: [
     {
       id: 'flight', title: 'Flight condition (at pitch–roll resonance)',
       fields: [
-        { id: 'U', label: 'Flight speed', sym: 'U', dim: 'speed', internal: 'ms', default: 10000 * IN, min: 1e-6, info: { doc: 'damping' } },
-        { id: 'q', label: 'Dynamic pressure', sym: 'q', dim: 'pressure', internal: 'Pa', default: 4 * 6894.757, min: 1e-6, info: { text: 'Lower dynamic pressure (higher altitude) makes lock-in easier.', doc: 'damping' } },
+        { id: 'U', label: 'Flight speed', sym: 'U', dim: 'speed', internal: 'ms', default: 10000 * IN, min: 1e-6, max: 3000, slider: { min: 20, max: 800, step: 1 },
+          info: { text: ['Speed when the roll rate passes through the pitch frequency (resonance), from a trajectory and roll-rate history.', 'It sets the vortex strength and the roll damping per radian of roll rate.', 'Resonance late in flight, slow and high, is the most dangerous.'], range: 'A few hundred m/s for sounding rockets near burnout.', doc: 'damping' } },
+        { id: 'q', label: 'Dynamic pressure', sym: 'q', dim: 'pressure', internal: 'Pa', default: 4 * 6894.757, min: 1e-6, max: 2e6, slider: { min: 1000, max: 200000, step: 100 },
+          info: { text: ['Dynamic pressure at resonance, $\\tfrac12\\rho U^2$.', 'It sets the pitch frequency and the aerodynamic stiffness against the misalignment torque.', 'Lower dynamic pressure (higher altitude) makes lock-in easier.'], tex: 'q=\\tfrac12\\rho U^2', range: '10–100 kPa.', doc: 'damping' } },
       ],
     },
     {
       id: 'body', title: 'Body',
       fields: [
-        { id: 'R', label: 'Body radius', sym: 'R', ...LEN, default: 3 * IN, min: 1e-6, info: { doc: 'vortex' } },
-        { id: 'Ip', label: 'Pitch moment of inertia', sym: 'I_p', dim: 'inertia', internal: 'kgm2', default: 21.78, min: 1e-9, info: { text: 'About the centre of mass. The default is a uniform 60 lb, 122 in rocket (mL²/12).', doc: 'damping' } },
-        { id: 'xCG', label: 'Centre of mass station', sym: 'x_{CG}', ...LEN, default: 71 * IN, min: 0, info: { text: 'Stations are measured aft of the nose tip.', doc: 'fins' } },
-        { id: 'xN', label: 'Nose centre of pressure', sym: 'x_{CPN}', ...LEN, default: 39 * IN, min: 0, info: { doc: 'fins' } },
-        { id: 'CNN', label: 'Nose normal-force slope', sym: 'C_{N\\alpha N}', ...SLOPE, default: 2, min: 1e-6, info: { text: '2 per radian for any slender nose.', doc: 'fins' } },
-        { id: 'xS', label: 'Vortex separation station', sym: 'x_S', ...LEN, default: 36 * IN, min: 0,
-          info: { text: 'Where the vortex pair leaves the body, about where the zero-α surface pressure is lowest (just aft of the nose shoulder). The Nose Pressure Distribution calculator gives it.', doc: 'vortex' } },
+        { id: 'R', label: 'Body radius', sym: 'R', ...LEN, default: 3 * IN, min: 1e-6, max: 2, slider: { min: 0.01, max: 0.3, step: 0.001 },
+          info: { text: ['Half the body diameter.', 'It sets the reference area and length and the vortex size.', 'The induced roll moment scales with the fin span relative to it.'], range: '2–15 cm.', doc: 'vortex' } },
+        { id: 'Ip', label: 'Pitch moment of inertia', sym: 'I_p', dim: 'inertia', internal: 'kgm2', default: 21.78, min: 1e-9, max: 1e5, slider: { min: 0.05, max: 200, step: 0.01 },
+          info: { text: ['Resistance to pitching about the centre of mass, at resonance (motor partly or fully burnt).', 'Measure it with the Bifilar Pendulum page. The default is a uniform 60 lb, 122 in rocket ($mL^2/12$).', 'It sets the pitch frequency with the pitching-moment slope.'], tex: '\\omega_n=\\sqrt{-2\\pi qR^3C_{M\\alpha}/I_p}', doc: 'damping' } },
+        { id: 'xCG', label: 'Centre of mass station', sym: 'x_{CG}', ...LEN, default: 71 * IN, min: 0, max: 50, slider: { min: 0.1, max: 5, step: 0.005 },
+          info: { text: ['Balance point, measured aft of the nose tip, at resonance.', 'The static margin is measured from it.', 'Stations here are all from the nose tip.'], doc: 'fins' } },
+        { id: 'xN', label: 'Nose centre of pressure', sym: 'x_{CPN}', ...LEN, default: 39 * IN, min: 0, max: 50, slider: { min: 0.02, max: 3, step: 0.005 },
+          info: { text: ['Where the nose normal force acts, aft of the tip.', 'From the Nose Cone or Subsonic CP page: about 0.47 of the nose length for an ogive.', 'With the fin position it sets how large the fins must be for the static margin.'], doc: 'fins' } },
+        { id: 'CNN', label: 'Nose normal-force slope', sym: 'C_{N\\alpha N}', ...SLOPE, default: 2, min: 1e-6, max: 10, slider: { min: 1, max: 4, step: 0.05 },
+          info: { text: ['Normal-force slope of the nose per radian.', 'Slender-body theory gives 2 for any slender nose.', 'More nose lift needs bigger fins for the same margin.'], range: '2 per radian (slender-body theory).', doc: 'fins' } },
+        { id: 'xS', label: 'Vortex separation station', sym: 'x_S', ...LEN, default: 36 * IN, min: 0, max: 50, slider: { min: 0.02, max: 3, step: 0.005 },
+          info: { text: ['Where the vortex pair leaves the body: about where the zero-α surface pressure is lowest, just aft of the nose shoulder.', 'The Nose Cone Design page shows the pressure along the nose.', 'The farther the vortices trail to the fins, the stronger and higher they are.'], doc: 'vortex' } },
       ],
     },
     {
       id: 'fins', title: 'Fins',
       fields: [
-        { id: 'N', backView: (v) => ({ R: v.R, span: v.b, nominal: { t: true }, unit: LEN, range: [3, 8], note: 'The induced roll moment sums N fins 2π/N apart: more fins smooth it out, raising the lock-in angle (six or eight fins markedly).' }), label: 'Number of fins', sym: 'N', ...NONE, default: 4, min: 3, max: 8, slider: { min: 3, max: 8, step: 1 }, info: { text: 'Six fins are much better than four, and eight better still; three and four differ little.', doc: 'design' } },
-        { id: 'xF', label: 'Fin centre of pressure', sym: 'x_{CPF}', ...LEN, default: 108 * IN, min: 0, info: { doc: 'fins' } },
-        { id: 'b', label: 'Exposed semispan', sym: 'b', ...LEN, default: 6 * IN, min: 1e-6, info: { doc: 'fins' } },
-        { id: 'lam', label: 'Taper ratio', sym: '\\lambda', ...NONE, default: 0.3, min: 0, max: 1, slider: { min: 0, max: 1, step: 0.05 }, info: { text: 'Tip chord / root chord.', doc: 'fins' } },
-        { id: 'SM', label: 'Required static margin', sym: 'SM', ...LEN, default: 20 * IN, min: 1e-6, info: { text: 'Sets the fin size (root chord). The classical two calibres is often not enough to avoid lock-in.', doc: 'fins' } },
-        { id: 'CNa', label: 'Fin airfoil normal-force slope', sym: 'C_{N\\alpha}', ...SLOPE, default: 4, min: 1e-6, info: { text: 'Span-averaged 3-D slope without body interference.', range: 'About 4 per radian for a typical fin.', doc: 'fins' } },
-        { id: 'CDaa', label: 'Fin drag-polar constant', sym: 'C_{D\\alpha\\alpha}', ...NONE, default: 0.2, min: 0, max: 2, slider: { min: 0, max: 1, step: 0.01 }, info: { text: 'Second derivative of section drag with angle of attack; about 0.2. Only affects the small coning rate.', doc: 'damping' } },
-        { id: 'sweep', label: 'Leading-edge sweep', sym: '\\Lambda', ...ANG, default: 60 * DEG, min: 0, max: 85 * DEG, slider: { min: 0, max: 80 * DEG, step: DEG }, info: { doc: 'damping' } },
+        { id: 'N', backView: (v) => ({ R: v.R, span: v.b, nominal: { t: true }, unit: LEN, range: [3, 8], note: 'The induced roll moment sums N fins 2π/N apart: more fins smooth it out, raising the lock-in angle (six or eight fins markedly).' }), label: 'Number of fins', sym: 'N', ...NONE, default: 4, min: 3, max: 8, slider: { min: 3, max: 8, step: 1 },
+          info: { text: ['How many fins, evenly spaced.', 'The induced roll moment from the vortices averages out over more fins.', 'Six fins are much better than four, and eight better still; three and four differ little (Hoult & Tran).'], doc: 'design' } },
+        { id: 'xF', label: 'Fin centre of pressure', sym: 'x_{CPF}', ...LEN, default: 108 * IN, min: 0, max: 50, slider: { min: 0.2, max: 6, step: 0.005 },
+          info: { text: ['Where the fin normal force acts, aft of the nose tip: about a quarter of the mean chord back from its leading edge.', 'From the Subsonic CP page.', 'Fins farther aft need less area for the same static margin.'], doc: 'fins' } },
+        { id: 'b', label: 'Exposed semispan', sym: 'b', ...LEN, default: 6 * IN, min: 1e-6, max: 3, slider: { min: 0.01, max: 0.5, step: 0.001 },
+          info: { text: ['Span of one fin from the body to the tip.', 'With the static margin it sets the root chord (computed).', 'Longer fins reach the vortices and take more roll damping; the memo varies it with the margin.'], doc: 'fins' } },
+        { id: 'lam', label: 'Taper ratio', sym: '\\lambda', ...NONE, default: 0.3, min: 0, max: 1, slider: { min: 0, max: 1, step: 0.05 },
+          info: { text: ['Tip chord divided by root chord.', 'A trapezoidal fin has 0 < λ < 1; a rectangle 1, a delta 0.', 'Taper matters little for lock-in (memo).'], doc: 'fins' } },
+        { id: 'SM', label: 'Required static margin', sym: 'SM', ...LEN, default: 20 * IN, min: 1e-6, max: 20, slider: { min: 0.02, max: 1.5, step: 0.005 },
+          info: { text: ['Distance from the centre of mass back to the whole-rocket centre of pressure.', 'The fins are sized (root chord) to give it.', 'The classical two calibres is often not enough to avoid lock-in; the verdict gives the margin that meets your risk.'], range: 'Two calibres (2 × diameter) or more.', doc: 'fins' } },
+        { id: 'CNa', label: 'Fin airfoil normal-force slope', sym: 'C_{N\\alpha}', ...SLOPE, default: 4, min: 1e-6, max: 20, slider: { min: 1, max: 8, step: 0.05 },
+          info: { text: ['Span-averaged 3-D normal-force slope of one fin, without body interference.', 'About 4 per radian for a typical fin.', 'A higher slope needs smaller fins for the same margin.'], range: 'About 4 per radian.', doc: 'fins' } },
+        { id: 'CDaa', label: 'Fin drag-polar constant', sym: 'C_{D\\alpha\\alpha}', ...NONE, default: 0.2, min: 0, max: 2, slider: { min: 0, max: 1, step: 0.01 },
+          info: { text: ['Second derivative of section drag with angle of attack.', 'About 0.2 (memo).', 'Only affects the small coning rate.'], doc: 'damping' } },
+        { id: 'sweep', label: 'Leading-edge sweep', sym: '\\Lambda', ...ANG, default: 60 * DEG, min: 0, max: 85 * DEG, slider: { min: 0, max: 80 * DEG, step: DEG },
+          info: { text: ['Sweep angle of the fin leading edge.', 'It enters the Magnus (yaw-due-to-roll) term.', 'Its effect on lock-in is small.'], doc: 'damping' } },
       ],
     },
     {
       id: 'perturb', title: 'Perturbations (one sigma, per axis)',
       fields: [
-        { id: 'T', label: 'Thrust', sym: 'T', dim: 'force', internal: 'N', default: 2224, min: 0, info: { doc: 'probability' } },
-        { id: 'lT', label: 'Nozzle to centre of mass', sym: 'l_T', ...LEN, default: 51 * IN, min: 0, info: { doc: 'probability' } },
-        { id: 'sdT', label: 'Thrust misalignment angle', sym: '\\delta_T', ...ANG, default: 0.002, min: 0, max: 0.1, slider: { min: 0, max: 0.006, step: 0.0001 }, info: { range: 'Typically 0.05–0.3° for fixed-nozzle solid motors.', doc: 'probability' } },
-        { id: 'sOm', label: 'Centre of mass offset', sym: '\\Omega', ...LEN, default: 0.002, min: 0, info: { text: 'Lateral offset of the centre of mass from the thrust line.', doc: 'probability' } },
-        { id: 'alphaMax', label: 'Largest angle of attack examined', sym: '\\alpha_{max}', ...ANG, default: 9 * DEG, min: DEG, max: 30 * DEG, slider: { min: 2 * DEG, max: 20 * DEG, step: 0.5 * DEG }, info: { text: 'Upper end of the search. The cross-flow model holds while √(M²−1)·sin α ≪ 1.', doc: 'lockin' } },
+        { id: 'T', label: 'Thrust', sym: 'T', dim: 'force', internal: 'N', default: 2224, min: 0, max: 1e6, slider: { min: 0, max: 20000, step: 10 },
+          info: { text: ['Thrust at resonance; zero if the motor has burnt out (then only the centre-of-mass offset matters through its own trim).', 'It multiplies the misalignment into a torque.', 'More thrust at resonance means a larger trim angle of attack.'], doc: 'probability' } },
+        { id: 'lT', label: 'Nozzle to centre of mass', sym: 'l_T', ...LEN, default: 51 * IN, min: 0, max: 50, slider: { min: 0.05, max: 5, step: 0.005 },
+          info: { text: ['Distance from the nozzle exit forward to the centre of mass.', 'The lever of a misaligned thrust.', 'A longer lever gives a larger torque.'], doc: 'probability' } },
+        { id: 'sdT', label: 'Thrust misalignment angle', sym: '\\delta_T', ...ANG, default: 0.002, min: 0, max: 0.1, slider: { min: 0, max: 0.006, step: 0.0001 },
+          info: { text: ['One component of the angle between thrust and axis (one sigma).', 'Typically 0.05–0.3° for fixed-nozzle solid motors.', 'With the offset it sets the trim angle of attack statistics; the verdict gives the alignment that meets your risk.'], range: 'Typically 0.05–0.3° for fixed-nozzle solid motors.', doc: 'probability' } },
+        { id: 'sOm', label: 'Centre of mass offset', sym: '\\Omega', ...LEN, default: 0.002, min: 0, max: 0.5, slider: { min: 0, max: 0.02, step: 0.0001 },
+          info: { text: ['Lateral offset of the centre of mass from the thrust line (one sigma).', 'From asymmetric parts or a motor off the centre line.', 'It adds to the misalignment term as $\\sqrt{l_T^2\\delta_T^2+\\Omega^2}$.'], doc: 'probability' } },
+        { id: 'alphaMax', label: 'Largest angle of attack examined', sym: '\\alpha_{max}', ...ANG, default: 9 * DEG, min: DEG, max: 30 * DEG, slider: { min: 2 * DEG, max: 20 * DEG, step: 0.5 * DEG },
+          info: { text: ['Upper end of the search for the lock-in angle.', 'The cross-flow model holds while $\\sqrt{M^2-1}\\sin\\alpha\\ll1$.', 'If no lock-in is found up to it, the risk shown is an upper bound.'], doc: 'lockin' } },
+      ],
+    },
+    {
+      id: 'limits', title: 'Your limits',
+      fields: [
+        { id: 'riskMax', label: 'Largest lock-in risk you accept', sym: 'r_{max}', dim: 'percent', internal: 'pct', default: 1, min: 0.001, max: 50, slider: { min: 0.01, max: 10, step: 0.01 },
+          info: { text: ['The chance of roll lock-in, in percent, you are willing to fly with.', 'Lock-in costs apogee and can break a rocket; the memo gives no number, so 1 % is this site’s default.', 'The verdict compares the risk with it (up to twice is marginal) and solves the static margin and alignment that meet it.'], range: '0.1–1 %.', doc: 'verdict' } },
       ],
     },
   ],
   results: [
-    { id: 'alphaStar', label: 'Smallest lock-in angle of attack', sym: '\\alpha^*', ...ANG, key: true, digits: 3, note: (x, out) => (typeof x === 'number' ? 'below it lock-in cannot happen' : `none up to ${A(out.v.alphaMax)}`),
+    { id: 'alphaStar', label: 'Smallest lock-in angle of attack', sym: '\\alpha^*', ...ANG, key: true, digits: 3, status: (x, out) => ST[out.lv], note: (x, out) => (typeof x === 'number' ? 'below it lock-in cannot happen' : `none up to ${A(out.v.alphaMax)}`),
       info: { text: 'Smallest angle of attack at which the largest vortex-induced roll moment can balance fin roll damping at the pitch frequency (eq. 30).', doc: 'lockin' } },
-    { id: 'Pno', label: 'Probability of no lock-in', sym: 'P', dim: 'percent', internal: 'pct', key: true, digits: 4, note: (x, out) => (typeof out.results.alphaStar === 'number' ? 'trim α stays below α* (Rayleigh)' : `at least: α stays below ${A(out.v.alphaMax)}`),
+    { id: 'Pno', label: 'Probability of no lock-in', sym: 'P', dim: 'percent', internal: 'pct', key: true, digits: 4, status: (x, out) => ST[out.lv], note: (x, out) => (typeof out.results.alphaStar === 'number' ? 'trim α stays below α* (Rayleigh)' : `at least: α stays below ${A(out.v.alphaMax)}`),
       info: { tex: 'P=1-\\exp\\left(-\\frac{\\alpha^{*2}}{2\\sigma_\\alpha^2}\\right)', doc: 'probability' } },
-    { id: 'sigma', label: 'Trim angle of attack at resonance (1σ per axis)', sym: '\\sigma_\\alpha', ...ANG, key: true, digits: 3, info: { text: 'From the thrust misalignment and centre-of-mass offset statistics (eq. 27).', doc: 'probability' } },
-    { id: 'D', label: 'Roll damping term (eq. 30)', sym: 'C_{L,damp}', ...NONE, key: true, digits: 4, note: (x, out) => `pitch frequency ${fmt(out.o.d.wn / (2 * Math.PI), { digits: 3 })} Hz`, info: { tex: '\\left|\\frac{C_{Lp}R}{U}(\\omega-\\omega_n)\\right|', doc: 'damping' } },
+    { id: 'aNeed', label: 'Lock-in angle needed for your risk', sym: '\\alpha_{need}', ...ANG, key: true, digits: 3, status: (x, out) => ST[out.lv], note: (x, out) => `trim α ${A(out.results.sigma)} (1σ)`,
+      info: { text: ['The smallest lock-in angle of attack that keeps the risk within your limit, for these perturbations.', 'From the Rayleigh distribution of the trim angle of attack.', 'Raise α* above it (more margin or fins) or lower the trim angle (better alignment).'], tex: '\\alpha_{need}=\\sigma_\\alpha\\sqrt{-2\\ln(r_{max}/100)}', doc: 'verdict' } },
+    { id: 'SMok', label: 'Static margin for your risk', sym: 'SM_{ok}', ...LEN, digits: 4, info: { text: ['The static margin (same fins, re-sized) whose lock-in risk equals your limit; "—" when none in the reachable range does.'], doc: 'verdict' } },
+    { id: 'sigma', label: 'Trim angle of attack at resonance (1σ per axis)', sym: '\\sigma_\\alpha', ...ANG, digits: 3, info: { text: 'From the thrust misalignment and centre-of-mass offset statistics (eq. 27).', doc: 'probability' } },
+    { id: 'D', label: 'Roll damping term (eq. 30)', sym: 'C_{L,damp}', ...NONE, digits: 4, note: (x, out) => `pitch frequency ${fmt(out.o.d.wn / (2 * Math.PI), { digits: 3 })} Hz`, info: { tex: '\\left|\\frac{C_{Lp}R}{U}(\\omega-\\omega_n)\\right|', doc: 'damping' } },
     { id: 'cR', label: 'Fin root chord (from static margin)', sym: 'c_R', ...LEN, digits: 4, note: (x, out) => `tip ${Lq(out.o.d.cT)}`, info: { doc: 'fins' } },
     { id: 'CNaF', label: 'Fin assembly normal-force slope', sym: 'C_{N\\alpha F}', ...SLOPE, digits: 4, info: { doc: 'fins' } },
     { id: 'CMa', label: 'Pitching moment slope', sym: 'C_{M\\alpha}', ...SLOPE, digits: 4, info: { text: 'On reference area πR² and length 2R.', doc: 'damping' } },
     { id: 'CLp', label: 'Roll damping derivative', sym: 'C_{Lp}', ...NONE, digits: 4, info: { text: 'Per Rp/U, on πR² and 2R.', doc: 'damping' } },
     { id: 'w', label: 'Coning rate', sym: '\\omega', dim: 'rate', internal: 'rads', digits: 3, info: { doc: 'damping' } },
   ],
-  compute(v) {
-    check(v);
+  compute(v0) {
+    check(v0);
+    const { w: v, notes, lo, hi } = layout(v0);
     const p = P(v), d = design(p);
     if (!(d.cR > 0) || !(d.CMa < 0)) throw new InputError('No fin size gives this static margin with these inputs.');
     const L = lockIn(p, d), sig = sigmaAlpha(p, d), aS = L.alphaStar, edge = aS ?? v.alphaMax;
-    const Pno = 100 * (sig > 0 ? -Math.expm1(-(edge * edge) / (2 * sig * sig)) : 1);
+    const Pno = 100 * (sig > 0 ? -Math.expm1(-(edge * edge) / (2 * sig * sig)) : 1), rk = 100 - Pno;
+    const lv = rk <= v.riskMax ? 'safe' : rk <= 2 * v.riskMax ? 'marginal' : 'unsafe';
+    const aNeed = sig * Math.sqrt(-2 * Math.log(Math.min(0.999999, v.riskMax / 100)));
+    // fixes: static margin by bisection on the full model (risk falls with margin), fin count by trial, alignment in closed form
+    const SMok = lv === 'safe' ? null : solve((SM) => risk({ ...p, SM }).r - v.riskMax, v.SM, hi);
+    const finsOk = lv === 'safe' ? [] : [6, 8].filter((N) => N > v.N && risk({ ...p, N }).r <= v.riskMax);
+    const scale = aS != null && sig > 0 ? aS / aNeed : null;   // σ_α ∝ √(l²δ² + Ω²): scale both by this
+    const fixes = [];
+    if (lv !== 'safe') {
+      if (SMok != null) fixes.push(`Raise the static margin to <b>${Lq(SMok)}</b> (now ${Lq(v.SM)}; ${fmt(SMok / (2 * v.R), { digits: 3 })} calibres), or`);
+      if (finsOk.length) fixes.push(`use <b>${finsOk[0]} fins</b> at the same margin (now ${v.N}), or`);
+      if (scale != null && scale < 1) fixes.push(`align the motor to <b>${A(v.sdT * scale)}</b> and the centre of mass to <b>${Lq(v.sOm * scale)}</b> (now ${A(v.sdT)} and ${Lq(v.sOm)}).`);
+      if (!fixes.length) fixes.push('No single change in range meets your risk: combine more margin, more fins and better alignment.');
+      fixes[fixes.length - 1] = fixes[fixes.length - 1].replace(/, or$/, '.');
+    }
+    const verdict = {
+      level: lv,
+      title: lv === 'safe' ? 'Lock-in is unlikely' : lv === 'marginal' ? 'Lock-in risk a little above your limit' : 'Real risk of roll lock-in',
+      text: `${aS != null ? `Lock-in needs at least <b>${A(aS)}</b> angle of attack at resonance` : `No lock-in up to ${A(v.alphaMax)}`}; the trim angle is ${A(sig)} (1σ), so the chance of lock-in is <b>${rk < 0.01 ? 'below 0.01' : fmt(rk, { digits: 2 })} %</b>${aS != null ? '' : ' at most'}. You accept ${fmt(v.riskMax, { digits: 3 })} %.`,
+      fixes,
+    };
     const warnings = [];
+    if (notes.length) warnings.push({ level: 'warn', text: `The layout could not be built as entered: ${notes.join('; ')}.`, fix: 'Check the stations, measured from the nose tip.' });
     if (aS === null) warnings.push({ level: 'info', text: `No lock-in is possible up to ${A(v.alphaMax)}: the vortex-induced roll moment never reaches the damping term. Raise the largest angle examined to find α*.` });
-    else if (Pno < 99) warnings.push({ level: 'warn', text: `A ${fmt(100 - Pno, { digits: 2 })}% chance of roll lock-in. Add static margin or fins (six or eight), or improve alignment.` });
-    if (d.cR > 6 * v.b) warnings.push({ level: 'warn', text: 'The root chord is more than six semispans: very low aspect ratio fins, where strip theory is poor. Increase the span.' });
-    return { results: { alphaStar: aS ?? '—', Pno, sigma: sig, D: d.D, cR: d.cR, CNaF: d.CNaF, CMa: d.CMa, CLp: d.CLp, w: d.w }, warnings, o: { d, L, edge }, v };
+    if (d.cR > 6 * v.b) warnings.push({ level: 'warn', text: 'The root chord is more than six semispans: very low aspect ratio fins, where strip theory is poor.', fix: 'Increase the span.' });
+    if (lv !== 'safe') warnings.push({ level: lv === 'unsafe' ? 'err' : 'warn', text: `A ${fmt(rk, { digits: 2 })} % chance of roll lock-in, above the ${fmt(v.riskMax, { digits: 3 })} % you accept.`, fix: 'See the verdict for the margin, fins or alignment that meet it.' });
+    return { results: { alphaStar: aS ?? '—', Pno, aNeed, SMok: SMok ?? '—', sigma: sig, D: d.D, cR: d.cR, CNaF: d.CNaF, CMa: d.CMa, CLp: d.CLp, w: d.w }, warnings, verdict, lv, o: { d, L, edge, aNeed }, v };
   },
   plots: [
     {
       id: 'lockin', title: 'Conditions for lock-in',
-      info: { text: 'Largest vortex-induced roll moment against angle of attack (memo Fig. 7). Lock-in is possible where it rises above the damping line; the first crossing is α*.', doc: 'lockin' },
-      build(v, out, { U }) {
+      info: { text: ['Largest vortex-induced roll moment against angle of attack (memo Fig. 7). Lock-in is possible where it rises above the damping line; the first crossing is α*.', 'The red line is the α* your risk needs: the crossing should lie to the right of it.'], doc: 'verdict' },
+      build(v0, out, { U }) {
+        const v = out.v;
         const ua = U(ANG), { L, d } = out.o, aS = L.alphaStar;
         return { x: { label: 'Angle of attack $\\alpha$', unit: ua.label }, y: { label: 'Roll moment coefficient', unit: '' }, includeZero: true,
           series: [{ name: '|C_Li| max over roll angle', points: [[0, 0], ...L.curve.map((c) => [ua.v(c.alpha), Math.abs(c.cl)])], smooth: true }],
           hlines: [{ y: d.D, label: 'roll damping', color: 'var(--text-3)' }],
-          ...(aS !== null ? { vlines: [{ x: ua.v(aS), label: `α* = ${A(aS)}`, color: 'var(--err)' }], markers: [{ x: ua.v(aS), y: d.D }] } : {}) };
+          vlines: [{ x: ua.v(out.o.aNeed), label: 'needed for your risk', color: 'var(--danger)' }],
+          ...(aS !== null ? { markers: [{ x: ua.v(aS), y: d.D }] } : {}) };
       },
     },
     {
-      id: 'roll', title: 'Induced roll moment against roll angle',
+      id: 'roll', title: 'Induced roll moment against roll angle', explore: true,
       info: { text: 'Vortex-induced roll moment over one fin period at four angles of attack (memo Fig. 6). It is nearly a sine wave; at small angles its phase can flip by 180°.', doc: 'vortex' },
-      build(v, out, { U }) {
+      build(v0, out, { U }) {
+        const v = out.v;
         const ua = U(ANG), p = P(v), f = out.o.L.f, per = (2 * Math.PI) / v.N;
         const series = [1 / 3, 5 / 9, 7 / 9, 1].map((k, i) => {
           const a = k * v.alphaMax, vt = vortex(a, xi(p, a), p.R, p.U), pts = [];
@@ -138,9 +218,10 @@ export default {
       },
     },
     {
-      id: 'fins', title: 'Effect of the number of fins',
+      id: 'fins', title: 'Effect of the number of fins', explore: true,
       info: { text: 'Largest induced roll moment divided by the roll damping term, for 3, 4, 6 and 8 fins at the same static margin (memo Figs. 10–13). Lock-in is possible where a curve passes 1.', doc: 'design' },
-      build(v, out, { U }) {
+      build(v0, out, { U }) {
+        const v = out.v;
         const ua = U(ANG), p = P(v);
         const series = [3, 4, 6, 8].map((N) => ({ name: `${N} fins`, points: [[0, 0], ...ratioCurve({ ...p, N }).map(([a, r]) => [ua.v(a), r])], smooth: true, dashed: N !== v.N, width: N === v.N ? 2.4 : 1.5 }));
         return { x: { label: 'Angle of attack $\\alpha$', unit: ua.label }, y: { label: '|C_Li| max / damping term', unit: '' }, includeZero: true, series, hlines: [{ y: 1, label: 'lock-in possible above', color: 'var(--err)' }] };
@@ -148,8 +229,9 @@ export default {
     },
     {
       id: 'margin', title: 'Effect of static margin',
-      info: { text: 'Smallest lock-in angle of attack against required static margin (memo Fig. 8). Larger margins put lock-in out of reach of ordinary perturbations.', doc: 'design' },
-      build(v, out, { U }) {
+      info: { text: ['Smallest lock-in angle of attack against required static margin (memo Fig. 8). Larger margins put lock-in out of reach of ordinary perturbations.', 'Where the curve crosses the red line is the margin your risk needs.'], doc: 'verdict' },
+      build(v0, out, { U }) {
+        const v = out.v;
         const ua = U(ANG), ul = U(LEN), p = P(v), lo = Math.max(1e-6, v.xN - v.xCG) + 0.02 * (v.xF - v.xCG), hi = 0.97 * (v.xF - v.xCG), pts = [];
         for (let i = 0; i <= 14; i++) {
           const SM = lo + ((hi - lo) * i) / 14, q = { ...p, SM }, d = design(q);
@@ -160,14 +242,15 @@ export default {
         if (pts.length < 2) return null;
         return { x: { label: 'Static margin $SM$', unit: ul.label }, y: { label: 'Lock-in angle of attack $\\alpha^*$', unit: ua.label }, includeZero: true,
           series: [{ name: '\\alpha^*', points: pts, smooth: true, dots: true }],
-          ...(out.o.L.alphaStar !== null ? { markers: [{ x: ul.v(v.SM), y: ua.v(out.o.L.alphaStar), label: 'design' }] } : {}) };
+          hlines: [{ y: ua.v(out.o.aNeed), label: 'needed for your risk', color: 'var(--danger)' }],
+          ...(out.o.L.alphaStar !== null ? { markers: [{ x: ul.v(v.SM), y: ua.v(out.o.L.alphaStar), label: 'your rocket' }] } : {}) };
       },
     },
   ],
   schematicTitle: 'Nose vortices over the fins',
-  schematicHint: 'Left: looking forward at the fin station, the free vortex pair (filled) and their images inside the body (open), with the fins at the roll angle of the largest induced moment. Right: side view, vortices leaving the body at the separation station and trailing over the fins (not to scale)',
-  schematic(ctx, v, out) {
-    const W = 760, H = 330, { d, L, edge } = out.o, p = P(v);
+  schematicHint: 'Left: looking forward at the fin station, the free vortex pair (filled) and their images inside the body (open), with the fins at the roll angle of the largest induced moment, coloured by the verdict. Right: side view, vortices leaving the body at the separation station and trailing over the fins (not to scale). Drag a fin tip to change the span, or the CP marker to change the static margin',
+  schematic(ctx, v0, out) {
+    const v = out.v, W = 760, H = 330, { d, L, edge } = out.o, p = P(v);
     const fr = ctx.frame({ width: W, height: H, label: 'Vortex pair and fins looking forward, and side view of the vortex trail' });
     const g = fr.layer('main'); g.replaceChildren();
     const aS = L.alphaStar ?? edge, vt = vortex(aS, xi(p, aS), p.R, p.U), phiW = (L.curve.reduce((best, c) => (Math.abs(c.alpha - aS) < Math.abs(best.alpha - aS) ? c : best), L.curve[0])).phi;
@@ -175,7 +258,7 @@ export default {
     const cx = 175, cy = 170, k = 118 / Math.max(v.R + v.b, vt.r * 1.08), P2 = (rho, th) => [cx + rho * k * Math.sin(th), cy - rho * k * Math.cos(th)];
     for (let i = 0; i < v.N; i++) {
       const th = phiW + (2 * Math.PI * i) / v.N, [x1, y1] = P2(v.R, th), [x2, y2] = P2(v.R + v.b, th);
-      g.append(s('line', { x1, y1, x2, y2, stroke: 'var(--schem-stroke)', 'stroke-width': 4.5, 'stroke-linecap': 'round', 'data-field': 'N b' }));
+      g.append(s('line', { x1, y1, x2, y2, stroke: out.lv === 'safe' ? 'var(--schem-stroke)' : COL[out.lv], 'stroke-width': 4.5, 'stroke-linecap': 'round', 'data-field': 'N b' }));
     }
     g.append(s('circle', { cx, cy, r: v.R * k, class: 'sc-body', 'data-field': 'R' }));
     for (const sg of [1, -1]) {
@@ -211,6 +294,14 @@ export default {
     g.append(s('line', { x1: X(0) - 8 - 60 * Math.cos(ua), y1: by + 4 + 60 * Math.sin(ua), x2: X(0) - 8, y2: by + 4, class: 'sc-accent2', 'marker-end': fr.arrow() }));
     g.append(text(X(0) - 40, by + 4 + 60 * Math.sin(ua) + 16, 'U at α', { anchor: 'middle', size: 10.5 }));
     g.append(text(x0, 22, 'side view · heights exaggerated', { size: 10, cls: 'sc-dim-text' }));
+    // handles: the first fin tip sets the span; the CP marker sets the static margin
+    const [tx, ty] = P2(v.R + v.b, phiW);
+    ctx.handle('b', tx, ty, { field: 'b', title: 'Drag along the fin to change the span',
+      onDrag: (sx, sy) => ctx.setValue('b', Math.max(0.2 * v.R, Math.min(3, Math.hypot(sx - cx, sy - cy) / k - v.R)), { round: 0.001 }),
+      onKey: (dx) => ctx.setValue('b', Math.max(0.2 * v.R, v.b * (1 + 0.05 * dx))) });
+    ctx.handle('SM', X(v.xCG + v.SM), by + r + 4, { field: 'SM', title: 'Drag to change the static margin',
+      onDrag: (sx) => ctx.setValue('SM', Math.max(0.005, (sx - x0) / kx - v.xCG), { round: 0.005 }),
+      onKey: (dx) => ctx.setValue('SM', Math.max(0.005, v.SM + 0.01 * dx)) });
   },
   symbols: {
     U: 'flight speed', q: 'dynamic pressure', R: 'body radius', I_p: 'pitch moment of inertia', 'x_{CG}': 'centre-of-mass station', 'x_{CPN}': 'nose centre of pressure', 'x_{CPF}': 'fin centre of pressure', x_S: 'vortex separation station',
@@ -220,7 +311,8 @@ export default {
     '\\alpha^*': 'smallest lock-in angle of attack', 'C_{Li}': 'vortex-induced roll moment coefficient', 'C_{L,damp}': 'roll damping term of eq. 30', '\\sigma_\\alpha': 'trim angle of attack (one sigma)', T: 'thrust', l_T: 'nozzle to centre of mass', '\\delta_T': 'thrust misalignment angle', '\\Omega': 'centre of mass offset', P: 'probability of no lock-in',
     '\\Lambda': 'leading-edge sweep', 'C_{D\\alpha\\alpha}': 'fin drag-polar constant',
   },
-  report(v, out, R) {
+  report(v0, out, R) {
+    const v = out.v;
     const { d, L } = out.o, n = R.n, Lv = (x) => R.v(x, LEN), aS = L.alphaStar;
     const steps = [
       { label: 'Fin assembly slope needed for the static margin (eq. 37)', lhs: 'C_{N\\alpha F}', eq: 'C_{N\\alpha N}\\,\\frac{x_{CG}+SM-x_{CPN}}{x_{CPF}-x_{CG}-SM}', sub: `${n(v.CNN)}\\times\\frac{${Lv(v.xCG)}+${Lv(v.SM)}-${Lv(v.xN)}}{${Lv(v.xF)}-${Lv(v.xCG)}-${Lv(v.SM)}}`, res: R.Q(d.CNaF, SLOPE) },

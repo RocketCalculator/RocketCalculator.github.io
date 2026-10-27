@@ -74,6 +74,15 @@
         <p>No fin design guarantees freedom from lock-in: a large enough perturbation always succeeds. But the probability can be made very small. Static margin is more important than generally realized — more than the classical two calibres extends the region where lock-in is dynamically impossible. Three and four fins differ little; five or more help dramatically, six much more than four and eight more still (mortar bombs fly with eight). Taper ratio and span have minor effects. Lower dynamic pressure (higher altitude) makes lock-in easier.</p>
       </section>
 
+      <section id="verdict">
+        <h2>Verdict and fixes</h2>
+        <p>The memo gives the probability of no lock-in and recommends static margins above two calibres and more than four fins, but no acceptable risk. The calculator asks for yours, <span class="tex">r_{max}</span> (default 1 %, this site’s choice), and compares the lock-in risk <span class="tex">100-P</span> with it: <strong>safe</strong> up to it, <strong>marginal</strong> up to twice it, <strong>unsafe</strong> beyond. When no lock-in angle is found up to the largest angle examined, the risk shown is an upper bound.</p>
+        <p>The trim angle of attack is Rayleigh distributed, so the lock-in angle your risk needs is</p>
+        <div class="eq"><div class="tex-display">\alpha_{need}=\sigma_\alpha\sqrt{-2\ln(r_{max}/100)}</div></div>
+        <p>The fixes: the static margin whose risk equals your limit (bisection on the full model, the fins re-sized for each margin), six or eight fins at the same margin when that is enough, and the alignment — since <span class="tex">\sigma_\alpha\propto\sqrt{l_T^2\delta_T^2+\Omega^2}</span>, scaling the misalignment and the offset by <span class="tex">\alpha^*/\alpha_{need}</span> meets the limit exactly.</p>
+        <p>A static margin that the nose and fin positions cannot give, or fins ahead of the vortex separation, are moved to the nearest buildable value with a note instead of being refused.</p>
+      </section>
+
       <section id="verification">
         <h2>Verification</h2>
         <p>The tests reproduce the field tool’s fin slope, pitching and yaw-damping derivatives and pitch frequency, its vortex circulation and position, the roll moment of each fin and of all fins at 9°, and its table of <span class="tex">|C_{Li}|_{max}</span> against angle of attack, once its slips below are fed back in. The closed-form strip integral <span class="tex">g</span> is checked against Simpson quadrature of eq. 12, and the induced moment is odd in roll angle with period <span class="tex">2\pi/N</span>.</p>

@@ -2,57 +2,169 @@
 import { h, s, url, loadRegistry, loadReferences, reveal, reducedMotion, storage } from './util.js';
 import { initShell, openPalette } from './app.js';
 
+// Hero: a small flight you can play with. Boost along the rail, coast to apogee, drogue at apogee, main low down, drift
+// to landing in the wind. Drag the rail to change the launch angle and the wind arrow to change the wind; the path, the
+// deployments and the landing point follow. Screen units: x right, altitude up from the ground line (y = 330).
+const GY = 330, X0 = 72, G = 40, VB = 104, LB = 118;   // gravity (px/s²), burnout speed (px/s), boost length (px)
+const VD = 34, VM = 11, HM = 92;                       // drogue and main descent rates (px/s), main opening height (px)
+
+/** Flight points { x, y, phase } every 0.04 s of model time for launch angle th (deg) and wind w (px/s, + to the right). */
+function flight(th, w) {
+  const a = (th * Math.PI) / 180, c = Math.cos(a), sn = Math.sin(a), pts = [], dt = 0.04;
+  const xb = X0 + LB * c, hb = LB * sn;
+  for (let t = 0, tb = (2 * LB) / VB; t <= tb; t += dt) { const d = LB * (t / tb) ** 2; pts.push({ x: X0 + d * c, h: d * sn, phase: 'boost' }); }
+  // coast: the wind turns the climbing rocket a little into it (weathercocking) and carries it with it
+  const vx = VB * c - 0.25 * w, vy = VB * sn, ta = vy / G;
+  for (let t = dt; t <= ta; t += dt) pts.push({ x: xb + vx * t + 0.15 * w * t, h: hb + vy * t - (G * t * t) / 2, phase: 'coast' });
+  const xa = xb + vx * ta + 0.15 * w * ta, ha = hb + (vy * vy) / (2 * G);
+  pts.push({ x: xa, h: ha, phase: 'apogee' });
+  let x = xa, hh = ha;
+  while (hh > HM) { hh -= VD * dt; x += w * dt; pts.push({ x, h: Math.max(hh, HM), phase: 'drogue' }); }
+  while (hh > 0) { hh -= VM * dt; x += w * dt; pts.push({ x, h: Math.max(hh, 0), phase: 'main' }); }
+  return { pts: pts.map((p) => ({ ...p, y: GY - p.h })), xb, hb, xa, ha };
+}
+
 function heroArt() {
-  // Trajectory over a ground line with launch rail, burnout and apogee call-outs; rocket flies the path.
-  const traj = 'M70,330 C120,250 170,170 245,120 C305,82 360,72 410,78 C470,86 520,130 560,200 C585,245 600,290 610,330';
+  const state = { th: 84, w: 12 };
   const stars = Array.from({ length: 34 }, (_, i) => {
     const x = (i * 97.3) % 640, y = (i * 53.7) % 220, r = (i % 3) * 0.45 + 0.6;
     return s('circle', { cx: x.toFixed(1), cy: y.toFixed(1), r, fill: 'var(--star)', class: i % 4 === 0 ? 'twinkle' : null, style: `animation-delay:${(i % 7) * 0.4}s` });
   });
-  const rocket = s('g', { id: 'hero-rocket' },
+  const trail = s('path', { fill: 'none', stroke: 'var(--red)', 'stroke-width': 2.2, opacity: 0.95 });
+  const ghost = s('path', { fill: 'none', stroke: 'var(--red)', 'stroke-width': 1, opacity: 0.3, 'stroke-dasharray': '5 6' });
+  const marks = s('g');
+  const rail = s('line', { x1: X0, y1: GY + 2, stroke: 'rgba(255,255,255,.85)', 'stroke-width': 3, 'stroke-linecap': 'round' });
+  const railKnob = s('circle', { r: 9, fill: 'rgba(255,255,255,.12)', stroke: '#fff', 'stroke-width': 1.4, class: 'hero-knob', tabindex: 0, role: 'slider', 'aria-label': 'Launch angle' });
+  const windG = s('g', { transform: 'translate(500 52)' });
+  const windArrow = s('path', { stroke: '#fff', fill: 'none', 'stroke-width': 1.6 });
+  const windKnob = s('circle', { cy: 0, r: 8, fill: 'rgba(255,255,255,.12)', stroke: '#fff', 'stroke-width': 1.4, class: 'hero-knob', tabindex: 0, role: 'slider', 'aria-label': 'Wind speed' });
+  const windText = s('text', { x: 0, y: -12, fill: '#fff', style: 'font:600 10px var(--font-sans);letter-spacing:.06em' });
+  windG.append(windArrow, windText, windKnob);
+  const hint = s('text', { x: 632, y: 372, 'text-anchor': 'end', fill: 'rgba(255,255,255,.55)', style: 'font:11px var(--font-sans)' }, 'drag the rail or the wind');
+  // the rocket, and the canopy it hangs from once a parachute is out
+  const body = s('g', {},
     s('path', { d: 'M14,0 C9,-3.6 3,-4.2 -10,-4.2 L -10,4.2 C 3,4.2 9,3.6 14,0 Z', fill: '#ffffff' }),
-    s('path', { d: 'M-6,-4.2 L -12,-9 L -10,-4.2 Z M -6,4.2 L -12,9 L -10,4.2 Z', fill: '#e60000' }),
-    s('path', { d: 'M-10,-2.4 L -22,0 L -10,2.4 Z', fill: '#e60000', opacity: 0.9 }, s('animate', { attributeName: 'd', dur: '0.18s', repeatCount: 'indefinite', values: 'M-10,-2.4 L -22,0 L -10,2.4 Z;M-10,-2.4 L -18,0 L -10,2.4 Z;M-10,-2.4 L -22,0 L -10,2.4 Z' })));
-  const motion = reducedMotion() ? null : s('animateMotion', { dur: '9s', repeatCount: 'indefinite', rotate: 'auto', keyPoints: '0;0.42;0.5;1', keyTimes: '0;0.38;0.52;1', calcMode: 'spline', keySplines: '0.5 0 0.6 1;0.4 0 0.6 1;0.4 0 0.8 0.6' }, s('mpath', { href: '#hero-traj' }));
-  if (motion) rocket.append(motion); else rocket.setAttribute('transform', 'translate(405 78)');
-  const callout = (x, y, label, sub, dx = 14, anchor = 'start') => s('g', {},
+    s('path', { d: 'M-6,-4.2 L -12,-9 L -10,-4.2 Z M -6,4.2 L -12,9 L -10,4.2 Z', fill: 'var(--red)' }));
+  const flame = s('path', { d: 'M-10,-2.4 L -22,0 L -10,2.4 Z', fill: 'var(--red)', opacity: 0.9 });
+  const canopy = s('g', { opacity: 0 },
+    s('path', { class: 'hero-canopy', d: 'M-17,-44 Q0,-64 17,-44 Z', fill: 'var(--red)', stroke: '#fff', 'stroke-width': 1 }),
+    s('path', { d: 'M-17,-44 L0,-16 M17,-44 L0,-16 M-6,-49 L0,-16 M6,-49 L0,-16', stroke: 'rgba(255,255,255,.75)', 'stroke-width': 0.8, fill: 'none' }));
+  const rocket = s('g', {}, canopy, s('g', { class: 'hero-body' }, body, flame));
+  const svg = s('svg', { viewBox: '0 0 640 380', role: 'img', 'aria-label': 'A sounding-rocket flight: boost, coast to apogee, drogue and main parachutes, landing. Drag the rail or the wind arrow to change it.' },
+    s('g', {}, stars),
+    s('g', { opacity: 0.8 }, [0, 1, 2, 3, 4].map((i) => s('line', { x1: 34, x2: 40, y1: GY - i * 62, y2: GY - i * 62, stroke: 'rgba(255,255,255,.62)' }))),
+    s('line', { x1: 40, x2: 40, y1: 70, y2: GY, stroke: 'rgba(255,255,255,.35)' }),
+    s('text', { x: 46, y: 66, fill: 'rgba(255,255,255,.62)', style: 'font:10px var(--font-sans)' }, 'ALTITUDE'),
+    s('line', { x1: 20, x2: 640, y1: GY, y2: GY, stroke: 'rgba(255,255,255,.35)', 'stroke-width': 1.5 }),
+    s('g', { stroke: 'rgba(255,255,255,.62)', 'stroke-width': 1 }, Array.from({ length: 32 }, (_, i) => s('line', { x1: 24 + i * 20, y1: GY, x2: 16 + i * 20, y2: GY + 10 }))),
+    ghost, trail, marks, rail, railKnob, windG, rocket, hint);
+
+  const callout = (x, y, label, sub, side = 1, dy = 0) => s('g', {},
     s('circle', { cx: x, cy: y, r: 4.5, fill: '#25282b', stroke: '#ffffff', 'stroke-width': 1.6 }),
     s('circle', { cx: x, cy: y, r: 9, fill: 'none', stroke: '#ffffff', 'stroke-width': 1, class: 'pulse-ring' }),
-    s('text', { x: x + dx, y: y - 6, 'text-anchor': anchor, fill: '#ffffff', style: 'font:600 12px var(--font-sans)' }, label),
-    s('text', { x: x + dx, y: y + 9, 'text-anchor': anchor, fill: 'rgba(255,255,255,.62)', style: 'font:11px var(--font-sans)' }, sub));
-  return s('svg', { viewBox: '0 0 640 380', role: 'img', 'aria-label': 'Animated sounding-rocket trajectory from launch to apogee' },
-    s('g', {}, stars),
-    // altitude ticks
-    s('g', { opacity: 0.8 }, [0, 1, 2, 3, 4].map((i) => s('line', { x1: 34, x2: 40, y1: 330 - i * 62, y2: 330 - i * 62, stroke: 'rgba(255,255,255,.62)' }))),
-    s('line', { x1: 40, x2: 40, y1: 80, y2: 330, stroke: 'rgba(255,255,255,.35)' }),
-    s('text', { x: 46, y: 76, fill: 'rgba(255,255,255,.62)', style: 'font:10px var(--font-sans)' }, 'ALTITUDE'),
-    s('path', { id: 'hero-traj', d: traj, fill: 'none', stroke: '#e60000', 'stroke-width': 2, class: 'traj-draw', opacity: 0.9 }),
-    s('path', { d: traj, fill: 'none', stroke: '#e60000', 'stroke-width': 1, class: 'traj-path', opacity: 0.35, transform: 'translate(0 6)' }),
-    // ground & rail
-    s('line', { x1: 20, x2: 640, y1: 330, y2: 330, stroke: 'rgba(255,255,255,.35)', 'stroke-width': 1.5 }),
-    s('g', { stroke: 'rgba(255,255,255,.62)', 'stroke-width': 1 }, Array.from({ length: 32 }, (_, i) => s('line', { x1: 24 + i * 20, y1: 330, x2: 16 + i * 20, y2: 340 }))),
-    s('line', { x1: 66, y1: 332, x2: 92, y2: 292, stroke: 'rgba(255,255,255,.8)', 'stroke-width': 3, 'stroke-linecap': 'round' }),
-    callout(245, 120, 'Burnout', 'max velocity'),
-    callout(410, 78, 'Apogee', 'vertical speed 0', 0, 'middle'),
-    callout(560, 200, 'Descent', 'recovery', 14),
-    // wind barb
-    s('g', { transform: 'translate(560 60)', stroke: '#ffffff', fill: 'none', 'stroke-width': 1.4, opacity: 0.85 },
-      s('path', { d: 'M0,0 H40 M40,0 l-7,-4 M40,0 l-7,4', class: 'traj-path' }),
-      s('text', { x: 0, y: -8, fill: '#ffffff', stroke: 'none', style: 'font:10px var(--font-sans)' }, 'WIND')),
-    rocket);
+    s('text', { x: x + 13 * side, y: y - 6 + dy, 'text-anchor': side > 0 ? 'start' : 'end', fill: '#ffffff', style: 'font:600 12px var(--font-sans)' }, label),
+    s('text', { x: x + 13 * side, y: y + 9 + dy, 'text-anchor': side > 0 ? 'start' : 'end', fill: 'rgba(255,255,255,.62)', style: 'font:11px var(--font-sans)' }, sub));
+  let F;
+  const draw = () => {
+    F = flight(state.th, state.w);
+    const d = 'M' + F.pts.map((p) => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join('L');
+    ghost.setAttribute('d', d);
+    const a = (state.th * Math.PI) / 180, rx = X0 + 46 * Math.cos(a), ry = GY + 2 - 46 * Math.sin(a);
+    rail.setAttribute('x2', rx.toFixed(1)); rail.setAttribute('y2', ry.toFixed(1));
+    railKnob.setAttribute('cx', rx.toFixed(1)); railKnob.setAttribute('cy', ry.toFixed(1));
+    const L = 14 + state.w * 2.2;
+    windArrow.setAttribute('d', state.w > 0.5 ? `M0,0 H${L} M${L},0 l-7,-4 M${L},0 l-7,4` : 'M0,0 H2');
+    windKnob.setAttribute('cx', L.toFixed(1));
+    windText.textContent = state.w > 0.5 ? 'WIND' : 'CALM';
+    const main = F.pts.find((p) => p.phase === 'main'), land = F.pts.at(-1);
+    const right = land.x < 520;
+    marks.replaceChildren(
+      callout(F.xb, GY - F.hb, 'Burnout', 'fastest point', -1),
+      callout(F.xa, GY - F.ha, 'Apogee · drogue', 'vertical speed 0', 1),
+      main ? callout(main.x, main.y, 'Main opens', 'slow, drifting', -1) : s('g'),
+      callout(land.x, land.y, 'Landing', state.w > 0.5 ? 'drifted downwind' : 'calm: near the pad', right ? 1 : -1, -16));
+    railKnob.setAttribute('aria-valuenow', String(Math.round(state.th)));
+    windKnob.setAttribute('aria-valuenow', String(Math.round(state.w)));
+    t0 = performance.now();
+  };
+  // the rocket flies the path in about 8 s, the slow main descent sped up; then it pauses and starts again
+  let t0 = performance.now(), raf = 0;
+  const place = (p, q, phase) => {
+    const ang = phase === 'drogue' || phase === 'main' ? -90 : (Math.atan2(q.y - p.y, q.x - p.x) * 180) / Math.PI;
+    rocket.setAttribute('transform', `translate(${p.x.toFixed(1)} ${p.y.toFixed(1)})`);
+    rocket.lastChild.setAttribute('transform', `rotate(${ang.toFixed(1)})`);
+    flame.setAttribute('opacity', phase === 'boost' ? 0.95 : 0);
+    const chute = phase === 'drogue' ? 0.55 : phase === 'main' ? 1 : 0;
+    canopy.setAttribute('opacity', chute ? 1 : 0);
+    canopy.setAttribute('transform', `scale(${chute || 0.5})`);
+  };
+  const speed = (ph) => (ph === 'main' ? 4 : ph === 'drogue' ? 2 : 1);
+  const frame = (now) => {
+    const P = F.pts; let k = (now - t0) / 1000, i = 0;
+    // walk the model time with the display speed of each phase
+    let acc = 0; for (i = 0; i < P.length - 1; i++) { const step = 0.04 / speed(P[i].phase); if (acc + step > k) break; acc += step; }
+    if (i >= P.length - 1 && k > acc + 1.6) { t0 = now; i = 0; }
+    const p = P[Math.min(i, P.length - 1)], q = P[Math.min(i + 1, P.length - 1)];
+    trail.setAttribute('d', 'M' + P.slice(0, i + 1).map((r) => `${r.x.toFixed(1)},${r.y.toFixed(1)}`).join('L'));
+    place(p, q === p ? { x: 2 * p.x - P[Math.max(0, i - 1)].x, y: 2 * p.y - P[Math.max(0, i - 1)].y } : q, p.phase);
+    raf = requestAnimationFrame(frame);
+  };
+  draw();
+  if (reducedMotion()) {
+    const P = F.pts, apo = P.find((p) => p.phase === 'apogee');
+    trail.setAttribute('d', ghost.getAttribute('d')); place(apo, apo, 'drogue');
+  } else raf = requestAnimationFrame(frame);
+  const redrawStatic = () => { if (reducedMotion()) { trail.setAttribute('d', ghost.getAttribute('d')); } };
+
+  // dragging: pointer position in viewBox units
+  const toView = (e) => { const r = svg.getBoundingClientRect(), k = 640 / r.width; return { x: (e.clientX - r.left) * k, y: (e.clientY - r.top) * (380 / r.height) }; };
+  const drag = (el, onMove) => {
+    el.addEventListener('pointerdown', (e) => { e.preventDefault(); el.setPointerCapture(e.pointerId); el.classList.add('dragging'); });
+    el.addEventListener('pointermove', (e) => { if (!el.hasPointerCapture(e.pointerId)) return; onMove(toView(e)); draw(); redrawStatic(); });
+    el.addEventListener('pointerup', (e) => { el.releasePointerCapture(e.pointerId); el.classList.remove('dragging'); });
+  };
+  drag(railKnob, (p) => { state.th = Math.min(90, Math.max(68, (Math.atan2(GY + 2 - p.y, p.x - X0) * 180) / Math.PI)); });
+  drag(windKnob, (p) => { state.w = Math.min(28, Math.max(0, (p.x - 500 - 14) / 2.2)); });
+  const keys = (el, f) => el.addEventListener('keydown', (e) => { const d = { ArrowRight: 1, ArrowUp: 1, ArrowLeft: -1, ArrowDown: -1 }[e.key]; if (!d) return; e.preventDefault(); f(d); draw(); redrawStatic(); });
+  keys(railKnob, (d) => { state.th = Math.min(90, Math.max(68, state.th + d)); });
+  keys(windKnob, (d) => { state.w = Math.min(28, Math.max(0, state.w + 2 * d)); });
+  // stop the animation when the hero leaves the screen
+  new IntersectionObserver(([en]) => { cancelAnimationFrame(raf); if (en.isIntersecting && !reducedMotion()) { t0 = performance.now(); raf = requestAnimationFrame(frame); } }).observe(svg);
+  return svg;
 }
 
 const STEP_ART = [
-  () => s('svg', { viewBox: '0 0 200 74' }, [0, 1, 2].map((i) => s('rect', { x: 14 + i * 62, y: 16, width: 52, height: 42, rx: 6, fill: 'var(--surface)', stroke: i === 1 ? 'var(--accent)' : 'var(--border-strong)' })),
-    s('path', { d: 'M100,26 v14 M93,33 h14', stroke: 'var(--accent)', 'stroke-width': 2 })),
-  () => s('svg', { viewBox: '0 0 200 74' }, [0, 1, 2].map((i) => s('g', {}, s('rect', { x: 20, y: 12 + i * 18, width: 70, height: 4, rx: 2, fill: 'var(--border-strong)' }),
-    s('rect', { x: 104, y: 7 + i * 18, width: 76, height: 14, rx: 3, fill: 'var(--surface)', stroke: 'var(--border-strong)' }), s('rect', { x: 104, y: 7 + i * 18, width: 3, height: 14, fill: 'var(--input-mark)' })))),
-  () => s('svg', { viewBox: '0 0 200 74' }, s('path', { d: 'M18,60 C60,58 80,20 120,18 C150,17 170,30 184,40', fill: 'none', stroke: 'var(--series-1)', 'stroke-width': 2 }),
-    s('path', { d: 'M18,60 H184 M18,60 V10', stroke: 'var(--border-strong)', fill: 'none' }), s('circle', { cx: 120, cy: 18, r: 4, fill: 'var(--key-mark)' })),
-  () => s('svg', { viewBox: '0 0 200 74' }, s('rect', { x: 120, y: 6, width: 72, height: 62, rx: 6, fill: 'var(--surface)', stroke: 'var(--border-strong)' }),
-    s('rect', { x: 130, y: 18, width: 50, height: 4, rx: 2, fill: 'var(--text-3)' }), s('rect', { x: 130, y: 30, width: 40, height: 4, rx: 2, fill: 'var(--border-strong)' }), s('rect', { x: 130, y: 40, width: 46, height: 4, rx: 2, fill: 'var(--border-strong)' }),
-    s('circle', { cx: 70, cy: 37, r: 13, fill: 'var(--surface)', stroke: 'var(--accent-2)', 'stroke-width': 1.6 }), s('text', { x: 70, y: 42, 'text-anchor': 'middle', fill: 'var(--accent-2)', style: 'font:italic 600 15px Georgia,serif' }, 'i'),
-    s('path', { d: 'M86,37 H114', stroke: 'var(--accent-2)', 'stroke-dasharray': '3 3' })),
+  // 1 · pick: a grid of cards, one picked, and the search glass
+  () => s('svg', { viewBox: '0 0 200 74' }, [0, 1, 2, 3].map((i) => s('rect', { x: 14 + (i % 2) * 44, y: 10 + Math.floor(i / 2) * 28, width: 38, height: 22, rx: 4, fill: 'var(--surface)', stroke: i === 1 ? 'var(--accent)' : 'var(--border-strong)', 'stroke-width': i === 1 ? 1.8 : 1 })),
+    s('rect', { x: 112, y: 26, width: 74, height: 22, rx: 11, fill: 'var(--surface)', stroke: 'var(--border-strong)' }),
+    s('circle', { cx: 126, cy: 37, r: 5, fill: 'none', stroke: 'var(--text-3)', 'stroke-width': 1.5 }), s('path', { d: 'M130,41 l4,4', stroke: 'var(--text-3)', 'stroke-width': 1.5 }),
+    s('rect', { x: 140, y: 35, width: 36, height: 4, rx: 2, fill: 'var(--border-strong)' })),
+  // 2 · describe: input rows with a slider, and a drawing with a drag handle
+  () => s('svg', { viewBox: '0 0 200 74' }, [0, 1, 2].map((i) => s('g', {}, s('rect', { x: 12, y: 10 + i * 20, width: 46, height: 4, rx: 2, fill: 'var(--border-strong)' }),
+    s('rect', { x: 64, y: 5 + i * 20, width: 46, height: 14, rx: 3, fill: 'var(--surface)', stroke: 'var(--border-strong)' }), s('rect', { x: 64, y: 5 + i * 20, width: 3, height: 14, fill: 'var(--input-mark)' }))),
+    s('path', { d: 'M12,66 H110', stroke: 'var(--border-strong)', 'stroke-width': 2 }), s('circle', { cx: 74, cy: 66, r: 4, fill: 'var(--accent)' }),
+    s('path', { d: 'M128,40 L170,40 L184,34 L170,28 L128,28 Z', fill: 'var(--surface)', stroke: 'var(--text-3)' }), s('circle', { cx: 184, cy: 34, r: 5, fill: 'none', stroke: 'var(--accent)', 'stroke-width': 1.6 }),
+    s('path', { d: 'M128,50 H184 M128,46 v8 M184,46 v8', stroke: 'var(--text-3)', 'stroke-width': 0.8 })),
+  // 3 · limits: a gauge with your limit drawn on it
+  () => s('svg', { viewBox: '0 0 200 74' }, s('rect', { x: 18, y: 32, width: 104, height: 12, fill: 'var(--ok)', opacity: 0.35 }), s('rect', { x: 122, y: 32, width: 30, height: 12, fill: 'var(--warn)', opacity: 0.4 }),
+    s('rect', { x: 152, y: 32, width: 30, height: 12, fill: 'var(--danger)', opacity: 0.55 }), s('path', { d: 'M152,24 V52', stroke: 'var(--danger)', 'stroke-width': 2 }),
+    s('text', { x: 152, y: 18, 'text-anchor': 'middle', fill: 'var(--text-2)', style: 'font:600 9px var(--font-sans)' }, 'your limit'), s('path', { d: 'M86,52 l-5,8 h10 Z', fill: 'var(--text)' })),
+  // 4 · verdict: banner with the word and the solved fixes
+  () => s('svg', { viewBox: '0 0 200 74' }, s('rect', { x: 14, y: 8, width: 172, height: 58, rx: 6, fill: 'var(--surface)', stroke: 'var(--border-strong)' }), s('rect', { x: 14, y: 8, width: 4, height: 58, fill: 'var(--warn)' }),
+    s('circle', { cx: 32, cy: 23, r: 7, fill: 'var(--warn)' }), s('text', { x: 32, y: 27, 'text-anchor': 'middle', fill: '#fff', style: 'font:800 10px var(--font-sans)' }, '!'),
+    s('text', { x: 44, y: 27, fill: 'var(--warn)', style: 'font:800 11px var(--font-sans);letter-spacing:.04em' }, 'MARGINAL'),
+    [0, 1].map((i) => s('g', {}, s('circle', { cx: 30, cy: 42 + i * 13, r: 2, fill: 'var(--text-3)' }), s('rect', { x: 38, y: 40 + i * 13, width: 60 + i * 20, height: 4, rx: 2, fill: 'var(--border-strong)' }), s('rect', { x: 102 + i * 20, y: 39 + i * 13, width: 26, height: 6, rx: 2, fill: 'var(--text)' })))),
+  // 5 · see why: a plot with your design and your limit
+  () => s('svg', { viewBox: '0 0 200 74' }, s('path', { d: 'M18,62 H184 M18,62 V8', stroke: 'var(--border-strong)', fill: 'none' }),
+    s('path', { d: 'M18,58 C60,56 90,30 120,20 C150,12 170,11 184,10', fill: 'none', stroke: 'var(--series-1)', 'stroke-width': 2 }),
+    s('path', { d: 'M18,28 H184', stroke: 'var(--danger)', 'stroke-dasharray': '4 3' }), s('circle', { cx: 96, cy: 30, r: 4, fill: 'var(--key-mark)' }),
+    s('circle', { cx: 168, cy: 46, r: 9, fill: 'var(--surface)', stroke: 'var(--accent-2)', 'stroke-width': 1.4 }), s('text', { x: 168, y: 50, 'text-anchor': 'middle', fill: 'var(--accent-2)', style: 'font:italic 600 12px Georgia,serif' }, 'i')),
+  // 6 · compare, share, report: baseline against now, a link and a document
+  () => s('svg', { viewBox: '0 0 200 74' }, s('rect', { x: 20, y: 30, width: 18, height: 32, fill: 'var(--border-strong)' }), s('rect', { x: 44, y: 18, width: 18, height: 44, fill: 'var(--accent)' }),
+    s('path', { d: 'M14,62 H70', stroke: 'var(--text-3)' }),
+    s('path', { d: 'M96,40 a7,7 0 0 1 0,-14 h10 M118,26 a7,7 0 0 1 0,14 h-10 M101,33 h12', stroke: 'var(--text-2)', 'stroke-width': 2, fill: 'none' }),
+    s('rect', { x: 140, y: 10, width: 44, height: 54, rx: 4, fill: 'var(--surface)', stroke: 'var(--border-strong)' }),
+    [0, 1, 2, 3].map((i) => s('rect', { x: 148, y: 20 + i * 10, width: 28 - (i % 2) * 8, height: 3, rx: 1.5, fill: 'var(--border-strong)' }))),
 ];
 
 export async function mountHome() {
@@ -72,7 +184,6 @@ export async function mountHome() {
         h('p.lead', 'Interactive calculators for stability, drag, atmosphere, fins and mass properties — each with a live schematic, plots, and the theory one click away. Built from C. P. Hoult’s rocket-engineering reports at rsandt.com.'),
         h('div.hero-actions',
           h('a.btn.primary', { href: '#calculators' }, 'Browse calculators'),
-          h('a.btn.on-dark', { href: '#guide' }, 'How it works'),
           h('a.btn.on-dark', { href: url('references/index.html') }, 'Reference library')),
         h('div.hero-stats',
           h('div', h('b', String(avail)), 'calculators live'),
@@ -82,14 +193,17 @@ export async function mountHome() {
       h('div.hero-art', heroArt())));
 
   const steps = [
-    ['Pick a calculator', 'Choose one from the grid below, or use Search in the top bar to find a calculator, topic or reference.'],
-    ['Enter your rocket', 'Every page opens with a worked example. Change the outlined inputs — results update as you type.'],
-    ['Read results & plots', 'Key results sit on top; the to-scale drawing and plots react to every change. Export any plot, and the whole calculation as a report.'],
-    ['Press ⓘ for theory', 'Every input and result has an ⓘ: a short explanation, the formula and a walk-through, with a link to the full documentation.'],
+    ['Pick a calculator', 'Choose one from the grid below, or press <b>Search</b> in the top bar to find a calculator, a theory page or any of the reference documents. A <b>Final</b> badge marks pages that have been reviewed and signed off.'],
+    ['Describe your rocket', 'Every page opens on a worked example. The inputs are grouped in the order you would measure them — type a value, move its slider, or drag the handles on the drawing. Some pages fill themselves from another calculator (“Fill from the Trajectory Simulation”).'],
+    ['Set your limits', 'The <b>Your limits</b> group holds what you will accept: a landing speed, a safety factor, the tilt your range allows. Each default says where it comes from — a published source or this site’s own choice — so change it to your own rule.'],
+    ['Read the verdict', 'At the top: <b>SAFE</b>, <b>MARGINAL</b> or <b>UNSAFE</b>, the one-line reason, and up to three fixes worked out to exact numbers (“use at least 3.3 mm”). Key results turn green, amber or red against your limits.'],
+    ['See why', 'The drawing is to scale with the physics on it; the plots show trade-offs with your design and your limits marked — hover for values. <b>Explore</b> holds more plots, every result and the assumptions; the <b>i</b> button on anything explains it with its formula, symbols and typical values.'],
+    ['Compare, share, report', '<b>Pin as baseline</b> to see what each change does; <b>Share</b> copies a link that reproduces your inputs; export any plot as SVG or CSV, and the whole calculation as Markdown, LaTeX, Word or PDF.'],
   ];
   const guide = h('section.section.reveal#guide',
     h('div.wrap',
-      h('div.section-head', h('div', h('p.eyebrow', 'How to use this site'), h('h2', 'Four steps from inputs to insight'))),
+      h('div.section-head', h('div', h('p.eyebrow', 'Using a calculator'), h('h2', 'From your rocket to a verdict')),
+        h('p', 'Every calculator works the same way, so once you know one page you know them all.')),
       h('div.steps', steps.map(([t, p], i) => h('div.card.step', h('div.step-ill', STEP_ART[i]()), h('h3', t), h('p', { html: p }))))));
 
   // ---- topic grid ----
@@ -123,7 +237,7 @@ export async function mountHome() {
   const calcs = h('section.section#calculators',
     h('div.wrap',
       h('div.section-head', h('div', h('p.eyebrow', 'What’s available'), h('h2', 'Calculators & topics')),
-        h('p', `${avail} calculators are live. The other ${soon} topics have their reference documents ready and are marked “coming soon”.`)),
+        h('p', soon ? `${avail} calculators are live. The other ${soon} topics have their reference documents ready and are marked “coming soon”.` : `All ${avail} calculators are live, each built from the reference documents in the library.`)),
       h('div.filters', search, ...statusChips, areaSel),
       gridHost));
 
@@ -133,14 +247,14 @@ export async function mountHome() {
       h('div.nav-guide',
         h('div.card', h('h3', 'Search anywhere'), h('p', 'Use Search in the top bar on any page to jump to a calculator, a theory page or a reference document.')),
         h('div.card', h('h3', 'Breadcrumbs & next/previous'), h('p', 'Each calculator shows where it sits (Home / area / calculator) and links to the previous and next calculator at the bottom of the page.')),
-        h('div.card', h('h3', 'Theory in a side panel'), h('p', 'The ⓘ buttons open a side panel without leaving the calculator. “Open full documentation” opens the complete derivation in a new tab, at the right section.'))),
+        h('div.card', h('h3', 'Theory in a side panel'), h('p', 'The i buttons open a side panel without leaving the calculator. “Open full documentation” opens the complete derivation in a new tab, at the right section.'))),
       h('div.card.card-pad', { style: 'margin-top:14px' },
         h('h3', 'Units and the colour code'),
         h('p', { style: 'color:var(--text-2)' }, 'Switch between SI and US customary units with the ', h('b', 'SI · US'), ' toggle in the top bar — your choice is remembered, and plots, drawings and reports follow it. Every symbol and unit is typeset as mathematics. On the calculator pages:'),
         h('div.legend-swatches',
           h('span', h('i', { style: 'background:var(--surface-2);border:1px solid var(--hairline)' }), 'Outlined field — your inputs'),
-          h('span', h('i', { style: 'background:var(--surface-2);border:1px solid var(--border);box-shadow:inset 4px 0 0 var(--red)' }), 'Card with a red edge — key results'),
-          h('span', h('i', { style: 'background:var(--red)' }), 'Red — highlighted dimension or action'),
+          h('span', h('i', { style: 'background:var(--surface-2);border:1px solid var(--border);box-shadow:inset 4px 0 0 var(--ok)' }), 'Key result — edge green, amber or red against your limits'),
+          h('span', h('i', { style: 'background:var(--red)' }), 'Accent — highlighted dimension or action'),
           h('span', h('i', { style: 'background:var(--surface);border:1px solid var(--border-strong)' }), 'Table — every other output'))),
       h('div.card.card-pad', { style: 'margin-top:14px' },
         h('h3', 'About the source'),

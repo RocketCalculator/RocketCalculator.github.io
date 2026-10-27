@@ -63,6 +63,12 @@
         <p>It is a useful figure for budgeting vehicles and schedule. It levels off once most defects are fixed, while the reliability of each further flight keeps approaching one.</p>
       </section>
 
+      <section id="verdict">
+        <h2>Verdict and fixes</h2>
+        <p>The memo gives the reliability after a test campaign and the number of tests that reaches a target; the target is yours. The calculator compares the failure chance of the next flight, <span class="tex">1-R_T</span>, with the one your target allows, <span class="tex">1-R^*</span>: <strong>safe</strong> up to it, <strong>marginal</strong> up to twice it, <strong>unsafe</strong> beyond (this site’s bands, not a published limit).</p>
+        <p>The fixes follow exactly from <span class="tex">R_T=(1-p)^{D_0(1-pd)^T}</span>: fly <span class="tex">T^*</span> tests; or, keeping your planned <span class="tex">T</span>, raise the fixing rate to <span class="tex">d_{need}=[1-(D^*/D_0)^{1/T}]/p</span>; or start with no more than <span class="tex">D_{0,need}=D^*/(1-pd)^T</span> latent defects.</p>
+      </section>
+
       <section id="verification">
         <h2>Verification</h2>
         <p><code>tests/relgrowth.test.js</code> checks the following:</p>

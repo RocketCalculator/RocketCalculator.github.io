@@ -10,11 +10,15 @@ const N_MAX = 200;   // longest test campaign accepted (loops and plots are size
 /** Flights shown on the plots: the campaign, the flights to the target and a little beyond. */
 const span = (v, o) => Math.min(N_MAX, Math.max(12, v.N + 3, Number.isFinite(o.Tstar) ? o.Tstar + 3 : 0));
 const flightsText = (x) => (Number.isFinite(x) ? String(x) : 'never');
+// verdict bands (DECISIONS D45): failure chance of the next flight against the one your target allows; up to 2× is marginal
+const ST = { safe: 'ok', marginal: 'warn', unsafe: 'err' };
 
 export default {
   slug: 'reliability-growth',
   topic: 'reliability',
   title: 'Reliability Growth',
+  verdict: true,
+  tiers: true,
   subtitle: 'How the chance of a <b>successful flight</b> grows as flight tests reveal latent defects and they are fixed — and how many test flights reach a target reliability.',
   intro: {
     what: 'Tracks the expected number of hidden lethal defects and the reliability of the next flight through a series of flight tests, and finds the number of tests that reaches a target reliability.',
@@ -32,7 +36,7 @@ export default {
       'Estimate the number of lethal latent defects at the first flight.',
       'Enter the chance that a defect shows up in a flight and the chance that it is found and fixed.',
       'Enter the number of flight tests planned and the reliability you want.',
-      'Read the reliability after the tests and the number of tests that reaches the target.',
+      'Read the verdict: the reliability after the tests against your target, and the tests, fixing rate or starting defects that reach it.',
     ],
     doc: 'overview',
   },
@@ -60,18 +64,22 @@ export default {
   ],
   results: [
     { id: 'RT', label: 'Reliability of the next flight', sym: 'R_T', ...ONE, key: true, digits: 4,
-      status: (x, out, v) => (x >= v.Rt ? 'ok' : 'warn'),
+      status: (x, out) => ST[out.lv],
       note: (x, out) => `after the tests · first flight ${fmt(out.o.R0, { digits: 3 })} · failure chance ${fmt(1 - x, { digits: 3 })}`,
       info: { text: 'Probability that the flight after the $T$ flight tests has no defect show up.', tex: 'R_T=(1-p)^{D_T}=(1-p)^{D_0(1-p\\,d)^T}', doc: 'model' } },
-    { id: 'DT', label: 'Lethal latent defects left', sym: 'D_T', ...ONE, key: true, digits: 4,
+    { id: 'DT', label: 'Lethal latent defects left', sym: 'D_T', ...ONE, key: true, digits: 4, status: (x, out) => ST[out.lv],
       note: (x, out) => `${fmt(out.o.fixed, { digits: 3 })} found and fixed during the tests`,
       info: { tex: 'D_T=D_0(1-p\\,d)^T', doc: 'model' } },
-    { id: 'Tstar', label: 'Flight tests to reach the target', sym: 'T^*', ...ONE, key: true,
+    { id: 'Tstar', label: 'Flight tests to reach the target', sym: 'T^*', ...ONE, key: true, status: (x, out, v) => (typeof x === 'number' && x <= v.N ? 'ok' : ST[out.lv]),
       note: (x, out, v) => (x === 'never' ? 'nothing found is fixed' : `target ${fmt(v.Rt, { digits: 4 })}`),
       info: { text: 'Smallest number of flight tests after which the next flight meets the target reliability.', tex: 'T^*=\\left\\lceil\\frac{\\ln(D^*/D_0)}{\\ln(1-p\\,d)}\\right\\rceil,\\quad D^*=\\frac{\\ln R^*}{\\ln(1-p)}', doc: 'target' } },
-    { id: 'F', label: 'Expected failures during the tests', sym: 'F_T', ...ONE, key: true, digits: 4,
+    { id: 'F', label: 'Expected failures during the tests', sym: 'F_T', ...ONE, digits: 4,
       note: (x, out, v) => `out of ${v.N} test flight${v.N === 1 ? '' : 's'}`,
       info: { text: 'Sum of the failure chances of the test flights: the number of failed flights to expect, and so of vehicles to budget for.', tex: 'F_T=\\sum_{n=0}^{T-1}\\left[1-(1-p)^{D_n}\\right]', doc: 'campaign' } },
+    { id: 'dNeed', label: 'Fixing rate that reaches the target in your tests', sym: 'd_{need}', ...ONE, digits: 4,
+      info: { text: ['The chance of fixing a defect that shows up which reaches your target in the planned number of tests. "—" when even fixing every defect is not enough, or no tests are planned.'], tex: 'd_{need}=\\frac{1-(D^*/D_0)^{1/T}}{p}', doc: 'verdict' } },
+    { id: 'D0need', label: 'Starting defects that reach the target in your tests', sym: 'D_{0,need}', ...ONE, digits: 4,
+      info: { text: ['How few latent defects the first flight may carry for your planned tests to reach the target: design reviews, proven parts and ground tests lower it.'], tex: 'D_{0,need}=\\frac{D^*}{(1-p\\,d)^T}', doc: 'verdict' } },
     { id: 'R0', label: 'Reliability of the first flight', sym: 'R_0', ...ONE, digits: 5, info: { tex: 'R_0=(1-p)^{D_0}', doc: 'model' } },
     { id: 'pd', label: 'Share of defects removed per test', sym: 'p\\,d', ...ONE, digits: 4, info: { text: 'Each flight test removes on average this fraction of the remaining latent defects.', doc: 'model' } },
     { id: 'fixed', label: 'Defects found and fixed during the tests', sym: 'D_0-D_T', ...ONE, digits: 4, info: { doc: 'model' } },
@@ -88,10 +96,26 @@ export default {
     if (v.D0 === 0) warnings.push({ level: 'info', text: 'With no latent defects every flight succeeds; testing cannot raise the reliability.' });
     else if (o.Tstar === Infinity) warnings.push({ level: 'warn', text: 'Nothing that shows up in flight is fixed ($d=0$), so the reliability never grows and the target is never reached. Instrument the test flights and investigate every failure.' });
     else if (o.Tstar > v.N) warnings.push({ level: 'info', text: `The planned tests leave the next flight below the target; ${o.Tstar} flight tests are needed.` });
-    const results = {
-      RT: o.RT, DT: o.DT, Tstar: Number.isFinite(o.Tstar) ? o.Tstar : 'never', F: o.F, R0: o.R0, pd: o.pd, fixed: o.fixed, shownNext: o.shownNext, Ds: o.Ds, Texact: o.Texact,
+    // verdict and fixes, all exact: R_T = (1-p)^{D_0(1-pd)^T}
+    const fail = 1 - o.RT, allow = 1 - v.Rt, lv = v.D0 === 0 || fail <= allow ? 'safe' : fail <= 2 * allow ? 'marginal' : 'unsafe';
+    const dNeed = v.N > 0 && v.D0 > o.Ds ? (1 - (o.Ds / v.D0) ** (1 / v.N)) / v.p : null, D0need = o.Ds / (1 - v.p * v.d) ** v.N;
+    const fixes = [];
+    if (lv !== 'safe') {
+      if (Number.isFinite(o.Tstar)) fixes.push(`Fly <b>${o.Tstar}</b> flight tests before the flight that matters (now ${v.N}), or`);
+      if (dNeed != null && dNeed <= 1 && dNeed > v.d) fixes.push(`fix more of what shows up: a fixing rate of <b>${fmt(dNeed, { digits: 3 })}</b> (now ${fmt(v.d, { digits: 3 })}) — telemetry, recovered hardware and a failure review for every flight, or`);
+      fixes.push(`start with fewer defects: at most <b>${fmt(D0need, { digits: 3 })}</b> (now ${fmt(v.D0, { digits: 3 })}) through design reviews, proven parts and ground tests.`);
+      fixes[0] = fixes[0][0].toUpperCase() + fixes[0].slice(1);
+    }
+    const verdict = {
+      level: lv,
+      title: lv === 'safe' ? 'The planned tests reach your target reliability' : lv === 'marginal' ? 'Close to your target, not there yet' : 'The planned tests fall well short of your target',
+      text: `After ${v.N} flight test${v.N === 1 ? '' : 's'} the next flight succeeds with probability <b>${fmt(o.RT, { digits: 3 })}</b>; you want <b>${fmt(v.Rt, { digits: 3 })}</b>. About ${fmt(o.DT, { digits: 2 })} lethal defects remain, and ${fmt(o.F, { digits: 2 })} of the test flights are expected to fail.`,
+      fixes,
     };
-    return { results, warnings, o };
+    const results = {
+      RT: o.RT, DT: o.DT, Tstar: Number.isFinite(o.Tstar) ? o.Tstar : 'never', F: o.F, dNeed: dNeed != null && dNeed <= 1 ? dNeed : '—', D0need, R0: o.R0, pd: o.pd, fixed: o.fixed, shownNext: o.shownNext, Ds: o.Ds, Texact: o.Texact,
+    };
+    return { results, warnings, verdict, lv, o };
   },
   plots: [
     {
@@ -120,7 +144,7 @@ export default {
       },
     },
     {
-      id: 'exposure', title: 'Reliability vs chance a defect shows up',
+      id: 'exposure', title: 'Reliability vs chance a defect shows up', explore: true,
       info: { text: 'Reliability of the first flight and of the flight after the tests against the chance that a defect shows up. Defects that show up often ruin the first flight but are found quickly; defects that rarely show up do little harm but survive the tests.', doc: 'model' },
       build(v, out) {
         const after = [], first = [];
@@ -128,17 +152,17 @@ export default {
         return { x: { label: 'Chance a defect shows up $p$' }, y: { label: 'Reliability' }, yDomain: [0, 1],
           series: [{ name: `after ${v.N} test${v.N === 1 ? '' : 's'} $R_T$`, points: after, smooth: true }, { name: 'first flight $R_0$', points: first, dashed: true, smooth: true, color: 'var(--text-3)' }],
           hlines: [{ y: v.Rt, label: 'target R^*', color: 'var(--red-text)' }],
-          markers: [{ x: v.p, y: out.o.RT, label: 'design' }] };
+          markers: [{ x: v.p, y: out.o.RT, label: 'your campaign' }] };
       },
     },
     {
-      id: 'detect', title: 'Flight tests needed vs chance of fixing',
+      id: 'detect', title: 'Flight tests needed vs chance of fixing', explore: true,
       info: { text: 'Flight tests needed to reach the target reliability against the chance that a defect which shows up is fixed, before rounding up to whole flights. It shows how much flight instrumentation and failure investigation shorten a test campaign.', doc: 'target' },
       build(v, out) {
         const pts = [];
         for (let i = 0; i <= 180; i++) { const d = 0.1 + i / 200; pts.push([d, flightsToReach(v.D0, v.p, d, v.Rt).exact]); }
         return { x: { label: 'Chance a defect is fixed $d$' }, y: { label: 'Flight tests needed $T^*$ (unrounded)' }, includeZero: true, series: [{ name: 'T^*', points: pts, smooth: true }],
-          markers: Number.isFinite(out.o.Texact) && v.d >= 0.1 ? [{ x: v.d, y: out.o.Texact, label: `design: ${flightsText(out.o.Tstar)} flights` }] : [] };
+          markers: Number.isFinite(out.o.Texact) && v.d >= 0.1 ? [{ x: v.d, y: out.o.Texact, label: `your campaign: ${flightsText(out.o.Tstar)} flights` }] : [] };
       },
     },
   ],

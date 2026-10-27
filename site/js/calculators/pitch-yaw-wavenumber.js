@@ -49,6 +49,7 @@ export default {
   slug: 'pitch-yaw-wavenumber',
   topic: 'pitch-yaw-wavenumber',
   title: 'Pitch-Yaw Wave Number',
+  tiers: true,
   subtitle: 'How far a stable rocket flies during one <b>pitch or yaw wobble</b>, how fast it wobbles, and whether its <b>roll rate</b> stays clear of it.',
   verdict: true,
   intro: {

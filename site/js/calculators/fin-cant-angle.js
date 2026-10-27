@@ -119,7 +119,7 @@ export default {
       id: 'model', title: 'Model settings (advanced)',
       fields: [
         { id: 'cNa', label: 'Fin airfoil normal-force slope', sym: 'c_{N\\alpha}', dim: 'perAngle', internal: 'perrad', default: 3.5, min: 0.5, max: 8, slider: { min: 1, max: 6.3, step: 0.05 },
-          info: { text: ['How much sideways force a strip of fin makes per radian of angle of attack, averaged over the fin.', 'Thin-airfoil theory gives 2π subsonic and 4/√(M²−1) supersonic; a lower panel average (about 3.5) accounts for the losses at the root and tip.', 'It scales driving and damping alike, so the steady roll does not change; only the inertia lag does.'], range: '3–6.3 per radian.', doc: 'strip-theory' } },
+          info: { text: ['How much sideways force a strip of fin makes per radian of angle of attack, averaged over the fin.', 'Thin-airfoil theory gives 2π subsonic and 4/√(M²−1) supersonic; a lower panel average (about 3.5) accounts for the losses at the root and tip.', 'It scales driving and damping alike, so the steady roll does not change; only the inertia lag does.'], range: '3–6.3 per radian.', doc: 'strip-theory', tex: 'C_{L\\delta}\\propto c_{N\\alpha},\\quad C_{Lp}\\propto c_{N\\alpha}' } },
       ],
     },
   ],

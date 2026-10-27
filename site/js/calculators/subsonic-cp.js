@@ -188,7 +188,7 @@ export default {
         { id: 'b', shared: 'finSpan', label: 'Exposed semispan', sym: 'b', ...LEN, default: 4, min: 0.01, max: 200, slider: { min: 0.2, max: 20, step: 0.05 },
           info: { text: ['How far each fin sticks out from the body surface (its height).', 'Measure from the body to the fin tip, square to the body.', 'Span is the strongest fin lever: fin lift grows roughly with its square at small spans. The verdict gives the span that reaches your target. Drag the fin tip up or down in the drawing.'], tex: '\\mathit{AR}=\\frac{2b^2}{S}', range: '1–1.5 calibres is common.', doc: 'fins' } },
         { id: 'bt', label: 'Boat-tail half-angle under fins', sym: '\\beta', dim: 'angle', default: 0, min: 0, max: 20, slider: { min: 0, max: 15, step: 0.5 },
-          info: { text: ['If the fins sit on a tapering (conical) part of the body, the taper’s half-angle.', 'Zero for fins on a straight tube (almost always).', 'A taper under the fins adds a little root area.'], doc: 'fins' } },
+          info: { text: ['If the fins sit on a tapering (conical) part of the body, the taper’s half-angle.', 'Zero for fins on a straight tube (almost always).', 'A taper under the fins adds a little root area.'], doc: 'fins', tex: '\\beta=\\sqrt{|1-M^2|}', range: 'Usually off; on for Mach numbers above about 0.5.' } },
       ],
     },
     {
@@ -208,9 +208,9 @@ export default {
       id: 'limits', title: 'Your limits',
       fields: [
         { id: 'minSM', label: 'Smallest margin you accept (unsafe below)', sym: 'SM_{min}', dim: 'none', default: 1, min: 0, max: 5, slider: { min: 0, max: 3, step: 0.05 },
-          info: { text: ['The static margin below which you would not fly the rocket, in calibres (body diameters).', 'Your choice, and your range’s rules. 1 calibre is the usual amateur floor; it is a rule of thumb, not a published limit.', 'Below it the verdict is UNSAFE.'], range: 'Commonly 1 calibre.', doc: 'verdict' } },
+          info: { text: ['The static margin below which you would not fly the rocket, in calibres (body diameters).', 'Your choice, and your range’s rules. 1 calibre is the usual amateur floor; it is a rule of thumb, not a published limit.', 'Below it the verdict is UNSAFE.'], range: 'Commonly 1 calibre.', doc: 'verdict', tex: 'SM_{min}\\ge SM_{floor}' } },
         { id: 'targetSM', label: 'Target static margin', sym: 'SM_{target}', dim: 'none', default: 1.5, min: 0, max: 8, slider: { min: 0.5, max: 4, step: 0.05 },
-          info: { text: ['The margin you design for, in the worst case.', 'Common amateur practice is 1–2 calibres; Hoult calls two calibres “classical”. More margin also makes the rocket turn into the wind more.', 'Between your minimum and this target the verdict is MARGINAL. The fixes (span, root chord, CG shift, ballast) are solved to reach this target.'], range: '1.5–2 calibres.', doc: 'verdict' } },
+          info: { text: ['The margin you design for, in the worst case.', 'Common amateur practice is 1–2 calibres; Hoult calls two calibres “classical”. More margin also makes the rocket turn into the wind more.', 'Between your minimum and this target the verdict is MARGINAL. The fixes (span, root chord, CG shift, ballast) are solved to reach this target.'], range: '1.5–2 calibres.', doc: 'verdict', tex: 'SM_{min}\\ge SM_{target}' } },
       ],
     },
   ],
@@ -549,6 +549,8 @@ export default {
     'SM_{min}': 'worst-case static margin (calibres)',
     '\\bar{c}': 'mean aerodynamic chord (mm or in)',
     'C_{N\\delta}': 'single-panel deflection slope (per radian)',
+    '\\beta': 'compressibility factor',
+    'SM_{floor}': 'lowest margin you accept (calibres)',
   },
   report(v, out, R) {
     const o = out.o, f = o.fin, b = o.body, n = R.n;

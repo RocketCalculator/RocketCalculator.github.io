@@ -144,9 +144,9 @@ export default {
         { id: 'air', label: 'Air', kind: 'select', default: 'tp', options: [{ value: 'alt', label: 'Standard day at an altitude' }, { value: 'tp', label: 'My own temperature and pressure' }],
           info: { text: ['Where the air temperature and pressure come from: a standard day at the altitude you enter, or values you type (from a trajectory, a weather report or flight data).', 'The Atmosphere & Gravity page gives them for your site.', 'The air sets the Reynolds number: thinner air (higher up) means a longer laminar run and higher friction coefficients.'], doc: 'skin-friction' } },
         { id: 'h', label: 'Altitude (above sea level)', sym: 'h', ...ALT, default: 0, min: 0, max: 100000, slider: { min: 0, max: 60000, step: 100 }, when: alt,
-          info: { text: ['Height above sea level at the flight condition.', 'From your trajectory simulation.', 'Higher up the air is thinner: the Reynolds number falls, so the friction coefficient rises a little, while the drag force falls with the air pressure.'], range: '0–3 km for model rockets; up to 20 km (65 000 ft) for research rockets.', doc: 'skin-friction' } },
+          info: { text: ['Height above sea level at the flight condition.', 'From your trajectory simulation.', 'Higher up the air is thinner: the Reynolds number falls, so the friction coefficient rises a little, while the drag force falls with the air pressure.'], range: '0–3 km for model rockets; up to 20 km (65 000 ft) for research rockets.', doc: 'skin-friction', tex: '\\rho=\\rho(h)' } },
         { id: 'T', label: 'Air temperature', sym: 'T', dim: 'temperature', internal: 'R', units: { si: 'K', us: 'R' }, default: 499.17, min: 300, max: 700, slider: { min: 390, max: 560, step: 0.5 }, when: (v) => !alt(v),
-          info: { text: ['Absolute temperature of the outside air at the flight condition.', 'From a trajectory or weather data (K = °C + 273.15; °R = °F + 459.67).', 'Warmer air is more viscous and less dense: a lower Reynolds number and slightly more friction.'], range: '216–310 K (390–560 °R).', doc: 'skin-friction' } },
+          info: { text: ['Absolute temperature of the outside air at the flight condition.', 'From a trajectory or weather data (K = °C + 273.15; °R = °F + 459.67).', 'Warmer air is more viscous and less dense: a lower Reynolds number and slightly more friction.'], range: '216–310 K (390–560 °R).', doc: 'skin-friction', tex: '\\frac{\\rho a}{\\mu}=f(T,p_\\infty)' } },
         { id: 'p', label: 'Air pressure', sym: 'p_\\infty', ...PRES, default: 2124, min: 10, max: 2500, slider: { min: 50, max: 2200, step: 1 }, when: (v) => !alt(v),
           info: { text: ['Static pressure of the outside air at the flight condition.', 'From a trajectory or weather data (101.3 kPa, 2116 lbf/ft², at sea level).', 'With the temperature it sets the Reynolds number per metre: lower pressure, longer laminar run. It also sets the drag force.'], tex: '\\frac{\\rho a}{\\mu}=K_{Re}\\,p_\\infty T^{-1.26}', range: 'Sea level 101 kPa (2116 lbf/ft²); 10 km about 26 kPa (550 lbf/ft²).', doc: 'skin-friction' } },
       ],
@@ -452,6 +452,8 @@ export default {
     c: 'chord (mm or in)',
     a: 'speed of sound (m/s or ft/s)',
     '\\dots': 'the other drag parts',
+    '\\rho(h)': 'standard-atmosphere density at altitude $h$',
+    'f(T,p_\\infty)': 'a function of the air temperature and pressure',
   },
   report(v, out, R) {
     const r = out.r, n = R.n, M = v.M, a = out.a;

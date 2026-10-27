@@ -101,27 +101,27 @@ export default {
         { id: 'PG', label: 'Swing period', sym: 'P_G', ...T, default: 2.84, min: 0, minExclusive: true, max: 60, slider: { min: 0.5, max: 6, step: 0.01 },
           info: { text: ['Time for one full sideways swing and back: nose and tail on the same side of the floor line at the same time.', 'Time many cycles and divide. It should come close to the predicted $2\\pi\\sqrt{l/g}$.', 'The inertia falls with the square of this period.'], tex: 'P_G=2\\pi\\sqrt{l/g}', doc: 'two-modes', range: 'Set by the wire length: $2\\pi\\sqrt{l/g}$, about 2.8 s for 2 m wires.' } },
         { id: 'NG', label: 'Swing cycles timed', sym: 'N_G', ...NONE, default: 10, min: 1, max: 200, slider: { min: 1, max: 50, step: 1 },
-          info: { text: ['How many full sideways swings your stopwatch run covered.', 'The swing is faster than the yaw, so the same number of cycles takes less time and leaves a larger relative error: time more of them.'], tex: '\\delta P_G=\\frac{\\delta t}{N_G}', doc: 'quality' } },
+          info: { text: ['How many full sideways swings your stopwatch run covered.', 'Count the nose passing the floor line in the same direction.', 'More cycles share the stopwatch error: twice the cycles, half the timing error.'], tex: '\\delta P_G=\\frac{\\delta t}{N_G}', doc: 'quality', range: '10–20 cycles.' } },
       ],
     },
     {
       id: 'acc', title: 'How well you measure',
       fields: [
         { id: 'dt', label: 'Stopwatch error per run', sym: '\\delta t', ...T, default: 0.2, min: 0, max: 2, slider: { min: 0, max: 0.5, step: 0.01 },
-          info: { text: ['How far off a hand-timed run can be: your reaction at the start plus at the stop.', 'Your own judgement. Repeat a run a few times and take the spread; a video with a frame counter is far better.', 'Its effect falls with the number of cycles timed.'], range: 'About 0.1–0.3 s by hand; 0.03 s from 30 fps video.', doc: 'quality' } },
+          info: { text: ['How far off a hand-timed run can be: your reaction at the start plus at the stop.', 'Your own judgement. Repeat a run a few times and take the spread; a video with a frame counter is far better.', 'Its effect falls with the number of cycles timed.'], range: 'About 0.1–0.3 s by hand; 0.03 s from 30 fps video.', doc: 'quality', tex: '\\frac{\\delta P}{P}=\\frac{\\delta t}{NP}' } },
         { id: 'dx', label: 'Distance error', sym: '\\delta x', ...SMALL, default: 0.002, min: 0, max: 0.05, slider: { min: 0, max: 0.01, step: 0.0005 },
           info: { text: ['How far off each wire distance from the CG may be: tape reading, clamp width, CG mark.', 'Your own judgement for your tape and marks.', 'It matters more the closer the wires are to the CG: 2 mm is 0.7 % of 300 mm but 2 % of 100 mm.'], tex: '\\frac{\\delta I}{I}\\supset\\frac{\\delta x}{x_1},\\ \\frac{\\delta x}{x_2}', range: '1–3 mm (0.04–0.12 in) with a tape.', doc: 'quality' } },
         { id: 'dm', label: 'Scale error', sym: '\\delta m', ...MASS, default: 0.05, min: 0, max: 100, slider: { min: 0, max: 0.5, step: 0.005 },
-          info: { text: ['How far off your weighing may be.', 'From the scale’s resolution and calibration.', 'Usually the smallest error in the budget.'], range: '1–50 g on a kitchen or parcel scale.', doc: 'quality' } },
+          info: { text: ['How far off your weighing may be.', 'From the scale’s resolution and calibration.', 'Usually the smallest error in the budget.'], range: '1–50 g on a kitchen or parcel scale.', doc: 'quality', tex: 'u_I^2=\\left(\\frac{\\delta m}{m}\\right)^2+\\left(\\frac{\\delta x}{x_1}\\right)^2+\\left(\\frac{\\delta x}{x_2}\\right)^2+\\left(\\frac{2\\delta t}{N_YP_Y}\\right)^2+\\left(\\frac{2\\delta t}{N_GP_G}\\right)^2' } },
       ],
     },
     {
       id: 'limits', title: 'Your limits',
       fields: [
         { id: 'rmin', label: 'Least period ratio you trust', sym: 'r_{min}', ...NONE, default: 1.5, min: 1.05, max: 4, slider: { min: 1.1, max: 3, step: 0.05 },
-          info: { text: ['How far apart the two periods must be before you trust that you timed the right swing (either way round: $P_Y/P_G$ above it or below its inverse).', 'Your choice; the memo only says the ratio must not be close to 1 and shows that 1.155 is close enough to cause trouble. 1.5 is the default here (not a published limit).', 'A higher value forces the wires closer to the CG.'], range: '1.3–2.', doc: 'quality' } },
+          info: { text: ['How far apart the two periods must be before you trust that you timed the right swing (either way round: $P_Y/P_G$ above it or below its inverse).', 'Your choice; the memo only says the ratio must not be close to 1 and shows that 1.155 is close enough to cause trouble. 1.5 is the default here (not a published limit).', 'A higher value forces the wires closer to the CG.'], range: '1.3–2.', doc: 'quality', tex: '\\frac{P_Y}{P_G}\\ge r_{min}' } },
         { id: 'uMax', label: 'Largest error you accept', sym: 'u_{max}', ...PCT, default: 5, min: 0.5, max: 50, slider: { min: 1, max: 20, step: 0.5 },
-          info: { text: ['The uncertainty of the inertia you can live with.', 'Depends on the use: a stability or roll analysis is rarely better than 5–10 %.', 'Lower targets need more cycles timed and better distance measurement.'], range: '2–10 %.', doc: 'quality' } },
+          info: { text: ['The uncertainty of the inertia you can live with.', 'Depends on the use: a stability or roll analysis is rarely better than 5–10 %.', 'Lower targets need more cycles timed and better distance measurement.'], range: '2–10 %.', doc: 'quality', tex: 'u_I\\le u_{max}' } },
         { id: 'crossTol', label: 'Cross-check tolerance', sym: '\\epsilon_{max}', ...PCT, default: 3, min: 0.5, max: 50, slider: { min: 1, max: 20, step: 0.5 },
           info: { text: ['How far the inertia from the wire length may differ from the one from the two periods.', 'They differ only through the swing period: a gap points to a wrong wire length or a bad swing timing.', 'Your choice (not a published limit).'], tex: '\\epsilon=\\frac{I_l}{I}-1=\\left(\\frac{P_G}{2\\pi\\sqrt{l/g}}\\right)^2-1', range: '2–5 %.', doc: 'quality' } },
       ],
@@ -342,6 +342,9 @@ export default {
     'x_{cg}': 'CG distance from the nose tip (m or ft)', R: 'body radius (mm or in)', 's_{max}': 'widest wire spacing for your period ratio (m or ft)', 'N_{req}': 'cycles to time for your error target',
     s: 'spacing between the two wires, $x_1+x_2$ (m or in)',
     D: 'body outside diameter (mm or in)',
+    '\\delta P': 'period timing error (s)',
+    P: 'period (s)',
+    N: 'number of cycles timed',
   },
   report(v, out, R) {
     const o = out.o, u = out.u, n = R.n;

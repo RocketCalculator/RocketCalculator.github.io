@@ -65,9 +65,9 @@ export default {
       id: 'flight', title: 'Flight condition',
       fields: [
         { id: 'V', label: 'Flight speed', sym: 'V', ...SPD, default: 820, min: 0, max: 15000, slider: { min: 0, max: 4000, step: 5 },
-          info: { text: 'Speed of the rocket at this altitude (from your simulation). Gives the Mach number, dynamic pressure and Reynolds number.', range: 'High-power rockets: 300–3,000 ft/s (100–900 m/s).', doc: 'flight', tex: 'M=\\frac{V}{a},\\qquad q=\\tfrac12\\rho V^2' } },
+          info: { text: ['Speed of the rocket at this altitude, from your simulation.', 'Take it at the moment you care about: burnout, maximum dynamic pressure, or deployment.', 'It gives the Mach number, dynamic pressure and Reynolds number.'], range: 'High-power rockets: 300–3,000 ft/s (100–900 m/s).', doc: 'flight', tex: 'M=\\frac{V}{a},\\qquad q=\\tfrac12\\rho V^2' } },
         { id: 'Lref', label: 'Reference length for Reynolds number', sym: 'L', ...LEN, default: 4, min: 0, minExclusive: true, max: 2000, slider: { min: 0.5, max: 200, step: 0.1 },
-          info: { text: 'Length the Reynolds number is based on: body diameter for the nose and fins, or the overall length for skin friction.', doc: 'flight', tex: 'Re=\\frac{\\rho V L}{\\mu}', range: 'Body diameter (5–15 cm) for nose and fins; rocket length (1–3 m) for skin friction.' } },
+          info: { text: ['Length the Reynolds number is based on.', 'Body diameter for the nose and fins, or the overall length for skin friction.', 'The Reynolds number grows in proportion to it.'], doc: 'flight', tex: 'Re=\\frac{\\rho V L}{\\mu}', range: 'Body diameter (5–15 cm) for nose and fins; rocket length (1–3 m) for skin friction.' } },
       ],
     },
   ],

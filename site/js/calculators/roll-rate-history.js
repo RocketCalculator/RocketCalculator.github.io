@@ -376,7 +376,7 @@ export default {
     ];
     return [{
       title: 'Theory',
-      text: 'For vertical flight at small angle of attack the roll equation is $I_R\\,dp/dt=qSd[C_{Lp}pd/2U+C_{L\\delta}\\sum\\delta_i]$. Neglecting inertia gives the roll wave number $\\lambda_{R0}=-2C_{L\\delta}\\sum\\delta_i/(dC_{Lp})$, so $p=\\lambda_{R0}U$. With inertia the rate lags; the boost is integrated with constant acceleration from launcher exit, and the memo’s estimate $\\lambda_{R0}/(1-J)$ is shown for comparison. After burnout, with $dV/dt\\approx-g$, the equation $dp/dV-GVp=-HV^2$ is integrated to apogee; its end value is the closed form used for the apogee rate (Hoult). The limits are the user’s own, not published values.',
+      text: 'For vertical flight at small angle of attack the roll equation is $I_R\\,dp/dt=qSd[C_{Lp}pd/2U+C_{L\\delta}\\sum\\delta_i]$. Neglecting inertia gives the roll wave number $\\lambda_{R0}=-2C_{L\\delta}\\sum\\delta_i/(d\\,C_{Lp})$, so $p=\\lambda_{R0}U$. With inertia the rate lags; the boost is integrated with constant acceleration from launcher exit, and the memo’s estimate $\\lambda_{R0}/(1-J)$ is shown for comparison. After burnout, with $dV/dt\\approx-g$, the equation $dp/dV-GVp=-HV^2$ is integrated to apogee; its end value is the closed form used for the apogee rate (Hoult). The limits are the user’s own, not published values.',
       steps,
     }];
   },

@@ -102,7 +102,7 @@ export default {
       id: 'aero', title: 'Pressure at the vents',
       fields: [
         { id: 'Cp0', label: 'Vent pressure coefficient, slow flight', sym: 'C_{pX0}', ...NONE, default: -0.0343, min: -0.5, max: 1, slider: { min: -0.2, max: 0.1, step: 0.001 },
-          info: { text: ['How far the surface pressure where the vents exit is below (negative) or above the atmosphere, as a fraction of the dynamic pressure, at low speed.', 'Read it off the Nose Cone Design calculator’s pressure plot at the vent position. Just behind a nose shoulder it is about −0.03 to −0.08.', 'More suction outside the vents raises the pressure difference.'], tex: 'p_X=p_a+qC_{pX}', doc: 'external' } },
+          info: { text: ['How far the surface pressure where the vents exit is below (negative) or above the atmosphere, as a fraction of the dynamic pressure, at low speed.', 'Read it off the Nose Cone Design calculator’s pressure plot at the vent position. Just behind a nose shoulder it is about −0.03 to −0.08.', 'More suction outside the vents raises the pressure difference.'], tex: 'p_X=p_a+q\\,C_{pX}', doc: 'external' } },
         { id: 'Mcr', label: 'Critical Mach number at the vents', sym: 'M_{cr}', ...NONE, default: 0.9487, min: 0.3, max: 1, slider: { min: 0.6, max: 1, step: 0.005 },
           info: { text: ['Up to this flight Mach number the suction is scaled for compressibility (Kármán–Tsien); above it the table below is used. The Nose Cone Design calculator gives it.'], doc: 'external' } },
         { id: 'super', label: 'Vent pressure coefficient above the critical Mach number', kind: 'table', minRows: 2,
@@ -149,7 +149,7 @@ export default {
     { id: 'dNeed', label: 'Smallest vent diameter for the allowable', sym: 'd_{v,req}', ...LEN, key: true, digits: 3, note: (x, out) => (x === '—' ? '' : `with ${out.v.N} hole${out.v.N > 1 ? 's' : ''}`),
       info: { text: ['The vent hole diameter (same number of holes) at which the largest pressure difference just equals the allowable. Any larger hole is safer.'], doc: 'door' } },
     { id: 'tau', label: 'Venting time constant', sym: '\\tau', dim: 'time', key: true, digits: 3,
-      info: { text: ['Roughly how long the bay takes to follow a change in outside pressure: the bay air volume divided by the vent flow capacity. Small compared with the climb time means the bay keeps up.'], tex: '\\tau=\\frac{V}{AC_{SON}a_0}', doc: 'model' } },
+      info: { text: ['Roughly how long the bay takes to follow a change in outside pressure: the bay air volume divided by the vent flow capacity. Small compared with the climb time means the bay keeps up.'], tex: '\\tau=\\frac{V}{A\\,C_{SON}a_0}', doc: 'model' } },
     { id: 'Nneed', label: 'Fewest vent holes (same diameter) for the allowable', sym: 'N_{req}', ...NONE, digits: 2, info: { text: ['How many holes of your diameter keep the difference within the allowable; “—” beyond 24.'], doc: 'door' } },
     { id: 'Fdoor', label: 'Push on the door at the worst moment', sym: 'F', ...FORCE, digits: 3, when: door, info: { text: ['The pressure difference times the door area: the force trying to peel the door off.'], tex: 'F=\\Delta p\\,lw', doc: 'door' } },
     { id: 'Fhold', label: 'What the tape can hold', sym: 'F_{hold}', ...FORCE, digits: 3, when: door, info: { tex: 'F_{hold}=2\\sigma(l+w)', doc: 'door' } },
@@ -306,7 +306,7 @@ export default {
     ];
     return [{
       title: 'Theory',
-      text: 'The trapped air expands isentropically and flows through vents of total area $A$, subsonic or choked, with an empirical orifice coefficient. The pressure outside the vents is the atmospheric pressure plus $qC_{pX}$. Matching the bay’s mass loss to the vent mass flow gives a first-order equation for the bay pressure (Hoult), integrated along the trajectory; when the outside pressure is higher, air flows in and the sign changes.',
+      text: 'The trapped air expands isentropically and flows through vents of total area $A$, subsonic or choked, with an empirical orifice coefficient. The pressure outside the vents is the atmospheric pressure plus $q\\,C_{pX}$. Matching the bay’s mass loss to the vent mass flow gives a first-order equation for the bay pressure (Hoult), integrated along the trajectory; when the outside pressure is higher, air flows in and the sign changes.',
       steps,
     }];
   },

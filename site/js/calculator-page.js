@@ -507,8 +507,9 @@ export async function mountCalculator(def) {
       const disp = typeof v === 'number' ? toDisplay(v, r) : v;
       const txt = typeof disp === 'number' ? fmt(disp, { digits: r.digits || 5 }) : disp == null ? '—' : String(disp);
       const info = () => infoFor({ ...r, kind: 'result' });
+      // a key result is coloured by its status only; one that is not judged stays neutral
+      const st = r.key ? r.status?.(v, out, state.values) : null;
       if (r.key && doCards) {
-        const st = r.status?.(v, out, state.values);
         const note = r.note?.(v, out, state.values);
         const card = h('div.kr', { class: st ? `status-${st}` : null, 'data-result': r.id },
           h('div.kr-label', h('span', { html: rich(r.label) }), r.sym ? h('span', { html: texHTML(r.sym) }) : null, infoButton(info, { label: r.label })),
@@ -519,7 +520,7 @@ export async function mountCalculator(def) {
         lastKey[r.id] = txt;
         cards.push(card);
       }
-      if (doTable) rows.push(h('tr', { class: r.key ? 'key' : null },
+      if (doTable) rows.push(h('tr', { class: r.key ? `key${st ? ` status-${st}` : ''}` : null },
         h('th', h('span.lbl', h('span', { html: rich(r.label) }), r.sym ? h('span.muted', { html: texHTML(r.sym) }) : null, infoButton(info, { label: r.label }))),
         h('td.v', txt), h('td.u', { html: u }),
         B ? h('td.v.base', show(r, B[r.id])) : null,

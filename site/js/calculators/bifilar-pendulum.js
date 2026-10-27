@@ -172,7 +172,7 @@ export default {
       if (!r.Nreq && !r.dxReq) fixes.push(`Weigh more accurately or measure closer: the scale and distance errors alone exceed ${fmt(v.uMax, { digits: 3 })} %.`);
     }
     if (!r.crossOK) fixes.push(`Re-measure the wires: your swing implies <b>$l$ = ${ud(r.lImplied)}</b> (entered ${ud(v.l)}), or re-time the swing (expect ${fmt(o.PG_theory, { digits: 3 })} s).`);
-    const title = r.lv === 'safe' ? 'A trustworthy measurement: the swings are well apart and the error is within your target'
+    const title = r.lv === 'safe' ? 'A trustworthy measurement: swings well apart, error within target'
       : r.lv === 'unsafe' ? 'The two swings are too close in period: you may have timed the wrong one'
         : !r.uOK ? 'Less precise than your target' : 'The two inertia estimates disagree: check the wire length or the swing timing';
     const verdict = {
@@ -308,7 +308,7 @@ export default {
     g.append(s('rect', { x: bx, y: ty0, width: bw, height: bh, rx: 6, fill: 'var(--surface-2)', stroke: 'var(--border)' }));
     g.append(text(bx + 10, ty0 + 17, 'FROM ABOVE · yaw', { cls: 'sc-dim-text', size: 10 }));
     g.append(s('line', { x1: bx + 8, x2: bx + bw - 8, y1: tcy, y2: tcy, class: 'sc-axis' }));
-    g.append(text(bx + bw - 10, tcy + 14, 'floor line', { anchor: 'end', size: 9, cls: 'sc-dim-text' }));
+    g.append(text(bx + 10, tcy + 30, 'floor line', { size: 9, cls: 'sc-dim-text' }));   // clear of the yawing rocket
     const top = s('g', { 'data-field': 'PY' }), tr = Math.max(3, 0.5 * rp), tl0 = tcx - xcg * tk, tl1 = tl0 + L * tk;
     top.append(s('path', { class: 'sc-body', d: `M${tl0},${tcy}L${tl0 + 0.2 * L * tk},${tcy - tr}L${tl1},${tcy - tr}L${tl1},${tcy + tr}L${tl0 + 0.2 * L * tk},${tcy + tr}Z` }));
     top.append(s('circle', { cx: tcx - v.x1 * tk, cy: tcy, r: 2.6, fill: 'var(--text)' }), s('circle', { cx: tcx + v.x2 * tk, cy: tcy, r: 2.6, fill: 'var(--text)' }));

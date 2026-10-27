@@ -3,6 +3,15 @@
 Newest first, in the spirit of [Keep a Changelog](https://keepachangelog.com/). From 2026-10-25 every entry names its
 branch, tag and commit range. Live site: https://rocketcalculator.github.io/.
 
+## 2026-10-27 — Home page (`improve/home-page`)
+- Hero: the flight is now interactive and complete — boost along the rail, coast to apogee, the drogue at apogee, the
+  main lower down and the drift to landing. Drag the rail (launch angle) or the wind arrow (wind) and the path,
+  deployments and landing point follow; keyboard arrows work too. It follows the site's accent colour.
+- “Using a calculator”: six steps that describe what a page gives you — fill order and handles, your limits, the
+  verdict with solved fixes, the drawing/plots/Explore/info tabs, baseline, share link and report export.
+- “How to use” removed from the header and footer and the hero; the colour legend describes the status-coloured key
+  results; no more “the other 0 topics” sentence when every topic is live.
+
 ## 2026-10-27 — Info tabs, input bounds and key-result colours (`improve/info-tabs-2`)
 - Every calculator's info tabs rewritten to the DESIGN-GUIDE §6a standard: three plain paragraphs (what it is, where
   the number comes from, what changing it does), the formula with every symbol and its unit listed, typical values.

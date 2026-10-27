@@ -71,9 +71,11 @@ function heroArt() {
     const g = s('g', { opacity: 0 }), dome = s('path', { fill: 'var(--red)', stroke: '#fff', 'stroke-width': 1 }), lines = s('path', { stroke: 'rgba(255,255,255,.7)', 'stroke-width': 0.8, fill: 'none' });
     g.append(lines, dome);
     // p: 0 → packed, 1 → fully open; the dome widens and fills as it inflates
-    g.set = (p, ax, ay) => {
+    // f: 0 → aloft, 1 → collapsed on the ground after landing, blown dir (±1) away from the rocket
+    g.set = (p, ax, ay, f = 0, dir = 1) => {
       g.setAttribute('opacity', p > 0 ? Math.min(1, p * 3) : 0);
-      const w = r * (0.25 + 0.75 * p), hgt = r * (0.25 + 0.45 * p), cx = ax, cy = ay - top;
+      const w = r * (0.25 + 0.75 * p) * (1 + 0.3 * f), hgt = r * (0.25 + 0.45 * p) * (1 - 0.85 * f);
+      const cx = ax + f * dir * (top * 0.8 + r), cy = (ay - top) * (1 - f) - f;
       dome.setAttribute('d', `M${cx - w},${cy} Q${cx},${cy - 2 * hgt} ${cx + w},${cy} Q${cx},${cy - 0.35 * hgt} ${cx - w},${cy} Z`);
       lines.setAttribute('d', `M${cx - w},${cy} L0,0 M${cx + w},${cy} L0,0 M${cx - w / 3},${cy - 0.2 * hgt} L0,0 M${cx + w / 3},${cy - 0.2 * hgt} L0,0`);
     };
@@ -123,31 +125,34 @@ function heroArt() {
   let t0 = performance.now(), raf = 0;
   const ease = (x) => (x <= 0 ? 0 : x >= 1 ? 1 : x * x * (3 - 2 * x));
   // heading: along the path in flight; after the drogue opens it turns smoothly to hang nose-down under the canopies
-  const place = (p, q) => {
+  const place = (p, q, f = 0) => {
     const fly = (Math.atan2(q.y - p.y, q.x - p.x) * 180) / Math.PI, open = ease((p.t - F.tA - 0.35) / 1.4);
     let d = 70 - fly; while (d > 180) d -= 360; while (d < -180) d += 360;
     rocket.setAttribute('transform', `translate(${p.x.toFixed(1)} ${p.y.toFixed(1)})`);
-    bodyG.setAttribute('transform', `rotate(${(fly + d * open).toFixed(1)})`);
+    // after landing the rocket tips over and lies on the ground
+    const dir = state.w > 0.5 ? 1 : -1, hang = fly + d * open;
+    bodyG.setAttribute('transform', `translate(0 ${(-4 * f).toFixed(1)}) rotate(${(hang + ((dir > 0 ? 0 : 180) - hang) * f).toFixed(1)})`);
     flame.setAttribute('opacity', p.phase === 'boost' ? 1 : 0);
     // the drogue comes out just after apogee and inflates; the main follows at its height, and both stay out
-    drogue.set(p.t > F.tA ? ease((p.t - F.tA - 0.2) / 0.9) : 0, -9, 0);
-    mainChute.set(F.tM != null && p.t >= F.tM ? ease((p.t - F.tM) / 1.3) : 0, 8, 0);
+    // on landing both lose their air and fall over downwind
+    drogue.set(p.t > F.tA ? ease((p.t - F.tA - 0.2) / 0.9) : 0, -9, 0, f, dir);
+    mainChute.set(F.tM != null && p.t >= F.tM ? ease((p.t - F.tM) / 1.3) : 0, 8, 0, f, dir);
   };
   const speed = (ph) => (ph === 'main' ? 3.5 : ph === 'drogue' ? 1.8 : ph === 'boost' ? 0.6 : 1);
   const frame = (now) => {
     const P = F.pts; let k = (now - t0) / 1000, i = 0;
     // walk the model time with the display speed of each phase
     let acc = 0; for (i = 0; i < P.length - 1; i++) { const step = 0.04 / speed(P[i].phase); if (acc + step > k) break; acc += step; }
-    if (i >= P.length - 1 && k > acc + 1.6) { t0 = now; i = 0; }
+    if (i >= P.length - 1 && k > acc + 2.6) { t0 = now; i = 0; }
     const p = P[Math.min(i, P.length - 1)], q = P[Math.min(i + 1, P.length - 1)];
     trail.setAttribute('d', 'M' + P.slice(0, i + 1).map((r) => `${r.x.toFixed(1)},${r.y.toFixed(1)}`).join('L'));
-    place(p, q === p ? { x: 2 * p.x - P[Math.max(0, i - 1)].x, y: 2 * p.y - P[Math.max(0, i - 1)].y } : q);
+    place(p, q === p ? { x: 2 * p.x - P[Math.max(0, i - 1)].x, y: 2 * p.y - P[Math.max(0, i - 1)].y } : q, i >= P.length - 1 ? ease((k - acc) / 1.2) : 0);
     raf = requestAnimationFrame(frame);
   };
   draw();
   if (reducedMotion()) {
     const P = F.pts;
-    trail.setAttribute('d', ghost.getAttribute('d')); const last = P.at(-1); place({ ...last, t: last.t + 5 }, { x: last.x + 1, y: last.y });
+    trail.setAttribute('d', ghost.getAttribute('d')); const last = P.at(-1); place({ ...last, t: last.t + 5 }, { x: last.x + 1, y: last.y }, 1);
   } else raf = requestAnimationFrame(frame);
   const redrawStatic = () => { if (reducedMotion()) { trail.setAttribute('d', ghost.getAttribute('d')); } };
 

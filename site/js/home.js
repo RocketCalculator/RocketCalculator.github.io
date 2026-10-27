@@ -12,21 +12,32 @@ const VD = 34, VM = 11, HM = 92;                       // drogue and main descen
 function flight(th, w) {
   const a = (th * Math.PI) / 180, c = Math.cos(a), sn = Math.sin(a), pts = [], dt = 0.04;
   const xb = X0 + LB * c, hb = LB * sn;
-  for (let t = 0, tb = (2 * LB) / VB; t <= tb; t += dt) { const d = LB * (t / tb) ** 2; pts.push({ x: X0 + d * c, h: d * sn, phase: 'boost' }); }
+  const tb = (2 * LB) / VB;
+  for (let t = 0; t <= tb; t += dt) { const d = LB * (t / tb) ** 2; pts.push({ x: X0 + d * c, h: d * sn, phase: 'boost', t }); }
   // coast: the wind turns the climbing rocket a little into it (weathercocking) and carries it with it
   const vx = VB * c - 0.25 * w, vy = VB * sn, ta = vy / G;
-  for (let t = dt; t <= ta; t += dt) pts.push({ x: xb + vx * t + 0.15 * w * t, h: hb + vy * t - (G * t * t) / 2, phase: 'coast' });
-  const xa = xb + vx * ta + 0.15 * w * ta, ha = hb + (vy * vy) / (2 * G);
-  pts.push({ x: xa, h: ha, phase: 'apogee' });
-  let x = xa, hh = ha;
-  while (hh > HM) { hh -= VD * dt; x += w * dt; pts.push({ x, h: Math.max(hh, HM), phase: 'drogue' }); }
-  while (hh > 0) { hh -= VM * dt; x += w * dt; pts.push({ x, h: Math.max(hh, 0), phase: 'main' }); }
+  for (let t = dt; t <= ta; t += dt) pts.push({ x: xb + vx * t + 0.15 * w * t, h: hb + vy * t - (G * t * t) / 2, phase: 'coast', t: tb + t });
+  const xa = xb + vx * ta + 0.15 * w * ta, ha = hb + (vy * vy) / (2 * G), tA = tb + ta;
+  pts.push({ x: xa, h: ha, phase: 'apogee', t: tA });
+  // descent, smoothed: the rocket first falls freely and keeps its sideways speed (carried at the stretched scale of the
+  // climb, so the path does not kink), then settles to the drogue rate and the wind; the main eases the rate down again
+  const ASC = 3.2;
+  let x = xa, hh = ha, t = tA, vz = 0, u = ASC * (vx + 0.15 * w), tM = null;
+  while (hh > 0) {
+    t += dt;
+    if (hh <= HM && tM == null) tM = t;
+    // descent and sideways speeds ease towards the drogue (then main) rate and the wind
+    vz += ((hh > HM ? VD : VM) - vz) * (1 - Math.exp(-dt / (hh > HM ? 0.9 : 0.7)));
+    u += (w - u) * (1 - Math.exp(-dt / 0.7));
+    hh = Math.max(0, hh - vz * dt); x += u * dt;
+    pts.push({ x, h: hh, phase: hh > HM || tM == null ? 'drogue' : 'main', t });
+  }
   // fill the frame: the climb's sideways spread is stretched (it is small next to the drift), then the whole flight is
   // scaled so the landing sits near the right edge; heights stay to scale
-  const ASC = 3.2, xaS = X0 + ASC * (xa - X0), land = x - xa;
+  const xaS = X0 + ASC * (xa - X0), land = x - xa;
   const sx = (p) => (p.phase === 'drogue' || p.phase === 'main' ? xaS + (p.x - xa) : X0 + ASC * (p.x - X0));
   const k = (600 - X0) / Math.max(xaS - X0 + land, xaS - X0 + 120, 160), X = (v) => X0 + k * (v - X0);
-  return { pts: pts.map((p) => ({ ...p, x: X(sx(p)), y: GY - p.h })), xb: X(X0 + ASC * (xb - X0)), hb, xa: X(xaS), ha };
+  return { pts: pts.map((p) => ({ ...p, x: X(sx(p)), y: GY - p.h })), xb: X(X0 + ASC * (xb - X0)), hb, xa: X(xaS), ha, tA, tM };
 }
 
 function heroArt() {
@@ -50,11 +61,27 @@ function heroArt() {
   const body = s('g', {},
     s('path', { d: 'M14,0 C9,-3.6 3,-4.2 -10,-4.2 L -10,4.2 C 3,4.2 9,3.6 14,0 Z', fill: '#ffffff' }),
     s('path', { d: 'M-6,-4.2 L -12,-9 L -10,-4.2 Z M -6,4.2 L -12,9 L -10,4.2 Z', fill: 'var(--red)' }));
-  const flame = s('path', { d: 'M-10,-2.4 L -22,0 L -10,2.4 Z', fill: 'var(--red)', opacity: 0.9 });
-  const canopy = s('g', { opacity: 0 },
-    s('path', { class: 'hero-canopy', d: 'M-17,-44 Q0,-64 17,-44 Z', fill: 'var(--red)', stroke: '#fff', 'stroke-width': 1 }),
-    s('path', { d: 'M-17,-44 L0,-16 M17,-44 L0,-16 M-6,-49 L0,-16 M6,-49 L0,-16', stroke: 'rgba(255,255,255,.75)', 'stroke-width': 0.8, fill: 'none' }));
-  const rocket = s('g', {}, canopy, s('g', { class: 'hero-body' }, body, flame));
+  // flame: an orange plume with a yellow core that flickers (visible against the accent-coloured trail)
+  const flame = s('g', {},
+    s('path', { d: 'M-10,-3.2 Q-20,-2 -30,0 Q-20,2 -10,3.2 Z', fill: '#ff7a1a', opacity: 0.95 },
+      s('animate', { attributeName: 'd', dur: '0.12s', repeatCount: 'indefinite', values: 'M-10,-3.2 Q-20,-2 -30,0 Q-20,2 -10,3.2 Z;M-10,-3.4 Q-18,-2.4 -25,0 Q-18,2.4 -10,3.4 Z;M-10,-3.2 Q-20,-2 -30,0 Q-20,2 -10,3.2 Z' })),
+    s('path', { d: 'M-10,-1.8 Q-15,-1 -19,0 Q-15,1 -10,1.8 Z', fill: '#ffe066' }));
+  // two canopies on their own lines to the rocket: the small drogue and the large main
+  const chute = (r, top) => {
+    const g = s('g', { opacity: 0 }), dome = s('path', { fill: 'var(--red)', stroke: '#fff', 'stroke-width': 1 }), lines = s('path', { stroke: 'rgba(255,255,255,.7)', 'stroke-width': 0.8, fill: 'none' });
+    g.append(lines, dome);
+    // p: 0 → packed, 1 → fully open; the dome widens and fills as it inflates
+    g.set = (p, ax, ay) => {
+      g.setAttribute('opacity', p > 0 ? Math.min(1, p * 3) : 0);
+      const w = r * (0.25 + 0.75 * p), hgt = r * (0.25 + 0.45 * p), cx = ax, cy = ay - top;
+      dome.setAttribute('d', `M${cx - w},${cy} Q${cx},${cy - 2 * hgt} ${cx + w},${cy} Q${cx},${cy - 0.35 * hgt} ${cx - w},${cy} Z`);
+      lines.setAttribute('d', `M${cx - w},${cy} L0,0 M${cx + w},${cy} L0,0 M${cx - w / 3},${cy - 0.2 * hgt} L0,0 M${cx + w / 3},${cy - 0.2 * hgt} L0,0`);
+    };
+    return g;
+  };
+  const drogue = chute(7, 30), mainChute = chute(17, 46);
+  const bodyG = s('g', { class: 'hero-body' }, flame, body);
+  const rocket = s('g', {}, drogue, mainChute, bodyG);
   const svg = s('svg', { viewBox: '0 0 640 380', role: 'img', 'aria-label': 'A sounding-rocket flight: boost, coast to apogee, drogue and main parachutes, landing. Drag the rail or the wind arrow to change it.' },
     s('g', {}, stars),
     s('g', { opacity: 0.8 }, [0, 1, 2, 3, 4].map((i) => s('line', { x1: 34, x2: 40, y1: GY - i * 62, y2: GY - i * 62, stroke: 'rgba(255,255,255,.62)' }))),
@@ -94,16 +121,19 @@ function heroArt() {
   };
   // the rocket flies the path in about 8 s, the slow main descent sped up; then it pauses and starts again
   let t0 = performance.now(), raf = 0;
-  const place = (p, q, phase) => {
-    const ang = phase === 'drogue' || phase === 'main' ? -90 : (Math.atan2(q.y - p.y, q.x - p.x) * 180) / Math.PI;
+  const ease = (x) => (x <= 0 ? 0 : x >= 1 ? 1 : x * x * (3 - 2 * x));
+  // heading: along the path in flight; after the drogue opens it turns smoothly to hang nose-down under the canopies
+  const place = (p, q) => {
+    const fly = (Math.atan2(q.y - p.y, q.x - p.x) * 180) / Math.PI, open = ease((p.t - F.tA - 0.35) / 1.4);
+    let d = 70 - fly; while (d > 180) d -= 360; while (d < -180) d += 360;
     rocket.setAttribute('transform', `translate(${p.x.toFixed(1)} ${p.y.toFixed(1)})`);
-    rocket.lastChild.setAttribute('transform', `rotate(${ang.toFixed(1)})`);
-    flame.setAttribute('opacity', phase === 'boost' ? 0.95 : 0);
-    const chute = phase === 'drogue' ? 0.55 : phase === 'main' ? 1 : 0;
-    canopy.setAttribute('opacity', chute ? 1 : 0);
-    canopy.setAttribute('transform', `scale(${chute || 0.5})`);
+    bodyG.setAttribute('transform', `rotate(${(fly + d * open).toFixed(1)})`);
+    flame.setAttribute('opacity', p.phase === 'boost' ? 1 : 0);
+    // the drogue comes out just after apogee and inflates; the main follows at its height, and both stay out
+    drogue.set(p.t > F.tA ? ease((p.t - F.tA - 0.2) / 0.9) : 0, -9, 0);
+    mainChute.set(F.tM != null && p.t >= F.tM ? ease((p.t - F.tM) / 1.3) : 0, 8, 0);
   };
-  const speed = (ph) => (ph === 'main' ? 4 : ph === 'drogue' ? 2 : 1);
+  const speed = (ph) => (ph === 'main' ? 3.5 : ph === 'drogue' ? 1.8 : ph === 'boost' ? 0.6 : 1);
   const frame = (now) => {
     const P = F.pts; let k = (now - t0) / 1000, i = 0;
     // walk the model time with the display speed of each phase
@@ -111,13 +141,13 @@ function heroArt() {
     if (i >= P.length - 1 && k > acc + 1.6) { t0 = now; i = 0; }
     const p = P[Math.min(i, P.length - 1)], q = P[Math.min(i + 1, P.length - 1)];
     trail.setAttribute('d', 'M' + P.slice(0, i + 1).map((r) => `${r.x.toFixed(1)},${r.y.toFixed(1)}`).join('L'));
-    place(p, q === p ? { x: 2 * p.x - P[Math.max(0, i - 1)].x, y: 2 * p.y - P[Math.max(0, i - 1)].y } : q, p.phase);
+    place(p, q === p ? { x: 2 * p.x - P[Math.max(0, i - 1)].x, y: 2 * p.y - P[Math.max(0, i - 1)].y } : q);
     raf = requestAnimationFrame(frame);
   };
   draw();
   if (reducedMotion()) {
-    const P = F.pts, apo = P.find((p) => p.phase === 'apogee');
-    trail.setAttribute('d', ghost.getAttribute('d')); place(apo, apo, 'drogue');
+    const P = F.pts;
+    trail.setAttribute('d', ghost.getAttribute('d')); const last = P.at(-1); place({ ...last, t: last.t + 5 }, { x: last.x + 1, y: last.y });
   } else raf = requestAnimationFrame(frame);
   const redrawStatic = () => { if (reducedMotion()) { trail.setAttribute('d', ghost.getAttribute('d')); } };
 

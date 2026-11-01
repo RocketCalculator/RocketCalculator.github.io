@@ -2,7 +2,7 @@ name: Deploy site to GitHub Pages
 on:
   push:
     branches: [main]
-    paths: ['site/**', 'scripts/stamp_versions.mjs', '.github/workflows/pages.yml']
+    paths: ['site/**', 'scripts/stamp_versions.mjs', 'scripts/seo.mjs', '.github/workflows/pages.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -20,9 +20,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          fetch-depth: 0   # full history: the sitemap's lastmod dates come from git
           sparse-checkout: |
             site
             scripts
+      # refresh the SEO tags, sitemap.xml and robots.txt so lastmod follows the latest commits
+      - run: node scripts/seo.mjs site
       # stamp every module and the stylesheet with a content hash so browsers never mix old and new files
       - run: node scripts/stamp_versions.mjs site
       - uses: actions/configure-pages@v5

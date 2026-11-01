@@ -30,7 +30,7 @@ let n = 0;
 for (const c of reg.calculators) {
   const html = `${head({ title: `${c.title} — Rocket Calculator`, description: c.description })}
 <body>
-<main id="main">${noscript}</main>
+<main id="main"><noscript><div class="wrap" style="padding:40px 0"><h1>${esc(c.title)}</h1><p>${esc(c.description)}</p><p>This calculator needs JavaScript enabled. The theory is on <a href="../docs/${c.slug}.html">the ${esc(c.title)} theory page</a>.</p></div></noscript></main>
 <script type="module">
 import def from '../js/calculators/${c.slug}.js';
 import { mountCalculator } from '../js/calculator-page.js';
@@ -124,4 +124,4 @@ mountReferences();
 </body>
 </html>
 `); n++;
-console.log(`wrote ${n} pages`);
+console.log(`wrote ${n} pages — now run node scripts/seo.mjs`);

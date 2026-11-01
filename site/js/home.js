@@ -114,7 +114,7 @@ function heroArt() {
     const right = land.x < 520;
     marks.replaceChildren(
       callout(F.xb, GY - F.hb, 'Burnout', 'fastest point', -1),
-      callout(F.xa, GY - F.ha, 'Apogee · drogue', 'vertical speed 0', 1),
+      callout(F.xa, GY - F.ha, 'Apogee · drogue', 'vertical speed 0', -1, -14),
       main ? callout(main.x, main.y, 'Main opens', 'slow, drifting', -1) : s('g'),
       callout(land.x, land.y, 'Landing', state.w > 0.5 ? 'drifted downwind' : 'calm: near the pad', right ? 1 : -1, -16));
     railKnob.setAttribute('aria-valuenow', String(Math.round(state.th)));
@@ -231,12 +231,12 @@ export async function mountHome() {
         h('p.lead', 'Interactive calculators for stability, drag, atmosphere, fins and mass properties — each with a live schematic, plots, and the theory one click away. Built from C. P. Hoult’s rocket-engineering reports at rsandt.com.'),
         h('div.hero-actions',
           h('a.btn.primary', { href: '#calculators' }, 'Browse calculators'),
-          h('a.btn.on-dark', { href: url('references/index.html') }, 'Reference library')),
-        h('div.hero-stats',
+          h('a.btn.on-dark', { href: url('references/index.html') }, 'Reference library'))),
+      h('div.hero-stats',
           h('div', h('b', String(avail)), 'calculators live'),
           h('div', h('b', String(reg.topics.length)), 'engineering topics'),
           h('div', h('b', String(refs.length)), 'reference documents'),
-          h('div', h('b', 'SI · US'), 'switchable units'))),
+          h('div', h('b', 'SI · US'), 'switchable units')),
       h('div.hero-art', heroArt())));
 
   const steps = [

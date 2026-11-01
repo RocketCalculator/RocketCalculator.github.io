@@ -2,6 +2,7 @@
 // A calculator is a definition module (js/calculators/<slug>.js) — see docs/PLAN.md for the API.
 import { h, url, fmt, num, debounce, toast, copyText, download, loadRegistry, loadReferences, storage, reveal, InputError } from './util.js';
 import { initShell, ICONS } from './app.js';
+
 import { displayUnit, unitLabel, unitTex, toDisplay, getSystem } from './units.js';
 import { buildForm } from './ui/form.js';
 import { infoButton, openInfo } from './ui/drawer.js';
@@ -14,6 +15,7 @@ import { reportCard, symbolsIn } from './ui/report.js';
 import { sharedLinks, pullShared, pushShared, designFile, parseDesignFile, fileSlug, delta } from './design.js';
 
 const ROCKET_KEY = 'rc-rocket', FLASH_KEY = 'rc-flash';
+const COARSE = matchMedia('(pointer: coarse)').matches;
 const getRocket = () => ({ name: 'My rocket', values: {}, linked: true, ...(storage.get(ROCKET_KEY) || {}) });
 const setRocket = (r) => storage.set(ROCKET_KEY, r);
 
@@ -311,6 +313,8 @@ export async function mountCalculator(def) {
       }
       rec.opts = opts; rec.used = true; rec.el.style.display = '';
       rec.el.setAttribute('cx', x); rec.el.setAttribute('cy', y);
+      // a finger needs a bigger handle than a mouse: about 12 px on screen whatever the drawing's scale
+      if (COARSE) { const k = rec.el.getScreenCTM()?.a; if (k > 0) rec.el.setAttribute('r', Math.max(7, 12 / k).toFixed(1)); }
       return rec.el;
     },
   };

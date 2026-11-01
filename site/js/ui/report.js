@@ -260,14 +260,17 @@ export function reportCard({ def, state, refList, getSystem }) {
   let fmtSel = 'preview', model = null, dirty = true;
   const tabs = h('div.report-tabs', { role: 'group', 'aria-label': 'Report format' },
     FORMATS.map(([k, l]) => h('button', { type: 'button', 'data-k': k, 'aria-pressed': String(k === fmtSel) }, l)));
-  const preview = h('div.report-preview');
+  // touch screens: a scroll box inside the page catches swipes, so the preview is clamped with a button to open it
+  const preview = h('div.report-preview.clamped');
+  const moreBtn = h('button.btn.small.report-more', { type: 'button', 'aria-expanded': 'false' }, 'Show the whole report');
+  moreBtn.addEventListener('click', () => { const open = preview.classList.toggle('clamped'); moreBtn.textContent = open ? 'Show the whole report' : 'Show less'; moreBtn.setAttribute('aria-expanded', String(!open)); });
   const area = h('textarea', { readonly: true, spellcheck: 'false', 'aria-label': 'Report source', hidden: true });
   const note = h('p.muted', { style: 'margin:0;font-size:.85rem' });
   const copyBtn = h('button.btn.primary.small', { type: 'button' }, ICONS.copy(), 'Copy');
   const dlBtn = h('button.btn.small', { type: 'button' }, ICONS.download(), 'Download');
   const wordBtn = h('button.btn.small', { type: 'button', title: 'Copy formatted text with equations for pasting into Word or Google Docs' }, 'Copy for Word / Google Docs');
   const printBtn = h('button.btn.small.ghost', { type: 'button', title: 'Open a printable page — choose “Save as PDF” in the print dialog' }, 'Print / save as PDF');
-  const body = h('div.report-body', preview, area, h('div.report-actions', copyBtn, dlBtn, wordBtn, printBtn), note);
+  const body = h('div.report-body', preview, moreBtn, area, h('div.report-actions', copyBtn, dlBtn, wordBtn, printBtn), note);
   const card = h('section.card.report-card', { id: 'report' },
     h('div.card-head', h('h2', 'Export report'), h('span.spacer'), tabs), body);
 
@@ -285,8 +288,8 @@ export function reportCard({ def, state, refList, getSystem }) {
     if (!card.isConnected) return;
     tabs.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.k === fmtSel)));
     const M = ensure();
-    if (fmtSel === 'preview') { preview.hidden = false; area.hidden = true; preview.innerHTML = toHTML(M, 'katex'); }
-    else { preview.hidden = true; area.hidden = false; area.value = source(); }
+    if (fmtSel === 'preview') { preview.hidden = false; moreBtn.hidden = false; area.hidden = true; preview.innerHTML = toHTML(M, 'katex'); }
+    else { preview.hidden = true; moreBtn.hidden = true; area.hidden = false; area.value = source(); }
     note.textContent = NOTES[fmtSel];
     dlBtn.lastChild.textContent = fmtSel === 'tex' ? 'Download .tex' : 'Download .md';
     copyBtn.lastChild.textContent = fmtSel === 'tex' ? 'Copy LaTeX' : 'Copy Markdown';

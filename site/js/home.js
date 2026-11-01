@@ -1,6 +1,7 @@
 // Home page: hero, walkthrough, topic grid with search/filter, navigation guide, units & colour code.
 import { h, s, url, loadRegistry, loadReferences, reveal, reducedMotion, storage } from './util.js';
 import { initShell, openPalette } from './app.js';
+import { startTour } from './ui/tour.js';
 
 // Hero: a small flight you can play with. Boost along the rail, coast to apogee, drogue at apogee, main low down, drift
 // to landing in the wind. Drag the rail to change the launch angle and the wind arrow to change the wind; the path, the
@@ -231,7 +232,8 @@ export async function mountHome() {
         h('p.lead', 'Interactive calculators for stability, drag, atmosphere, fins and mass properties — each with a live schematic, plots, and the theory one click away. Built from C. P. Hoult’s rocket-engineering reports at rsandt.com.'),
         h('div.hero-actions',
           h('a.btn.primary', { href: '#calculators' }, 'Browse calculators'),
-          h('a.btn.on-dark', { href: url('references/index.html') }, 'Reference library'))),
+          h('a.btn.on-dark', { href: url('references/index.html') }, 'Reference library'),
+          h('button.btn.on-dark', { type: 'button', onclick: () => startTour(0) }, 'Take the tour'))),
       h('div.hero-stats',
           h('div', h('b', String(avail)), 'calculators live'),
           h('div', h('b', String(reg.topics.length)), 'engineering topics'),

@@ -1,6 +1,7 @@
 // Site shell: header (nav, search, units, theme), footer, command palette, theme handling.
 import { h, s, url, loadRegistry, loadReferences, storage } from './util.js';
 import { getSystem, setSystem } from './units.js';
+import { tourButton, startTour, resumeTour } from './ui/tour.js';
 
 const THEME_KEY = 'rc-theme';
 
@@ -65,7 +66,9 @@ function header(active) {
     h('a', { href: url('index.html'), 'aria-current': active === 'home' ? 'page' : null }, 'Home'),
     h('a', { href: url('index.html#calculators'), 'aria-current': active === 'calculators' ? 'page' : null }, 'Calculators'),
     h('a', { href: url('references/index.html'), 'aria-current': active === 'references' ? 'page' : null }, 'References'),
-    h('a', { href: url('about.html'), 'aria-current': active === 'about' ? 'page' : null }, 'About'));
+    h('a', { href: url('about.html'), 'aria-current': active === 'about' ? 'page' : null }, 'About'),
+    tourButton('button.nav-tour'));
+  nav.lastChild.append('Take the tour');
   const unitsSeg = h('div.seg', { role: 'group', 'aria-label': 'Unit system' },
     h('button', { type: 'button', 'data-sys': 'si', title: 'SI units (metres, kilograms, pascals)' }, 'SI'),
     h('button', { type: 'button', 'data-sys': 'us', title: 'US customary units (inches, feet, pounds)' }, 'US'));
@@ -114,7 +117,7 @@ function header(active) {
       h('a.brand', { href: url('index.html'), 'aria-label': 'Rocket Calculator home' }, brandMark(),
         h('span.name', h('span', 'Rocket Calculator'), h('small', 'Sounding-rocket engineering'))),
       nav,
-      h('div.header-tools', searchBtn, unitsSeg, themeBtn, accentPick,
+      h('div.header-tools', searchBtn, unitsSeg, themeBtn, accentPick, tourButton(),
         h('a.icon-btn.gh-btn', { href: REPO_URL, rel: 'noopener', target: '_blank', 'aria-label': 'Source code on GitHub', title: 'Source code on GitHub' }, ICONS.github()),
         menuBtn)));
 }
@@ -131,6 +134,7 @@ function footer() {
         h('a', { href: url('index.html#calculators') }, 'Calculators'),
         h('a', { href: url('references/index.html') }, 'References'),
         h('a', { href: url('about.html') }, 'About'),
+        h('button.link-btn', { type: 'button', onclick: () => startTour(0) }, 'Take the tour'),
         h('a', { href: `${REPO_URL}/issues`, rel: 'noopener' }, 'Report a problem'),
         h('a', { href: REPO_URL, rel: 'noopener' }, 'GitHub'),
         h('a.coffee', { href: COFFEE_URL, rel: 'noopener', target: '_blank' }, '☕ Buy me a coffee'))));
@@ -206,6 +210,7 @@ export function initShell({ active } = {}) {
   document.body.prepend(h('a.skip-link', { href: '#' + main.id }, 'Skip to content'), header(active));
   if (!main.isConnected) document.body.append(main);
   document.body.append(footer());
+  setTimeout(resumeTour);
   document.addEventListener('keydown', (e) => {
     const typing = /INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName) || document.activeElement?.isContentEditable;
     if ((e.key === 'k' && (e.metaKey || e.ctrlKey)) || (e.key === '/' && !typing)) { e.preventDefault(); openPalette(); }

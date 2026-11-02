@@ -146,8 +146,8 @@ Written for the high-school reader (DESIGN-GUIDE §6a):
 
 ## 10. Delivery
 
-- Branch `type/short-description`, Conventional Commits with the *why*, PR with the checklist, merge commit,
-  **delete the branch** (local and remote). No per-calculator tags.
+- Branch `type/short-description`, Conventional Commits with the *why*, PR with the checklist and the `test` check
+  passing, **squash merge**, the branch deleted. No per-calculator tags (site releases: GOVERNANCE.md).
 - CHANGELOG.md (what changed, why, what was verified), KNOWLEDGE.md (sources, equations, test cases, errata, Quality
   Gate table, lessons), DECISIONS.md for every judgement call.
 - Verify the live page after the deploy (load, examples, no errors).

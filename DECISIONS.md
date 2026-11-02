@@ -282,3 +282,16 @@ the side the slosh is now (above → narrower tank / lower pitch frequency / mor
 - No verdict for Drag Coefficient, Newtonian Drag and Geophysics: they produce inputs for other calculators (drag
   build-up, blunt-body wave drag, atmosphere) and judge nothing on their own; a forced verdict would only restate a
   number. Body Bending keeps its two main plots and no Explore section: both are needed for the verdict.
+
+## D46 — 2026-11-01 — Licences, community rules and repository policy (owner's choices)
+- Code GPL-3.0-or-later; the project's written content and images CC BY-SA 4.0. Hoult's reports, workbooks and the
+  reference-library papers are third-party: copyright of their authors, included because they are freely published on
+  rsandt.com, removal on request (THIRD-PARTY.md). No explicit permission from the author is claimed.
+- Contributor Covenant 2.1. Conduct and security reports only through GitHub (private advisory or Report content);
+  no email address is published.
+- No CLA and no DCO sign-off: contributions are licensed inbound = outbound.
+- Governance: a lead maintainer with written roles (triager, reviewer, maintainer) and lazy consensus; physics changes
+  need a maintainer to have checked the source.
+- Repository: main protected (pull requests with the `test` check; the lead maintainer may bypass while they are the
+  only maintainer), squash merges only, branches deleted on merge, Discussions on, wiki off.
+- Releases: site semver tags `vX.Y.Z` with GitHub Releases from CHANGELOG.md; still no per-calculator tags.

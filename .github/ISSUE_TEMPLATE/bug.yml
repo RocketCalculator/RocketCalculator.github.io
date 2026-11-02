@@ -1,0 +1,50 @@
+name: Bug or display problem
+description: Something on the site does not work or looks broken.
+title: "[Bug] "
+labels: ["type: bug", "status: needs-triage"]
+body:
+  - type: input
+    id: page
+    attributes:
+      label: Page
+      description: The page address, or the Share link for a calculator.
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What went wrong, and what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open …
+        2. Change …
+        3. See …
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: Device, browser and screen
+      placeholder: e.g. iPhone 15, Safari 18, portrait / Windows 11, Firefox 132, 1920 px
+    validations:
+      required: true
+  - type: textarea
+    id: screenshot
+    attributes:
+      label: Screenshot or recording
+      description: Drag images in here. Error messages from the browser console help too.
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: I searched the existing issues and this is not a duplicate.
+          required: true
+        - label: I agree to follow the [Code of Conduct](https://github.com/RocketCalculator/RocketCalculator.github.io/blob/main/CODE_OF_CONDUCT.md).
+          required: true

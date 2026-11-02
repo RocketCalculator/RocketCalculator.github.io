@@ -51,10 +51,11 @@ function heroArt() {
   const ghost = s('path', { fill: 'none', stroke: 'var(--red)', 'stroke-width': 1, opacity: 0.3, 'stroke-dasharray': '5 6' });
   const marks = s('g');
   const rail = s('line', { x1: X0, y1: GY + 2, stroke: 'rgba(255,255,255,.85)', 'stroke-width': 3, 'stroke-linecap': 'round' });
-  const railKnob = s('circle', { r: 9, fill: 'rgba(255,255,255,.12)', stroke: '#fff', 'stroke-width': 1.4, class: 'hero-knob', tabindex: 0, role: 'slider', 'aria-label': 'Launch angle' });
+  const KR = matchMedia('(pointer: coarse)').matches ? 17 : 9; // a finger needs a bigger knob
+  const railKnob = s('circle', { r: KR, fill: 'rgba(255,255,255,.12)', stroke: '#fff', 'stroke-width': 1.4, class: 'hero-knob', tabindex: 0, role: 'slider', 'aria-label': 'Launch angle' });
   const windG = s('g', { transform: 'translate(500 52)' });
   const windArrow = s('path', { stroke: '#fff', fill: 'none', 'stroke-width': 1.6 });
-  const windKnob = s('circle', { cy: 0, r: 8, fill: 'rgba(255,255,255,.12)', stroke: '#fff', 'stroke-width': 1.4, class: 'hero-knob', tabindex: 0, role: 'slider', 'aria-label': 'Wind speed' });
+  const windKnob = s('circle', { cy: 0, r: KR - 1, fill: 'rgba(255,255,255,.12)', stroke: '#fff', 'stroke-width': 1.4, class: 'hero-knob', tabindex: 0, role: 'slider', 'aria-label': 'Wind speed' });
   const windText = s('text', { x: 0, y: -12, fill: '#fff', style: 'font:600 10px var(--font-sans);letter-spacing:.06em' });
   windG.append(windArrow, windText, windKnob);
   const hint = s('text', { x: 632, y: 372, 'text-anchor': 'end', fill: 'rgba(255,255,255,.55)', style: 'font:11px var(--font-sans)' }, 'drag the rail or the wind');

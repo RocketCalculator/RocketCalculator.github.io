@@ -9,6 +9,26 @@ const nameHTML = (n) => (String(n).includes('$') ? rich(n) : hasTeX(n) ? texHTML
 /** True when [a, b] is wide enough to draw: a range within ~1e-9 of its magnitude (a flat curve) is widened. */
 const wideEnough = (a, b) => b - a > Math.max(Math.abs(a), Math.abs(b)) * 1e-9;
 
+// the reading sits right of the pointer, else left of it, else (narrow phones) above it, kept inside the chart
+function placeTip(tip, left, top, width) {
+  tip.style.top = `${top}px`; tip.style.transform = 'translate(0, -50%)';
+  tip.classList.add('show');
+  const tw = tip.offsetWidth;
+  let x = left + 12;
+  if (x + tw > width) x = left - 12 - tw;
+  if (x < 0) { x = Math.min(Math.max(0, left - tw / 2), Math.max(0, width - tw)); tip.style.transform = 'translate(0, calc(-100% - 18px))'; }
+  tip.style.left = `${x}px`;
+}
+
+// touch: hide a chart reading on the next scroll or tap elsewhere (one listener pair at a time)
+let touchOff = null;
+function touchHide(hide) {
+  touchOff?.();
+  const done = () => { hide(); touchOff(); }; // a tap on a plot shows its own reading again right after
+  addEventListener('scroll', done, { passive: true, once: true }); document.addEventListener('pointerdown', done, true);
+  touchOff = () => { removeEventListener('scroll', done); document.removeEventListener('pointerdown', done, true); touchOff = null; };
+}
+
 export function niceTicks(min, max, count = 6) {
   if (!(Number.isFinite(min) && Number.isFinite(max))) return [];
   if (!wideEnough(min, max)) { const d = Math.max(Math.abs(min), Math.abs(max)) || 1; min -= d * 0.5; max += d * 0.5; }
@@ -177,16 +197,13 @@ export function createChart(host, opts = {}) {
       const head = h('div', { style: 'opacity:.7', html: `${nameHTML(ax?.label || (hoverY ? 'y' : 'x'))} = ${fmt(val, { digits: 4 })}${ax?.unit ? ' ' + nameHTML(ax.unit) : ''}` });
       tip.replaceChildren(head, ...rows);
       const hr = svgHost.getBoundingClientRect(), wr = wrap.getBoundingClientRect();
-      let left = ev.clientX - wr.left; const top = ev.clientY - wr.top;
-      tip.style.left = `${left}px`; tip.style.top = `${top}px`;
-      tip.classList.add('show');
-      const tw = tip.offsetWidth;
-      tip.style.transform = left + tw + 20 > hr.width ? 'translate(calc(-100% - 12px), -50%)' : 'translate(12px, -50%)';
+      placeTip(tip, ev.clientX - wr.left, ev.clientY - wr.top, hr.width);
     };
     const onLeave = () => { tip.classList.remove('show'); cross.setAttribute('visibility', 'hidden'); dots.replaceChildren(); };
     hit.addEventListener('pointermove', onMove);
     hit.addEventListener('pointerdown', onMove);
-    hit.addEventListener('pointerleave', onLeave);
+    // a finger lifting off is not the mouse leaving: the reading stays until the page scrolls or another tap
+    hit.addEventListener('pointerleave', (e) => { if (e.pointerType !== 'touch') onLeave(); else touchHide(onLeave); });
 
     // the legend follows the series the plot defines, not the ones that happen to have points: a legend that comes and
     // goes with the data changed the card's height (empty series are listed, dimmed)
@@ -304,19 +321,13 @@ export function createChart(host, opts = {}) {
       cross.setAttribute('x1', X(xv)); cross.setAttribute('x2', X(xv)); cross.setAttribute('visibility', 'visible');
       tip.replaceChildren(h('div', { style: 'opacity:.7', html: `${nameHTML(spec.x?.label || 'x')} = ${fmt(xv, { digits: 4 })}${spec.x?.unit ? ' ' + nameHTML(spec.x.unit) : ''}` }), ...rows);
       const hr = svgHost.getBoundingClientRect(), wr = wrap.getBoundingClientRect();
-      const left = ev.clientX - wr.left;
-      tip.style.top = `${ev.clientY - wr.top}px`;
-      tip.classList.add('show');
-      // right of the cursor if it fits, else left of it, else (narrow screens) clamped inside the chart
-      const tw = tip.offsetWidth;
-      if (left + tw + 20 <= hr.width) { tip.style.left = `${left}px`; tip.style.transform = 'translate(12px, -50%)'; }
-      else if (left - tw - 12 >= 0) { tip.style.left = `${left}px`; tip.style.transform = 'translate(calc(-100% - 12px), -50%)'; }
-      else { tip.style.left = `${Math.max(4, hr.width - tw - 4)}px`; tip.style.transform = 'translate(0, -50%)'; }
+      placeTip(tip, ev.clientX - wr.left, ev.clientY - wr.top, hr.width);
     };
     const onLeave = () => { tip.classList.remove('show'); cross.setAttribute('visibility', 'hidden'); dots.replaceChildren(); };
     hit.addEventListener('pointermove', onMove);
     hit.addEventListener('pointerdown', onMove);
-    hit.addEventListener('pointerleave', onLeave);
+    // a finger lifting off is not the mouse leaving: the reading stays until the page scrolls or another tap
+    hit.addEventListener('pointerleave', (e) => { if (e.pointerType !== 'touch') onLeave(); else touchHide(onLeave); });
   }
 
   const ro = new ResizeObserver(() => { if (svg && Math.abs((svgHost.clientWidth || 0) - (geom?.W || 0)) > 4) render(); });

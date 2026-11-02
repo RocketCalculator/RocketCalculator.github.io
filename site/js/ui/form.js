@@ -5,6 +5,31 @@ import { rocketBackView, finCountWarning } from './backview.js';
 import { displayUnit, unitLabel, unitTex, toDisplay, fromDisplay, getSystem } from '../units.js';
 import { texHTML, rich } from '../math.js';
 const L = (f) => h('span', { html: rich(f.label) });
+const COARSE = matchMedia('(pointer: coarse)').matches;
+// Touch screens: the browser's own slider takes any swipe that starts on it, so scrolling past an input changed its
+// value. There the slider sits in a holder that lets a vertical swipe scroll the page; only a sideways drag moves it.
+function touchRange(input) {
+  const box = h('span.range-touch', input);
+  let start = null;
+  const set = (x) => {
+    const r = input.getBoundingClientRect(), lo = +input.min, hi = +input.max;
+    input.value = lo + Math.min(1, Math.max(0, (x - r.left) / r.width)) * (hi - lo);
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+  };
+  box.addEventListener('pointerdown', (e) => {
+    start = { x: e.clientX, y: e.clientY, drag: e.pointerType !== 'touch' };
+    if (start.drag) { box.setPointerCapture(e.pointerId); set(e.clientX); }
+  });
+  box.addEventListener('pointermove', (e) => {
+    if (!start) return;
+    const dx = Math.abs(e.clientX - start.x);
+    if (!start.drag && dx > 8 && dx > Math.abs(e.clientY - start.y)) { start.drag = true; box.setPointerCapture(e.pointerId); }
+    if (start.drag) set(e.clientX);
+  });
+  const end = () => { start = null; };
+  box.addEventListener('pointerup', end); box.addEventListener('pointercancel', end);
+  return box;
+}
 const SYM = (f) => (f.sym ? h('span.sym', { html: texHTML(f.sym) }) : null);
 /** Chain mark on fields that belong to the shared rocket (shown only while sharing is on). */
 const SHARED_MARK = (f) => (f.shared ? h('span.shared-mark', { title: 'Shared with the other calculators (your rocket)', 'aria-label': 'shared with other calculators' },
@@ -37,7 +62,7 @@ export function buildForm(def, state, { onChange, onHighlight, infoFor }) {
     let slider;
     if (f.slider) {
       slider = h('input', { type: 'range', 'aria-label': `${f.label} slider`, step: 'any' });
-      el.append(slider);
+      el.append(COARSE ? touchRange(slider) : slider);
       slider.addEventListener('input', () => {
         // a slider with its own step (e.g. whole flights) snaps to it in the field's internal unit (a 1e5 psi step must
         // not round a value shown in GPa to zero); otherwise it moves in 1/400 of its range

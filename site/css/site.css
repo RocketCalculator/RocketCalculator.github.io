@@ -306,7 +306,7 @@ a.topic-card:hover .chip { background: rgba(127, 127, 127, 0.25); color: inherit
 .calc-inputs .form-scroll { scrollbar-gutter: stable; scrollbar-width: thin; scrollbar-color: var(--border-strong) transparent; overflow: auto; padding: 6px 20px 20px; overscroll-behavior: contain; }
 .def-actions { display: flex; flex-wrap: wrap; gap: 8px; padding: 12px 0 4px; }
 .calc-outputs { display: grid; gap: 20px; min-width: 0; }
-@media (max-width: 980px) { .calc-layout, .calc-layout.topic { grid-template-columns: minmax(0, 1fr); } .calc-inputs { position: static; max-height: none; } }
+@media (max-width: 980px) { .calc-layout, .calc-layout.topic { grid-template-columns: minmax(0, 1fr); } .calc-inputs { position: static; max-height: none; } .calc-inputs .form-scroll { overflow: visible; overscroll-behavior: auto; } } /* stacked: the inputs are part of the page, not a scroll box that would swallow swipes */
 @media (min-width: 981px) { .calc-layout.topic { grid-template-columns: minmax(0, 1.4fr) minmax(280px, 1fr); } }
 .form-actions { display: flex; flex-wrap: wrap; gap: 6px; min-width: 0; }
 .form-actions select { max-width: 200px; text-overflow: ellipsis; }
@@ -362,6 +362,8 @@ a.topic-card:hover .chip { background: rgba(127, 127, 127, 0.25); color: inherit
 .rbv-caption { fill: var(--text-2); font: 700 10.5px var(--font-sans); text-transform: uppercase; letter-spacing: 0.04em; }
 .rbv-note { fill: var(--text-3); font: 10px var(--font-sans); }
 .field input[type="range"] { grid-column: 1 / -1; width: 100%; accent-color: var(--red); margin: 0; height: 18px; }
+.range-touch { grid-column: 1 / -1; display: block; padding: 4px 0; touch-action: pan-y; } /* touch: a vertical swipe scrolls, a sideways drag moves the slider (form.js) */
+.range-touch input[type="range"] { display: block; pointer-events: none; }
 .switch { position: relative; width: 44px; height: 26px; flex: none; }
 .switch input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
 .switch span { position: absolute; inset: 0; border-radius: 999px; background: var(--border-strong); transition: background 0.2s; pointer-events: none; }
@@ -551,7 +553,7 @@ table.ptable button:hover { color: var(--red); }
 
 /* ---------- chart ---------- */
 .chart { position: relative; }
-.chart svg { display: block; width: 100%; height: auto; overflow: visible; font-family: var(--font-sans); }
+.chart svg { display: block; width: 100%; height: auto; overflow: visible; font-family: var(--font-sans); touch-action: pan-y; } /* a sideways finger reads along the curve, a vertical one scrolls */
 .chart .grid line { stroke: var(--border); stroke-width: 1; }
 .chart .axis path { stroke: var(--border-strong); }
 .chart .tick text { fill: var(--text-3); font-size: 11px; font-variant-numeric: tabular-nums; }
@@ -793,3 +795,16 @@ body.rocket-linked .shared-mark { display: inline-flex; }
 @media (prefers-reduced-motion: reduce) { .tour-spot { transition: none; } }
 @media print { .tour-spot, .tour-pop { display: none !important; } }
 .touring .notice-dock { display: none; } /* the tour card replaces the notices while it runs */
+
+/* ---------- touch screens: fingers need room, iOS must not zoom into fields ---------- */
+@media (pointer: coarse) {
+  input, select, textarea, .field input[type="number"], .field input[type="text"], .field select, .filter-chip, select.btn, select.btn.small { font-size: 16px; } /* under 16 px iOS zooms the page on focus */
+  .field input[type="range"] { height: 30px; }
+  .info-btn, .notice-dock .notice-x { position: relative; }
+  .info-btn::after, .notice-dock .notice-x::after { content: ""; position: absolute; inset: -11px; } /* a 44 px target around the small button */
+  .dv-btn { min-width: 40px; height: 36px; }
+  .report-preview.clamped { max-height: 340px; overflow: hidden; -webkit-mask-image: linear-gradient(#000 70%, transparent); mask-image: linear-gradient(#000 70%, transparent); }
+  .report-more { display: inline-flex; }
+}
+.report-more { display: none; margin: 10px 0 0; }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } } /* in-page links glide instead of jumping */

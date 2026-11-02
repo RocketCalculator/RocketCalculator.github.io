@@ -11,6 +11,6 @@
     "test:ui-diagrams": "node scripts/ui-diagrams.mjs"
   },
   "devDependencies": {
-    "puppeteer-core": "23.11.1"
+    "puppeteer-core": "25.16.0"
   }
 }

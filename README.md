@@ -1,6 +1,6 @@
 # Rocket Calculator
 
-**Sounding-rocket engineering, explained — 29 interactive calculators with live diagrams, plots and the theory one click away.**
+**Sounding-rocket engineering, explained — 27 interactive calculators with live diagrams, plots and the theory one click away.**
 
 **Live: <https://rocketcalculator.github.io/>**
 
@@ -24,7 +24,8 @@ its geometry in a **scaled drawing**, plots the results, and links to a **theory
 - **Diagrams you can use:** zoom and pan, drag handles on the drawing to change inputs, rear view for every fin-count input.
 - **Reports:** every calculation produces a worked report (inputs, equations with your numbers, results, references) as a
   preview, Markdown or LaTeX; plots and drawings export as CSV/XLSX/JSON, SVG/PDF/EPS and PNG/JPEG.
-- **Works on a phone** (320 px and up).
+- **Works on a phone** (320 px and up): swipes scroll, sliders move only with a sideways drag, no zoom on focus.
+- **A guided tour** (the compass button) shows a new visitor every feature.
 
 ## The calculators
 | Area | Calculators |
@@ -40,7 +41,7 @@ its geometry in a **scaled drawing**, plots the results, and links to a **theory
 
 ```mermaid
 pie showData title Calculators per area
-    "Aerodynamics" : 7
+    "Aerodynamics" : 5
     "Structures & Aeroelasticity" : 5
     "Flight Dynamics & Mass Properties" : 7
     "Trajectory, Wind & Launch" : 5
@@ -55,7 +56,8 @@ pie showData title Calculators per area
 npm run serve          # http://localhost:8000 (serves site/)
 npm test               # the calculators against the original workbooks' cached values, plus invariants
 ```
-Needs only Node 22 and Python 3. After adding a calculator: `python3 scripts/seed_registry.py && node scripts/generate_pages.mjs`.
+Needs only Node 22 and Python 3. After adding a calculator: `python3 scripts/seed_registry.py && node scripts/generate_pages.mjs && node scripts/seo.mjs`
+(the full walkthrough is in the [developer guide](docs/DEVELOPER-GUIDE.md)).
 Browser checks (`npm run test:ui-layout`, `npm run test:ui-diagrams`, `node scripts/uifuzz.mjs`) need `puppeteer-core` and a
 Chromium: set `CHROME=/path/to/chrome`.
 
@@ -79,32 +81,32 @@ plots and a drawing. The shared page code does the rest, so every calculator beh
 ```text
 .
 ├── site/                      the website (what GitHub Pages publishes; no build step)
-│   ├── index.html, 404.html
-│   ├── calculators/           29 generated calculator pages
-│   ├── docs/                  29 theory pages (equations, assumptions, worked examples)
+│   ├── index.html, about.html, 404.html, sitemap.xml, robots.txt
+│   ├── calculators/           27 generated calculator pages (+ redirects from old addresses)
+│   ├── docs/                  27 theory pages (equations, assumptions, worked examples)
 │   ├── references/            69 reference PDFs + references.json
 │   ├── css/site.css
 │   ├── vendor/                KaTeX and fonts (bundled)
 │   └── js/
 │       ├── calc/              physics: plain functions, no DOM
 │       ├── calculators/       one definition per calculator
-│       ├── ui/                chart, viewport (zoom/pan), back view, form, report, export
+│       ├── ui/                chart, viewport (zoom/pan), back view, form, report, export, tour
 │       ├── calculator-page.js shared page: form, verdict, results, plots, drawings
 │       └── registry.json      topics, areas, calculators
-├── tests/                     35 test files: workbook comparisons, hand checks, invariants
-├── scripts/                   extraction pipeline, page generator, browser test runners
+├── tests/                     36 test files: workbook comparisons, hand checks, invariants, SEO
+├── scripts/                   extraction pipeline, page generator, SEO, browser test runners
 ├── data/                      catalog, every spreadsheet cell and formula, VBA, extracted text
 ├── derived/                   original Word files as PDF, spreadsheets as .xlsx
 ├── source/rsandt/             the original files, unmodified
-├── docs/                      design guide, plan, topic index, README images
+├── docs/                      developer guide, calculator spec, design guide, topic index, history, images
 └── KNOWLEDGE.md  DECISIONS.md  PROGRESS.md  CHANGELOG.md  BLOCKERS.md  DISCOVERY.md
 ```
 
 | Size by part | Files |
 |---|---|
-| Website `site/` | 266 |
-| Tests `tests/` | 35 |
-| Source material `source/`, `data/`, `derived/` | 357 |
+| Website `site/` | 277 |
+| Tests `tests/` | 37 |
+| Source material `source/`, `data/`, `derived/` | 358 |
 
 ## Working on it
 - Read [KNOWLEDGE.md](KNOWLEDGE.md) first (architecture, shared components, lessons), then [DECISIONS.md](DECISIONS.md),

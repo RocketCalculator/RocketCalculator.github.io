@@ -1,7 +1,7 @@
 # Progress — overhaul run
 
 Running log of the overhaul (plan given 2026-10-25). Newest last. Read with `DECISIONS.md`, `BLOCKERS.md` and
-`KNOWLEDGE.md`. The log of the first build is `docs/PROGRESS.md`.
+`KNOWLEDGE.md`. The log of the first build is `docs/history/first-build-progress.md`.
 
 ## 2026-10-25 — Phase −1: hosting
 
@@ -113,3 +113,15 @@ live pages checked after each deploy.
 - Tests: npm test 294/294; browser check of all examples, SI/US, live site clean. Layout/diagram suites deferred (D20).
 - Earlier the same day (user requests): back-view note shown whole and drawings above plots (#12), Fin Flutter fin
   count removed (#13), Reliability Growth handle centred (#14).
+
+## 2026-10-27 → 2026-11-01 — Home page, SEO, tour, touch, community
+
+- Every calculator is at the standard (D26–D45); info tabs rewritten to DESIGN-GUIDE §6a.
+- Home hero: an interactive flight (rail and wind handles) with drogue and main inflating, a nose-first landing that
+  topples over with the parachutes, and a larger layout (#63–#67).
+- SEO: canonical, Open Graph/Twitter and JSON-LD on every page, sitemap.xml and robots.txt from `scripts/seo.mjs`,
+  refreshed on deploy (#68).
+- Guided tour across home, Fin Flutter and the reference library (#69).
+- Touch and scrolling: the stacked inputs panel and sliders no longer trap swipes, 16 px fields, bigger targets (#71).
+- Open-source community files, licences (GPL-3.0-or-later, CC BY-SA 4.0), CI on pull requests, repository rules (D46).
+- Housekeeping: README screenshots retaken, the first build's plan and log moved to `docs/history/`.

@@ -1,5 +1,7 @@
 # Progress log
 
+> **Historical (first build, October 2026).** Kept as a record; it no longer describes the project. Current docs: [developer guide](../DEVELOPER-GUIDE.md), [KNOWLEDGE.md](../../KNOWLEDGE.md), [PROGRESS.md](../../PROGRESS.md).
+
 - 2026-10-20 — Plan written (`docs/PLAN.md`). Vendored KaTeX 0.16.11 + IBM Plex fonts. Registry + reference
   metadata seeded (`scripts/seed_registry.py`). Excel-cached values extracted from original .xls
   (`scripts/extract_xls_cached.py`) and defined names (`data/spreadsheets/_defined_names.json`).

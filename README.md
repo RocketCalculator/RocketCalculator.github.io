@@ -111,8 +111,9 @@ plots and a drawing. The shared page code does the rest, so every calculator beh
   [PROGRESS.md](PROGRESS.md) and [BLOCKERS.md](BLOCKERS.md). UI rules: [docs/DESIGN-GUIDE.md](docs/DESIGN-GUIDE.md); what every calculator page must contain and how it is
   checked: [docs/CALCULATOR-SPEC.md](docs/CALCULATOR-SPEC.md).
 - Deploys on every push to `main` that touches `site/` ([workflow](.github/workflows/pages.yml)).
-- Branches `type/description`, Conventional Commits, merges by pull request; releases are annotated tags
-  (`<calculator>/vX.Y.Z`, site `vX.Y.Z`). History: [CHANGELOG.md](CHANGELOG.md).
+- Branches `type/description`, Conventional Commits, squash-merged pull requests with the `test` check passing;
+  site releases are tagged `vX.Y.Z` ([GOVERNANCE.md](GOVERNANCE.md#releases)). History: [CHANGELOG.md](CHANGELOG.md).
+- New here? [CONTRIBUTING.md](CONTRIBUTING.md) and the [developer guide](docs/DEVELOPER-GUIDE.md).
 
 ## Accuracy
 The physics follows the cited reports and is checked against the original workbooks and hand calculations. Where a
@@ -124,6 +125,17 @@ against your own judgement and your range's rules before flying anything.
 Theory and original spreadsheets: C. P. Hoult, [Rocket Science and Engineering Technologies](http://www.rsandt.com/).
 Website by [Dara Rahmat Samii](https://darasamii.github.io/) ([LinkedIn](https://www.linkedin.com/in/dara-samii)) — see the [About page](https://rocketcalculator.github.io/about.html).
 
-## Problems and contributions
-Found a wrong result or a bug? [Open an issue](https://github.com/RocketCalculator/RocketCalculator.github.io/issues/new) with the calculator's Share link.
-Pull requests are welcome: read `KNOWLEDGE.md`, add a test for any physics change, and cite the source you checked it against.
+## Community and contributions
+- Found a wrong result or a bug? [Open an issue](https://github.com/RocketCalculator/RocketCalculator.github.io/issues/new/choose)
+  with the calculator's Share link. Questions and ideas go to
+  [Discussions](https://github.com/RocketCalculator/RocketCalculator.github.io/discussions) ([SUPPORT.md](SUPPORT.md)).
+- Contributions are welcome: read [CONTRIBUTING.md](CONTRIBUTING.md) and the [developer guide](docs/DEVELOPER-GUIDE.md).
+  Every physics change needs a test and a source you have read.
+- Everyone taking part follows the [Code of Conduct](CODE_OF_CONDUCT.md). How the project is run:
+  [GOVERNANCE.md](GOVERNANCE.md). Security problems: [SECURITY.md](SECURITY.md), privately.
+
+## License
+Code: [GPL-3.0-or-later](LICENSE). The project's written content and images: [CC BY-SA 4.0](LICENSE-docs).
+C. P. Hoult's reports and workbooks and the papers in the reference library are **not** covered by these licences;
+they remain the property of their authors and publishers. Details, bundled fonts and libraries: [THIRD-PARTY.md](THIRD-PARTY.md).
+To cite the project, use [CITATION.cff](CITATION.cff).

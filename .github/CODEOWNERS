@@ -1,0 +1,9 @@
+# Reviewers requested automatically for each part of the repository (see GOVERNANCE.md).
+# Add area reviewers above the catch-all line as the team grows; the last matching line wins.
+*                          @DaraSamii
+/site/js/calc/             @DaraSamii
+/site/js/calculators/      @DaraSamii
+/.github/                  @DaraSamii
+/LICENSE*                  @DaraSamii
+/CODE_OF_CONDUCT.md        @DaraSamii
+/GOVERNANCE.md             @DaraSamii

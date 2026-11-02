@@ -1,0 +1,62 @@
+name: Wrong result
+description: A calculator gives a number, verdict or fix that disagrees with a source or a hand calculation.
+title: "[Wrong result] <calculator>: "
+labels: ["type: wrong-result", "status: needs-triage", "priority: high"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you: wrong numbers are the most important thing to fix. Please give us enough to reproduce it.
+        Not sure it is wrong? Ask in [Discussions](https://github.com/RocketCalculator/RocketCalculator.github.io/discussions) first.
+  - type: input
+    id: calculator
+    attributes:
+      label: Calculator
+      placeholder: e.g. Fin Flutter
+    validations:
+      required: true
+  - type: input
+    id: share
+    attributes:
+      label: Share link
+      description: Use the calculator's **Share** button so we see exactly your inputs and unit system.
+      placeholder: https://rocketcalculator.github.io/calculators/...
+    validations:
+      required: true
+  - type: textarea
+    id: shown
+    attributes:
+      label: What the calculator shows
+      description: The result, verdict or fix, with its unit.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected, and why
+      description: The value you expected and how you got it (a hand calculation, another tool, a measurement).
+    validations:
+      required: true
+  - type: textarea
+    id: source
+    attributes:
+      label: Source
+      description: The report, paper, page, equation or figure that supports your value. Only cite what you have read.
+    validations:
+      required: true
+  - type: dropdown
+    id: safety
+    attributes:
+      label: Could this make an unsafe design look safe?
+      options: ["Yes", "No", "Not sure"]
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: I searched the existing issues and this is not a duplicate.
+          required: true
+        - label: I agree to follow the [Code of Conduct](https://github.com/RocketCalculator/RocketCalculator.github.io/blob/main/CODE_OF_CONDUCT.md).
+          required: true

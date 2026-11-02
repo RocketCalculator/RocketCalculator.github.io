@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Question or idea
+    url: https://github.com/RocketCalculator/RocketCalculator.github.io/discussions
+    about: Ask how to use a calculator, or share an idea, in Discussions.
+  - name: Security problem
+    url: https://github.com/RocketCalculator/RocketCalculator.github.io/security/advisories/new
+    about: Report it privately. Never in a public issue.

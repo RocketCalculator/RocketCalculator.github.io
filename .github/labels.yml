@@ -1,0 +1,35 @@
+# The project's labels (GOVERNANCE.md). Apply with: gh label create/edit. Colours are hex without '#'.
+- { name: "type: wrong-result", color: "b60205", description: "A calculator gives a wrong number, verdict or fix" }
+- { name: "type: bug", color: "d73a4a", description: "Something on the site does not work" }
+- { name: "type: feature", color: "a2eeef", description: "New feature or calculator" }
+- { name: "type: docs", color: "0075ca", description: "Documentation, theory pages, info texts" }
+- { name: "type: accessibility", color: "f143ab", description: "Barrier for people with disabilities" }
+- { name: "type: chore", color: "c5def5", description: "Tooling, CI, dependencies, housekeeping" }
+- { name: "type: question", color: "d876e3", description: "Better asked in Discussions" }
+- { name: "area: aerodynamics", color: "fbca04", description: "Centre of pressure, drag, nose shapes" }
+- { name: "area: structures", color: "fbca04", description: "Structures and aeroelasticity" }
+- { name: "area: dynamics", color: "fbca04", description: "Flight dynamics and mass properties" }
+- { name: "area: trajectory", color: "fbca04", description: "Trajectory, wind and launch" }
+- { name: "area: recovery", color: "fbca04", description: "Parachutes and recovery" }
+- { name: "area: propulsion", color: "fbca04", description: "Nozzles and vehicle design" }
+- { name: "area: environment", color: "fbca04", description: "Atmosphere and gravity" }
+- { name: "area: reliability", color: "fbca04", description: "Safety and reliability" }
+- { name: "area: site", color: "fef2c0", description: "Shared pages, home, search, tour, SEO" }
+- { name: "area: ui", color: "fef2c0", description: "Shared components: form, plots, drawings, report" }
+- { name: "status: needs-triage", color: "ededed", description: "Waiting for a triager" }
+- { name: "status: needs-info", color: "ededed", description: "Waiting for the reporter" }
+- { name: "status: needs-decision", color: "5319e7", description: "Needs a maintainer decision (DECISIONS.md)" }
+- { name: "status: accepted", color: "0e8a16", description: "Agreed; ready to be worked on" }
+- { name: "status: in-progress", color: "1d76db", description: "Someone is working on it" }
+- { name: "status: blocked", color: "000000", description: "Waiting on something outside the project" }
+- { name: "status: changes-requested", color: "e99695", description: "Pull request needs changes from its author" }
+- { name: "status: ready-to-merge", color: "0e8a16", description: "Approved and checks pass" }
+- { name: "priority: critical", color: "b60205", description: "Could make an unsafe design look safe; fix first" }
+- { name: "priority: high", color: "d93f0b", description: "Fix soon" }
+- { name: "priority: low", color: "c2e0c6", description: "Nice to have" }
+- { name: "resolution: duplicate", color: "cfd3d7", description: "Already reported" }
+- { name: "resolution: invalid", color: "e4e669", description: "Not a problem with the project" }
+- { name: "resolution: wontfix", color: "ffffff", description: "Will not be worked on" }
+- { name: "good first issue", color: "7057ff", description: "Good for newcomers" }
+- { name: "help wanted", color: "008672", description: "Extra attention is needed" }
+- { name: "dependencies", color: "0366d6", description: "Dependency updates (Dependabot)" }

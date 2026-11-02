@@ -3,6 +3,14 @@
 Newest first, in the spirit of [Keep a Changelog](https://keepachangelog.com/). From 2026-10-25 every entry names its
 branch, tag and commit range. Live site: https://rocketcalculator.github.io/.
 
+## 2026-11-01 — Open-source community files (`chore/governance`)
+- Licences: GPL-3.0-or-later for the code (LICENSE), CC BY-SA 4.0 for the written content (LICENSE-docs), and
+  THIRD-PARTY.md for Hoult's material, the reference library, KaTeX and Inter (D46).
+- CODE_OF_CONDUCT.md (Contributor Covenant 2.1), CONTRIBUTING.md, docs/DEVELOPER-GUIDE.md, GOVERNANCE.md (roles,
+  decisions, triage, pull requests, releases), SECURITY.md, SUPPORT.md, CITATION.cff, .editorconfig.
+- GitHub: issue forms (wrong result, bug, feature), pull request template, CODEOWNERS, a label set
+  (.github/labels.yml), Dependabot, and a CI workflow that runs the test suite on every pull request.
+
 ## 2026-10-27 — Home page (`improve/home-page`)
 - Hero: the flight is now interactive and complete — boost along the rail, coast to apogee, the drogue at apogee, the
   main lower down and the drift to landing. Drag the rail (launch angle) or the wind arrow (wind) and the path,

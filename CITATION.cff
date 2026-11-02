@@ -1,0 +1,14 @@
+cff-version: 1.2.0
+message: "If you use Rocket Calculator in your work, please cite it as below."
+title: "Rocket Calculator: interactive sounding-rocket engineering calculators"
+type: software
+authors:
+  - family-names: "Rahmat Samii"
+    given-names: "Dara"
+repository-code: "https://github.com/RocketCalculator/RocketCalculator.github.io"
+url: "https://rocketcalculator.github.io/"
+license: GPL-3.0-or-later
+keywords: [rocketry, sounding rockets, aerospace engineering, calculator, education]
+abstract: >-
+  Interactive calculators for sounding-rocket design (stability, drag, fin flutter, nozzles, recovery, trajectory and
+  more), built from the rocket-engineering reports of C. P. Hoult, with verdicts, scaled drawings, plots and theory.

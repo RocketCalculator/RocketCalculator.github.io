@@ -1,0 +1,45 @@
+name: Feature or new calculator
+description: Suggest an improvement or a calculator. Please wait for "status: accepted" before writing code.
+title: "[Feature] "
+labels: ["type: feature", "status: needs-triage"]
+body:
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind
+      options: ["New calculator", "Improvement to a calculator", "Site feature", "Documentation"]
+    validations:
+      required: true
+  - type: textarea
+    id: need
+    attributes:
+      label: The need
+      description: Who needs this and what question it would answer for them.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: What it would compute or change. For a calculator, the inputs, the results, and how a verdict could be judged.
+    validations:
+      required: true
+  - type: textarea
+    id: source
+    attributes:
+      label: Source
+      description: For physics, the report or paper it would be based on (title, author, year, link). Calculators are only built from sources someone has read.
+  - type: dropdown
+    id: help
+    attributes:
+      label: Would you like to build it?
+      options: ["Yes", "With help", "No"]
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: I searched the existing issues and Discussions and this is not a duplicate.
+          required: true
+        - label: I agree to follow the [Code of Conduct](https://github.com/RocketCalculator/RocketCalculator.github.io/blob/main/CODE_OF_CONDUCT.md).
+          required: true

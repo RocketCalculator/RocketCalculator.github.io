@@ -1,5 +1,7 @@
 # Build plan — Rocket Calculator website
 
+> **Historical (first build, October 2026).** Kept as a record; it no longer describes the project. Current docs: [developer guide](../DEVELOPER-GUIDE.md), [KNOWLEDGE.md](../../KNOWLEDGE.md), [PROGRESS.md](../../PROGRESS.md).
+
 Static site in `site/`, vanilla HTML/CSS/ES modules, no build step at deploy. Dev-time scripts in `scripts/`
 (Python/Node) generate committed files (registry, stub pages); nothing runs on GitHub except the Pages upload.
 

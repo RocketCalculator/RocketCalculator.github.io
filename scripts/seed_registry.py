@@ -4,7 +4,7 @@ Inputs : data/catalog.json (parsed from rsandt.com/reports.html), PDFs in site/r
 Outputs: site/js/registry.json   - areas, topics, calculators, non-PDF source files
          site/references/references.json - one entry per served PDF with a readable title
 
-Titles/authors/dates below were read from each document's title block (see docs/PLAN.md).
+Titles/authors/dates below were read from each document's title block (see docs/history/first-build-plan.md).
 Re-run after adding a calculator:  python3 scripts/seed_registry.py
 """
 import json, os, re, html, urllib.parse

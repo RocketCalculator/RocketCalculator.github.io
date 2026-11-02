@@ -488,6 +488,20 @@ fin count, Reliability Growth exposure and fixing).
 
 ## Lessons learned
 
+### Touch and scrolling (2026-11-01)
+- **Test touch with real touch events.** In the headless shell `Input.synthesizeScrollGesture` scrolls nothing even on
+  plain text; `Input.dispatchTouchEvent` (touchStart, 8 × touchMove, touchEnd) scrolls like a finger. `scripts/touch-audit.mjs`
+  swipes from every kind of element and lists small targets, iOS-zoom fields and nested scroll boxes.
+- **Chrome's native range input ignores `touch-action`.** A vertical swipe across it changed the value and did not
+  scroll. On coarse pointers the slider sits in `.range-touch` (`touch-action: pan-y`, slider `pointer-events: none`),
+  and form.js moves it only after a sideways drag of more than 8 px.
+- **`overscroll-behavior: contain` on a box that cannot scroll still stops the page scrolling.** The stacked inputs
+  panel kept `overflow: auto` from the sticky desktop layout and swallowed every swipe; below 980 px it is `overflow: visible`.
+- **iOS zooms into any field under 16 px**; touch screens get 16 px fields. Small buttons get a 44 px `::after` target.
+- **Plots on touch:** `touch-action: pan-y` lets a sideways finger read along the curve; `pointerleave` fires right
+  after a tap, so the reading is kept until the next scroll or tap.
+
+
 ### After Nozzle (Phase 2)
 - **Sweep every slider in the browser and check that the drawing changes and nothing is refused** (scratch `sweep.mjs`): unit tests passed while most of the input space was refused. Coupled inputs must degrade gracefully (clamp + warn), not refuse.
 - **Chart labels: wrap maths in `$…$`.** A label with bare TeX and words (`'Expansion ratio \\varepsilon'`) is typeset whole as maths in the tooltip — no spaces, italic.

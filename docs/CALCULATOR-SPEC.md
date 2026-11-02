@@ -15,7 +15,7 @@ and by how much?* Every page answers all three within five seconds.
 
 | # | Block | Must contain | Notes |
 |---|---|---|---|
-| 1 | **Header** (shared) | Brand, nav (Home, Calculators, References, How to use, About), search, SI/US, dark mode, **accent colour picker**, GitHub | Fits on one line from 320 to 1440 px; the nav collapses below 1000 px. |
+| 1 | **Header** (shared) | Brand, nav (Home, Calculators, References, About), search, SI/US, dark mode, **accent colour picker**, tour (compass), GitHub | Fits on one line from 320 to 1440 px; the nav collapses below 1000 px. |
 | 2 | **Title + subtitle** | The calculator's name (what it designs, e.g. "Nozzle Design and Thrust") and one sentence on what it gives | A name says what the user designs, not the source's formula name. |
 | 3 | **Intro cards** | What it does · Why it matters · When to use it | Plain words, 2–3 sentences each. |
 | 4 | **Design bar** (shared) | Shared rocket name, share dimensions across calculators, pin baseline, save/open design | Unchanged per calculator. |

@@ -3,6 +3,12 @@
 Newest first, in the spirit of [Keep a Changelog](https://keepachangelog.com/). From 2026-10-25 every entry names its
 branch, tag and commit range. Live site: https://rocketcalculator.github.io/.
 
+## 2026-11-01 — Housekeeping (`chore/housekeeping`)
+- README: correct counts (27 calculators, 5 aerodynamics), new screenshots of the current site, tour and phone notes,
+  the SEO step after adding a calculator.
+- The first build's plan and log moved to `docs/history/` with a note that they are superseded (D-record kept).
+- `scripts/touch-audit.mjs` kept as a tool; touch lessons in KNOWLEDGE.md; PROGRESS.md brought up to date.
+
 ## 2026-11-01 — Open-source community files (`chore/governance`)
 - Licences: GPL-3.0-or-later for the code (LICENSE), CC BY-SA 4.0 for the written content (LICENSE-docs), and
   THIRD-PARTY.md for Hoult's material, the reference library, KaTeX and Inter (D46).
@@ -10,6 +16,26 @@ branch, tag and commit range. Live site: https://rocketcalculator.github.io/.
   decisions, triage, pull requests, releases), SECURITY.md, SUPPORT.md, CITATION.cff, .editorconfig.
 - GitHub: issue forms (wrong result, bug, feature), pull request template, CODEOWNERS, a label set
   (.github/labels.yml), Dependabot, and a CI workflow that runs the test suite on every pull request.
+
+## 2026-11-01 — Touch and scrolling (`fix/touch-scroll`, #71)
+- On phones a swipe on the inputs panel now scrolls the page (it was a scroll box that swallowed swipes), and a
+  vertical swipe across a slider scrolls instead of changing the value; only a sideways drag moves a slider.
+- Touch screens: 16 px fields (no iOS zoom), 44 px targets around the i buttons, bigger drawing handles, hero knobs and
+  zoom buttons; plot readings stay after the finger lifts and stay inside the plot; the report preview opens with a
+  button instead of scrolling inside the page; smooth in-page scrolling.
+
+## 2026-11-01 — Guided tour (`feat/tour`, #69)
+- A 20-step tour of the home page, a calculator and the reference library, from the compass button in the header
+  (the menu on phones), the hero and the footer. Keyboard, reduced motion and phones supported.
+
+## 2026-11-01 — Search engines and link previews (`feat/seo`, #68)
+- Canonical URL, Open Graph and Twitter card tags, and schema.org JSON-LD on every page; `sitemap.xml` and
+  `robots.txt`; a social preview image; crawler-readable calculator pages. `scripts/seo.mjs` writes them and the Pages
+  workflow refreshes them on deploy; `tests/seo.test.js` keeps them in step.
+
+## 2026-10-27 → 2026-11-01 — Hero flight (#63–#67)
+- The flight fills the hero, recovers smoothly with an inflating drogue and main, lands nose-first and topples over
+  with its parachutes; the hero gives the flight the larger column and sizes the title to its own column.
 
 ## 2026-10-27 — Home page (`improve/home-page`)
 - Hero: the flight is now interactive and complete — boost along the rail, coast to apogee, the drogue at apogee, the

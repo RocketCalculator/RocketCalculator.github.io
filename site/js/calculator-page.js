@@ -1,5 +1,5 @@
 // Generic calculator page: renders intro, form, key results, schematic, plots, results table, references.
-// A calculator is a definition module (js/calculators/<slug>.js) — see docs/PLAN.md for the API.
+// A calculator is a definition module (js/calculators/<slug>.js) — see KNOWLEDGE.md (Shared component reference) for the API.
 import { h, url, fmt, num, debounce, toast, copyText, download, loadRegistry, loadReferences, storage, reveal, InputError } from './util.js';
 import { initShell, ICONS } from './app.js';
 

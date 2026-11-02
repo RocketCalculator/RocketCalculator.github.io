@@ -28,7 +28,7 @@ jobs:
       - run: node scripts/seo.mjs site
       # stamp every module and the stylesheet with a content hash so browsers never mix old and new files
       - run: node scripts/stamp_versions.mjs site
-      - uses: actions/configure-pages@v5
+      - uses: actions/configure-pages@v6
       - uses: actions/upload-pages-artifact@v5
         with:
           path: site
